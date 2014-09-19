@@ -128,14 +128,14 @@ public class TestEventDTD
              * unit test (in TestEventTypes()); here let's just check for
              * entities and notations
              */
-            List entities = dtd.getEntities();
+            List<?> entities = dtd.getEntities();
             assertNotNull("Entity list for a DTD declaration with entities should not be null", entities);
             assertEquals(3, entities.size());
 
             // Let's also verify they are all of right type...
             testListElems(entities, EntityDeclaration.class);
 
-            List notations = dtd.getNotations();
+            List<?> notations = dtd.getNotations();
 
             // Let's also verify they are all of right type...
             testListElems(notations, NotationDeclaration.class);

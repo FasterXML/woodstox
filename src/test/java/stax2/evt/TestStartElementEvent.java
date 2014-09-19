@@ -10,7 +10,7 @@ import javax.xml.stream.events.*;
 import stax2.BaseStax2Test;
 
 /**
- * Set of unit tests that checks that {@link {@link StartElement}
+ * Set of unit tests that checks that {@link StartElement}
  * implementation works as expected.
  */
 public class TestStartElementEvent

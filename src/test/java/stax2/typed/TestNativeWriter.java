@@ -16,6 +16,7 @@ import org.codehaus.stax2.*;
 public class TestNativeWriter
     extends WriterTestBase
 {
+    @Override
     protected XMLStreamWriter2 getTypedWriter(ByteArrayOutputStream out,
                                               boolean repairing)
         throws XMLStreamException
@@ -26,10 +27,11 @@ public class TestNativeWriter
         return (XMLStreamWriter2) outf.createXMLStreamWriter(out, "UTF-8");
     }
 
+    @Override
     protected byte[] closeWriter(XMLStreamWriter sw, ByteArrayOutputStream out)
         throws XMLStreamException
     {
-	sw.close();
-	return out.toByteArray();
+        sw.close();
+        return out.toByteArray();
     }
 }

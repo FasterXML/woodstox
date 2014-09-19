@@ -11,7 +11,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.*;
-
 import org.codehaus.stax2.*;
 
 /**
@@ -30,6 +29,7 @@ public class TestDOMWriter
      */
     Document mDoc;
 
+    @Override
     protected XMLStreamWriter2 getTypedWriter(ByteArrayOutputStream out,
                                               boolean repairing)
         throws XMLStreamException
@@ -41,6 +41,7 @@ public class TestDOMWriter
         return (XMLStreamWriter2) outf.createXMLStreamWriter(new DOMResult(mDoc));
     }
 
+    @Override
     protected byte[] closeWriter(XMLStreamWriter sw, ByteArrayOutputStream out)
         throws XMLStreamException
     {

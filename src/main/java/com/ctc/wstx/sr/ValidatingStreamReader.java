@@ -135,6 +135,7 @@ public class ValidatingStreamReader
     ///////////////////////////////////////////////////////////////////////
      */
 
+    @Override
     public Object getProperty(String name)
     {
         // DTD-specific properties...
@@ -177,10 +178,12 @@ public class ValidatingStreamReader
     ///////////////////////////////////////////////////////////////////////
      */
 
+    @Override
     public Object getProcessedDTD() {
         return getProcessedDTDSchema();
     }
 
+    @Override
     public DTDValidationSchema getProcessedDTDSchema() {
         DTDValidationSchema dtd = mConfig.getDTDOverride();
         if (dtd == null) {
@@ -244,6 +247,7 @@ public class ValidatingStreamReader
      *   in the text buffer (in addition to parsing it for actual use); if
      *   false, will only do parsing.
      */
+    @Override
     protected void finishDTD(boolean copyContents)
         throws XMLStreamException
     {
@@ -366,7 +370,7 @@ public class ValidatingStreamReader
     /**
      * If there is an error handler established, call it.
      */
-    // @Override
+    @Override
     public void reportValidationProblem(XMLValidationProblem prob)
         throws XMLStreamException
     {
@@ -383,8 +387,8 @@ public class ValidatingStreamReader
      * class. This allows for some initialization and checks to be done
      * (not including ones that need access to actual element name)
      */
-    protected void initValidation()
-        throws XMLStreamException
+    @Override
+    protected void initValidation() throws XMLStreamException
     {
         if (hasConfigFlags(CFG_VALIDATE_AGAINST_DTD)
             && !mDtdValidatorSet) {

@@ -407,7 +407,7 @@ public abstract class ReaderArrayTestBase
         assertTokenType(START_ELEMENT, sr.getEventType());
 
         while (true) {
-            int readLen = (r == null) ? blockLen : (1 + (r.nextInt() & 0xFF));
+            int readLen = (1 + (r.nextInt() & 0xFF));
             int offset = (r.nextInt() & 0xF);
             int got;
 

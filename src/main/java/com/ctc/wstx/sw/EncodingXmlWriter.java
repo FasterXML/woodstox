@@ -127,6 +127,7 @@ public abstract class EncodingXmlWriter
      * This method is needed by the super class, to calculate hard
      * byte/char offsets.
      */
+    @Override
     protected int getOutputPtr() {
         return mOutputPtr;
     }
@@ -137,19 +138,19 @@ public abstract class EncodingXmlWriter
     ////////////////////////////////////////////////
      */
 
-    final protected OutputStream getOutputStream()
-    {
+    @Override
+    final protected OutputStream getOutputStream() {
         return mOut;
     }
 
-    final protected Writer getWriter()
-    {
+    @Override
+    final protected Writer getWriter() {
         // No writers are involved with these implementations...
         return null;
     }
 
-    public void close(boolean forceRealClose)
-        throws IOException
+    @Override
+    public void close(boolean forceRealClose) throws IOException
     {
         flush();
 
@@ -169,16 +170,18 @@ public abstract class EncodingXmlWriter
         }
     }
 
-    public final void flush()
-        throws IOException
+    @Override
+    public final void flush() throws IOException
     {
         flushBuffer();
         mOut.flush();
     }
 
+    @Override
     public abstract void writeRaw(char[] cbuf, int offset, int len)
         throws IOException;
 
+    @Override
     public abstract void writeRaw(String str, int offset, int len)
         throws IOException;
 
@@ -189,30 +192,35 @@ public abstract class EncodingXmlWriter
     //////////////////////////////////////////////////
      */
 
+    @Override
     public final void writeCDataStart()
         throws IOException
     { 
         writeAscii("<![CDATA[");
     }
 
+    @Override
     public final void writeCDataEnd()
         throws IOException
     {
         writeAscii("]]>");
     }
 
+    @Override
     public final void writeCommentStart()
         throws IOException
     {
         writeAscii("<!--");
     }
 
+    @Override
     public final void writeCommentEnd()
         throws IOException
     {
         writeAscii("-->");
     }
 
+    @Override
     public final void writePIStart(String target, boolean addSpace)
         throws IOException
     {
@@ -223,8 +231,8 @@ public abstract class EncodingXmlWriter
         }
     }
 
-    public final void writePIEnd()
-        throws IOException
+    @Override
+    public final void writePIEnd() throws IOException
     {
         writeAscii(BYTE_QMARK, BYTE_GT);
     }
@@ -235,8 +243,8 @@ public abstract class EncodingXmlWriter
     ////////////////////////////////////////////////
      */
 
-    public int writeCData(String data)
-        throws IOException
+    @Override
+    public int writeCData(String data) throws IOException
     {
         writeAscii("<![CDATA[");
         int ix = writeCDataContent(data);
@@ -247,6 +255,7 @@ public abstract class EncodingXmlWriter
         return -1;
     }
 
+    @Override
     public int writeCData(char[] cbuf, int offset, int len)
         throws IOException
     {
@@ -259,6 +268,7 @@ public abstract class EncodingXmlWriter
         return -1;
     }    
 
+    @Override
     public final void writeCharacters(String data)
         throws IOException
     {
@@ -270,6 +280,7 @@ public abstract class EncodingXmlWriter
         }
     }
 
+    @Override
     public final void writeCharacters(char[] cbuf, int offset, int len)
         throws IOException
     {
@@ -288,6 +299,7 @@ public abstract class EncodingXmlWriter
      * fixing is enabled), or return the offset of the first hyphen in
      * multi-hyphen sequence.
      */
+    @Override
     public int writeComment(String data)
         throws IOException
     {
@@ -300,6 +312,7 @@ public abstract class EncodingXmlWriter
         return -1;
     }    
 
+    @Override
     public void writeDTD(String data)
         throws IOException
     {
@@ -309,6 +322,7 @@ public abstract class EncodingXmlWriter
         writeRaw(data, 0, data.length());
     }    
 
+    @Override
     public void writeDTD(String rootName, String systemId, String publicId,
                          String internalSubset)
         throws IOException, XMLStreamException
@@ -336,6 +350,7 @@ public abstract class EncodingXmlWriter
         writeAscii(BYTE_GT);
     }
 
+    @Override
     public void writeEntityReference(String name)
         throws IOException, XMLStreamException
     {
@@ -347,6 +362,7 @@ public abstract class EncodingXmlWriter
         writeAscii(BYTE_SEMICOLON);
     }    
 
+    @Override
     public void writeXmlDeclaration(String version, String encoding, String standalone)
         throws IOException
     {
@@ -373,6 +389,7 @@ public abstract class EncodingXmlWriter
         writeAscii(BYTE_QMARK, BYTE_GT);
     }
 
+    @Override
     public int writePI(String target, String data)
         throws IOException, XMLStreamException
     {
@@ -395,6 +412,7 @@ public abstract class EncodingXmlWriter
     ////////////////////////////////////////////////////
      */
 
+    @Override
     public void writeStartTagStart(String localName)
         throws IOException, XMLStreamException
     {
@@ -402,6 +420,7 @@ public abstract class EncodingXmlWriter
         writeName(localName);
     }    
 
+    @Override
     public void writeStartTagStart(String prefix, String localName)
         throws IOException, XMLStreamException
     {
@@ -415,12 +434,14 @@ public abstract class EncodingXmlWriter
         writeName(localName);
     }    
 
+    @Override
     public void writeStartTagEnd()
         throws IOException
     {
         writeAscii(BYTE_GT);
     }    
 
+    @Override
     public void writeStartTagEmptyEnd()
         throws IOException
     {
@@ -431,6 +452,7 @@ public abstract class EncodingXmlWriter
         }
     }    
 
+    @Override
     public void writeEndTag(String localName)
         throws IOException
     {
@@ -443,6 +465,7 @@ public abstract class EncodingXmlWriter
         writeAscii(BYTE_GT);
     }    
 
+    @Override
     public void writeEndTag(String prefix, String localName)
         throws IOException
     {
@@ -465,6 +488,7 @@ public abstract class EncodingXmlWriter
     ////////////////////////////////////////////////////
      */
 
+    @Override
     public void writeAttribute(String localName, String value)
         throws IOException, XMLStreamException
     {
@@ -483,6 +507,7 @@ public abstract class EncodingXmlWriter
         writeAscii(BYTE_QUOT);
     }    
 
+    @Override
     public void writeAttribute(String localName, char[] value, int offset, int len)
         throws IOException, XMLStreamException
     {
@@ -500,6 +525,7 @@ public abstract class EncodingXmlWriter
         writeAscii(BYTE_QUOT);
     }    
 
+    @Override
     public void writeAttribute(String prefix, String localName, String value)
         throws IOException, XMLStreamException
     {
@@ -520,6 +546,7 @@ public abstract class EncodingXmlWriter
         writeAscii(BYTE_QUOT);
     }    
 
+    @Override
     public void writeAttribute(String prefix, String localName, char[] value, int offset, int len)
         throws IOException, XMLStreamException
     {
@@ -548,6 +575,7 @@ public abstract class EncodingXmlWriter
     /**
      * Non-validating version of typed write method
      */
+    @Override
     public final void writeTypedElement(AsciiValueEncoder enc)
         throws IOException
     {
@@ -570,6 +598,7 @@ public abstract class EncodingXmlWriter
     /**
      * Validating version of typed write method
      */
+    @Override
     public final void writeTypedElement(AsciiValueEncoder enc,
                                         XMLValidator validator, char[] copyBuffer)
         throws IOException, XMLStreamException
@@ -594,6 +623,7 @@ public abstract class EncodingXmlWriter
         } while (!enc.isCompleted());
     }
 
+    @Override
     public void writeTypedAttribute(String localName, AsciiValueEncoder enc)
         throws IOException, XMLStreamException
     {
@@ -614,6 +644,7 @@ public abstract class EncodingXmlWriter
         writeAscii(BYTE_QUOT);
     }
 
+    @Override
     public void writeTypedAttribute(String prefix, String localName,
                                     AsciiValueEncoder enc)
         throws IOException, XMLStreamException
@@ -637,6 +668,7 @@ public abstract class EncodingXmlWriter
         writeAscii(BYTE_QUOT);
     }
 
+    @Override
     public void writeTypedAttribute(String prefix, String localName, String nsURI,
                                       AsciiValueEncoder enc,
                                       XMLValidator validator, char[] copyBuffer)
@@ -760,6 +792,7 @@ public abstract class EncodingXmlWriter
         }
     }
 
+    @Override
     public final void writeRawAscii(char[] buf, int offset, int len)
         throws IOException
     {

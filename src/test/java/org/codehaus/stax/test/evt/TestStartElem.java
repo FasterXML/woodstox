@@ -46,7 +46,7 @@ public class TestStartElem
         assertNull(nsCtxt.getNamespaceURI("http://my"));
 
         {
-            Iterator it = nsCtxt.getPrefixes("http://foobar");
+            Iterator<?> it = nsCtxt.getPrefixes("http://foobar");
             // Specs don't specify if we should get null, or empty iterator
             assertTrue((it == null) || !it.hasNext());
             it = nsCtxt.getPrefixes("a");
@@ -60,7 +60,7 @@ public class TestStartElem
         assertEquals("ns:attrs", nsCtxt.getNamespaceURI("a"));
 
         // Plus, let's check the other namespace access:
-        Iterator it = se.getNamespaces();
+        Iterator<?> it = se.getNamespaces();
         assertEquals(2, countElements(it));
 
         assertTokenType(END_ELEMENT, er.nextEvent().getEventType());
@@ -321,7 +321,7 @@ public class TestStartElem
         return sb.toString();
     }
 
-    private int countElements(Iterator it) {
+    private int countElements(Iterator<?> it) {
         int count = 0;
         if (it != null) {
             while (it.hasNext()) {

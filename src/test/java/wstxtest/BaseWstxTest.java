@@ -49,9 +49,9 @@ public abstract class BaseWstxTest
      *  can separately turn it off as necessary
      */
     //protected static boolean DEF_PRINT_EXP_EXCEPTION = true;
-    protected static boolean DEF_PRINT_EXP_EXCEPTION = false;
+//    protected static boolean DEF_PRINT_EXP_EXCEPTION = false;
 
-    protected boolean PRINT_EXP_EXCEPTION = DEF_PRINT_EXP_EXCEPTION;
+//    protected boolean PRINT_EXP_EXCEPTION = DEF_PRINT_EXP_EXCEPTION;
 
     /*
     ///////////////////////////////////////////////////
@@ -69,6 +69,7 @@ public abstract class BaseWstxTest
     //////////////////////////////////////////////////
      */
     
+    @Override
     protected XMLInputFactory2 getInputFactory()
     {
         if (mInputFactory == null) {
@@ -77,6 +78,7 @@ public abstract class BaseWstxTest
         return mInputFactory;
     }
 
+    @Override
     protected XMLEventFactory2 getEventFactory()
     {
         if (mEventFactory == null) {
@@ -93,6 +95,7 @@ public abstract class BaseWstxTest
         return new WstxInputFactory();
     }
 
+    @Override
     protected XMLOutputFactory2 getOutputFactory()
     {
         if (mOutputFactory == null) {
@@ -115,8 +118,8 @@ public abstract class BaseWstxTest
         return (XMLStreamReader2) f.createXMLStreamReader(new StringReader(content));
     }
 
-    @SuppressWarnings("deprecation")
-	protected static XMLStreamReader2 constructStreamReaderForFile(XMLInputFactory f, String filename)
+    @SuppressWarnings({ "deprecation", "resource" })
+    protected static XMLStreamReader2 constructStreamReaderForFile(XMLInputFactory f, String filename)
         throws IOException, XMLStreamException
     {
         File inf = new File(filename);
@@ -132,6 +135,7 @@ public abstract class BaseWstxTest
         return (XMLEventReader2) f.createXMLEventReader(new StringReader(content));
     }
 
+    @Override
     protected XMLStreamReader2 constructNsStreamReader(String content, boolean coal)
         throws XMLStreamException
     {
@@ -141,6 +145,7 @@ public abstract class BaseWstxTest
         return (XMLStreamReader2) f.createXMLStreamReader(new StringReader(content));
     }
 
+    @Override
     protected XMLStreamReader2 constructNsStreamReader(InputStream in, boolean coal)
         throws XMLStreamException
     {
@@ -150,6 +155,7 @@ public abstract class BaseWstxTest
         return (XMLStreamReader2) f.createXMLStreamReader(in);
     }
 
+    @Override
     protected XMLStreamReader2 constructNonNsStreamReader(String content, boolean coal)
         throws XMLStreamException
     {
@@ -237,6 +243,7 @@ public abstract class BaseWstxTest
      * @return Dummy value calculated on contents; used to make sure
      *   no dead code is eliminated
      */
+    @Override
     protected int streamThrough(XMLStreamReader sr)
         throws XMLStreamException
     {
@@ -259,6 +266,7 @@ public abstract class BaseWstxTest
         return result;
     }
 
+    @Override
     protected int streamThroughFailing(XMLInputFactory f, String contents,
                                        String msg)
         throws XMLStreamException
@@ -288,6 +296,7 @@ public abstract class BaseWstxTest
         return result; // never gets here
     }
 
+    @Override
     protected int streamThroughFailing(XMLStreamReader sr, String msg)
         throws XMLStreamException
     {

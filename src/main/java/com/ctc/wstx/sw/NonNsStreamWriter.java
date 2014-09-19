@@ -85,31 +85,35 @@ public class NonNsStreamWriter
     ////////////////////////////////////////////////////
      */
 
+    @Override
     public NamespaceContext getNamespaceContext() {
         return EmptyNamespaceContext.getInstance();
     }
 
+    @Override
     public String getPrefix(String uri) {
         return null;
     }
 
+    @Override
     public void setDefaultNamespace(String uri)
         throws XMLStreamException
     {
         reportIllegalArg("Can not set default namespace for non-namespace writer.");
     }
 
-    public void setNamespaceContext(NamespaceContext context)
-    {
+    @Override
+    public void setNamespaceContext(NamespaceContext context) {
         reportIllegalArg("Can not set NamespaceContext for non-namespace writer.");
     }
 
-    public void setPrefix(String prefix, String uri)
-        throws XMLStreamException
+    @Override
+    public void setPrefix(String prefix, String uri) throws XMLStreamException
     {
         reportIllegalArg("Can not set namespace prefix for non-namespace writer.");
     }
 
+    @Override
     public void writeAttribute(String localName, String value)
         throws XMLStreamException
     {
@@ -142,69 +146,70 @@ public class NonNsStreamWriter
         }
     }
 
+    @Override
     public void writeAttribute(String nsURI, String localName, String value)
         throws XMLStreamException
     {
         writeAttribute(localName, value);
     }
 
+    @Override
     public void writeAttribute(String prefix, String nsURI,
-                               String localName, String value)
+            String localName, String value)
         throws XMLStreamException
     {
         writeAttribute(localName, value);
     }
 
-    public void writeDefaultNamespace(String nsURI)
-        throws XMLStreamException
+    @Override
+    public void writeDefaultNamespace(String nsURI) throws XMLStreamException
     {
         reportIllegalMethod("Can not call writeDefaultNamespace namespaces with non-namespace writer.");
     }
 
-    public void writeEmptyElement(String localName)
-        throws XMLStreamException
+    @Override
+    public void writeEmptyElement(String localName) throws XMLStreamException
     {
         doWriteStartElement(localName);
         mEmptyElement = true;
     }
 
-    public void writeEmptyElement(String nsURI, String localName)
-        throws XMLStreamException
+    @Override
+    public void writeEmptyElement(String nsURI, String localName) throws XMLStreamException
     {
         writeEmptyElement(localName);
     }
 
-    public void writeEmptyElement(String prefix, String localName, String nsURI)
-        throws XMLStreamException
+    @Override
+    public void writeEmptyElement(String prefix, String localName, String nsURI) throws XMLStreamException
     {
         writeEmptyElement(localName);
     }
 
-    public void writeEndElement()
-        throws XMLStreamException
-    {
+    @Override
+    public void writeEndElement() throws XMLStreamException {
         doWriteEndTag(null, mCfgAutomaticEmptyElems);
     }
 
-    public void writeNamespace(String prefix, String nsURI)
-        throws XMLStreamException
+    @Override
+    public void writeNamespace(String prefix, String nsURI) throws XMLStreamException
     {
         reportIllegalMethod("Can not set write namespaces with non-namespace writer.");
     }
 
-    public void writeStartElement(String localName)
-        throws XMLStreamException
+    @Override
+    public void writeStartElement(String localName) throws XMLStreamException
     {
         doWriteStartElement(localName);
         mEmptyElement = false;
     }
 
-    public void writeStartElement(String nsURI, String localName)
-        throws XMLStreamException
-    {
+    @Override
+    public void writeStartElement(String nsURI, String localName) throws XMLStreamException {
         writeStartElement(localName);
     }
 
+    @Override
     public void writeStartElement(String prefix, String localName, String nsURI)
         throws XMLStreamException
     {
@@ -221,9 +226,8 @@ public class NonNsStreamWriter
      * Similar to {@link #writeEndElement}, but never allows implicit
      * creation of empty elements.
      */
-    public void writeFullEndElement()
-        throws XMLStreamException
-    {
+    @Override
+    public void writeFullEndElement() throws XMLStreamException {
         doWriteEndTag(null, false);
     }
     
@@ -233,6 +237,7 @@ public class NonNsStreamWriter
     ////////////////////////////////////////////////////
      */
 
+    @Override
     public QName getCurrentElementName() {
         if (mElements.isEmpty()) {
             return null;
@@ -240,6 +245,7 @@ public class NonNsStreamWriter
         return new QName(mElements.getLastString());
     }
 
+    @Override
     public String getNamespaceURI(String prefix) {
         return null;
     }
@@ -250,6 +256,7 @@ public class NonNsStreamWriter
     ////////////////////////////////////////////////////
      */
 
+    @Override
 	public void writeStartElement(StartElement elem)
         throws XMLStreamException
     {
@@ -270,13 +277,14 @@ public class NonNsStreamWriter
      * that takes no argument), so that we can verify it does match the
      * start element, if necessary
      */
-    public void writeEndElement(QName name)
-        throws XMLStreamException
+    @Override
+    public void writeEndElement(QName name) throws XMLStreamException
     {
         doWriteEndTag(mCheckStructure ? name.getLocalPart() : null,
                       mCfgAutomaticEmptyElems);
     }
 
+    @Override
     protected void writeTypedAttribute(String prefix, String nsURI, String localName,
                                        AsciiValueEncoder enc)
         throws XMLStreamException
@@ -311,6 +319,7 @@ public class NonNsStreamWriter
      * attribute) is being output; except for end element which is
      * handled differently.
      */
+    @Override
     protected void closeStartElement(boolean emptyElem)
         throws XMLStreamException
     {
@@ -351,6 +360,7 @@ public class NonNsStreamWriter
      * the copier can convert namespace declarations to equivalent
      * attribute writes.
      */
+    @Override
     public void copyStartElement(InputElementStack elemStack,
                                  AttributeCollector attrCollector)
         throws IOException, XMLStreamException
@@ -401,13 +411,13 @@ public class NonNsStreamWriter
         }
     }
 
-    protected String getTopElementDesc()
-    {
+    @Override
+    protected String getTopElementDesc() {
         return mElements.isEmpty() ? "#root" : mElements.getLastString();
     }
 
-    public String validateQNamePrefix(QName name)
-    {
+    @Override
+    public String validateQNamePrefix(QName name) {
         // Can either strip prefix out, or return as is
         return name.getPrefix();
     }

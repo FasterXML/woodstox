@@ -85,6 +85,7 @@ public class Configs
             return getDesc(mPos);
         }
 
+        @Override
         public String toString() { return getDesc(); }
 
         public static boolean booleanFromInt(int i) {
@@ -111,10 +112,12 @@ public class Configs
             super(2);
         }
 
+        @Override
         public String getDesc(int index) {
             return "namespaces: "+booleanFromInt(index);
         }
 
+        @Override
         public void config(XMLInputFactory f, int index) {
             ((WstxInputFactory) f).getConfig().doSupportNamespaces(booleanFromInt(index));
         }
@@ -127,10 +130,12 @@ public class Configs
             super(2);
         }
 
+        @Override
         public String getDesc(int index) {
             return "coalescing: "+booleanFromInt(index);
         }
 
+        @Override
         public void config(XMLInputFactory f, int index) {
             ((WstxInputFactory) f).getConfig().doCoalesceText(booleanFromInt(index));
         }
@@ -143,10 +148,12 @@ public class Configs
             super(2);
         }
 
+        @Override
         public String getDesc(int index) {
             return "expand-entities: "+booleanFromInt(index);
         }
 
+        @Override
         public void config(XMLInputFactory f, int index) {
             ((WstxInputFactory) f).getConfig().doReplaceEntityRefs(booleanFromInt(index));
         }
@@ -165,10 +172,12 @@ public class Configs
             super(2);
         }
 
+        @Override
         public String getDesc(int index) {
             return "lazy-parsing: "+booleanFromInt(index);
         }
 
+        @Override
         public void config(XMLInputFactory f, int index) {
             ((WstxInputFactory) f).getConfig().doParseLazily(booleanFromInt(index));
         }
@@ -185,10 +194,12 @@ public class Configs
             super(4);
         }
 
+        @Override
         public String getDesc(int index) {
             return "input-buffer: "+mSizes[index];
         }
 
+        @Override
         public void config(XMLInputFactory f, int index) {
             ((WstxInputFactory) f).getConfig().setInputBufferLength(mSizes[index]);
         }
@@ -205,10 +216,12 @@ public class Configs
             super(4);
         }
 
+        @Override
         public String getDesc(int index) {
             return "min-text-segment: "+mSizes[index];
         }
 
+        @Override
         public void config(XMLInputFactory f, int index) {
             ((WstxInputFactory ) f).getConfig().setShortestReportedTextSegment(mSizes[index]);
         }

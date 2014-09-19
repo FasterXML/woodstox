@@ -71,7 +71,7 @@ public class TestDoctypeDecl
     {
         XMLStreamReader sr = getReader(UNPARSED_ENTITY_XML, true);
         assertTokenType(DTD, sr.next());
-        List l = (List) sr.getProperty("javax.xml.stream.entities");
+        List<?> l = (List<?>) sr.getProperty("javax.xml.stream.entities");
         assertNotNull(l);
         assertEquals(1, l.size());
         EntityDeclaration ed = (EntityDeclaration) l.get(0);
@@ -86,7 +86,7 @@ public class TestDoctypeDecl
     {
         XMLStreamReader sr = getReader(UNPARSED_ENTITY_XML, true);
         assertTokenType(DTD, sr.next());
-        List l = (List) sr.getProperty("javax.xml.stream.notations");
+        List<?> l = (List<?>) sr.getProperty("javax.xml.stream.notations");
         assertNotNull(l);
         assertEquals(1, l.size());
         NotationDeclaration nd = (NotationDeclaration) l.get(0);
@@ -189,6 +189,7 @@ public class TestDoctypeDecl
             String method = "";
 
             try {
+                @SuppressWarnings("unused")
                 Object result = null;
                 switch (i) {
                 case 0:

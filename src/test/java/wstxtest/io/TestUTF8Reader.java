@@ -15,6 +15,7 @@ import com.ctc.wstx.io.UTF8Reader;
  */
 public class TestUTF8Reader extends TestCase
 {
+    @SuppressWarnings("resource")
     public void testDelAtBufferBoundary() throws IOException
     {
 	final int BYTE_BUFFER_SIZE = 4;

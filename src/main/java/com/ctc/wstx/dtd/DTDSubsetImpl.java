@@ -195,6 +195,7 @@ public final class DTDSubsetImpl
      * Method that will combine definitions from internal and external subsets,
      * producing a single DTD set.
      */
+    @Override
     public DTDSubset combineWithExternalSubset(InputProblemReporter rep, DTDSubset extSubset)
         throws XMLStreamException
     {
@@ -264,6 +265,7 @@ public final class DTDSubsetImpl
     //////////////////////////////////////////////////////
      */
 
+    @Override
     public XMLValidator createValidator(ValidationContext ctxt)
         throws XMLStreamException
     {
@@ -282,10 +284,12 @@ public final class DTDSubsetImpl
     //////////////////////////////////////////////////////
      */
 
+    @Override
     public int getEntityCount() {
         return (mGeneralEntities == null) ? 0 : mGeneralEntities.size();
     }
 
+    @Override
     public int getNotationCount() {
         return (mNotations == null) ? 0 : mNotations.size();
     }
@@ -296,14 +300,17 @@ public final class DTDSubsetImpl
     //////////////////////////////////////////////////////
      */
 
+    @Override
     public boolean isCachable() {
         return mIsCachable;
     }
     
+    @Override
     public HashMap<String,EntityDecl> getGeneralEntityMap() {
         return mGeneralEntities;
     }
 
+    @Override
     public List<EntityDecl> getGeneralEntityList()
     {
         List<EntityDecl> l = mGeneralEntityList;
@@ -319,14 +326,17 @@ public final class DTDSubsetImpl
         return l;
     }
 
+    @Override
     public HashMap<String,EntityDecl> getParameterEntityMap() {
         return mDefinedPEs;
     }
 
+    @Override
     public HashMap<String,NotationDeclaration> getNotationMap() {
         return mNotations;
     }
 
+    @Override
     public synchronized List<NotationDeclaration> getNotationList()
     {
         List<NotationDeclaration> l = mNotationList;
@@ -342,6 +352,7 @@ public final class DTDSubsetImpl
         return l;
     }
 
+    @Override
     public HashMap<PrefixedName,DTDElement> getElementMap() {
         return mElements;
     }
@@ -355,6 +366,7 @@ public final class DTDSubsetImpl
      * @return True if this (external) subset refers to a parameter entity
      *    defined in passed-in internal subset.
      */
+    @Override
     public boolean isReusableWith(DTDSubset intSubset)
     {
         Set<String> refdPEs = mRefdPEs;
@@ -386,6 +398,7 @@ public final class DTDSubsetImpl
     //////////////////////////////////////////////////////
      */
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("[DTDSubset: ");
