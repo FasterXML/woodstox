@@ -5,7 +5,7 @@
     <parent>
       <groupId>com.fasterxml</groupId>
       <artifactId>oss-parent</artifactId>
-      <version>16</version>
+      <version>18</version>
     </parent>
 
     <groupId>org.codehaus.woodstox</groupId>
@@ -24,26 +24,19 @@
         <email>tatu@fasterxml.com</email>
       </developer>
     </developers>
-    <contributors>
-        <contributor>
-            <name>Konstantin Pribluda</name>
-            <url>http://www.pribluda.de/</url>
-            <roles>
-                <role>build environment</role>
-            </roles>
-        </contributor>
-    </contributors>
     <organization>
-        <name>Codehaus</name>
-        <url>http://www.codehaus.org/</url>
+        <name>FasterXML</name>
+        <url>http://fasterxml.com</url>
     </organization>
-    <url>http://woodstox.codehaus.org</url>
+    <url>https://github.com/FasterXML/woodstox</url>
     <issueManagement>
-        <url>http://jira.codehaus.org/browse/WSTX</url>
+        <url>https://github.com/FasterXML/woodstox/issues</url>
     </issueManagement>
     <scm>
-        <connection>scm:svn:http://svn.codehaus.org/woodstox/wstx/trunk</connection>
-        <developerConnection>scm:svn:https://svn.codehaus.org/woodstox/wstx/trunk</developerConnection>
+        <connection>scm:git:git@github.com:FasterXML/woodstox.git</connection>
+        <developerConnection>scm:git:git@github.com:FasterXML/woodstox.git</developerConnection>
+        <url>https://github.com/FasterXML/woodstox</url>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>
@@ -107,6 +100,11 @@
             <version>1.0-2</version>
 	    <scope>provided</scope>
         </dependency>
+        <dependency>
+          <groupId>org.codehaus.woodstox</groupId>
+          <artifactId>stax2-api</artifactId>
+          <version>3.1.4</version>
+        </dependency>
 
         <!-- Then optional ones (need for build, possibly
            for runtime but not always)
@@ -122,23 +120,29 @@
           and all with varying sets of dependencies; 
           For now, we'll just use "msv", which does not properly define
           dependencies...
+
+          Also: make these 'provided', since user needs to include them
+          directly. Not sure what OSGi thinks about that but...
         -->
         <dependency>
             <groupId>net.java.dev.msv</groupId>
             <artifactId>msv-core</artifactId>
             <version>${version.msv}</version>
+	    <scope>provided</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>net.java.dev.msv</groupId>
             <artifactId>msv-rngconverter</artifactId>
             <version>${version.msv}</version>
+	    <scope>provided</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>net.java.dev.msv</groupId>
             <artifactId>xsdlib</artifactId>
             <version>${version.msv}</version>
+	    <scope>provided</scope>
             <optional>true</optional>
         </dependency>
 
@@ -148,6 +152,7 @@
             <artifactId>org.osgi.core</artifactId>
             <version>1.2.0</version>
             <optional>true</optional>
+	    <scope>provided</scope>
         </dependency>
 
         <!-- Then test jars
