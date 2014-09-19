@@ -29,6 +29,7 @@ public final class DTDNotationAttr
         mEnumValues = enumValues;
     }
 
+    @Override
     public DTDAttribute cloneWith(int specIndex)
     {
         return new DTDNotationAttr(mName, mDefValue, specIndex,
@@ -41,10 +42,12 @@ public final class DTDNotationAttr
     ///////////////////////////////////////////////////
      */
 
+    @Override
     public int getValueType() {
         return TYPE_NOTATION;
     }
 
+    @Override
     public boolean typeIsNotation() {
         return true;
     }
@@ -62,6 +65,7 @@ public final class DTDNotationAttr
      *<p>
      * Note: identical to the implementation in {@link DTDEnumAttr}
      */
+    @Override
    public String validate(DTDValidatorBase v, char[] cbuf, int start, int end, boolean normalize)
         throws XMLStreamException
     {
@@ -79,6 +83,7 @@ public final class DTDNotationAttr
      * to ask attribute to verify that the default it has (if any) is
      * valid for such type.
      */
+    @Override
     public void validateDefault(InputProblemReporter rep, boolean normalize)
         throws XMLStreamException
     {

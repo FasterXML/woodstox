@@ -16,6 +16,7 @@
 package com.ctc.wstx.io;
 
 import java.io.Serializable;
+
 import javax.xml.stream.Location;
 
 import org.codehaus.stax2.XMLStreamLocation2;
@@ -102,6 +103,7 @@ public class WstxInputLocation
     ////////////////////////////////////////////////////////
      */
     
+    @Override
     public String toString()
     {
         if (mDesc == null) {
@@ -117,10 +119,12 @@ public class WstxInputLocation
         return mDesc;
     }
     
+    @Override
     public int hashCode() {
         return ((int)mCharOffset) ^ (int)(0xffffffff & mCharOffset >> 32) ^ mRow ^ mCol + (mCol << 3);
     }
     
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof WstxInputLocation)) {
             return false;

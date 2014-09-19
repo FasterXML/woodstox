@@ -32,6 +32,7 @@ public final class CharArraySource
      * This is a hard-coded assumption, but yes, for now this source is
      * only created from internal entities.
      */
+    @Override
     public boolean fromInternalEntity() {
         return true;
     }
@@ -40,6 +41,7 @@ public final class CharArraySource
      * Unlike with reader source, we won't start from beginning of a file,
      * but usually from somewhere in the middle...
      */
+    @Override
     protected void doInitInputLocation(WstxInputData reader)
     {
         reader.mCurrInputProcessed = mContentStart.getCharacterOffset();
@@ -51,6 +53,7 @@ public final class CharArraySource
         reader.mCurrInputRowStart = -mContentStart.getColumnNumber() + 1;
     }
 
+    @Override
     public int readInto(WstxInputData reader)
     {
         /* Shouldn't really try to read after closing, but it may be easier
@@ -77,6 +80,7 @@ public final class CharArraySource
         return len;
     }
 
+    @Override
     public boolean readMore(WstxInputData reader, int minAmount)
     {
         /* Only case where this may work is if we haven't yet been
@@ -92,6 +96,7 @@ public final class CharArraySource
         return false;
     }
 
+    @Override
     public void close()
     {
         /* Let's help GC a bit, in case there might be back references
@@ -100,6 +105,7 @@ public final class CharArraySource
         mBuffer = null;
     }
 
+    @Override
     public void closeCompletely() {
         close();
     }

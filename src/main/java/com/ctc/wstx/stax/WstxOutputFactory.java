@@ -89,27 +89,31 @@ public class WstxOutputFactory
     ///////////////////////////////////////////////////////////
      */
 
+    @Override
     public XMLEventWriter createXMLEventWriter(OutputStream out)
         throws XMLStreamException
     {
         return createXMLEventWriter(out, null);
     }
 
+    @Override
     public XMLEventWriter createXMLEventWriter(OutputStream out, String enc)
          throws XMLStreamException
-   {
+    {
        if (out == null) {
            throw new IllegalArgumentException("Null OutputStream is not a valid argument");
        }
        return new Stax2EventWriterImpl(createSW(out, null, enc, false));
     }
 
+    @Override
     public XMLEventWriter createXMLEventWriter(javax.xml.transform.Result result)
          throws XMLStreamException
     {
         return new Stax2EventWriterImpl(createSW(result));
     }
 
+    @Override
     public XMLEventWriter createXMLEventWriter(Writer w)
         throws XMLStreamException
     {
@@ -119,12 +123,14 @@ public class WstxOutputFactory
         return new Stax2EventWriterImpl(createSW(null, w, null, false));
     }
 
+    @Override
     public XMLStreamWriter createXMLStreamWriter(OutputStream out)
         throws XMLStreamException
     {
         return createXMLStreamWriter(out, null);
     }
 
+    @Override
     public XMLStreamWriter createXMLStreamWriter(OutputStream out, String enc)
         throws XMLStreamException
     {
@@ -134,12 +140,14 @@ public class WstxOutputFactory
         return createSW(out, null, enc, false);
     }
 
+    @Override
     public XMLStreamWriter createXMLStreamWriter(javax.xml.transform.Result result)
         throws XMLStreamException
     {
         return createSW(result);
     }
 
+    @Override
     public XMLStreamWriter createXMLStreamWriter(Writer w)
         throws XMLStreamException
     {
@@ -149,15 +157,17 @@ public class WstxOutputFactory
         return createSW(null, w, null, false);
     }
     
-    public Object getProperty(String name)
-    {
+    @Override
+    public Object getProperty(String name) {
         return mConfig.getProperty(name);
     }
     
+    @Override
     public boolean isPropertySupported(String name) {
         return mConfig.isPropertySupported(name);
     }
     
+    @Override
     public void setProperty(String name, Object value)
     {
         mConfig.setProperty(name, value);
@@ -171,12 +181,14 @@ public class WstxOutputFactory
 
     // // // Stax2 additional (encoding-aware) factory methods
 
+    @Override
     public XMLEventWriter createXMLEventWriter(Writer w, String enc)
         throws XMLStreamException
     {
         return new Stax2EventWriterImpl(createSW(null, w, enc, false));
     }
 
+    @Override
     public XMLEventWriter createXMLEventWriter(XMLStreamWriter sw)
         throws XMLStreamException
     {
@@ -184,6 +196,7 @@ public class WstxOutputFactory
         return new Stax2EventWriterImpl(sw2);
     }
 
+    @Override
     public XMLStreamWriter2 createXMLStreamWriter(Writer w, String enc)
         throws XMLStreamException
     {
@@ -192,18 +205,18 @@ public class WstxOutputFactory
 
     // // // Stax2 "Profile" mutators
 
-    public void configureForXmlConformance()
-    {
+    @Override
+    public void configureForXmlConformance() {
         mConfig.configureForXmlConformance();
     }
 
-    public void configureForRobustness()
-    {
+    @Override
+    public void configureForRobustness() {
         mConfig.configureForRobustness();
     }
 
-    public void configureForSpeed()
-    {
+    @Override
+    public void configureForSpeed() {
         mConfig.configureForSpeed();
     }
 

@@ -62,8 +62,8 @@ public final class UTF32Reader
         mBigEndian = isBigEndian;
     }
 
-    public void setXmlCompliancy(int xmlVersion)
-    {
+    @Override
+    public void setXmlCompliancy(int xmlVersion) {
         mXml11 = (xmlVersion == XmlConsts.XML_V_11);
     }
 
@@ -73,8 +73,8 @@ public final class UTF32Reader
     ////////////////////////////////////////
     */
 
-    public int read(char[] cbuf, int start, int len)
-        throws IOException
+    @Override
+    public int read(char[] cbuf, int start, int len) throws IOException
     {
         // Let's first ensure there's enough room...
         if (start < 0 || (start+len) > cbuf.length) {

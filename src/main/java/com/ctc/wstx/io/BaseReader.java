@@ -103,8 +103,8 @@ abstract class BaseReader
     ////////////////////////////////////////
     */
 
-    public void close()
-        throws IOException
+    @Override
+    public void close() throws IOException
     {
         InputStream in = mIn;
 
@@ -115,15 +115,15 @@ abstract class BaseReader
         }
     }
 
-    char[] mTmpBuf = null;
+    protected char[] mTmpBuf = null;
 
     /**
      * Although this method is implemented by the base class, AND it should
      * never be called by Woodstox code, let's still implement it bit more
      * efficiently just in case
      */
-    public int read()
-        throws IOException
+    @Override
+    public int read() throws IOException
     {
         if (mTmpBuf == null) {
             mTmpBuf = new char[1];

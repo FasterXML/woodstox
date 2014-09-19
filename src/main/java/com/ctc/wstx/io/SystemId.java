@@ -19,49 +19,49 @@ import com.ctc.wstx.util.URLUtil;
  */
 public class SystemId
 {
-	protected URL mURL;
-	
-	protected String mSystemId;
+    protected URL mURL;
 
-	protected SystemId(String systemId, URL url) {
-		if (systemId == null && url == null) {
-			throw new IllegalArgumentException("Can not pass null for both systemId and url");
-		}
-		mSystemId = systemId;
-		mURL = url;
-	}
-	
-	public static SystemId construct(String systemId) {
-		return (systemId == null) ? null : new SystemId(systemId, null);
-	}
+    protected String mSystemId;
 
-	public static SystemId construct(URL url) {
-		return (url == null) ? null : new SystemId(null, url);
-	}
+    protected SystemId(String systemId, URL url) {
+        if (systemId == null && url == null) {
+            throw new IllegalArgumentException("Can not pass null for both systemId and url");
+        }
+        mSystemId = systemId;
+        mURL = url;
+    }
 	
-	public static SystemId construct(String systemId, URL url) {
-		if (systemId == null && url == null) {
-			return null;
-		}
-		return new SystemId(systemId, url);
-	}
+    public static SystemId construct(String systemId) {
+        return (systemId == null) ? null : new SystemId(systemId, null);
+    }
 
-	public URL asURL() throws IOException {
-		if (mURL == null) {
-			mURL = URLUtil.urlFromSystemId(mSystemId);
-		}
-		return mURL;
-	}
+    public static SystemId construct(URL url) {
+        return (url == null) ? null : new SystemId(null, url);
+    }
 
-	public boolean hasResolvedURL() {
-		return (mURL != null);
-	}
+    public static SystemId construct(String systemId, URL url) {
+        if (systemId == null && url == null) {
+            return null;
+        }
+        return new SystemId(systemId, url);
+    }
+
+    public URL asURL() throws IOException {
+        if (mURL == null) {
+            mURL = URLUtil.urlFromSystemId(mSystemId);
+        }
+        return mURL;
+    }
+
+    public boolean hasResolvedURL() {
+        return (mURL != null);
+    }
 	
-//	@Override
-	public String toString() {
-		if (mSystemId == null) {
-			mSystemId = mURL.toExternalForm();
-		}
-		return mSystemId;
-	}
+    @Override
+    public String toString() {
+	    if (mSystemId == null) {
+	        mSystemId = mURL.toExternalForm();
+	    }
+	    return mSystemId;
+    }
 }

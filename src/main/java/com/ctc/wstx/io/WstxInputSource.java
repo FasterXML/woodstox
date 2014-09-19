@@ -227,6 +227,7 @@ public abstract class WstxInputSource
     //////////////////////////////////////////////////////////
      */
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(80);
         sb.append("<WstxInputSource [class ");

@@ -49,8 +49,8 @@ public final class AsciiReader
         super(cfg, in, buf, ptr, len, recycleBuffer);
     }
 
-    public void setXmlCompliancy(int xmlVersion)
-    {
+    @Override
+    public void setXmlCompliancy(int xmlVersion) {
         mXml11 = (xmlVersion == XmlConsts.XML_V_11);
     }
 
@@ -60,8 +60,8 @@ public final class AsciiReader
     ////////////////////////////////////////
     */
 
-    public int read(char[] cbuf, int start, int len)
-        throws IOException
+    @Override
+    public int read(char[] cbuf, int start, int len) throws IOException
     {
         // Let's first ensure there's enough room...
         if (start < 0 || (start+len) > cbuf.length) {
@@ -127,9 +127,7 @@ public final class AsciiReader
     ////////////////////////////////////////
     */
 
-    private void reportInvalidAscii(char c)
-        throws IOException
-    {
+    private void reportInvalidAscii(char c) throws IOException {
         throw new CharConversionException("Invalid ascii byte; value above 7-bit ascii range ("+((int) c)+"; at pos #"+(mCharCount + mBytePtr)+")");
     }
 }

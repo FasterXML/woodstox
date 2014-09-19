@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!ENTITY simpleEntity 'simple textual content'>
+
+<!ENTITY externalParsedEntity SYSTEM 'entity-from-ext.xml'>
+
+<!-- and that's all folks! -->
+
+
+
+

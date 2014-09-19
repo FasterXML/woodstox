@@ -45,30 +45,30 @@ public final class MergedReader
         }
     }
 
-    public void close()
-        throws IOException
+    @Override
+    public void close() throws IOException
     {
         freeMergedBuffer();
         mIn.close();
     }
 
-    public void mark(int readlimit)
-        throws IOException
+    @Override
+    public void mark(int readlimit) throws IOException
     {
         if (mData == null) {
             mIn.mark(readlimit);
         }
     }
-    
-    public boolean markSupported()
-    {
+
+    @Override
+    public boolean markSupported() {
         /* Only supports marks past the initial rewindable section...
          */
         return (mData == null) && mIn.markSupported();
     }
     
-    public int read()
-        throws IOException
+    @Override
+    public int read() throws IOException
     {
         if (mData != null) {
             int c = mData[mPtr++] & 0xFF;
@@ -80,14 +80,13 @@ public final class MergedReader
         return mIn.read();
     }
     
-    public int read(char[] cbuf)
-        throws IOException
-    {
+    @Override
+    public int read(char[] cbuf) throws IOException {
         return read(cbuf, 0, cbuf.length);
     }
 
-    public int 	read(char[] cbuf, int off, int len)
-        throws IOException
+    @Override
+    public int read(char[] cbuf, int off, int len) throws IOException
     {
         if (mData != null) {
             int avail = mEnd - mPtr;
@@ -105,22 +104,22 @@ public final class MergedReader
         return mIn.read(cbuf, off, len);
     }
 
-    public boolean ready()
-        throws IOException
+    @Override
+    public boolean ready() throws IOException
     {
         return (mData != null) || mIn.ready();
     }
 
-    public void reset()
-        throws IOException
+    @Override
+    public void reset() throws IOException
     {
         if (mData == null) {
             mIn.reset();
         }
     }
 
-    public long skip(long n)
-        throws IOException
+    @Override
+    public long skip(long n) throws IOException
     {
         long count = 0L;
 

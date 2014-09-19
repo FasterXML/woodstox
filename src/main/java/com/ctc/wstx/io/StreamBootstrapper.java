@@ -149,6 +149,7 @@ public final class StreamBootstrapper
         return new StreamBootstrapper(pubId, sysId, data, start, end);
     }
 
+    @Override
     public Reader bootstrapInput(ReaderConfig cfg, boolean mainDoc, int xmlVersion)
         throws IOException, XMLStreamException
     {
@@ -259,10 +260,12 @@ public final class StreamBootstrapper
      * Since this class only gets used when encoding is not explicitly
      * passed, need use the encoding that was auto-detected...
      */
+    @Override
     public String getInputEncoding() {
         return mInputEncoding;
     }
 
+    @Override
     public int getInputTotal() {
         int total = mInputProcessed + mInputPtr;
         if (mBytesPerChar > 1) {
@@ -271,6 +274,7 @@ public final class StreamBootstrapper
         return total;
     }
 
+    @Override
     public int getInputColumn() {
         int col = mInputPtr - mInputRowStart;
         if (mBytesPerChar > 1) {
@@ -512,6 +516,7 @@ public final class StreamBootstrapper
     /////////////////////////////////////////////////////
     */
 
+    @Override
     protected void pushback() {
         if (mBytesPerChar < 0) {
             mInputPtr += mBytesPerChar;
@@ -520,6 +525,7 @@ public final class StreamBootstrapper
         }
     }
 
+    @Override
     protected int getNext()
         throws IOException, WstxException
     {
@@ -534,7 +540,7 @@ public final class StreamBootstrapper
         return (b & 0xFF);
     }
 
-
+    @Override
     protected int getNextAfterWs(boolean reqWs)
         throws IOException, WstxException
     {
@@ -570,6 +576,7 @@ public final class StreamBootstrapper
      * @return First character that does not match expected, if any;
      *    CHAR_NULL if match succeeded
      */
+    @Override
     protected int checkKeyword(String exp)
         throws IOException, WstxException
     {
@@ -582,6 +589,7 @@ public final class StreamBootstrapper
         return checkSbKeyword(exp);
     }
 
+    @Override
     protected int readQuotedValue(char[] kw, int quoteChar)
         throws IOException, WstxException
     {
@@ -692,6 +700,7 @@ public final class StreamBootstrapper
         return false;
     }
 
+    @Override
     protected Location getLocation()
     {
         /* Ok; for fixed-size multi-byte encodings, need to divide numbers

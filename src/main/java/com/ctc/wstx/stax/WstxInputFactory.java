@@ -25,7 +25,6 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.xml.sax.InputSource;
-
 import org.codehaus.stax2.XMLEventReader2;
 import org.codehaus.stax2.XMLInputFactory2;
 import org.codehaus.stax2.XMLStreamReader2;
@@ -236,11 +235,12 @@ public class WstxInputFactory
 
     // // // Filtered reader factory methods
 
-    public XMLEventReader createFilteredReader(XMLEventReader reader, EventFilter filter)
-    {
+    @Override
+    public XMLEventReader createFilteredReader(XMLEventReader reader, EventFilter filter) {
         return new Stax2FilteredEventReader(Stax2EventReaderAdapter.wrapIfNecessary(reader), filter);
     }
 
+    @Override
     public XMLStreamReader createFilteredReader(XMLStreamReader reader, StreamFilter filter)
         throws XMLStreamException
     {
@@ -261,6 +261,7 @@ public class WstxInputFactory
 
     // // // Event reader factory methods
 
+    @Override
     public XMLEventReader createXMLEventReader(InputStream in)
         throws XMLStreamException
     {
@@ -269,6 +270,7 @@ public class WstxInputFactory
         		createSR(null, in, null, true, false));
     }
 
+    @Override
     public XMLEventReader createXMLEventReader(InputStream in, String enc)
         throws XMLStreamException
     {
@@ -277,6 +279,7 @@ public class WstxInputFactory
                                    createSR(null, in, enc, true, false));
     }
 
+    @Override
     public XMLEventReader createXMLEventReader(Reader r)
         throws XMLStreamException
     {
@@ -285,6 +288,7 @@ public class WstxInputFactory
                                    createSR(null, r, true, false));
     }
 
+    @Override
     public XMLEventReader createXMLEventReader(javax.xml.transform.Source source)
         throws XMLStreamException
     {
@@ -292,6 +296,7 @@ public class WstxInputFactory
                                    createSR(source, true));
     }
 
+    @Override
     public XMLEventReader createXMLEventReader(String systemId, InputStream in)
         throws XMLStreamException
     {
@@ -300,6 +305,7 @@ public class WstxInputFactory
         		createSR(SystemId.construct(systemId), in, null, true, false));
     }
 
+    @Override
     public XMLEventReader createXMLEventReader(String systemId, Reader r)
         throws XMLStreamException
     {
@@ -308,6 +314,7 @@ public class WstxInputFactory
         		createSR(SystemId.construct(systemId), r, true, false));
     }
 
+    @Override
     public XMLEventReader createXMLEventReader(XMLStreamReader sr)
         throws XMLStreamException
     {
@@ -316,6 +323,7 @@ public class WstxInputFactory
 
     // // // Stream reader factory methods
 
+    @Override
     public XMLStreamReader createXMLStreamReader(InputStream in)
         throws XMLStreamException
     {
@@ -323,6 +331,7 @@ public class WstxInputFactory
         return createSR(null, in, null, false, false);
     }
     
+    @Override
     public XMLStreamReader createXMLStreamReader(InputStream in, String enc)
         throws XMLStreamException
     {
@@ -330,6 +339,7 @@ public class WstxInputFactory
         return createSR(null, in, enc, false, false);
     }
 
+    @Override
     public XMLStreamReader createXMLStreamReader(Reader r)
         throws XMLStreamException
     {
@@ -337,6 +347,7 @@ public class WstxInputFactory
         return createSR(null, r, false, false);
     }
 
+    @Override
     public XMLStreamReader createXMLStreamReader(javax.xml.transform.Source src)
         throws XMLStreamException
     {
@@ -344,6 +355,7 @@ public class WstxInputFactory
         return createSR(src, false);
     }
 
+    @Override
     public XMLStreamReader createXMLStreamReader(String systemId, InputStream in)
         throws XMLStreamException
     {
@@ -351,6 +363,7 @@ public class WstxInputFactory
         return createSR(SystemId.construct(systemId), in, null, false, false);
     }
 
+    @Override
     public XMLStreamReader createXMLStreamReader(String systemId, Reader r)
         throws XMLStreamException
     {
@@ -364,6 +377,7 @@ public class WstxInputFactory
     ///////////////////////////////////////////////////////////
      */
 
+    @Override
     public Object getProperty(String name)
     {
         Object ob = mConfig.getProperty(name);
@@ -377,6 +391,7 @@ public class WstxInputFactory
         return ob;
     }
 
+    @Override
     public void setProperty(String propName, Object value)
     {
         if (!mConfig.setProperty(propName, value)) {
@@ -386,26 +401,32 @@ public class WstxInputFactory
         }
     } 
 
+    @Override
     public XMLEventAllocator getEventAllocator() {
         return mAllocator;
     }
     
+    @Override
     public XMLReporter getXMLReporter() {
         return mConfig.getXMLReporter();
     }
 
+    @Override
     public XMLResolver getXMLResolver() {
         return mConfig.getXMLResolver();
     }
 
+    @Override
     public boolean isPropertySupported(String name) {
         return mConfig.isPropertySupported(name);
     }
 
+    @Override
     public void setEventAllocator(XMLEventAllocator allocator) {
         mAllocator = allocator;
     }
 
+    @Override
     public void setXMLReporter(XMLReporter r) {
         mConfig.setXMLReporter(r);
     }
@@ -415,8 +436,8 @@ public class WstxInputFactory
      * {@link ReaderConfig#setEntityResolver}
      * instead, if possible, since this just wraps passed in resolver.
      */
-    public void setXMLResolver(XMLResolver r)
-    {
+    @Override
+    public void setXMLResolver(XMLResolver r) {
         mConfig.setXMLResolver(r);
     }
 
@@ -428,6 +449,7 @@ public class WstxInputFactory
 
     // // // Stax2, additional factory methods:
 
+    @Override
     public XMLEventReader2 createXMLEventReader(URL src)
         throws XMLStreamException
     {
@@ -438,6 +460,7 @@ public class WstxInputFactory
                                    createSR(createPrivateConfig(), src, true, true));
     }
 
+    @Override
     public XMLEventReader2 createXMLEventReader(File f)
         throws XMLStreamException
     {
@@ -448,6 +471,7 @@ public class WstxInputFactory
                                    createSR(f, true, true));
     }
 
+    @Override
     public XMLStreamReader2 createXMLStreamReader(URL src)
         throws XMLStreamException
     {
@@ -461,6 +485,7 @@ public class WstxInputFactory
      * Convenience factory method that allows for parsing a document
      * stored in the specified file.
      */
+    @Override
     public XMLStreamReader2 createXMLStreamReader(File f)
         throws XMLStreamException
     {
@@ -472,28 +497,28 @@ public class WstxInputFactory
 
     // // // Stax2 "Profile" mutators
 
-    public void configureForXmlConformance()
-    {
+    @Override
+    public void configureForXmlConformance() {
         mConfig.configureForXmlConformance();
     }
 
-    public void configureForConvenience()
-    {
+    @Override
+    public void configureForConvenience() {
         mConfig.configureForConvenience();
     }
 
-    public void configureForSpeed()
-    {
+    @Override
+    public void configureForSpeed() {
         mConfig.configureForSpeed();
     }
 
-    public void configureForLowMemUsage()
-    {
+    @Override
+    public void configureForLowMemUsage() {
         mConfig.configureForLowMemUsage();
     }
 
-    public void configureForRoundTripping()
-    {
+    @Override
+    public void configureForRoundTripping() {
         mConfig.configureForRoundTripping();
     }
 

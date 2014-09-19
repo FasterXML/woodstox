@@ -43,6 +43,7 @@ public final class BranchingReaderSource
         super(cfg, null, null, pubId, sysId, r, realClose);
     }
 
+    @Override
     public int readInto(WstxInputData reader)
         throws IOException, XMLStreamException
     {
@@ -56,6 +57,7 @@ public final class BranchingReaderSource
         return super.readInto(reader);
     }
 
+    @Override
     public boolean readMore(WstxInputData reader, int minAmount)
         throws IOException, XMLStreamException
     {

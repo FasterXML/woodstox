@@ -74,34 +74,43 @@ public abstract class BaseInputSource
         mPublicId = publicId;
     }
 
+    @Override
     public void overrideSource(URL src)
     {
-    	//19-May-2014, tatu: I assume this should also override observed systemId...
-    	mSystemId = SystemId.construct(src);
+        //19-May-2014, tatu: I assume this should also override observed systemId...
+        mSystemId = SystemId.construct(src);
     }
 
+    @Override
     public abstract boolean fromInternalEntity();
 
+    @Override
     public URL getSource() throws IOException {
         return (mSystemId == null) ? null : mSystemId.asURL();
     }
 
+    @Override
     public String getPublicId() {
       return mPublicId;
     }
 
+    @Override
     public String getSystemId() {
     	return (mSystemId == null) ? null : mSystemId.toString();
     }
 
+    @Override
     protected abstract void doInitInputLocation(WstxInputData reader);
 
+    @Override
     public abstract int readInto(WstxInputData reader)
         throws IOException, XMLStreamException;
     
+    @Override
     public abstract boolean readMore(WstxInputData reader, int minAmount)
         throws IOException, XMLStreamException;
 
+    @Override
     public void saveContext(WstxInputData reader)
     {
         // First actual input data
@@ -113,6 +122,7 @@ public abstract class BaseInputSource
         mSavedInputRowStart = reader.mCurrInputRowStart;
     }
 
+    @Override
     public void restoreContext(WstxInputData reader)
     {
         reader.mInputBuffer = mBuffer;
@@ -125,6 +135,7 @@ public abstract class BaseInputSource
         reader.mCurrInputRowStart = mSavedInputRowStart;
     }
 
+    @Override
     public abstract void close() throws IOException;
 
     /*
@@ -137,6 +148,7 @@ public abstract class BaseInputSource
      * This method only gets called by the 'child' input source (for example,
      * contents of an expanded entity), to get the enclosing context location.
      */
+    @Override
     protected final WstxInputLocation getLocation()
     {
         // Note: columns are 1-based, need to add 1.
@@ -145,6 +157,7 @@ public abstract class BaseInputSource
                            mSavedInputPtr - mSavedInputRowStart + 1);
     }
 
+    @Override
     public final WstxInputLocation getLocation(long total, int row, int col)
     {
         WstxInputLocation pl;

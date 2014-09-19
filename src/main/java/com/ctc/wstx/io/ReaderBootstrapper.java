@@ -116,6 +116,7 @@ public final class ReaderBootstrapper
      *
      * @return Actual reader to use for reading xml content
      */
+    @Override
     public Reader bootstrapInput(ReaderConfig cfg, boolean mainDoc, int xmlVersion)
         throws IOException, XMLStreamException
     {
@@ -186,14 +187,17 @@ public final class ReaderBootstrapper
         return mIn;
     }
 
+    @Override
     public String getInputEncoding() {
         return mInputEncoding;
     }
 
+    @Override
     public int getInputTotal() {
         return mInputProcessed + mInputPtr;
     }
 
+    @Override
     public int getInputColumn() {
         return (mInputPtr - mInputRowStart);
     }
@@ -281,10 +285,12 @@ public final class ReaderBootstrapper
     /////////////////////////////////////////////////////
     */
 
+    @Override
     protected void pushback() {
         --mInputPtr;
     }
 
+    @Override
     protected int getNext()
         throws IOException, WstxException
     {
@@ -292,7 +298,7 @@ public final class ReaderBootstrapper
             mCharBuffer[mInputPtr++] : nextChar();
     }
 
-
+    @Override
     protected int getNextAfterWs(boolean reqWs)
         throws IOException, WstxException
     {
@@ -321,6 +327,7 @@ public final class ReaderBootstrapper
      * @return First character that does not match expected, if any;
      *    CHAR_NULL if match succeeded
      */
+    @Override
     protected int checkKeyword(String exp)
         throws IOException, WstxException
     {
@@ -341,6 +348,7 @@ public final class ReaderBootstrapper
         return CHAR_NULL;
     }
 
+    @Override
     protected int readQuotedValue(char[] kw, int quoteChar)
         throws IOException, WstxException
     {
@@ -365,6 +373,7 @@ public final class ReaderBootstrapper
 	}
     }
 
+    @Override
     protected Location getLocation()
     {
         return new WstxInputLocation(null, mPublicId, mSystemId,

@@ -49,8 +49,8 @@ public final class ISOLatinReader
         super(cfg, in, buf, ptr, len, recycleBuffer);
     }
 
-    public void setXmlCompliancy(int xmlVersion)
-    {
+    @Override
+    public void setXmlCompliancy(int xmlVersion) {
         mXml11 = (xmlVersion == XmlConsts.XML_V_11);
     }
 
@@ -60,8 +60,8 @@ public final class ISOLatinReader
     ////////////////////////////////////////
     */
 
-    public int read(char[] cbuf, int start, int len)
-        throws IOException
+    @Override
+    public int read(char[] cbuf, int start, int len) throws IOException
     {
         // Let's then ensure there's enough room...
         if (start < 0 || (start+len) > cbuf.length) {

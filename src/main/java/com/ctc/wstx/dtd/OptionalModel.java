@@ -33,32 +33,39 @@ public class OptionalModel
      * Method that has to create a deep copy of the model, without
      * sharing any of existing Objects.
      */
+    @Override
     public ModelNode cloneModel() {
         return new OptionalModel(mModel.cloneModel());
     }
 
+    @Override
     public boolean isNullable() {
         return true;
     }
 
+    @Override
     public void indexTokens(List<TokenModel> tokens) {
         mModel.indexTokens(tokens);
     }
 
+    @Override
     public void addFirstPos(BitSet pos) {
         mModel.addFirstPos(pos);
     }
     
+    @Override
     public void addLastPos(BitSet pos) {
         mModel.addLastPos(pos);
     }
 
+    @Override
     public void calcFollowPos(BitSet[] followPosSets)
     {
         // Let's let sub-model do its stuff
         mModel.calcFollowPos(followPosSets);
     }
 
+    @Override
     public String toString() {
         return mModel + "[?]";
     }

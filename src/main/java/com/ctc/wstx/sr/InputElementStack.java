@@ -787,8 +787,7 @@ public final class InputElementStack
     }
 
     @Override
-    public String getBaseUri()
-    {
+    public String getBaseUri() {
         // !!! TBI
         return null;
     }

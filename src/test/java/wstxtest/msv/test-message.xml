@@ -1,0 +1,8 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://server.hw.demo/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ser:sayHi>
+         <ser:greeting>Here is text</ser:greeting>
+      </ser:sayHi>
+   </soapenv:Body>
+</soapenv:Envelope>

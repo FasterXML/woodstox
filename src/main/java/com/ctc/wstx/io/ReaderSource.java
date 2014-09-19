@@ -59,6 +59,7 @@ public class ReaderSource
      * Input location is easy to set, as we'll start from the beginning
      * of a File.
      */
+    @Override
     protected void doInitInputLocation(WstxInputData reader)
     {
         reader.mCurrInputProcessed = mInputProcessed;
@@ -70,10 +71,12 @@ public class ReaderSource
      * This is a hard-coded assumption, for now this source is
      * only created from external entities
      */
+    @Override
     public boolean fromInternalEntity() {
         return false;
     }
 
+    @Override
     public int readInto(WstxInputData reader)
         throws IOException, XMLStreamException
     {
@@ -107,6 +110,7 @@ public class ReaderSource
         return count;
     }
 
+    @Override
     public boolean readMore(WstxInputData reader, int minAmount)
         throws IOException, XMLStreamException
     {
@@ -155,8 +159,8 @@ public class ReaderSource
         return true;
     }
 
-    public void close()
-        throws IOException
+    @Override
+    public void close() throws IOException
     {
         /* Buffer gets nullified by call to close() or closeCompletely(),
          * no need to call second time
@@ -166,8 +170,8 @@ public class ReaderSource
         }
     }
 
-    public void closeCompletely()
-        throws IOException
+    @Override
+    public void closeCompletely() throws IOException
     {
         /* Only need to call if the Reader is not yet null... since
          * buffer may have been cleaned by a call to close()
