@@ -8,7 +8,7 @@
       <version>18</version>
     </parent>
 
-    <groupId>org.codehaus.woodstox</groupId>
+    <groupId>com.fasterxml.woodstox</groupId>
     <artifactId>woodstox-core</artifactId>
     <version>5.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
