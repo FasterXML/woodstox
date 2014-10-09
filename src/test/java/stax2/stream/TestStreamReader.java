@@ -58,6 +58,32 @@ public class TestStreamReader
           assertEquals("outside cdata <data>inside cdata</data>", cdata);
     }
 
+    // Unit test for [WSTX-299]: use of "exotic" URLs
+    public void testCustomSystemIds() throws Exception
+    {
+        XMLInputFactory2 f = getNewInputFactory();
+        setCoalescing(f, true);
+        // important: must prevent access of DTD
+        setSupportDTD(f, false);
+        final String sysId = "foobar:slartibartfast";
+
+        String DOC = "<!DOCTYPE root SYSTEM '"+sysId+"'><root>stuff</root>";
+        XMLStreamReader2 reader = (XMLStreamReader2) f.createXMLStreamReader(new StringReader(DOC));
+        assertTokenType(DTD, reader.next());
+
+        DTDInfo dtd = reader.getDTDInfo();
+        assertNotNull(dtd);
+        assertEquals(sysId, dtd.getDTDSystemId());
+
+        assertTokenType(START_ELEMENT, reader.next());
+        assertEquals("root", reader.getLocalName());
+        assertTokenType(CHARACTERS, reader.next());
+        assertEquals("stuff", reader.getText());
+        assertTokenType(END_ELEMENT, reader.next());
+        assertEquals("root", reader.getLocalName());
+        reader.close();
+    }
+
     // Another test for [WSTX-299]
     public void testCustomSystemIdWithResolver() throws Exception
     {

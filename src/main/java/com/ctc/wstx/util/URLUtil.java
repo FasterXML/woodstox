@@ -1,9 +1,7 @@
 package com.ctc.wstx.util;
 
 import java.io.*;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.net.MalformedURLException;
+import java.net.*;
 import java.util.regex.Pattern;
 
 public final class URLUtil
@@ -22,8 +20,7 @@ public final class URLUtil
      * If we could use URIs this might be easier to do, but they are part
      * of JDK 1.4, and preferably code should only require 1.2 (or maybe 1.3)
      */
-    public static URL urlFromSystemId(String sysId)
-        throws IOException
+    public static URL urlFromSystemId(String sysId) throws IOException
     {
         try {
 	    sysId = cleanSystemId(sysId);
@@ -67,6 +64,39 @@ public final class URLUtil
         }
     }
 
+    /**
+     * @since 4.1
+     */
+    public static URI uriFromSystemId(final String sysId) throws IOException
+    {
+        // as per [WSTX-275]
+        // note: mostly a copy of matching method above, but with URI instead of URL
+        try {
+            if (sysId.indexOf('|', 0) > 0) {
+                if (URI_WINDOWS_FILE_PATTERN.matcher(sysId).matches()) {
+                    return new URI(sysId.replace('|', ':'));
+                }
+            }
+
+            final int ix = sysId.indexOf(':', 0);
+            if (ix >= 3 && ix <= 8) {
+                return new URI(sysId);
+            }
+            String absPath = new java.io.File(sysId).getAbsolutePath();
+            final char sep = File.separatorChar;
+            if (sep != '/') {
+                absPath = absPath.replace(sep, '/');
+            }
+            if (absPath.length() > 0 && absPath.charAt(0) != '/') {
+                absPath = "/" + absPath;
+            }
+            return new URI("file", absPath, null);
+        } catch (final URISyntaxException e) {
+            throwIOException(e, sysId);
+            return null; // never gets here
+        }
+    }
+    
     public static URL urlFromSystemId(String sysId, URL ctxt)
         throws IOException
     {
@@ -104,8 +134,7 @@ public final class URLUtil
      * URL points to a (local) file, and otherwise relying on URL classes
      * input stream creation method.
      */
-    public static InputStream inputStreamFromURL(URL url)
-        throws IOException
+    public static InputStream inputStreamFromURL(URL url) throws IOException
     {
         if ("file".equals(url.getProtocol())) {
             /* As per [WSTX-82], can not do this if the path refers
@@ -156,9 +185,7 @@ public final class URLUtil
      * Encapsulated as a separate method to allow for working around
      * problems with deprecation of {@link File#toURL} method.
      */
-    public static URL toURL(File f)
-        throws IOException
-    {
+    public static URL toURL(File f) throws IOException {
         return f.toURI().toURL();
     }
 
@@ -170,13 +197,13 @@ public final class URLUtil
 
     private static String cleanSystemId(final String sysId)
     {
-	int ix = sysId.indexOf('|');
-	if (ix > 0 && URI_WINDOWS_FILE_PATTERN.matcher(sysId).matches()) {
-	    StringBuilder sb = new StringBuilder(sysId);
-	    sb.setCharAt(ix, ':');
-	    return sb.toString();
-	}
-	return sysId;
+        int ix = sysId.indexOf('|');
+        if (ix > 0 && URI_WINDOWS_FILE_PATTERN.matcher(sysId).matches()) {
+            StringBuilder sb = new StringBuilder(sysId);
+            sb.setCharAt(ix, ':');
+            return sb.toString();
+        }
+        return sysId;
     }
 
     /**
@@ -185,7 +212,7 @@ public final class URLUtil
      * creating requirement, uses reflection to try to set the root cause, if
      * we are running on JDK1.4
      */
-    private static void throwIOException(MalformedURLException mex, String sysId)
+    private static void throwIOException(Exception mex, String sysId)
         throws IOException
     {
         String msg = "[resolving systemId '"+sysId+"']: "+mex.toString();

@@ -15,7 +15,7 @@
 
 package com.ctc.wstx.dtd;
 
-import java.net.URL;
+import java.net.URI;
 
 /**
  * Simple key object class, used for accessing (external) DTDs when stored for
@@ -32,23 +32,23 @@ import java.net.URL;
  */
 public final class DTDId
 {
-    final String mPublicId;
+    protected final String mPublicId;
 
-    final URL mSystemId;
+    protected final URI mSystemId;
 
-    final int mConfigFlags;
+    protected final int mConfigFlags;
 
-    final boolean mXml11;
+    protected final boolean mXml11;
 
-    int mHashCode = 0;
+    protected int mHashCode = 0;
 
     /*
-    ///////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Life-cycle:
-    ///////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
      */
 
-    private DTDId(String publicId, URL systemId, int configFlags, boolean xml11)
+    private DTDId(String publicId, URI systemId, int configFlags, boolean xml11)
     {
         mPublicId = publicId;
         mSystemId = systemId;
@@ -65,7 +65,7 @@ public final class DTDId
         return new DTDId(publicId, null, configFlags, xml11);
     }
 
-    public static DTDId constructFromSystemId(URL systemId, int configFlags,
+    public static DTDId constructFromSystemId(URI systemId, int configFlags,
                                               boolean xml11)
     {
         if (systemId == null) {
@@ -74,7 +74,7 @@ public final class DTDId
         return new DTDId(null, systemId, configFlags, xml11);
     }
 
-    public static DTDId construct(String publicId, URL systemId, int configFlags, boolean xml11)
+    public static DTDId construct(String publicId, URI systemId, int configFlags, boolean xml11)
     {
         if (publicId != null && publicId.length() > 0) {
             return new DTDId(publicId, null, configFlags, xml11);
@@ -86,9 +86,9 @@ public final class DTDId
     }
 
     /*
-    ///////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Overridden standard methods
-    ///////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
      */
 
     public int hashCode() {
@@ -109,7 +109,7 @@ public final class DTDId
     }
 
     public String toString() {
-        StringBuilder sb = new StringBuilder(60);
+        StringBuffer sb = new StringBuffer(60);
         sb.append("Public-id: ");
         sb.append(mPublicId);
         sb.append(", system-id: ");
@@ -121,10 +121,10 @@ public final class DTDId
         return sb.toString();
     }
 
-    public boolean equals(Object o) {
-        if (!(o instanceof DTDId)) {
-            return false;
-        }
+    public boolean equals(Object o)
+    {
+        if (o == this) return true;
+        if (o == null || o.getClass() != getClass()) return false;
         DTDId other = (DTDId) o;
         if (other.mConfigFlags != mConfigFlags
             || other.mXml11 != mXml11) {

@@ -10,14 +10,17 @@ import junit.framework.TestCase;
 public class TestURLUtil extends TestCase
 {
     public void testUriCreationFromSystemIdWithPipe() throws Exception {
+        URLUtil.uriFromSystemId("file:///C|/InfoShare/Web/Author/ASP/DocTypes/dita-oasis/1.2/technicalContent/dtd/map.dtd");
         URLUtil.urlFromSystemId("file:///C|/InfoShare/Web/Author/ASP/DocTypes/dita-oasis/1.2/technicalContent/dtd/map.dtd");
     }
 
     public void testRelativePath() throws Exception {
+        URLUtil.uriFromSystemId("relative/path/to/dtd");
         URLUtil.urlFromSystemId("relative/path/to/dtd");
     }
 
     public void testAbsoluteUnixPath() throws Exception {
+        URLUtil.uriFromSystemId("file:///absolute/path/to/dtd");
         URLUtil.urlFromSystemId("file:///absolute/path/to/dtd");
     }
 }
