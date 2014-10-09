@@ -140,6 +140,7 @@ public class TestMisc
 
         // And then should get proper exception
         try {
+            @SuppressWarnings("unused")
             String str = sr.getElementText();
             fail("Expected an exception for nested start element");
         } catch (XMLStreamException ex) {
@@ -296,6 +297,7 @@ public class TestMisc
         assertTokenType(START_ELEMENT, sr.nextTag());
         assertEquals("tag", sr.getLocalName());
         try {
+            @SuppressWarnings("unused")
             int type = sr.nextTag();
             fail("Expected an exception for non-whitespace text");
         } catch (XMLStreamException ex) {

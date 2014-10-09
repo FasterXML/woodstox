@@ -171,6 +171,7 @@ public class TestCommentRead
             String method = "";
 
             try {
+                @SuppressWarnings("unused")
                 Object result = null;
                 switch (i) {
                 case 0:

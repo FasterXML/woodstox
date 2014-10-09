@@ -53,6 +53,7 @@ public class TestEventReader
             boolean coal = (i & 2) != 0;
             XMLEventReader er = getReader(XML, ns, coal);
 
+            @SuppressWarnings("unused")
             XMLEvent evt = (XMLEvent) er.nextEvent();
 
             // Let's try removal:

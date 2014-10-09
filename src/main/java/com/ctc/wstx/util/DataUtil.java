@@ -64,11 +64,13 @@ public final class DataUtil
 
     @SuppressWarnings("unchecked")
     public static <T> Iterator<T> singletonIterator(T item) {
+        // TODO: with JDK 1.7, can use method from Collections
         return (Iterator<T>) new SingletonIterator(item);
     }
 
     @SuppressWarnings("unchecked")
     public static <T> Iterator<T> emptyIterator() {
+        // TODO: with JDK 1.7, can use method from Collections
         return (Iterator<T>) EmptyIterator.getInstance();
     }
     

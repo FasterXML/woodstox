@@ -158,7 +158,7 @@ public class TestElements
             assertEquals(0, sr.getAttributeCount());
         } else {
             try {
-                int count = sr.getAttributeCount();
+                /*int count =*/ sr.getAttributeCount();
                 fail("Expected an IllegalStateException when trying to call getAttributeCount() for "+eventStr);
             } catch (IllegalStateException e) {
                 // good
@@ -176,6 +176,7 @@ public class TestElements
             String method = "";
 
             try {
+                @SuppressWarnings("unused")
                 Object result = null;
                 switch (i) {
                 case 0:
@@ -209,7 +210,7 @@ public class TestElements
         final String NS_PREFIX1 = "prefix1";
         
         final String NS_URL2 = "urn://mydummyid";
-        final String NS_PREFIX2 = "prefix2";
+//        final String NS_PREFIX2 = "prefix2";
 
         final String VALID_CONTENT
             = "<root><"+NS_PREFIX1+":elem xmlns:"+NS_PREFIX1

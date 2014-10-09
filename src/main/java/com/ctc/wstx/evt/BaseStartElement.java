@@ -27,11 +27,11 @@ import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.StartElement;
 
 import org.codehaus.stax2.XMLStreamWriter2;
-import org.codehaus.stax2.ri.EmptyIterator;
 import org.codehaus.stax2.ri.evt.BaseEventImpl;
 
 import com.ctc.wstx.exc.WstxIOException;
 import com.ctc.wstx.util.BaseNsContext;
+import com.ctc.wstx.util.DataUtil;
 
 /**
  * Shared base class of {@link StartElement} implementations Wstx uses.
@@ -74,7 +74,7 @@ abstract class BaseStartElement
     public Iterator<Namespace> getNamespaces() 
     {
         if (mNsCtxt == null) {
-            return EmptyIterator.getInstance();
+            return DataUtil.emptyIterator();
         }
         /* !!! 28-Sep-2004: Should refactor, since now it's up to ns context
          *   to construct namespace events... which adds unnecessary
@@ -83,8 +83,7 @@ abstract class BaseStartElement
         return mNsCtxt.getNamespaces();
     }
 
-    public NamespaceContext getNamespaceContext()
-    {
+    public NamespaceContext getNamespaceContext() {
         return mNsCtxt;
     }
 

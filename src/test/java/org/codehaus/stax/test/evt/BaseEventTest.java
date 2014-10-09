@@ -77,10 +77,10 @@ public abstract class BaseEventTest
         throws XMLStreamException
     {
         int count = 0;
-        Iterator it = elem.getAttributes();
+        Iterator<?> it = elem.getAttributes();
         if (it != null) {
             while (it.hasNext()) {
-                Attribute attr = (Attribute) it.next();
+                /*Attribute attr = (Attribute)*/ it.next();
                 ++count;
             }
         }
@@ -109,7 +109,7 @@ public abstract class BaseEventTest
             /* for now let's just ask for it (to make sure it won't throw
              * exceptions), but not verify the value
              */
-            boolean isAttr = evt.isAttribute();
+            /*boolean isAttr =*/ evt.isAttribute();
         } else {
             assertEquals((type == ATTRIBUTE), evt.isAttribute());
         }

@@ -39,7 +39,7 @@ public class TestEmptyElementWriter
     {
         XMLOutputFactory f = getOutputFactory();
         // test with simple handler that lists explicitly all tags to close
-        Set tags = new HashSet();
+        Set<String> tags = new HashSet<String> ();
         tags.add("a");
         f.setProperty(WstxOutputProperties.P_OUTPUT_EMPTY_ELEMENT_HANDLER,
                 new EmptyElementHandler.SetEmptyElementHandler(tags));

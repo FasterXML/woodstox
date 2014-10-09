@@ -167,7 +167,7 @@ public class TestRepairingWriter
     {
         StringWriter strw = new StringWriter();
         XMLStreamWriter w = getRepairingWriter(strw);
-        final String URL_P1 = "http://p1.org";
+//        final String URL_P1 = "http://p1.org";
         final String URL_DEF = "urn:default";
         final String ATTR_VALUE = "'value\"";
         final String ATTR_VALUE2 = "<tag>";

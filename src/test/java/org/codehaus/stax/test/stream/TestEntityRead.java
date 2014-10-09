@@ -118,8 +118,10 @@ public class TestEntityRead
     public void testUnexpandedEntities()
         throws XMLStreamException
     {
+        /*
         String TEXT1 = "&quot;Start&quot;";
         String TEXT2 = "&End...";
+        */
         String XML = "<!DOCTYPE root [\n"
             +" <!ENTITY myent 'data'>]>\n"
             +"<root>&amp;Start&quot;&myent;End&#33;</root>";
@@ -523,6 +525,7 @@ public class TestEntityRead
             String method = "";
 
             try {
+                @SuppressWarnings("unused")
                 Object result = null;
                 switch (i) {
                 case 0:

@@ -19,7 +19,7 @@ public class TestExternalSubset
     {
         String XML = "<!DOCTYPE root SYSTEM 'myurl' >"
             +"<root>text</root>";
-        String EXT_ENTITY_VALUE = "just testing";
+//        String EXT_ENTITY_VALUE = "just testing";
         String EXT_SUBSET =
             "<!ELEMENT root (#PCDATA)>\n"
             +"<!-- comments are ok!!! -->";

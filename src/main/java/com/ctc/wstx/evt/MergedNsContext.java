@@ -10,9 +10,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.Namespace;
 
-import org.codehaus.stax2.ri.EmptyIterator;
-
 import com.ctc.wstx.util.BaseNsContext;
+import com.ctc.wstx.util.DataUtil;
 
 /**
  * Hierarchic {@link NamespaceContext} implementation used when constructing
@@ -121,9 +120,9 @@ public class MergedNsContext
         }
 
         if (l == null) {
-        	return EmptyIterator.getInstance();
+            return DataUtil.emptyIterator();
         }
-    	return l.iterator();
+        return l.iterator();
     }
 
     /*

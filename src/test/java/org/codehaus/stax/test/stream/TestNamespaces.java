@@ -61,7 +61,7 @@ public class TestNamespaces
 
         assertEquals("myurl", nc.getNamespaceURI("a"));
         assertEquals("a", nc.getPrefix("myurl"));
-        Iterator it = nc.getPrefixes("foobar");
+        Iterator<?> it = nc.getPrefixes("foobar");
         // Hmmmh. Can it be null or not? For now let's allow null too
         if (it == null) {
             ;

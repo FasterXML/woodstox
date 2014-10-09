@@ -73,6 +73,7 @@ public class TestStartElementEvent
         }
 
         Iterator<?> it = start.getAttributes();
+        @SuppressWarnings("unused")
         int count = 0;
         Map<QName,String> attrs = new HashMap<QName,String>();
 

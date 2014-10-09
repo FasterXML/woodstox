@@ -146,6 +146,7 @@ public class TestEventTypes
         assertTrue(evt.isEndDocument());
         // Nothing to test, but let's case to ensure it's of right type
         {
+            @SuppressWarnings("unused")
             EndDocument doc = (EndDocument) evt;
         }
     }

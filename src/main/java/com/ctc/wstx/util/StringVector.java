@@ -212,7 +212,7 @@ public final class StringVector
         if (first != null) {
             return new SingletonIterator(first);
         }
-        return EmptyIterator.getInstance();
+        return DataUtil.emptyIterator();
     }
     */
 

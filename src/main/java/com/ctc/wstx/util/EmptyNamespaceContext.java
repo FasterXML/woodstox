@@ -7,8 +7,6 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.Namespace;
 
-import org.codehaus.stax2.ri.EmptyIterator;
-
 /**
  * Dummy {@link NamespaceContext} (and {@link BaseNsContext})
  * implementation that is usually used in
@@ -34,7 +32,7 @@ public final class EmptyNamespaceContext
      */
 
     public Iterator<Namespace> getNamespaces() {
-      	return EmptyIterator.getInstance();
+        return DataUtil.emptyIterator();
     }
 
     /**
@@ -42,13 +40,11 @@ public final class EmptyNamespaceContext
      * output all namespace declarations active in current namespace
      * scope, if any.
      */
-    public void outputNamespaceDeclarations(Writer w)
-    {
+    public void outputNamespaceDeclarations(Writer w) {
         ; // nothing to output
     }
 
-    public void outputNamespaceDeclarations(XMLStreamWriter w)
-    {
+    public void outputNamespaceDeclarations(XMLStreamWriter w) {
         ; // nothing to output
     }
 
@@ -66,7 +62,8 @@ public final class EmptyNamespaceContext
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     public Iterator<String> doGetPrefixes(String nsURI) {
-        return EmptyIterator.getInstance();
+        return DataUtil.emptyIterator();
     }
 }

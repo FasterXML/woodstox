@@ -196,6 +196,7 @@ public class TestProcInstrRead
             String method = "";
 
             try {
+                @SuppressWarnings("unused")
                 Object result = null;
                 switch (i) {
                 case 0:
