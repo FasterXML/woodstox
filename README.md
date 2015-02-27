@@ -2,6 +2,11 @@
 
 The gold standard Stax XML API implementation. Now at Github.
 
+## Status
+
+[![Build Status](https://travis-ci.org/FasterXML/woodstox.svg)](https://travis-ci.org/FasterXML/woodstox)
+
+
 # Get it!
 
 ## Maven
