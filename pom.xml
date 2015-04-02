@@ -43,6 +43,12 @@
       <!-- Woodstox 5.0 is 1.6+ -->
       <javac.src.version>1.6</javac.src.version>
       <javac.target.version>1.6</javac.target.version>
+
+      <!-- Since our groupId is NOT the same as Java package id, need to explicitly define.
+           And due to number of packages, let's just include all.
+        -->
+      <osgi.export>com.ctc.wstx.*;version=${project.version}</osgi.export>
+
     </properties>
 
     <licenses>
