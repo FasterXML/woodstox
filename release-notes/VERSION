@@ -4,6 +4,7 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-5.0.0 (23-Feb-2014)
+5.0.1 (not yet released)
 
-The first release after move to Github!
+#4: Fix validation of text for an XMLStreamWriter
+ (reported by Wilco G, wgreven-ibr@github)
