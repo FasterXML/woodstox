@@ -382,7 +382,7 @@ public abstract class BaseStreamWriter
                 /* Last arg is false, since we do not know if more text
                  * may be added with additional calls
                  */
-                mValidator.validateText(text, start, len, false);
+                mValidator.validateText(text, start, start + len, false);
             }
         }
 
@@ -1064,7 +1064,7 @@ public abstract class BaseStreamWriter
             /* Last arg is false, since we do not know if more text
              * may be added with additional calls
              */
-            mValidator.validateText(cbuf, start, len, false);
+            mValidator.validateText(cbuf, start, start + len, false);
         }
         int ix;
         try {
