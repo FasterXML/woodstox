@@ -62,9 +62,11 @@ public abstract class DTDSubset
     //////////////////////////////////////////////////////
      */
 
+    @Override
     public abstract XMLValidator createValidator(ValidationContext ctxt)
         throws XMLStreamException;
 
+    @Override
     public String getSchemaType() {
         return XMLValidationSchema.SCHEMA_ID_DTD;
     }
@@ -75,8 +77,10 @@ public abstract class DTDSubset
     //////////////////////////////////////////////////////
      */
 
+    @Override
     public abstract int getEntityCount();
 
+    @Override
     public abstract int getNotationCount();
 
     /*

@@ -1,6 +1,7 @@
 package com.ctc.wstx.ent;
 
 import com.ctc.wstx.api.ReaderConfig;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
@@ -24,23 +25,28 @@ public abstract class ExtEntity
         mPublicId = pubId;
         mSystemId = sysId;
     }
-    
+
+    @Override
     public abstract String getNotationName();
 
+    @Override
     public String getPublicId() {
         return mPublicId;
     }
 
+    @Override
     public String getReplacementText() {
         return null;
     }
 
+    @Override
     public int getReplacementText(Writer w)
         //throws IOException
     {
         return 0;
     }
 
+    @Override
     public String getSystemId() {
         return mSystemId;
     }
@@ -51,6 +57,7 @@ public abstract class ExtEntity
     ///////////////////////////////////////////
      */
 
+    @Override
     public abstract void writeEnc(Writer w) throws IOException;
 
     /*
@@ -61,16 +68,20 @@ public abstract class ExtEntity
 
     // // // Access to data
 
+    @Override
     public char[] getReplacementChars() {
         return null;
     }
 
     // // // Type information
     
+    @Override
     public boolean isExternal() { return true; }
     
+    @Override
     public abstract boolean isParsed();
-    
+
+    @Override
     public abstract WstxInputSource expand(WstxInputSource parent,
                                            XMLResolver res, ReaderConfig cfg,
                                            int xmlVersion)

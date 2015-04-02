@@ -95,6 +95,7 @@ public class SimpleStartElement
     /////////////////////////////////////////////
      */
 
+    @Override
     public Attribute getAttributeByName(QName name)
     {
         if (mAttrs == null) {
@@ -103,6 +104,7 @@ public class SimpleStartElement
         return mAttrs.get(name);
     }
 
+    @Override
     public Iterator<Attribute> getAttributes()
     {
         if (mAttrs == null) {
@@ -111,6 +113,7 @@ public class SimpleStartElement
         return mAttrs.values().iterator();
     }
 
+    @Override
     protected void outputNsAndAttr(Writer w) throws IOException
     {
         // First namespace declarations, if any:
@@ -143,6 +146,7 @@ public class SimpleStartElement
         }
     }
 
+    @Override
     protected void outputNsAndAttr(XMLStreamWriter w) throws XMLStreamException
     {
         // First namespace declarations, if any:

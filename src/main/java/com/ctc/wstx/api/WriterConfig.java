@@ -347,6 +347,7 @@ public final class WriterConfig
     //////////////////////////////////////////////////////////
      */
 
+    @Override
     protected int findPropertyId(String propName)
     {
         Integer I = sProperties.get(propName);
@@ -359,6 +360,7 @@ public final class WriterConfig
     //////////////////////////////////////////////////////////
      */
 
+    @Override
     public Object getProperty(int id)
     {
         switch (id) {
@@ -432,6 +434,7 @@ public final class WriterConfig
      * @return True, if the specified property was <b>succesfully</b>
      *    set to specified value; false if its value was not changed
      */
+    @Override
     public boolean setProperty(String name, int id, Object value)
     {
         switch (id) {

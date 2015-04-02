@@ -33,8 +33,8 @@ public final class DTDEntitiesAttr
         super(name, defValue, specIndex, nsAware, xml11);
     }
 
-    public DTDAttribute cloneWith(int specIndex)
-    {
+    @Override
+    public DTDAttribute cloneWith(int specIndex) {
         return new DTDEntitiesAttr(mName, mDefValue, specIndex, mCfgNsAware, mCfgXml11);
     }
 
@@ -44,6 +44,7 @@ public final class DTDEntitiesAttr
     ///////////////////////////////////////////////////
      */
 
+    @Override
     public int getValueType() {
         return TYPE_ENTITIES;
     }
@@ -60,6 +61,7 @@ public final class DTDEntitiesAttr
      * for the value.
      * 
      */
+    @Override
     public String validate(DTDValidatorBase v, char[] cbuf, int start, int end, boolean normalize)
         throws XMLStreamException
     {
@@ -145,6 +147,7 @@ public final class DTDEntitiesAttr
      * to ask attribute to verify that the default it has (if any) is
      * valid for such type.
      */
+    @Override
     public void validateDefault(InputProblemReporter rep, boolean normalize)
         throws XMLStreamException
     {

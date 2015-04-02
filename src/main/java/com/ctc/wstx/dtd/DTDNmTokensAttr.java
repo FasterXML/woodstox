@@ -28,8 +28,8 @@ public final class DTDNmTokensAttr
         super(name, defValue, specIndex, nsAware, xml11);
     }
 
-    public DTDAttribute cloneWith(int specIndex)
-    {
+    @Override
+    public DTDAttribute cloneWith(int specIndex) {
         return new DTDNmTokensAttr(mName, mDefValue, specIndex, mCfgNsAware, mCfgXml11);
     }
 
@@ -39,6 +39,7 @@ public final class DTDNmTokensAttr
     ///////////////////////////////////////////////////
      */
 
+    @Override
     public int getValueType() {
         return TYPE_NMTOKENS;
     }
@@ -54,6 +55,7 @@ public final class DTDNmTokensAttr
      * to let the attribute do necessary normalization and/or validation
      * for the value.
      */
+    @Override
     public String validate(DTDValidatorBase v, char[] cbuf, int start, int end, boolean normalize)
         throws XMLStreamException
     {
@@ -137,6 +139,7 @@ public final class DTDNmTokensAttr
      * to ask attribute to verify that the default it has (if any) is
      * valid for such type.
      */
+    @Override
     public void validateDefault(InputProblemReporter rep, boolean normalize)
         throws XMLStreamException
     {

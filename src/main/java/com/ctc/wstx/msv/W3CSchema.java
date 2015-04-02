@@ -36,10 +36,12 @@ public class W3CSchema
         mGrammar = grammar;
     }
 
+    @Override
     public String getSchemaType() {
         return XMLValidationSchema.SCHEMA_ID_W3C_SCHEMA;
     }
 
+    @Override
     public XMLValidator createValidator(ValidationContext ctxt)
         throws XMLStreamException
     {

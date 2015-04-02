@@ -28,12 +28,13 @@ public class EmptyValidator
      * Simple; can always (re)use instance itself; no state information
      * is kept.
      */
+    @Override
     public StructValidator newInstance() {
         return this;
     }
 
-    public String tryToValidate(PrefixedName elemName)
-    {
+    @Override
+    public String tryToValidate(PrefixedName elemName) {
         return mErrorMsg;
     }
 
@@ -41,8 +42,8 @@ public class EmptyValidator
      * If we ever get as far as element closing, things are all good;
      * can just return null.
      */
-    public String fullyValid()
-    {
+    @Override
+    public String fullyValid() {
         return null;
     }
 }

@@ -21,6 +21,7 @@ public class TestAttributeLimits extends BaseStreamTest
             StringReader sreader = new StringReader("<ns:element xmlns:ns=\"http://foo.com\"");
             int count;
             boolean done;
+            @Override
             public int read(char[] cbuf, int off, int len) throws IOException {
                 int i = sreader.read(cbuf, off, len);
                 if (i == -1) {
@@ -34,8 +35,8 @@ public class TestAttributeLimits extends BaseStreamTest
                 }
                 return i;
             }
-            public void close() throws IOException {
-            }
+            @Override
+            public void close() throws IOException { }
         };
         XMLStreamReader xmlreader = factory.createXMLStreamReader(reader);
         try {
@@ -52,6 +53,7 @@ public class TestAttributeLimits extends BaseStreamTest
             StringReader sreader = new StringReader("<ns:element xmlns:ns=\"http://foo.com\" blah=\"");
             int count;
             boolean done;
+            @Override
             public int read(char[] cbuf, int off, int len) throws IOException {
                 int i = sreader.read(cbuf, off, len);
                 if (i == -1) {
@@ -66,6 +68,7 @@ public class TestAttributeLimits extends BaseStreamTest
                 }
                 return i;
             }
+            @Override
             public void close() throws IOException { }
         };
         try {

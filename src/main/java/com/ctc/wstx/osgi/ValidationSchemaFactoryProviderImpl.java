@@ -28,8 +28,10 @@ public abstract class ValidationSchemaFactoryProviderImpl
         };
     }
 
+    @Override
     public abstract XMLValidationSchemaFactory createValidationSchemaFactory();
 
+    @Override
     public String getSchemaType() { return mSchemaType; }
 
     public Properties getProperties()
@@ -52,6 +54,7 @@ public abstract class ValidationSchemaFactoryProviderImpl
     {
         DTD() { super(XMLValidationSchema.SCHEMA_ID_DTD); }
 
+        @Override
         public XMLValidationSchemaFactory createValidationSchemaFactory() {
             return new DTDSchemaFactory();
         }
@@ -62,6 +65,7 @@ public abstract class ValidationSchemaFactoryProviderImpl
     {
         RelaxNG() { super(XMLValidationSchema.SCHEMA_ID_RELAXNG); }
 
+        @Override
         public XMLValidationSchemaFactory createValidationSchemaFactory() {
             return new RelaxNGSchemaFactory();
         }
@@ -72,6 +76,7 @@ public abstract class ValidationSchemaFactoryProviderImpl
     {
         W3CSchema() { super(XMLValidationSchema.SCHEMA_ID_W3C_SCHEMA); }
 
+        @Override
         public XMLValidationSchemaFactory createValidationSchemaFactory() {
             return new W3CSchemaFactory();
         }

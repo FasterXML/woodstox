@@ -20,8 +20,8 @@ public final class DTDCdataAttr
         super(name, defValue, specIndex, nsAware, xml11);
     }
 
-    public DTDAttribute cloneWith(int specIndex)
-    {
+    @Override
+    public DTDAttribute cloneWith(int specIndex) {
         return new DTDCdataAttr(mName, mDefValue, specIndex, mCfgNsAware, mCfgXml11);
     }
 

@@ -7,7 +7,7 @@ import javax.xml.stream.*;
  * This includes:
  *<ul>
  * <li>Property defaults as defined by Stax specs (see class javadocs for
- * @link javax.xml.stream.XMLInputFactory}
+ * {@link javax.xml.stream.XMLInputFactory}
  *  </li>
  *</ul>
  *

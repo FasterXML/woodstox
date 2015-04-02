@@ -32,40 +32,42 @@ public class TestWsdlValidation extends BaseStax2Test {
 	
 	 private static class LocalController implements GrammarReaderController2 {
 
-	        public LSResourceResolver getLSResourceResolver() {
-	            return null;
-	        }
+	     @Override
+	     public LSResourceResolver getLSResourceResolver() {
+	         return null;
+	     }
 
-	        public void error(Locator[] locs, String errorMessage, Exception nestedException) {
-	            StringBuffer errors = new StringBuffer();
-	            for (Locator loc : locs) {
-	                errors.append("in " + loc.getSystemId() + " " + loc.getLineNumber() + ":"
-	                              + loc.getColumnNumber());
-	            }
-	            throw new RuntimeException(errors.toString(), nestedException);
-	        }
+	     @Override
+	     public void error(Locator[] locs, String errorMessage, Exception nestedException) {
+	         StringBuffer errors = new StringBuffer();
+	         for (Locator loc : locs) {
+	             errors.append("in " + loc.getSystemId() + " " + loc.getLineNumber() + ":"
+	                     + loc.getColumnNumber());
+	         }
+	         throw new RuntimeException(errors.toString(), nestedException);
+	     }
 
-	        public void warning(Locator[] locs, String errorMessage) {
-	            StringBuffer errors = new StringBuffer();
-	            for (Locator loc : locs) {
-	                errors.append("in " + loc.getSystemId() + " " + loc.getLineNumber() + ":"
-	                              + loc.getColumnNumber());
-	            }
-	            // no warning allowed.
-	            throw new RuntimeException("warning: " + errors.toString());
-	        }
+	     @Override
+	     public void warning(Locator[] locs, String errorMessage) {
+	         StringBuffer errors = new StringBuffer();
+	         for (Locator loc : locs) {
+	             errors.append("in " + loc.getSystemId() + " " + loc.getLineNumber() + ":"
+	                     + loc.getColumnNumber());
+	         }
+	         // no warning allowed.
+	         throw new RuntimeException("warning: " + errors.toString());
+	     }
 
-	        public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
-	            return null;
-	        }
-	    }
+	     @Override
+	     public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+	         return null;
+	     }
+	 }
 
 	private XMLSchemaGrammar wsdlgrammar;
 	private W3CSchema schema;
 
-	/* (non-Javadoc)
-	 * @see junit.framework.TestCase#setUp()
-	 */
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();

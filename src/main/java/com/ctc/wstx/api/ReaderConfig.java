@@ -588,6 +588,7 @@ public final class ReaderConfig
     ///////////////////////////////////////////////////////////////////////
      */
 
+    @Override
     protected int findPropertyId(String propName)
     {
         Integer I = sProperties.get(propName);
@@ -1337,6 +1338,7 @@ public final class ReaderConfig
         mConfigFlagMods |= flag;
     }
 
+    @Override
     public Object getProperty(int id)
     {
         switch (id) {
@@ -1452,7 +1454,8 @@ public final class ReaderConfig
         }
     }
 
-	public boolean setProperty(String propName, int id, Object value)
+    @Override
+    public boolean setProperty(String propName, int id, Object value)
     {
         switch (id) {
             // First, standard (Stax 1.0) properties:

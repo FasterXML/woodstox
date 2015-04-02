@@ -2,19 +2,18 @@ package com.ctc.wstx.util;
 
 import java.io.*;
 import java.util.ArrayList;
+
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
-
 import org.codehaus.stax2.typed.Base64Variant;
 import org.codehaus.stax2.typed.TypedArrayDecoder;
 import org.codehaus.stax2.typed.TypedValueDecoder;
 import org.codehaus.stax2.typed.TypedXMLStreamException;
 import org.codehaus.stax2.validation.XMLValidator;
-
 import org.codehaus.stax2.ri.typed.CharArrayBase64Decoder;
 
 import com.ctc.wstx.api.ReaderConfig;
@@ -1173,6 +1172,7 @@ public final class TextBuffer
      * {@link #contentsAsString}, since it's not guaranteed that resulting
      * String is cached.
      */
+    @Override
     public String toString() {
          return contentsAsString();
     }
@@ -1287,22 +1287,24 @@ public final class TextBuffer
             _segmentIndex = 0;
             _segmentOffset = _currentOffset = 0;
         }
-        
+
+        @Override
         public void close() {
             _segments = null;
             _currentSegment = null;
         }
         
-        public void mark(int x)
-            throws IOException
-        {      
+        @Override
+        public void mark(int x) throws IOException {      
             throw new IOException("mark() not supported");
         }
         
+        @Override
         public boolean markSupported() {
             return false;
         }
 
+        @Override
         public int read(char[] cbuf, int offset, int len)
         {
             if (len < 1) {
@@ -1351,16 +1353,18 @@ public final class TextBuffer
             return (origOffset == offset) ? -1 : (offset - origOffset);
         }
         
+        @Override
         public boolean ready() {
             return true;
         }
         
-        public void reset()
-            throws IOException
+        @Override
+        public void reset() throws IOException
         {	
             throw new IOException("reset() not supported");
         }
         
+        @Override
         public long skip(long amount)
         {
             /* Note: implementation is almost identical to that of read();

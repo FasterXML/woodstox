@@ -41,9 +41,9 @@ public final class SimpleOutputElement
     extends OutputElementBase
 {
     /*
-    ////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Information about element itself:
-    ////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
      */
 
     /**
@@ -52,31 +52,31 @@ public final class SimpleOutputElement
      * Non-final only to allow temporary pooling
      * (on per-writer basis, to keep these short-lived).
      */
-    SimpleOutputElement mParent;
+    protected SimpleOutputElement mParent;
 
     /**
      * Prefix that is used for the element. Can not be final, since sometimes
      * it needs to be dynamically generated and bound after creating the
      * element instance.
      */
-    String mPrefix;
+    protected String mPrefix;
 
     /**
      * Local name of the element.
      * Non-final only to allow reuse.
      */
-    String mLocalName;
+    protected String mLocalName;
 
     /**
      * Namespace of the element, whatever {@link #mPrefix} maps to.
      * Non-final only to allow reuse.
      */
-    String mURI;
+    protected String mURI;
 
     /*
-    ////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Attribute information
-    ////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
      */
 
     /**
@@ -86,9 +86,9 @@ public final class SimpleOutputElement
     protected HashSet<AttrName> mAttrSet = null;
 
     /*
-    ////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Life-cycle
-    ////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
      */
 
     /**
@@ -117,7 +117,7 @@ public final class SimpleOutputElement
     /**
      * Method called to reuse a pooled instance.
      *
-     * @return Chained pooled instance that should now be head of the
+     * @returns Chained pooled instance that should now be head of the
      *   reuse chain
      */
     private void relink(SimpleOutputElement parent,
@@ -202,15 +202,16 @@ public final class SimpleOutputElement
     }
 
     /*
-    ////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Public API, accessors
-    ////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
      */
 
     public SimpleOutputElement getParent() {
         return mParent;
     }
 
+    @Override
     public boolean isRoot() {
         // (Virtual) Root element has no parent...
         return (mParent == null);
@@ -221,6 +222,7 @@ public final class SimpleOutputElement
      *   "prefix:localName" format (no URI). Useful for error and
      *   debugging messages.
      */
+    @Override
     public String getNameDesc() {
         if (mPrefix != null && mPrefix.length() > 0) {
             return mPrefix + ":" +mLocalName;
@@ -248,9 +250,9 @@ public final class SimpleOutputElement
     }
 
     /*
-    ////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Public API, ns binding, checking
-    ////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
      */
 
     public void checkAttrWrite(String nsURI, String localName)
@@ -270,15 +272,16 @@ public final class SimpleOutputElement
     }
 
     /*
-    ////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Public API, mutators
-    ////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
      */
 
     public void setPrefix(String prefix) {
         mPrefix = prefix;
     }
 
+    @Override
     public void setDefaultNsUri(String uri) {
         mDefaultNsURI = uri;
     }
@@ -287,6 +290,7 @@ public final class SimpleOutputElement
      * Note: this method can and will only be called before outputting
      * the root element.
      */
+    @Override
     protected final void setRootNsContext(NamespaceContext ctxt)
     {
         mRootNsContext = ctxt;
@@ -298,9 +302,9 @@ public final class SimpleOutputElement
     }
 
     /*
-    //////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Helper classes:
-    //////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
      */
 
     /**
@@ -326,6 +330,7 @@ public final class SimpleOutputElement
             mHashCode = mNsURI.hashCode() * 31 ^ mLocalName.hashCode();
         }
 
+        @Override
         public boolean equals(Object o) {
             if (o == this) {
                 return true;
@@ -343,6 +348,7 @@ public final class SimpleOutputElement
             return (otherURI == mNsURI || otherURI.equals(mNsURI));
         }
 
+        @Override
         public String toString() {
             if (mNsURI.length() > 0) {
                 return "{"+mNsURI + "} " +mLocalName;
@@ -350,10 +356,12 @@ public final class SimpleOutputElement
             return mLocalName;
         }
 
+        @Override
         public int hashCode() {
             return mHashCode;
         }
 
+        @Override
         public int compareTo(AttrName other) {
             // Let's first order by namespace:
             int result = mNsURI.compareTo(other.mNsURI);

@@ -62,8 +62,8 @@ public final class UTF8Writer
     ////////////////////////////////////////////////////////
      */
 
-    public void closeCompletely() throws IOException
-    {
+    @Override
+    public void closeCompletely() throws IOException {
         _close(true);
     }
 

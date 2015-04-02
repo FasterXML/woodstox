@@ -21,16 +21,19 @@ public final class ValidatorConfig
         return sInstance;
     }
 
+    @Override
     protected int findPropertyId(String propName) {
         // Nothing above and beyond default settings...
         return -1;
     }
 
+    @Override
     protected Object getProperty(int id) {
         // nothing to get:
         return null;
     }
 
+    @Override
     protected boolean setProperty(String propName, int id, Object value) {
         // nothing to set:
         return false;

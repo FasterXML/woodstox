@@ -31,8 +31,8 @@ public final class DTDIdRefsAttr
         super(name, defValue, specIndex, nsAware, xml11);
     }
 
-    public DTDAttribute cloneWith(int specIndex)
-    {
+    @Override
+    public DTDAttribute cloneWith(int specIndex) {
         return new DTDIdRefsAttr(mName, mDefValue, specIndex, mCfgNsAware, mCfgXml11);
     }
 
@@ -42,6 +42,7 @@ public final class DTDIdRefsAttr
     ///////////////////////////////////////////////////
      */
 
+    @Override
     public int getValueType() {
         return TYPE_IDREFS;
     }
@@ -53,7 +54,8 @@ public final class DTDIdRefsAttr
      */
 
     @SuppressWarnings("cast")
-	public String validate(DTDValidatorBase v, char[] cbuf, int start, int end, boolean normalize)
+    @Override
+    public String validate(DTDValidatorBase v, char[] cbuf, int start, int end, boolean normalize)
         throws XMLStreamException
     {
         /* Let's skip leading/trailing white space, even if we are not

@@ -49,10 +49,12 @@ public class TestBasicSax
         private int cdataSectionCount;
         private int segmentCount;
         
+        @Override
         public void startCDATA() throws SAXException {
             cdataSectionCount++;
         }
         
+        @Override
         public void characters(char[] ch, int start, int length) throws SAXException {
             segmentCount++;
         }

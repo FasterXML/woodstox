@@ -15,6 +15,7 @@ import com.ctc.wstx.sr.BasicStreamReader;
  *
  * @since 4.2
  */
+@SuppressWarnings("resource")
 public class TestElementLimits extends BaseStreamTest
 {
     public void testSuperDeep() throws Exception 
@@ -24,6 +25,7 @@ public class TestElementLimits extends BaseStreamTest
             StringReader sreader = new StringReader("<ns:element xmlns:ns=\"http://foo.com\">");
             int count;
             boolean done;
+            @Override
             public int read(char[] cbuf, int off, int len) throws IOException {
                 int i = sreader.read(cbuf, off, len);
                 if (i == -1) {
@@ -38,6 +40,7 @@ public class TestElementLimits extends BaseStreamTest
                 }
                 return i;
             }
+            @Override
             public void close() throws IOException {
             }
         };
@@ -60,6 +63,7 @@ public class TestElementLimits extends BaseStreamTest
             StringReader sreader = new StringReader("<ns:element xmlns:ns=\"http://foo.com\">");
             int count;
             boolean done;
+            @Override
             public int read(char[] cbuf, int off, int len) throws IOException {
                 int i = sreader.read(cbuf, off, len);
                 if (i == -1) {
@@ -74,6 +78,7 @@ public class TestElementLimits extends BaseStreamTest
                 }
                 return i;
             }
+            @Override
             public void close() throws IOException {
             }
         };
@@ -134,6 +139,7 @@ public class TestElementLimits extends BaseStreamTest
             StringReader sreader = new StringReader("<ns:element xmlns:ns=\"http://foo.com\"><ns:child0>");
             int count;
             int count2;
+            @Override
             public int read(char[] cbuf, int off, int len) throws IOException {
                 int i = sreader.read(cbuf, off, len);
                 if (i == -1) {
@@ -150,6 +156,7 @@ public class TestElementLimits extends BaseStreamTest
                 }
                 return i;
             }
+            @Override
             public void close() throws IOException {
             }
         };

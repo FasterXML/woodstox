@@ -41,6 +41,7 @@ public class SeqContentSpec
     ///////////////////////////////////////////////////
      */
 
+    @Override
     public StructValidator getSimpleValidator()
     {
         /* Can we create a simple validator? Yes, if the sub-specs are
@@ -69,6 +70,7 @@ public class SeqContentSpec
         return null;
     }
 
+    @Override
     public ModelNode rewrite()
     {
         /* First, need to create a tree of sub-models, consisting of
@@ -109,6 +111,7 @@ public class SeqContentSpec
         return model;
     }
 
+    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
@@ -166,10 +169,12 @@ public class SeqContentSpec
          * Sequence content specification is always stateful; can not
          * use a shared instance... so let's create new instance:
          */
+        @Override
         public StructValidator newInstance() {
             return new Validator(mArity, mNames);
         }
 
+        @Override
         public String tryToValidate(PrefixedName elemName)
         {
             // First; have we already done that max. 1 sequence?
@@ -191,6 +196,7 @@ public class SeqContentSpec
             return null;
         }
         
+        @Override
         public String fullyValid()
         {
             if (mStep != 0) {

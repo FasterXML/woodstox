@@ -37,6 +37,7 @@ public interface EmptyElementHandler
             mEmptyElements = emptyElements;
         }
 
+        @Override
         public boolean allowEmptyElement(String prefix, String localName, String nsURI, boolean allowEmpty)
         {
             return mEmptyElements.contains(localName);

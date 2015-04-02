@@ -1,6 +1,7 @@
 package stax2.stream;
 
 import java.io.*;
+
 import javax.xml.stream.*;
 import javax.xml.transform.stream.StreamSource;
 
@@ -17,6 +18,7 @@ import stax2.BaseStax2Test;
  *
  * @since 3.0
  */
+@SuppressWarnings("resource")
 public class TestClosing
     extends BaseStax2Test
 {
@@ -211,6 +213,7 @@ public class TestClosing
             super(contents);
         }
 
+        @Override
         public void close() {
             mIsClosed = true;
             super.close();
@@ -227,6 +230,7 @@ public class TestClosing
             super(data);
         }
 
+        @Override
         public void close() throws IOException {
             mIsClosed = true;
             super.close();
@@ -245,6 +249,7 @@ public class TestClosing
             mReader = reader;
         }
 
+        @SuppressWarnings("resource")
         public static MySource createFor(String content) {
             MyReader r = new MyReader(content);
             return new MySource(r);
@@ -254,6 +259,7 @@ public class TestClosing
             return mReader.isClosed();
         }
 
+        @Override
         public Reader getReader() {
             return mReader;
         }
@@ -266,6 +272,7 @@ public class TestClosing
 
         public MyStringSource(String s) { super(s); }
 
+        @Override
         public Reader constructReader() {
             mReader = new MyReader(getText());
             return mReader;

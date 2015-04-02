@@ -23,6 +23,7 @@ public class UnparsedExtEntity
         mNotationId = notationId;
     }
 
+    @Override
     public String getNotationName() {
         return mNotationId;
     }
@@ -33,6 +34,7 @@ public class UnparsedExtEntity
     ///////////////////////////////////////////
      */
 
+    @Override
     public void writeEnc(Writer w) throws IOException
     {
         w.write("<!ENTITY ");
@@ -60,11 +62,12 @@ public class UnparsedExtEntity
 
     // // // Type information
     
+    @Override
     public boolean isParsed() { return false; }
     
+    @Override
     public WstxInputSource expand(WstxInputSource parent,
-                                  XMLResolver res, ReaderConfig cfg,
-                                  int xmlVersion)
+            XMLResolver res, ReaderConfig cfg, int xmlVersion)
     {
         // Should never get called, actually...
         throw new IllegalStateException("Internal error: createInputSource() called for unparsed (external) entity.");

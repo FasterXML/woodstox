@@ -514,9 +514,7 @@ public class FullDTDReader
                                        inclPEs);
     }
 
-    private void flushFlattenWriter()
-        throws XMLStreamException
-    {
+    private void flushFlattenWriter() throws XMLStreamException {
         mFlattenWriter.flush(mInputBuffer, mInputPtr);
     }
 
@@ -533,6 +531,7 @@ public class FullDTDReader
      * Note: see base class for some additional remarks about this
      * method.
      */
+    @Override
     public EntityDecl findEntity(String entName)
     {
         if (mPredefdGEs != null) {
@@ -805,6 +804,7 @@ public class FullDTDReader
     ///////////////////////////////////////////////////////////
      */
 
+    @Override
     protected void initInputSource(WstxInputSource newInput, boolean isExt, String entityId)
         throws XMLStreamException
     {
@@ -833,8 +833,8 @@ public class FullDTDReader
      * entities inside entity value definitions (as per XML specs), and
      * secondly, to handle (optional) flattening output.
      */
-    protected boolean loadMore()
-        throws XMLStreamException
+    @Override
+    protected boolean loadMore() throws XMLStreamException
     {
         WstxInputSource input = mInput;
 
@@ -898,8 +898,8 @@ public class FullDTDReader
         return true;
     }
 
-    protected boolean loadMoreFromCurrent()
-        throws XMLStreamException
+    @Override
+    protected boolean loadMoreFromCurrent() throws XMLStreamException
     {
         // Any flattened not-yet-output input to flush?
         if (mFlattenWriter != null) {
@@ -923,8 +923,8 @@ public class FullDTDReader
         return false;
     }
 
-    protected boolean ensureInput(int minAmount)
-        throws XMLStreamException
+    @Override
+    protected boolean ensureInput(int minAmount) throws XMLStreamException
     {
         int currAmount = mInputEnd - mInputPtr;
         if (currAmount >= minAmount) {

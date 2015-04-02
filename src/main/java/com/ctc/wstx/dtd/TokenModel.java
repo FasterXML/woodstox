@@ -46,14 +46,17 @@ public final class TokenModel
      * Method that has to create a deep copy of the model, without
      * sharing any of existing Objects.
      */
+    @Override
     public ModelNode cloneModel() {
         return new TokenModel(mElemName);
     }
 
+    @Override
     public boolean isNullable() {
         return false;
     }
 
+    @Override
     public void indexTokens(List<TokenModel> tokens)
     {
         /* Doh. This is not clean... but need to make sure the null
@@ -66,18 +69,22 @@ public final class TokenModel
         }
     }
 
+    @Override
     public void addFirstPos(BitSet firstPos) {
         firstPos.set(mTokenIndex);
     }
 
+    @Override
     public void addLastPos(BitSet lastPos) {
         lastPos.set(mTokenIndex);
     }
 
+    @Override
     public void calcFollowPos(BitSet[] followPosSets) {
         // nothing to do, for tokens...
     }
 
+    @Override
     public String toString() {
         return (mElemName == null) ? "[null]" : mElemName.toString();
     }

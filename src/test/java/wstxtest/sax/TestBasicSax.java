@@ -98,6 +98,7 @@ public class TestBasicSax
 
     static class TextExtractor extends DefaultHandler {
         private final StringBuffer buffer = new StringBuffer();
+        @Override
         public void characters(char[] ch, int start, int length) throws SAXException {
             buffer.append(ch, start, length);
         }
@@ -114,10 +115,12 @@ public class TestBasicSax
 
         public int _charCount;
 
+        @Override
         public void characters(char[] ch, int start, int length) {
             _charCount += length;
         }
      
+        @Override
         public void startElement(String uri, String ln, String qname,
                                  Attributes a)
         {

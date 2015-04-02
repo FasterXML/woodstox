@@ -26,16 +26,22 @@ public abstract class WEntityDeclaration
         super(loc);
     }
 
+    @Override
     public abstract String getBaseURI();
 
+    @Override
     public abstract String getName();
 
+    @Override
     public abstract String getNotationName();
 
+    @Override
     public abstract String getPublicId();
 
+    @Override
     public abstract String getReplacementText();
 
+    @Override
     public abstract String getSystemId();
 
     /*
@@ -44,14 +50,15 @@ public abstract class WEntityDeclaration
     ///////////////////////////////////////////
      */
 
+    @Override
     public int getEventType() {
         return ENTITY_DECLARATION;
     }
 
     public abstract void writeEnc(Writer w) throws IOException;
 
-    public void writeAsEncodedUnicode(Writer w)
-        throws XMLStreamException
+    @Override
+    public void writeAsEncodedUnicode(Writer w) throws XMLStreamException
     {
         try {
             writeEnc(w);
@@ -67,6 +74,7 @@ public abstract class WEntityDeclaration
      * choose to either skip silently (output nothing), or throw an
      * exception.
      */
+    @Override
     public void writeUsing(XMLStreamWriter2 w) throws XMLStreamException
     {
         /* Fail silently, or throw an exception? Let's do latter; at least
@@ -82,6 +90,7 @@ public abstract class WEntityDeclaration
     ///////////////////////////////////////////
      */
 
+    @Override
     public boolean equals(Object o)
     {
         if (o == this) return true;
@@ -99,6 +108,7 @@ public abstract class WEntityDeclaration
             ;
     }
 
+    @Override
     public int hashCode()
     {
         /* Hmmh. Could try using most of the data, but really, name

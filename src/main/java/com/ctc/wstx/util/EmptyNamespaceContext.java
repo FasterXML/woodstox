@@ -31,6 +31,7 @@ public final class EmptyNamespaceContext
     /////////////////////////////////////////////
      */
 
+    @Override
     public Iterator<Namespace> getNamespaces() {
         return DataUtil.emptyIterator();
     }
@@ -40,10 +41,12 @@ public final class EmptyNamespaceContext
      * output all namespace declarations active in current namespace
      * scope, if any.
      */
+    @Override
     public void outputNamespaceDeclarations(Writer w) {
         ; // nothing to output
     }
 
+    @Override
     public void outputNamespaceDeclarations(XMLStreamWriter w) {
         ; // nothing to output
     }
@@ -54,15 +57,17 @@ public final class EmptyNamespaceContext
     /////////////////////////////////////////////////
      */
 
+    @Override
     public String doGetNamespaceURI(String prefix) {
         return null;
     }
 
+    @Override
     public String doGetPrefix(String nsURI) {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
     public Iterator<String> doGetPrefixes(String nsURI) {
         return DataUtil.emptyIterator();
     }

@@ -62,27 +62,34 @@ public abstract class EntityDecl
         mDeclaredExternally = true;
     }
 
+    @Override
     public final String getBaseURI() {
         return mContext.toExternalForm();
     }
 
+    @Override
     public final String getName() {
         return mName;
     }
 
+    @Override
     public final Location getLocation() {
         return mLocation;
     }
 
+    @Override
     public abstract String getNotationName();
 
+    @Override
     public abstract String getPublicId();
 
+    @Override
     public abstract String getReplacementText();
 
     public abstract int getReplacementText(Writer w)
         throws IOException;
 
+    @Override
     public abstract String getSystemId();
 
     /**
@@ -99,6 +106,7 @@ public abstract class EntityDecl
     ///////////////////////////////////////////
      */
 
+    @Override
     public abstract void writeEnc(Writer w) throws IOException;
 
     /*

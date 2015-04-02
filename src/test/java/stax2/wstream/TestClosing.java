@@ -1,6 +1,7 @@
 package stax2.wstream;
 
 import java.io.*;
+
 import javax.xml.stream.*;
 import javax.xml.transform.stream.StreamResult;
 
@@ -11,6 +12,7 @@ import org.codehaus.stax2.io.Stax2BlockResult;
  * This unit test suite verifies that the auto-closing feature works
  * as expected (both explicitly, and via Result object being passed).
  */
+@SuppressWarnings("resource")
 public class TestClosing
     extends BaseWriterTest
 {
@@ -176,6 +178,7 @@ public class TestClosing
 
         public MyWriter() { }
 
+        @Override
         public void close() throws IOException {
             mIsClosed = true;
             super.close();
@@ -191,6 +194,7 @@ public class TestClosing
 
         public MyStream() { }
 
+        @Override
         public void close() throws IOException {
             mIsClosed = true;
             super.close();
@@ -225,10 +229,12 @@ public class TestClosing
 
         public MyStringResult() { super(); }
 
+        @Override
         public Writer constructWriter() {
             mWriter = new MyWriter();
             return mWriter;
         }
+        @Override
         public OutputStream constructOutputStream() { return null; }
 
         public boolean isClosed() { return mWriter.isClosed(); }

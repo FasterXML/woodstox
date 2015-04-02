@@ -38,8 +38,8 @@ public final class DTDIdAttr
         super(name, defValue, specIndex, nsAware, xml11);
     }
 
-    public DTDAttribute cloneWith(int specIndex)
-    {
+    @Override
+    public DTDAttribute cloneWith(int specIndex) {
         return new DTDIdAttr(mName, mDefValue, specIndex, mCfgNsAware, mCfgXml11);
     }
 
@@ -49,10 +49,12 @@ public final class DTDIdAttr
     ///////////////////////////////////////////////////
      */
 
+    @Override
     public int getValueType() {
         return TYPE_ID;
     }
 
+    @Override
     public boolean typeIsId() {
         return true;
     }
@@ -69,7 +71,8 @@ public final class DTDIdAttr
      * for the value.
      */
     @SuppressWarnings("cast")
-	public String validate(DTDValidatorBase v, char[] cbuf, int start, int end, boolean normalize)
+    @Override
+    public String validate(DTDValidatorBase v, char[] cbuf, int start, int end, boolean normalize)
         throws XMLStreamException
     {
         // Let's trim leading white space first...
@@ -124,6 +127,7 @@ public final class DTDIdAttr
      * to ask attribute to verify that the default it has (if any) is
      * valid for such type.
      */
+    @Override
     public void validateDefault(InputProblemReporter rep, boolean normalize)
     {
         // Should never get called

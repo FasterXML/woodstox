@@ -110,8 +110,8 @@ public class DefaultEventAllocator
     //////////////////////////////////////////////////////////
      */
 
-    public XMLEvent allocate(XMLStreamReader r)
-        throws XMLStreamException
+    @Override
+    public XMLEvent allocate(XMLStreamReader r) throws XMLStreamException
     {
         Location loc;
 
@@ -262,12 +262,14 @@ public class DefaultEventAllocator
         }
     }
     
+    @Override
     public void allocate(XMLStreamReader r, XMLEventConsumer consumer)
         throws XMLStreamException
     {
         consumer.add(allocate(r));
     }
 
+    @Override
     public XMLEventAllocator newInstance() {
         return new DefaultEventAllocator(mAccurateLocation);
     }
@@ -278,6 +280,7 @@ public class DefaultEventAllocator
     //////////////////////////////////////////////////////////
      */
 
+    @Override
     public Object withStartElement(Location loc, QName name,
                                    BaseNsContext nsCtxt, ElemAttrs attrs,
                                    boolean wasEmpty)

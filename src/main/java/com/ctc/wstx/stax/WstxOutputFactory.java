@@ -244,6 +244,7 @@ public class WstxOutputFactory
      *   auto-close be enabled (true); or only if application has
      *   requested it (false)
      */
+    @SuppressWarnings("resource")
     private XMLStreamWriter2 createSW(OutputStream out, Writer w, String enc,
                                       boolean requireAutoClose)
         throws XMLStreamException
@@ -315,6 +316,7 @@ public class WstxOutputFactory
         return new NonNsStreamWriter(xw, enc, cfg);
     }
 
+    @SuppressWarnings("resource")
     private XMLStreamWriter2 createSW(Result res)
         throws XMLStreamException
     {

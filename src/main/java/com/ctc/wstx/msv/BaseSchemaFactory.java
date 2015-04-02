@@ -23,7 +23,6 @@ import javax.xml.stream.*;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
-
 import org.codehaus.stax2.validation.*;
 
 import com.ctc.wstx.api.ValidatorConfig;
@@ -55,18 +54,18 @@ public abstract class BaseSchemaFactory
     ////////////////////////////////////////////////////////////
      */
 
-    public boolean isPropertySupported(String propName)
-    {
+    @Override
+    public boolean isPropertySupported(String propName) {
         return mConfig.isPropertySupported(propName);
     }
 
-    public boolean setProperty(String propName, Object value)
-    {
+    @Override
+    public boolean setProperty(String propName, Object value) {
         return mConfig.setProperty(propName, value);
     }
 
-    public Object getProperty(String propName)
-    {
+    @Override
+    public Object getProperty(String propName) {
         return mConfig.getProperty(propName);
     }
 
@@ -76,6 +75,7 @@ public abstract class BaseSchemaFactory
     ////////////////////////////////////////////////////////////
      */
 
+    @Override
     public XMLValidationSchema createSchema(InputStream in, String encoding,
                                            String publicId, String systemId)
         throws XMLStreamException
@@ -87,6 +87,7 @@ public abstract class BaseSchemaFactory
         return loadSchema(src, systemId);
     }
 
+    @Override
     public XMLValidationSchema createSchema(Reader r, String publicId,
                                             String systemId)
         throws XMLStreamException
@@ -97,6 +98,8 @@ public abstract class BaseSchemaFactory
         return loadSchema(src, systemId);
     }
 
+    @SuppressWarnings("resource")
+    @Override
     public XMLValidationSchema createSchema(URL url)
         throws XMLStreamException
     {
@@ -111,7 +114,8 @@ public abstract class BaseSchemaFactory
     }
 
     @SuppressWarnings("deprecation")
-	public XMLValidationSchema createSchema(File f)
+    @Override
+    public XMLValidationSchema createSchema(File f)
         throws XMLStreamException
     {
         try {
@@ -165,6 +169,7 @@ public abstract class BaseSchemaFactory
 
         //public void warning(Locator[] locs, String errorMessage) { }
 
+        @Override
         public void error(Locator[] locs, String msg, Exception nestedException )
         {
             if (mErrorMsg == null) {

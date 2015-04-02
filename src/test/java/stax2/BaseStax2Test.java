@@ -156,7 +156,7 @@ public abstract class BaseStax2Test
         return (XMLStreamReader2) f.createXMLStreamReader(new ByteArrayInputStream(data));
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({ "deprecation", "resource" })
 	protected static XMLStreamReader2 constructStreamReaderForFile(XMLInputFactory f, String filename)
         throws IOException, XMLStreamException
     {

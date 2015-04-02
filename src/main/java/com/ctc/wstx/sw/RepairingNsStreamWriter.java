@@ -102,6 +102,7 @@ public final class RepairingNsStreamWriter
 
     //public void writeAttribute(String localName, String value)
 
+    @Override
     public void writeAttribute(String nsURI, String localName, String value)
         throws XMLStreamException
     {
@@ -114,8 +115,9 @@ public final class RepairingNsStreamWriter
                     value);
     }
 
+    @Override
     public void writeAttribute(String prefix, String nsURI,
-                               String localName, String value)
+            String localName, String value)
         throws XMLStreamException
     {
         if (!mStartElementOpen) {
@@ -126,6 +128,7 @@ public final class RepairingNsStreamWriter
                     value);
     }
 
+    @Override
     public void writeDefaultNamespace(String nsURI)
         throws XMLStreamException
     {
@@ -153,6 +156,7 @@ public final class RepairingNsStreamWriter
 
     //public void writeEmptyElement(String localName) throws XMLStreamException
 
+    @Override
     public void writeNamespace(String prefix, String nsURI)
         throws XMLStreamException
     {
@@ -189,12 +193,14 @@ public final class RepairingNsStreamWriter
      * With repairing writer, this is only taken as a suggestion as to how
      * the caller would prefer prefixes to be mapped.
      */
+    @Override
     public void setDefaultNamespace(String uri)
         throws XMLStreamException
     {
         mSuggestedDefNs = (uri == null || uri.length() == 0) ? null : uri;
     }
 
+    @Override
     public void doSetPrefix(String prefix, String uri)
         throws XMLStreamException
     {
@@ -221,7 +227,8 @@ public final class RepairingNsStreamWriter
         }
     }
 
-	public void writeStartElement(StartElement elem)
+    @Override
+    public void writeStartElement(StartElement elem)
         throws XMLStreamException
     {
         /* In repairing mode this is simple: let's just pass info
@@ -242,6 +249,7 @@ public final class RepairingNsStreamWriter
 
     //public void writeEndElement(QName name) throws XMLStreamException
 
+    @Override
     protected void writeTypedAttribute(String prefix, String nsURI, String localName,
                                        AsciiValueEncoder enc)
         throws XMLStreamException
@@ -250,6 +258,7 @@ public final class RepairingNsStreamWriter
                                   nsURI, localName, enc);
     }
 
+    @Override
     protected void writeStartOrEmpty(String localName, String nsURI)
         throws XMLStreamException
     {
@@ -293,6 +302,7 @@ public final class RepairingNsStreamWriter
         }
     }
 
+    @Override
     protected void writeStartOrEmpty(String suggPrefix, String localName, String nsURI)
         throws XMLStreamException
     {
@@ -354,6 +364,7 @@ public final class RepairingNsStreamWriter
      * bit different from the order in which element information is
      * passed in.
      */
+    @Override
     public final void copyStartElement(InputElementStack elemStack, AttributeCollector ac)
         throws IOException, XMLStreamException
     {
@@ -420,6 +431,7 @@ public final class RepairingNsStreamWriter
         }
     }
 
+    @Override
     public String validateQNamePrefix(QName name)
         throws XMLStreamException
     {

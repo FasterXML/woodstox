@@ -11,6 +11,7 @@ import com.ctc.wstx.stax.WstxInputFactory;
 public class InputFactoryProviderImpl
     implements Stax2InputFactoryProvider
 {
+    @Override
     public XMLInputFactory2 createInputFactory() {
         return new WstxInputFactory();
     }

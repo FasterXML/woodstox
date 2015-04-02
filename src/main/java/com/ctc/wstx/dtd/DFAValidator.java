@@ -37,10 +37,12 @@ public final class DFAValidator
         mState = initialState;
     }
 
+    @Override
     public StructValidator newInstance() {
         return new DFAValidator(mState);
     }
 
+    @Override
     public String tryToValidate(PrefixedName elemName)
     {
         // Do we have a follow state with that key?
@@ -64,7 +66,8 @@ public final class DFAValidator
         mState = next;
         return null;
     }
-    
+
+    @Override
     public String fullyValid()
     {
         if (mState.isAcceptingState()) {

@@ -63,14 +63,18 @@ abstract class BaseStartElement
     /////////////////////////////////////////////
      */
 
+    @Override
     public abstract Attribute getAttributeByName(QName name);
 
+    @Override
     public abstract Iterator<Attribute> getAttributes();
 
+    @Override
     public final QName getName() {
         return mName;
     }
 
+    @Override
     public Iterator<Namespace> getNamespaces() 
     {
         if (mNsCtxt == null) {
@@ -83,10 +87,12 @@ abstract class BaseStartElement
         return mNsCtxt.getNamespaces();
     }
 
+    @Override
     public NamespaceContext getNamespaceContext() {
         return mNsCtxt;
     }
 
+    @Override
     public String getNamespaceURI(String prefix)    {
         return (mNsCtxt == null) ? null : mNsCtxt.getNamespaceURI(prefix);
     }
@@ -97,18 +103,22 @@ abstract class BaseStartElement
     /////////////////////////////////////////////////////
      */
 
+    @Override
     public StartElement asStartElement() { // overriden to save a cast
         return this;
     }
 
+    @Override
     public int getEventType() {
         return START_ELEMENT;
     }
 
+    @Override
     public boolean isStartElement() {
         return true;
     }
 
+    @Override
     public void writeAsEncodedUnicode(Writer w)
         throws XMLStreamException
     {
@@ -130,6 +140,7 @@ abstract class BaseStartElement
         }
     }
 
+    @Override
     public void writeUsing(XMLStreamWriter2 w) throws XMLStreamException
     {
         QName n = mName;
@@ -150,6 +161,7 @@ abstract class BaseStartElement
     ///////////////////////////////////////////
      */
 
+    @Override
     public boolean equals(Object o)
     {
         if (o == this) return true;
@@ -174,6 +186,7 @@ abstract class BaseStartElement
         return false;
     }
 
+    @Override
     public int hashCode()
     {
         int hash = mName.hashCode();

@@ -16,6 +16,7 @@ package com.ctc.wstx.sax;
 
 import java.io.*;
 import java.net.URL;
+
 import javax.xml.XMLConstants;
 import javax.xml.parsers.SAXParser;
 import javax.xml.stream.Location;
@@ -31,6 +32,79 @@ import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.ext.Locator2;
 
 //import org.codehaus.stax2.DTDInfo;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 import com.ctc.wstx.api.ReaderConfig;
 import com.ctc.wstx.dtd.DTDEventListener;
@@ -173,13 +247,13 @@ public class WstxSAXParser
         this(new WstxInputFactory(), FEAT_DEFAULT_NS_PREFIXES);
     }
 
-    public final Parser getParser()
-    {
+    @Override
+    public final Parser getParser() {
         return this;
     }
 
-    public final XMLReader getXMLReader()
-    {
+    @Override
+    public final XMLReader getXMLReader() {
         return this;
     }
 
@@ -199,14 +273,17 @@ public class WstxSAXParser
     /////////////////////////////////////////////////
      */
 
+    @Override
     public boolean isNamespaceAware() {
         return mConfig.willSupportNamespaces();
     }
 
+    @Override
     public boolean isValidating() {
         return mConfig.willValidateWithDTD();
     }
 
+    @Override
     public Object getProperty(String name)
         throws SAXNotRecognizedException, SAXNotSupportedException
     {
@@ -226,6 +303,7 @@ public class WstxSAXParser
         throw new SAXNotRecognizedException("Property '"+name+"' not recognized");
     }
 
+    @Override
     public void setProperty(String name, Object value)
         throws SAXNotRecognizedException, SAXNotSupportedException
     {
@@ -317,26 +395,27 @@ public class WstxSAXParser
     /////////////////////////////////////////////////////
     */
 
-    public ContentHandler getContentHandler()
-    {
+    @Override
+    public ContentHandler getContentHandler() {
         return mContentHandler;
     }
 
-    public DTDHandler getDTDHandler()
-    {
+    @Override
+    public DTDHandler getDTDHandler() {
         return mDTDHandler;
     }
 
-    public EntityResolver getEntityResolver()
-    {
+    @Override
+    public EntityResolver getEntityResolver() {
         return mEntityResolver;
     }
 
-    public ErrorHandler getErrorHandler()
-    {
+    @Override
+    public ErrorHandler getErrorHandler() {
         return mErrorHandler;
     }
 
+    @Override
     public boolean getFeature(String name)
         throws SAXNotRecognizedException
     {
@@ -391,26 +470,27 @@ public class WstxSAXParser
     /////////////////////////////////////////////////////
     */
 
-    public void setContentHandler(ContentHandler handler)
-    {
+    @Override
+    public void setContentHandler(ContentHandler handler) {
         mContentHandler = handler;
     }
 
-    public void setDTDHandler(DTDHandler handler)
-    {
+    @Override
+    public void setDTDHandler(DTDHandler handler) {
         mDTDHandler = handler;
     }
 
-    public void setEntityResolver(EntityResolver resolver)
-    {
+    @Override
+    public void setEntityResolver(EntityResolver resolver) {
         mEntityResolver = resolver;
     }
 
-    public void setErrorHandler(ErrorHandler handler)
-    {
+    @Override
+    public void setErrorHandler(ErrorHandler handler) {
         mErrorHandler = handler;
     }
 
+    @Override
     public void setFeature(String name, boolean value)
         throws SAXNotRecognizedException, SAXNotSupportedException
     {
@@ -470,8 +550,9 @@ public class WstxSAXParser
     /////////////////////////////////////////////////////
     */
 
-    public void parse(InputSource input)
-        throws SAXException
+    @SuppressWarnings("resource")
+    @Override
+    public void parse(InputSource input) throws SAXException
     {
         mScanner = null;
         String sysIdStr = input.getSystemId();
@@ -571,8 +652,8 @@ public class WstxSAXParser
         }
     }
 
-    public void parse(String systemId)
-        throws SAXException
+    @Override
+    public void parse(String systemId) throws SAXException
     {
         InputSource src = new InputSource(systemId);
         parse(src);
@@ -737,13 +818,13 @@ public class WstxSAXParser
     //public void setEntityResolver(EntityResolver resolver)
     //public void setErrorHandler(ErrorHandler handler)
 
-    public void setDocumentHandler(DocumentHandler handler)
-    {
+    @Override
+    public void setDocumentHandler(DocumentHandler handler) {
         setContentHandler(new DocHandlerWrapper(handler));
     }
 
-    public void setLocale(java.util.Locale locale) 
-    {
+    @Override
+    public void setLocale(java.util.Locale locale)  {
         // Not supported, let's just ignore
     }
 
@@ -753,6 +834,7 @@ public class WstxSAXParser
     /////////////////////////////////////////////////////
     */
 
+    @Override
     public int getIndex(String qName)
     {
         if (mElemStack == null) {
@@ -763,6 +845,7 @@ public class WstxSAXParser
         return ix;
     }
 
+    @Override
     public int getIndex(String uri, String localName)
     {
         if (mElemStack == null) {
@@ -773,11 +856,13 @@ public class WstxSAXParser
         return ix;
     }
 
+    @Override
     public int getLength()
     {
         return mAttrCount + mNsCount;
     }
 
+    @Override
     public String getLocalName(int index)
     {
         if (index < mAttrCount) {
@@ -796,6 +881,7 @@ public class WstxSAXParser
         return null;
     }
 
+    @Override
     public String getQName(int index)
     {
         if (index < mAttrCount) {
@@ -822,6 +908,7 @@ public class WstxSAXParser
         return null;
     }
 
+    @Override
     public String getType(int index)
     {
         if (index < mAttrCount) {
@@ -847,16 +934,17 @@ public class WstxSAXParser
         return null;
     }
 
-    public String getType(String qName)
-    {
+    @Override
+    public String getType(String qName) {
         return getType(getIndex(qName));
     }
 
-    public String getType(String uri, String localName)
-    {
+    @Override
+    public String getType(String uri, String localName) {
         return getType(getIndex(uri, localName));
     }
 
+    @Override
     public String getURI(int index)
     {
         if (index < mAttrCount) {
@@ -872,6 +960,7 @@ public class WstxSAXParser
         return null;
     }
 
+    @Override
     public String getValue(int index)
     {
         if (index < mAttrCount) {
@@ -889,13 +978,13 @@ public class WstxSAXParser
         return null;
     }
 
-    public String getValue(String qName)
-    {
+    @Override
+    public String getValue(String qName) {
         return getValue(getIndex(qName));
     }
 
-    public String getValue(String uri, String localName) 
-    {
+    @Override
+    public String getValue(String uri, String localName)  {
         return getValue(getIndex(uri, localName));
     }
 
@@ -905,6 +994,7 @@ public class WstxSAXParser
     /////////////////////////////////////////////////////
     */
 
+    @Override
     public boolean isDeclared(int index)
     {
         if (index < mAttrCount) {
@@ -927,16 +1017,17 @@ public class WstxSAXParser
         return false; // never gets here
     }
 
-    public boolean isDeclared(String qName)
-    {
+    @Override
+    public boolean isDeclared(String qName) {
         return false;
     }
 
-    public boolean isDeclared(String uri, String localName)
-    {
+    @Override
+    public boolean isDeclared(String uri, String localName) {
         return false;
     }
 
+    @Override
     public boolean isSpecified(int index)
     {
         if (index < mAttrCount) {
@@ -957,6 +1048,7 @@ public class WstxSAXParser
         return false; // never gets here
     }
 
+    @Override
     public boolean isSpecified(String qName)
     {
         int ix = getIndex(qName);
@@ -966,6 +1058,7 @@ public class WstxSAXParser
         return isSpecified(ix);
     }
 
+    @Override
     public boolean isSpecified(String uri, String localName) 
     {
         int ix = getIndex(uri, localName);
@@ -981,6 +1074,7 @@ public class WstxSAXParser
     /////////////////////////////////////////////////////
     */
 
+    @Override
     public int getColumnNumber()
     {
         if (mScanner != null) {
@@ -990,6 +1084,7 @@ public class WstxSAXParser
         return -1;
     }
 
+    @Override
     public int getLineNumber()
     {
         if (mScanner != null) {
@@ -999,6 +1094,7 @@ public class WstxSAXParser
         return -1;
     }
 
+    @Override
     public String getPublicId()
     {
         if (mScanner != null) {
@@ -1008,8 +1104,8 @@ public class WstxSAXParser
         return null;
     }
 
-    public String getSystemId() 
-    {
+    @Override
+    public String getSystemId() {
         if (mScanner != null) {
             Location loc = mScanner.getLocation();
             return loc.getSystemId();
@@ -1023,13 +1119,13 @@ public class WstxSAXParser
     /////////////////////////////////////////////////////
     */
 
-    public String getEncoding()
-    {
+    @Override
+    public String getEncoding() {
         return mEncoding;
     }
 
-    public String getXMLVersion() 
-    {
+    @Override
+    public String getXMLVersion() {
         return mXmlVersion;
     }
 
@@ -1039,11 +1135,13 @@ public class WstxSAXParser
     /////////////////////////////////////////////////////
     */
 
+    @Override
     public boolean dtdReportComments()
     {
         return (mLexicalHandler != null);
     }
 
+    @Override
     public void dtdComment(char[] data, int offset, int len)
     {
         if (mLexicalHandler != null) {
@@ -1055,6 +1153,7 @@ public class WstxSAXParser
         }
     }
 
+    @Override
     public void dtdProcessingInstruction(String target, String data)
     {
         if (mContentHandler != null) {
@@ -1066,6 +1165,7 @@ public class WstxSAXParser
         }
     }
 
+    @Override
     public void dtdSkippedEntity(String name)
     {
         if (mContentHandler != null) {
@@ -1078,6 +1178,7 @@ public class WstxSAXParser
     }
 
     // DTD declarations that must be exposed
+    @Override
     public void dtdNotationDecl(String name, String publicId, String systemId, URL baseURL)
         throws XMLStreamException
     {
@@ -1100,6 +1201,7 @@ public class WstxSAXParser
         }
     }
 
+    @Override
     public void dtdUnparsedEntityDecl(String name, String publicId, String systemId, String notationName, URL baseURL)
         throws XMLStreamException
     {
@@ -1122,6 +1224,7 @@ public class WstxSAXParser
 
     // DTD declarations that can be exposed
 
+    @Override
     public void attributeDecl(String eName, String aName, String type, String mode, String value)
     {
         if (mDeclHandler != null) {
@@ -1133,6 +1236,7 @@ public class WstxSAXParser
         }
     }
 
+    @Override
     public void dtdElementDecl(String name, String model)
     {
         if (mDeclHandler != null) {
@@ -1144,6 +1248,7 @@ public class WstxSAXParser
         }
     }
 
+    @Override
     public void dtdExternalEntityDecl(String name, String publicId, String systemId)
     {
         if (mDeclHandler != null) {
@@ -1155,6 +1260,7 @@ public class WstxSAXParser
         }
     }
 
+    @Override
     public void dtdInternalEntityDecl(String name, String value)
     {
         if (mDeclHandler != null) {
@@ -1213,6 +1319,7 @@ public class WstxSAXParser
     {
         public ResolverProxy() { }
 
+        @Override
         public Object resolveEntity(String publicID, String systemID, String baseURI, String namespace)
             throws XMLStreamException
         {
@@ -1266,17 +1373,20 @@ public class WstxSAXParser
             mDocHandler = h;
         }
 
+        @Override
         public void characters(char[] ch, int start, int length)
             throws SAXException
         {
             mDocHandler.characters(ch, start, length);
         }
 
+        @Override
         public void endDocument() throws SAXException
         {
             mDocHandler.endDocument();
         }
 
+        @Override
         public void endElement(String uri, String localName, String qName)
             throws SAXException
         {
@@ -1286,39 +1396,43 @@ public class WstxSAXParser
             mDocHandler.endElement(qName);
         }
 
+        @Override
         public void endPrefixMapping(String prefix)
         {
             // no equivalent in SAX1, ignore
         }
 
+        @Override
         public void ignorableWhitespace(char[] ch, int start, int length)
             throws SAXException
         {
             mDocHandler.ignorableWhitespace(ch, start, length);
         }
 
+        @Override
         public void processingInstruction(String target, String data)
             throws SAXException
         {
             mDocHandler.processingInstruction(target, data);
         }
 
-        public void setDocumentLocator(Locator locator)
-        {
+        @Override
+        public void setDocumentLocator(Locator locator) {
             mDocHandler.setDocumentLocator(locator);
         }
 
-        public void skippedEntity(String name)
-        {
+        @Override
+        public void skippedEntity(String name) {
             // no equivalent in SAX1, ignore
         }
 
-        public void startDocument()
-            throws SAXException
+        @Override
+        public void startDocument() throws SAXException
         {
             mDocHandler.startDocument();
         }
 
+        @Override
         public void startElement(String uri, String localName, String qName,
                                  Attributes attrs)
             throws SAXException
@@ -1331,8 +1445,8 @@ public class WstxSAXParser
             mDocHandler.startElement(qName, mAttrWrapper);
         }
 
-        public void startPrefixMapping(String prefix, String uri)
-        {
+        @Override
+        public void startPrefixMapping(String prefix, String uri) {
             // no equivalent in SAX1, ignore
         }
     }
@@ -1348,34 +1462,34 @@ public class WstxSAXParser
             mAttrs = a;
         }
 
-        public int getLength()
-        {
+        @Override
+        public int getLength() {
             return mAttrs.getLength();
         }
 
-        public String getName(int i)
-        {
+        @Override
+        public String getName(int i) {
             String n = mAttrs.getQName(i);
             return (n == null) ? mAttrs.getLocalName(i) : n;
         }
 
-        public String getType(int i)
-        {
+        @Override
+        public String getType(int i) {
             return mAttrs.getType(i);
         }
 
-        public String getType(String name)
-        {
+        @Override
+        public String getType(String name) {
             return mAttrs.getType(name);
         }
 
-        public String getValue(int i)
-        {
+        @Override
+        public String getValue(int i) {
             return mAttrs.getValue(i);
         }
 
-        public String getValue(String name)     
-        {
+        @Override
+        public String getValue(String name) {
             return mAttrs.getValue(name);
         }
     }

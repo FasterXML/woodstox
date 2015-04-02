@@ -63,6 +63,7 @@ public class ChoiceContentSpec
     ///////////////////////////////////////////////////
      */
 
+    @Override
     public StructValidator getSimpleValidator()
     {
         /* Can we create a simple validator? Yes, if the sub-specs are
@@ -93,6 +94,7 @@ public class ChoiceContentSpec
         return null;
     }
 
+    @Override
     public ModelNode rewrite()
     {
         // First, need to convert sub-specs:
@@ -118,6 +120,7 @@ public class ChoiceContentSpec
         return model;
     }
 
+    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
@@ -195,10 +198,12 @@ public class ChoiceContentSpec
          * matter as it won't be used. Otherwise a new instance has to
          * be created always, to keep track of instance counts.
          */
+        @Override
         public StructValidator newInstance() {
             return (mArity == '*') ? this : new Validator(mArity, mNames);
         }
 
+        @Override
         public String tryToValidate(PrefixedName elemName)
         {
             if (!mNames.contains(elemName)) {
@@ -218,6 +223,7 @@ public class ChoiceContentSpec
             return null;
         }
         
+        @Override
         public String fullyValid()
         {
             switch (mArity) {

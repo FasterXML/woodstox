@@ -82,18 +82,18 @@ public class DTDSchemaFactory
     ////////////////////////////////////////////////////////////
      */
 
-    public boolean isPropertySupported(String propName)
-    {
+    @Override
+    public boolean isPropertySupported(String propName) {
         return mSchemaConfig.isPropertySupported(propName);
     }
 
-    public boolean setProperty(String propName, Object value)
-    {
+    @Override
+    public boolean setProperty(String propName, Object value) {
         return mSchemaConfig.setProperty(propName, value);
     }
 
-    public Object getProperty(String propName)
-    {
+    @Override
+    public Object getProperty(String propName) {
         return mSchemaConfig.getProperty(propName);
     }
 
@@ -103,6 +103,7 @@ public class DTDSchemaFactory
     ////////////////////////////////////////////////////////////
      */
 
+    @Override
     public XMLValidationSchema createSchema(InputStream in, String encoding,
     		String publicId, String systemId)
         throws XMLStreamException
@@ -112,6 +113,7 @@ public class DTDSchemaFactory
         		(publicId, SystemId.construct(systemId), in), publicId, systemId, null);
     }
 
+    @Override
     public XMLValidationSchema createSchema(Reader r,
     		String publicId, String systemId)
         throws XMLStreamException
@@ -121,6 +123,8 @@ public class DTDSchemaFactory
         		(publicId, SystemId.construct(systemId), r, null), publicId, systemId, null);
     }
 
+    @SuppressWarnings("resource")
+    @Override
     public XMLValidationSchema createSchema(URL url)
         throws XMLStreamException
     {
@@ -135,6 +139,8 @@ public class DTDSchemaFactory
         }
     }
 
+    @SuppressWarnings("resource")
+    @Override
     public XMLValidationSchema createSchema(File f)
         throws XMLStreamException
     {
@@ -159,6 +165,7 @@ public class DTDSchemaFactory
      * The main validator construction method, called by all externally
      * visible methods.
      */
+    @SuppressWarnings("resource")
     protected XMLValidationSchema doCreateSchema
         (ReaderConfig rcfg, InputBootstrapper bs, String publicId, String systemIdStr, URL ctxt)
         throws XMLStreamException

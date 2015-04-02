@@ -64,6 +64,7 @@ public class SimpleNsStreamWriter
 
     //public void writeAttribute(String localName, String value)
 
+    @Override
     public void writeAttribute(String nsURI, String localName, String value)
         throws XMLStreamException
     {
@@ -78,6 +79,7 @@ public class SimpleNsStreamWriter
         doWriteAttr(localName, nsURI, prefix, value);
     }
 
+    @Override
     public void writeAttribute(String prefix, String nsURI,
                                String localName, String value)
         throws XMLStreamException
@@ -94,6 +96,7 @@ public class SimpleNsStreamWriter
 
     //public void writeEndElement() throws XMLStreamException
 
+    @Override
     public void writeDefaultNamespace(String nsURI)
         throws XMLStreamException
     {
@@ -105,6 +108,7 @@ public class SimpleNsStreamWriter
         doWriteDefaultNs(nsURI);
     }
 
+    @Override
     public void writeNamespace(String prefix, String nsURI)
         throws XMLStreamException
     {
@@ -143,20 +147,20 @@ public class SimpleNsStreamWriter
     ////////////////////////////////////////////////////
      */
 
-    public void setDefaultNamespace(String uri)
-        throws XMLStreamException
+    @Override
+    public void setDefaultNamespace(String uri) throws XMLStreamException
     {
         mCurrElem.setDefaultNsUri(uri);
     }
 
-    public void doSetPrefix(String prefix, String uri)
-        throws XMLStreamException
+    @Override
+    public void doSetPrefix(String prefix, String uri) throws XMLStreamException
     {
         mCurrElem.addPrefix(prefix, uri);
     }
 
-    public void writeStartElement(StartElement elem)
-        throws XMLStreamException
+    @Override
+    public void writeStartElement(StartElement elem) throws XMLStreamException
     {
         QName name = elem.getName();
         @SuppressWarnings("unchecked")
@@ -224,6 +228,7 @@ public class SimpleNsStreamWriter
 
     //public void writeEndElement(QName name) throws XMLStreamException
 
+    @Override
     protected void writeStartOrEmpty(String localName, String nsURI)
         throws XMLStreamException
     {
@@ -248,6 +253,7 @@ public class SimpleNsStreamWriter
         doWriteStartTag(prefix, localName);
     }
 
+    @Override
     protected void writeStartOrEmpty(String prefix, String localName, String nsURI)
         throws XMLStreamException
     {
@@ -276,8 +282,9 @@ public class SimpleNsStreamWriter
      * bit different from the order in which element information is
      * passed in.
      */
+    @Override
     public final void copyStartElement(InputElementStack elemStack,
-                                       AttributeCollector attrCollector)
+            AttributeCollector attrCollector)
         throws IOException, XMLStreamException
     {
         // Any namespace declarations/bindings?
@@ -330,6 +337,7 @@ public class SimpleNsStreamWriter
         }
     }
 
+    @Override
     public String validateQNamePrefix(QName name)
     {
         // Good as is, let's not complicate things

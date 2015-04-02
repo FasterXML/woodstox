@@ -91,6 +91,7 @@ public final class DTDId
     ///////////////////////////////////////////////////////////////////////
      */
 
+    @Override
     public int hashCode() {
         int hash = mHashCode;
         if (hash == 0) {
@@ -108,6 +109,7 @@ public final class DTDId
         return hash;
     }
 
+    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer(60);
         sb.append("Public-id: ");
@@ -121,6 +123,7 @@ public final class DTDId
         return sb.toString();
     }
 
+    @Override
     public boolean equals(Object o)
     {
         if (o == this) return true;

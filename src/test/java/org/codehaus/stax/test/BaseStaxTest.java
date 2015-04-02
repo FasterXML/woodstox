@@ -146,6 +146,7 @@ public abstract class BaseStaxTest
         return f.createXMLStreamReader(new ByteArrayInputStream(b));
     }
 
+    @SuppressWarnings("resource")
     protected static XMLStreamReader constructStreamReaderForFile(XMLInputFactory f, String filename)
         throws IOException, XMLStreamException
     {

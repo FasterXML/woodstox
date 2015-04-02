@@ -32,26 +32,32 @@ public class StarModel
      * Method that has to create a deep copy of the model, without
      * sharing any of existing Objects.
      */
+    @Override
     public ModelNode cloneModel() {
         return new StarModel(mModel.cloneModel());
     }
 
+    @Override
     public boolean isNullable() {
         return true;
     }
 
+    @Override
     public void indexTokens(List<TokenModel> tokens) {
         mModel.indexTokens(tokens);
     }
 
+    @Override
     public void addFirstPos(BitSet pos) {
         mModel.addFirstPos(pos);
     }
     
+    @Override
     public void addLastPos(BitSet pos) {
         mModel.addLastPos(pos);
     }
 
+    @Override
     public void calcFollowPos(BitSet[] followPosSets)
     {
         // First, let's let sub-model do its stuff
@@ -76,6 +82,7 @@ public class StarModel
         }
     }
 
+    @Override
     public String toString() {
         return mModel.toString() + "*";
     }

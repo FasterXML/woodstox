@@ -62,6 +62,7 @@ public class MergedNsContext
     /////////////////////////////////////////////
      */
 
+    @Override
     public String doGetNamespaceURI(String prefix)
     {
         // Note: base class checks for 'known' problems and prefixes:
@@ -75,6 +76,7 @@ public class MergedNsContext
         return (ns == null) ? null : ns.getNamespaceURI();
     }
 
+    @Override
     public String doGetPrefix(String nsURI)
     {
         // Note: base class checks for 'known' problems and prefixes:
@@ -88,7 +90,8 @@ public class MergedNsContext
         return (ns == null) ? null : ns.getPrefix();
     }
 
-	public Iterator<String> doGetPrefixes(String nsURI)
+    @Override
+    public Iterator<String> doGetPrefixes(String nsURI)
     {
         // Note: base class checks for 'known' problems and prefixes:
         ArrayList<String> l = null;
@@ -135,11 +138,12 @@ public class MergedNsContext
      * Method that returns information about namespace definition declared
      * in this scope; not including ones declared in outer scopes.
      */
-    public Iterator<Namespace> getNamespaces()
-    {
+    @Override
+    public Iterator<Namespace> getNamespaces() {
         return mNamespaces.iterator();
     }
 
+    @Override
     public void outputNamespaceDeclarations(Writer w) throws IOException
     {
         for (int i = 0, len = mNamespaces.size(); i < len; ++i) {
@@ -161,6 +165,7 @@ public class MergedNsContext
      * output all namespace declarations active in current namespace
      * scope, if any.
      */
+    @Override
     public void outputNamespaceDeclarations(XMLStreamWriter w) throws XMLStreamException
     {
         for (int i = 0, len = mNamespaces.size(); i < len; ++i) {

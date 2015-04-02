@@ -40,20 +40,24 @@ public class ConcatModel
      * Method that has to create a deep copy of the model, without
      * sharing any of existing Objects.
      */
+    @Override
     public ModelNode cloneModel() {
         return new ConcatModel(mLeftModel.cloneModel(), mRightModel.cloneModel());
     }
 
+    @Override
     public boolean isNullable() {
         return mNullable;
     }
 
+    @Override
     public void indexTokens(List<TokenModel> tokens)
     {
         mLeftModel.indexTokens(tokens);
         mRightModel.indexTokens(tokens);
     }
 
+    @Override
     public void addFirstPos(BitSet pos) {
         if (mFirstPos == null) {
             mFirstPos = new BitSet();
@@ -65,6 +69,7 @@ public class ConcatModel
         pos.or(mFirstPos);
     }
     
+    @Override
     public void addLastPos(BitSet pos) {
         if (mLastPos == null) {
             mLastPos = new BitSet();
@@ -76,6 +81,7 @@ public class ConcatModel
         pos.or(mLastPos);
     }
 
+    @Override
     public void calcFollowPos(BitSet[] followPosSets)
     {
         // Let's let sub-models do what they need to do
@@ -94,13 +100,12 @@ public class ConcatModel
 
         int ix = 0; // need to/can skip the null entry (index 0) 
         while ((ix = toAddTo.nextSetBit(ix+1)) >= 0) {
-            /* Ok; so token at this index needs to have follow positions
-             * added...
-             */
+            // Ok; so token at this index needs to have follow positions added...
             followPosSets[ix].or(foll);
         }
     }
 
+    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();

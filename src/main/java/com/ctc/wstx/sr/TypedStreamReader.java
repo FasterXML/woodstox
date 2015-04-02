@@ -26,7 +26,6 @@ import org.codehaus.stax2.typed.Base64Variants;
 import org.codehaus.stax2.typed.TypedArrayDecoder;
 import org.codehaus.stax2.typed.TypedValueDecoder;
 import org.codehaus.stax2.typed.TypedXMLStreamException;
-
 import org.codehaus.stax2.ri.Stax2Util;
 import org.codehaus.stax2.ri.typed.ValueDecoderFactory;
 import org.codehaus.stax2.ri.typed.CharArrayBase64Decoder;
@@ -567,6 +566,7 @@ public class TypedStreamReader
     ///////////////////////////////////////////////////////////
      */
 
+    @Override
     public int getAttributeIndex(String namespaceURI, String localName)
     {
         // Note: cut'n pasted from "getAttributeInfo()"
@@ -576,6 +576,7 @@ public class TypedStreamReader
         return mElementStack.findAttributeIndex(namespaceURI, localName);
     }
 
+    @Override
     public boolean getAttributeAsBoolean(int index) throws XMLStreamException
     {
         ValueDecoderFactory.BooleanDecoder dec = _decoderFactory().getBooleanDecoder();
@@ -583,6 +584,7 @@ public class TypedStreamReader
         return dec.getValue();
     }
 
+    @Override
     public int getAttributeAsInt(int index) throws XMLStreamException
     {
         ValueDecoderFactory.IntDecoder dec = _decoderFactory().getIntDecoder();
@@ -590,6 +592,7 @@ public class TypedStreamReader
         return dec.getValue();
     }
 
+    @Override
     public long getAttributeAsLong(int index) throws XMLStreamException
     {
         ValueDecoderFactory.LongDecoder dec = _decoderFactory().getLongDecoder();
@@ -597,6 +600,7 @@ public class TypedStreamReader
         return dec.getValue();
     }
 
+    @Override
     public float getAttributeAsFloat(int index) throws XMLStreamException
     {
         ValueDecoderFactory.FloatDecoder dec = _decoderFactory().getFloatDecoder();
@@ -604,6 +608,7 @@ public class TypedStreamReader
         return dec.getValue();
     }
 
+    @Override
     public double getAttributeAsDouble(int index) throws XMLStreamException
     {
         ValueDecoderFactory.DoubleDecoder dec = _decoderFactory().getDoubleDecoder();
@@ -611,6 +616,7 @@ public class TypedStreamReader
         return dec.getValue();
     }
 
+    @Override
     public BigInteger getAttributeAsInteger(int index) throws XMLStreamException
     {
         ValueDecoderFactory.IntegerDecoder dec = _decoderFactory().getIntegerDecoder();
@@ -618,6 +624,7 @@ public class TypedStreamReader
         return dec.getValue();
     }
 
+    @Override
     public BigDecimal getAttributeAsDecimal(int index) throws XMLStreamException
     {
         ValueDecoderFactory.DecimalDecoder dec = _decoderFactory().getDecimalDecoder();
@@ -625,6 +632,7 @@ public class TypedStreamReader
         return dec.getValue();
     }
 
+    @Override
     public QName getAttributeAsQName(int index) throws XMLStreamException
     {
         ValueDecoderFactory.QNameDecoder dec = _decoderFactory().getQNameDecoder(getNamespaceContext());
@@ -632,6 +640,7 @@ public class TypedStreamReader
         return _verifyQName(dec.getValue());
     }
 
+    @Override
     public void getAttributeAs(int index, TypedValueDecoder tvd) throws XMLStreamException
     {
         if (mCurrToken != START_ELEMENT) {
@@ -644,6 +653,7 @@ public class TypedStreamReader
         }
     }
 
+    @Override
     public int[] getAttributeAsIntArray(int index) throws XMLStreamException
     {
         ValueDecoderFactory.IntArrayDecoder dec = _decoderFactory().getIntArrayDecoder();
@@ -651,6 +661,7 @@ public class TypedStreamReader
         return dec.getValues();
     }
 
+    @Override
     public long[] getAttributeAsLongArray(int index) throws XMLStreamException
     {
         ValueDecoderFactory.LongArrayDecoder dec = _decoderFactory().getLongArrayDecoder();
@@ -658,6 +669,7 @@ public class TypedStreamReader
         return dec.getValues();
     }
 
+    @Override
     public float[] getAttributeAsFloatArray(int index) throws XMLStreamException
     {
         ValueDecoderFactory.FloatArrayDecoder dec = _decoderFactory().getFloatArrayDecoder();
@@ -665,6 +677,7 @@ public class TypedStreamReader
         return dec.getValues();
     }
 
+    @Override
     public double[] getAttributeAsDoubleArray(int index) throws XMLStreamException
     {
         ValueDecoderFactory.DoubleArrayDecoder dec = _decoderFactory().getDoubleArrayDecoder();
@@ -678,6 +691,7 @@ public class TypedStreamReader
      *
      * @return Number of tokens decoded, 0 if none found
      */
+    @Override
     public int getAttributeAsArray(int index, TypedArrayDecoder tad) throws XMLStreamException
     {
         if (mCurrToken != START_ELEMENT) {
@@ -686,13 +700,14 @@ public class TypedStreamReader
         return mAttrCollector.decodeValues(index, tad, this);
     }
 
+    @Override
     public byte[] getAttributeAsBinary(int index) throws XMLStreamException
     {
         return getAttributeAsBinary(index, Base64Variants.getDefaultVariant());
     }
 
-    public byte[] getAttributeAsBinary(int index, Base64Variant v) throws XMLStreamException
-    {
+    @Override
+    public byte[] getAttributeAsBinary(int index, Base64Variant v) throws XMLStreamException {
         return mAttrCollector.decodeBinary(index, v, _base64Decoder(), this);
     }
 

@@ -71,7 +71,7 @@ public final class DOMOutputElement
     /**
      * Method called to reuse a pooled instance.
      *
-     * @return Chained pooled instance that should now be head of the
+     * @returns Chained pooled instance that should now be head of the
      *   reuse chain
      */
     private void relink(DOMOutputElement parent, Element element)
@@ -130,15 +130,16 @@ public final class DOMOutputElement
     }
     
     /*
-    ///////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Public API, accessors
-    ///////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
      */
 
     public DOMOutputElement getParent() {
         return mParent;
     }
 
+    @Override
     public boolean isRoot() {
         // (Virtual) Root element has no parent...
         return (mParent == null);
@@ -149,6 +150,7 @@ public final class DOMOutputElement
      *   "prefix:localName" format (no URI). Useful for error and
      *   debugging messages.
      */
+    @Override
     public String getNameDesc() {
         if(mElement != null) {
             return mElement.getLocalName();
@@ -157,16 +159,18 @@ public final class DOMOutputElement
     }
     
     /*
-    ///////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Public API, mutators
-    ///////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
      */
 
+    @Override
     public void setDefaultNsUri(String uri) {
         mDefaultNsURI = uri;
         mDefaultNsSet = true;
     }
 
+    @Override
     protected void setRootNsContext(NamespaceContext ctxt)
     {
         mRootNsContext = ctxt;
@@ -182,9 +186,9 @@ public final class DOMOutputElement
     }
 
     /*
-    ///////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Public API, DOM manipulation
-    ///////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
      */
     
     protected void appendNode(Node n)

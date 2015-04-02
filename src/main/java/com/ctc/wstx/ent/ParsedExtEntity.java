@@ -22,6 +22,7 @@ public class ParsedExtEntity
         super(loc, name, ctxt, pubId, sysId);
     }
 
+    @Override
     public String getNotationName() {
         return null;
     }
@@ -32,6 +33,7 @@ public class ParsedExtEntity
     ///////////////////////////////////////////
      */
 
+    @Override
     public void writeEnc(Writer w) throws IOException
     {
         w.write("<!ENTITY ");
@@ -57,8 +59,10 @@ public class ParsedExtEntity
 
     // // // Type information
     
+    @Override
     public boolean isParsed() { return true; }
     
+    @Override
     public WstxInputSource expand(WstxInputSource parent,
                                   XMLResolver res, ReaderConfig cfg,
                                   int xmlVersion)

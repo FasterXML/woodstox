@@ -28,6 +28,7 @@ public final class DTDEnumAttr
         mEnumValues = enumValues;
     }
 
+    @Override
     public DTDAttribute cloneWith(int specIndex)
     {
         return new DTDEnumAttr(mName, mDefValue, specIndex, mCfgNsAware,
@@ -40,6 +41,7 @@ public final class DTDEnumAttr
     ///////////////////////////////////////////////////
      */
 
+    @Override
     public int getValueType() {
         return TYPE_ENUMERATED;
     }
@@ -55,7 +57,8 @@ public final class DTDEnumAttr
      * to let the attribute do necessary normalization and/or validation
      * for the value.
      */
-   public String validate(DTDValidatorBase v, char[] cbuf, int start, int end, boolean normalize)
+    @Override
+    public String validate(DTDValidatorBase v, char[] cbuf, int start, int end, boolean normalize)
         throws XMLStreamException
     {
         String ok = validateEnumValue(cbuf, start, end, normalize, mEnumValues);
@@ -72,6 +75,7 @@ public final class DTDEnumAttr
      * to ask attribute to verify that the default it has (if any) is
      * valid for such type.
      */
+    @Override
     public void validateDefault(InputProblemReporter rep, boolean normalize)
         throws XMLStreamException
     {

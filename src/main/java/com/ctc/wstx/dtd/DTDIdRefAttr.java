@@ -31,8 +31,8 @@ public final class DTDIdRefAttr
         super(name, defValue, specIndex, nsAware, xml11);
     }
 
-    public DTDAttribute cloneWith(int specIndex)
-    {
+    @Override
+    public DTDAttribute cloneWith(int specIndex) {
         return new DTDIdRefAttr(mName, mDefValue, specIndex, mCfgNsAware, mCfgXml11);
     }
 
@@ -42,6 +42,7 @@ public final class DTDIdRefAttr
     ///////////////////////////////////////////////////
      */
 
+    @Override
     public int getValueType() {
         return TYPE_IDREF;
     }
@@ -58,7 +59,8 @@ public final class DTDIdRefAttr
      * for the value.
      */
     @SuppressWarnings("cast")
-	public String validate(DTDValidatorBase v, char[] cbuf, int start, int end, boolean normalize)
+    @Override
+    public String validate(DTDValidatorBase v, char[] cbuf, int start, int end, boolean normalize)
         throws XMLStreamException
     {
         /* Let's skip leading/trailing white space, even if we are not
@@ -106,6 +108,7 @@ public final class DTDIdRefAttr
      * to ask attribute to verify that the default it has (if any) is
      * valid for such type.
      */
+    @Override
     public void validateDefault(InputProblemReporter rep, boolean normalize)
         throws XMLStreamException
     {

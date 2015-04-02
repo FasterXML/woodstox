@@ -11,6 +11,7 @@ import com.ctc.wstx.stax.WstxOutputFactory;
 public class OutputFactoryProviderImpl
     implements Stax2OutputFactoryProvider
 {
+    @Override
     public XMLOutputFactory2 createOutputFactory() {
         return new WstxOutputFactory();
     }

@@ -68,6 +68,7 @@ public class Configs
             mPos = -1;
         }
 
+        @Override
         public boolean nextConfig(XMLInputFactory f) {
             if (++mPos >= mTotalCount) {
                 return false;
@@ -76,11 +77,13 @@ public class Configs
             return true;
         }
 
+        @Override
         public void firstConfig(XMLInputFactory f) {
             mPos = 0;
             config(f, 0);
         }
 
+        @Override
         public String getDesc() {
             return getDesc(mPos);
         }

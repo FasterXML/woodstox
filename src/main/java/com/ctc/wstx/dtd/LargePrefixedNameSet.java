@@ -90,11 +90,13 @@ public final class LargePrefixedNameSet
         mBuckets = buckets;
     }
 
+    @Override
     public boolean hasMultiple() { return true; }
 
     /**
      * @return True if the set contains specified name; false if not.
      */
+    @Override
     public boolean contains(PrefixedName name)
     {
         PrefixedName[] hashArea = mNames;
@@ -122,6 +124,7 @@ public final class LargePrefixedNameSet
      * Method called by debug/error handling code, to get a list of
      * all names contained.
      */
+    @Override
     public void appendNames(StringBuilder sb, String sep)
     {
         // Let's first get the alphabetized list of all names from main hash

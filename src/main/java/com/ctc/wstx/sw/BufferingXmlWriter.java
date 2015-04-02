@@ -182,6 +182,7 @@ public final class BufferingXmlWriter
         mEncHighChar = ((bitsize < 16) ? (1 << bitsize) : 0xFFFE);
     }
 
+    @Override
     protected int getOutputPtr() {
         return mOutputPtr;
     }
@@ -192,13 +193,13 @@ public final class BufferingXmlWriter
     ////////////////////////////////////////////////
      */
 
-    final protected OutputStream getOutputStream()
-    {
+    @Override
+    final protected OutputStream getOutputStream() {
         return mUnderlyingStream;
     }
 
-    final protected Writer getWriter()
-    {
+    @Override
+    final protected Writer getWriter() {
         return mOut;
     }
 
@@ -208,8 +209,8 @@ public final class BufferingXmlWriter
     ////////////////////////////////////////////////
      */
 
-    public void close(boolean forceRealClose)
-        throws IOException
+    @Override
+    public void close(boolean forceRealClose) throws IOException
     {
         flush();
         mTextWriter = null;
@@ -234,15 +235,15 @@ public final class BufferingXmlWriter
         }
     }
 
-    public final void flush()
-        throws IOException
+    @Override
+    public final void flush() throws IOException
     {
         flushBuffer();
         mOut.flush();
     }
 
-    public void writeRaw(char[] cbuf, int offset, int len)
-        throws IOException
+    @Override
+    public void writeRaw(char[] cbuf, int offset, int len) throws IOException
     {
         if (mOut == null) {
             return;
@@ -290,6 +291,7 @@ public final class BufferingXmlWriter
      * that are known not to contain any escapable characters, or anything
      * else beyond 7-bit ascii range.
      */
+    @Override
     public final void writeRawAscii(char[] cbuf, int offset, int len)
         throws IOException
     {
@@ -297,8 +299,8 @@ public final class BufferingXmlWriter
         writeRaw(cbuf, offset, len);
     }
 
-    public void writeRaw(String str)
-        throws IOException
+    @Override
+    public void writeRaw(String str) throws IOException
     {
         if (mOut == null) {
             return;
@@ -319,8 +321,8 @@ public final class BufferingXmlWriter
         writeRaw(str, 0, len);
     }
 
-    public void writeRaw(String str, int offset, int len)
-        throws IOException
+    @Override
+    public void writeRaw(String str, int offset, int len) throws IOException
     {
         if (mOut == null) {
             return;
@@ -369,32 +371,28 @@ public final class BufferingXmlWriter
     ////////////////////////////////////////////////
      */
 
-    public final void writeCDataStart()
-        throws IOException
-    {
+    @Override
+    public final void writeCDataStart() throws IOException {
         fastWriteRaw("<![CDATA[");
     }
 
-    public final void writeCDataEnd()
-        throws IOException
-    {
+    @Override
+    public final void writeCDataEnd() throws IOException {
         fastWriteRaw("]]>");
     }
 
-    public final void writeCommentStart()
-        throws IOException
-    {
+    @Override
+    public final void writeCommentStart() throws IOException {
         fastWriteRaw("<!--");
     }
 
-    public final void writeCommentEnd()
-        throws IOException
-    {
+    @Override
+    public final void writeCommentEnd() throws IOException {
         fastWriteRaw("-->");
     }
 
-    public final void writePIStart(String target, boolean addSpace)
-        throws IOException
+    @Override
+    public final void writePIStart(String target, boolean addSpace) throws IOException
     {
         fastWriteRaw('<', '?');
         fastWriteRaw(target);
@@ -403,9 +401,8 @@ public final class BufferingXmlWriter
         }
     }
 
-    public final void writePIEnd()
-        throws IOException
-    {
+    @Override
+    public final void writePIEnd() throws IOException {
         fastWriteRaw('?', '>');
     }
 
@@ -415,8 +412,8 @@ public final class BufferingXmlWriter
     ////////////////////////////////////////////////
      */
 
-    public int writeCData(String data)
-        throws IOException
+    @Override
+    public int writeCData(String data) throws IOException
     {
         if (mCheckContent) {
             int ix = verifyCDataContent(data);
@@ -435,8 +432,8 @@ public final class BufferingXmlWriter
         return -1;
     }
 
-    public int writeCData(char[] cbuf, int offset, int len)
-        throws IOException
+    @Override
+    public int writeCData(char[] cbuf, int offset, int len) throws IOException
     {
         if (mCheckContent) {
             int ix = verifyCDataContent(cbuf, offset, len);
@@ -453,10 +450,10 @@ public final class BufferingXmlWriter
         writeRaw(cbuf, offset, len);
         fastWriteRaw("]]>");
         return -1;
-    }    
+    }
 
-    public void writeCharacters(String text)
-        throws IOException
+    @Override
+    public void writeCharacters(String text) throws IOException
     {
         if (mOut == null) {
             return;
@@ -534,8 +531,8 @@ public final class BufferingXmlWriter
         }
     }
     
-    public void writeCharacters(char[] cbuf, int offset, int len)
-        throws IOException
+    @Override
+    public void writeCharacters(char[] cbuf, int offset, int len) throws IOException
     {
         if (mOut == null) {
             return;
@@ -618,8 +615,8 @@ public final class BufferingXmlWriter
      * fixing is enabled), or return the offset of the first hyphen in
      * multi-hyphen sequence.
      */
-    public int writeComment(String data)
-        throws IOException
+    @Override
+    public int writeComment(String data) throws IOException
     {
         if (mCheckContent) {
             int ix = verifyCommentContent(data);
@@ -638,12 +635,13 @@ public final class BufferingXmlWriter
         return -1;
     }
 
-    public void writeDTD(String data)
-        throws IOException
+    @Override
+    public void writeDTD(String data) throws IOException
     {
         writeRaw(data);
-    }    
+    }
 
+    @Override
     public void writeDTD(String rootName, String systemId, String publicId,
                          String internalSubset)
         throws IOException, XMLStreamException
@@ -678,6 +676,7 @@ public final class BufferingXmlWriter
         fastWriteRaw('>');
     }
 
+    @Override
     public void writeEntityReference(String name)
         throws IOException, XMLStreamException
     {
@@ -689,6 +688,7 @@ public final class BufferingXmlWriter
         fastWriteRaw(';');
     }    
 
+    @Override
     public void writeXmlDeclaration(String version, String encoding, String standalone)
         throws IOException
     {
@@ -714,6 +714,7 @@ public final class BufferingXmlWriter
         fastWriteRaw('?', '>');
     }
 
+    @Override
     public int writePI(String target, String data)
         throws IOException, XMLStreamException
     {
@@ -747,6 +748,7 @@ public final class BufferingXmlWriter
     ////////////////////////////////////////////////////
      */
 
+    @Override
     public void writeStartTagStart(String localName)
         throws IOException, XMLStreamException
     {
@@ -768,6 +770,7 @@ public final class BufferingXmlWriter
         }
     }    
 
+    @Override
     public void writeStartTagStart(String prefix, String localName)
         throws IOException, XMLStreamException
     {
@@ -801,14 +804,13 @@ public final class BufferingXmlWriter
         }
     }    
 
-    public void writeStartTagEnd()
-        throws IOException
-    {
+    @Override
+    public void writeStartTagEnd() throws IOException {
         fastWriteRaw('>');
     }    
 
-    public void writeStartTagEmptyEnd()
-        throws IOException
+    @Override
+    public void writeStartTagEmptyEnd() throws IOException
     {
         int ptr = mOutputPtr;
         if ((ptr + 3) >= mOutputBufLen) {
@@ -827,8 +829,8 @@ public final class BufferingXmlWriter
         mOutputPtr = ptr;
     }    
 
-    public void writeEndTag(String localName)
-        throws IOException
+    @Override
+    public void writeEndTag(String localName) throws IOException
     {
         int ptr = mOutputPtr;
         int extra = (mOutputBufLen - ptr) - (3 + localName.length());
@@ -848,8 +850,8 @@ public final class BufferingXmlWriter
         }
     }    
 
-    public void writeEndTag(String prefix, String localName)
-        throws IOException
+    @Override
+    public void writeEndTag(String prefix, String localName) throws IOException
     {
         if (prefix == null || prefix.length() == 0) {
             writeEndTag(localName);
@@ -889,6 +891,7 @@ public final class BufferingXmlWriter
     ////////////////////////////////////////////////////
      */
 
+    @Override
     public void writeAttribute(String localName, String value)
         throws IOException, XMLStreamException
     {
@@ -925,6 +928,7 @@ public final class BufferingXmlWriter
         fastWriteRaw('"');
     }
 
+    @Override
     public void writeAttribute(String localName, char[] value, int offset, int vlen)
         throws IOException, XMLStreamException
     {
@@ -960,6 +964,7 @@ public final class BufferingXmlWriter
         fastWriteRaw('"');
     }
 
+    @Override
     public void writeAttribute(String prefix, String localName, String value)
         throws IOException, XMLStreamException
     {
@@ -1005,6 +1010,7 @@ public final class BufferingXmlWriter
         fastWriteRaw('"');
     }
 
+    @Override
     public void writeAttribute(String prefix, String localName, char[] value, int offset, int vlen)
         throws IOException, XMLStreamException
     {
@@ -1164,6 +1170,7 @@ public final class BufferingXmlWriter
     ////////////////////////////////////////////////
      */
 
+    @Override
     public final void writeTypedElement(AsciiValueEncoder enc)
         throws IOException
     {
@@ -1185,8 +1192,9 @@ public final class BufferingXmlWriter
         }
     }
 
+    @Override
     public final void writeTypedElement(AsciiValueEncoder enc,
-                                        XMLValidator validator, char[] copyBuffer)
+            XMLValidator validator, char[] copyBuffer)
         throws IOException, XMLStreamException
     {
         if (mOut == null) {
@@ -1209,6 +1217,7 @@ public final class BufferingXmlWriter
         }
     }
 
+    @Override
     public void writeTypedAttribute(String localName, AsciiValueEncoder enc)
         throws IOException, XMLStreamException
     {
@@ -1248,6 +1257,7 @@ public final class BufferingXmlWriter
         fastWriteRaw('"');
     }
 
+    @Override
     public void writeTypedAttribute(String prefix, String localName,
                                     AsciiValueEncoder enc)
         throws IOException, XMLStreamException
@@ -1297,6 +1307,7 @@ public final class BufferingXmlWriter
         fastWriteRaw('"');
     }
 
+    @Override
     public void writeTypedAttribute(String prefix, String localName, String nsURI,
                                     AsciiValueEncoder enc,
                                     XMLValidator validator, char[] copyBuffer)

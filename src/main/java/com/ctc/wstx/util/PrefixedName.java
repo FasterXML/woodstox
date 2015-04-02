@@ -118,6 +118,7 @@ public final class PrefixedName
     ///////////////////////////////////////////////////
      */
     
+    @Override
     public String toString()
     {
         if (mPrefix == null || mPrefix.length() == 0) {
@@ -130,6 +131,7 @@ public final class PrefixedName
         return sb.toString();
     }
 
+    @Override
     public boolean equals(Object o)
     {
         if (o == this) {
@@ -146,6 +148,7 @@ public final class PrefixedName
         return (mPrefix == other.mPrefix);
     }
 
+    @Override
     public int hashCode() {
         int hash = mHash;
 
@@ -159,6 +162,7 @@ public final class PrefixedName
         return hash;
     }
 
+    @Override
     public int compareTo(PrefixedName other)
     {
         // First, by prefix, then by local name:

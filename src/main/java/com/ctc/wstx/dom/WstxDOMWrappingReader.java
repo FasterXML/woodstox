@@ -47,12 +47,13 @@ public class WstxDOMWrappingReader
     ///////////////////////////////////////////////////
      */
 
-    public boolean isPropertySupported(String name)
-    {
+    @Override
+    public boolean isPropertySupported(String name) {
         // !!! TBI: not all these properties are really supported
         return mConfig.isPropertySupported(name);
     }
 
+    @Override
     public Object getProperty(String name)
     {
         if (name.equals("javax.xml.stream.entities")) {
@@ -66,6 +67,7 @@ public class WstxDOMWrappingReader
         return mConfig.getProperty(name);
     }
 
+    @Override
     public boolean setProperty(String name, Object value)
     {
         // Basic config accessor works just fine...

@@ -41,10 +41,12 @@ public class RelaxNGSchema
         mGrammar = grammar;
     }
 
+    @Override
     public String getSchemaType() {
         return XMLValidationSchema.SCHEMA_ID_RELAXNG;
     }
 
+    @Override
     public XMLValidator createValidator(ValidationContext ctxt)
         throws XMLStreamException
     {

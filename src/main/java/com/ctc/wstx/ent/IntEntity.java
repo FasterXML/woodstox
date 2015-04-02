@@ -48,15 +48,18 @@ public class IntEntity
         WstxInputLocation loc = WstxInputLocation.getEmptyLocation();
         return new IntEntity(loc, id, null, val, loc);
     }
-    
+
+    @Override
     public String getNotationName() {
         return null;
     }
 
+    @Override
     public String getPublicId() {
         return null;
     }
 
+    @Override
     public String getReplacementText()
     {
         String repl = mReplText;
@@ -67,13 +70,14 @@ public class IntEntity
         return mReplText;
     }
 
-    public int getReplacementText(Writer w)
-        throws IOException
+    @Override
+    public int getReplacementText(Writer w) throws IOException
     {
         w.write(mRepl);
         return mRepl.length;
     }
 
+    @Override
     public String getSystemId() {
         return null;
     }
@@ -84,6 +88,7 @@ public class IntEntity
     ///////////////////////////////////////////
      */
 
+    @Override
     public void writeEnc(Writer w) throws IOException
     {
         w.write("<!ENTITY ");
@@ -108,16 +113,20 @@ public class IntEntity
      * since this method is thought to provide fast access, let's avoid making
      * copy here.
      */
+    @Override
     public char[] getReplacementChars() {
         return mRepl;
     }
 
     // // // Type information
     
+    @Override
     public boolean isExternal() { return false; }
     
+    @Override
     public boolean isParsed() { return true; }
     
+    @Override
     public WstxInputSource expand(WstxInputSource parent,
                                   XMLResolver res, ReaderConfig cfg,
                                   int xmlVersion)

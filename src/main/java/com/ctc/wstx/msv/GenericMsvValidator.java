@@ -21,7 +21,6 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 
 import org.codehaus.stax2.validation.*;
-
 import org.relaxng.datatype.Datatype;
 
 import com.sun.msv.grammar.IDContextProvider2;
@@ -31,7 +30,6 @@ import com.sun.msv.util.StringRef;
 import com.sun.msv.verifier.Acceptor;
 import com.sun.msv.verifier.DocumentDeclaration;
 import com.sun.msv.verifier.regexp.StringToken;
-
 import com.ctc.wstx.util.ElementId;
 import com.ctc.wstx.util.ElementIdMap;
 import com.ctc.wstx.util.PrefixedName;
@@ -147,23 +145,23 @@ public final class GenericMsvValidator
     ///////////////////////////////////////////////////////////
      */
 
-    public String getBaseUri()
-    {
+    @Override
+    public String getBaseUri() {
         return mContext.getBaseUri();
     }
 
-    public boolean isNotation(String notationName)
-    {
+    @Override
+    public boolean isNotation(String notationName) {
         return mContext.isNotationDeclared(notationName);
     }
 
-    public boolean isUnparsedEntity(String entityName)
-    {
+    @Override
+    public boolean isUnparsedEntity(String entityName) {
         return mContext.isUnparsedEntityDeclared(entityName);
     }
 
-    public String resolveNamespacePrefix(String prefix) 
-    {
+    @Override
+    public String resolveNamespacePrefix(String prefix)  {
         return mContext.getNamespaceURI(prefix);
     }
 
@@ -180,6 +178,7 @@ public final class GenericMsvValidator
      * signals that a validation problem is to be reported.
      * This is obviously messy, but has to do for now.
      */
+    @Override
     public void onID(Datatype datatype, StringToken idToken)
         throws IllegalArgumentException
     {
@@ -219,6 +218,7 @@ public final class GenericMsvValidator
     ///////////////////////////////////////
     */
 
+    @Override
     public XMLValidationSchema getSchema() {
         return mParentSchema;
     }
@@ -229,6 +229,7 @@ public final class GenericMsvValidator
      * no DTD validation has been done. Validator is to do these validations,
      * including checking for attribute value (and existence) compatibility.
      */
+    @Override
     public void validateElementStart(String localName, String uri, String prefix)
         throws XMLStreamException
     {
@@ -277,8 +278,9 @@ public final class GenericMsvValidator
         mAcceptors.add(mCurrAcceptor);
     }
 
+    @Override
     public String validateAttribute(String localName, String uri,
-                                    String prefix, String value)
+            String prefix, String value)
         throws XMLStreamException
     {
         mCurrAttrLocalName = localName;
@@ -311,10 +313,11 @@ public final class GenericMsvValidator
         return null;
     }
 
+    @Override
     public String validateAttribute(String localName, String uri,
-                                    String prefix,
-                                    char[] valueChars, int valueStart,
-                                    int valueEnd)
+            String prefix,
+            char[] valueChars, int valueStart,
+            int valueEnd)
         throws XMLStreamException
     {
         int len = valueEnd - valueStart;
@@ -325,6 +328,7 @@ public final class GenericMsvValidator
                                  new String(valueChars, valueStart, len));
     }
     
+    @Override
     public int validateElementAndAttributes()
         throws XMLStreamException
     {
@@ -360,6 +364,7 @@ public final class GenericMsvValidator
      * @return Validation state that should be effective for the parent
      *   element state
      */
+    @Override
     public int validateElementEnd(String localName, String uri, String prefix)
         throws XMLStreamException
     {
@@ -410,6 +415,7 @@ public final class GenericMsvValidator
         return XMLValidator.CONTENT_ALLOW_ANY_TEXT;
     }
 
+    @Override
     public void validateText(String text, boolean lastTextSegment)
         throws XMLStreamException
     {
@@ -423,6 +429,7 @@ public final class GenericMsvValidator
         }
     }
 
+    @Override
     public void validateText(char[] cbuf, int textStart, int textEnd,
                              boolean lastTextSegment)
         throws XMLStreamException
@@ -437,6 +444,7 @@ public final class GenericMsvValidator
         }
     }
 
+    @Override
     public void validationCompleted(boolean eod)
         throws XMLStreamException
     {
@@ -466,18 +474,21 @@ public final class GenericMsvValidator
 
     // // // Access to type info
 
+    @Override
     public String getAttributeType(int index)
     {
         // !!! TBI
         return null;
     }    
 
+    @Override
     public int getIdAttrIndex()
     {
         // !!! TBI
         return -1;
     }
 
+    @Override
     public int getNotationAttrIndex()
     {
         // !!! TBI

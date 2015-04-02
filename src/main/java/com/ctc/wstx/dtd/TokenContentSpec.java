@@ -43,6 +43,7 @@ public class TokenContentSpec
     ///////////////////////////////////////////////////
      */
 
+    @Override
     public boolean isLeaf() {
         return mArity == ' ';
     }
@@ -51,10 +52,12 @@ public class TokenContentSpec
         return mElemName;
     }
 
+    @Override
     public StructValidator getSimpleValidator() {
         return new Validator(mArity, mElemName);
     }
 
+    @Override
     public ModelNode rewrite() {
         TokenModel model = new TokenModel(mElemName);
         if (mArity == '*') {
@@ -70,6 +73,7 @@ public class TokenContentSpec
         return model;
     }
 
+    @Override
     public String toString() {
         return (mArity == ' ') ? mElemName.toString()
             : (mElemName.toString() + mArity);
@@ -102,10 +106,12 @@ public class TokenContentSpec
          * matter as it won't be used. Otherwise a new instance has to
          * be created always, to keep track of instance counts.
          */
+        @Override
         public StructValidator newInstance() {
             return (mArity == '*') ? this : new Validator(mArity, mElemName);
         }
 
+        @Override
         public String tryToValidate(PrefixedName elemName)
         {
             if (!elemName.equals(mElemName)) {
@@ -117,6 +123,7 @@ public class TokenContentSpec
             return null;
         }
         
+        @Override
         public String fullyValid()
         {
             switch (mArity) {

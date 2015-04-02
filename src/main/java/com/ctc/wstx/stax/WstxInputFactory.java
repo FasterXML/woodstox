@@ -175,6 +175,7 @@ public class WstxInputFactory
      * enabled, to see if an external DTD (subset) has been parsed
      * and cached earlier.
      */
+    @Override
     public synchronized DTDSubset findCachedDTD(DTDId id)
     {
         return (mDTDCache == null) ? null : mDTDCache.find(id);
@@ -191,6 +192,7 @@ public class WstxInputFactory
      * table was modified, ie new entry/ies were added in addition to
      * whatever was in root table.
      */
+    @Override
     public synchronized void updateSymbolTable(SymbolTable t)
     {
         SymbolTable curr = mSymbols;
@@ -219,6 +221,7 @@ public class WstxInputFactory
 //else System.err.println("Debug: skipping symbol table update");
     }
 
+    @Override
     public synchronized void addCachedDTD(DTDId id, DTDSubset extSubset)
     {
         if (mDTDCache == null) {
@@ -552,6 +555,7 @@ public class WstxInputFactory
      *   configuration settings indicate auto-closing is to be enabled
      *   (the default value is false as per Stax 1.0 specs).
      */
+    @SuppressWarnings("resource")
     private XMLStreamReader2 doCreateSR(ReaderConfig cfg, SystemId systemId,
     		InputBootstrapper bs,  boolean forER, boolean autoCloseInput)
         throws XMLStreamException
@@ -629,6 +633,7 @@ public class WstxInputFactory
         return doCreateSR(cfg, systemId, bs, forER, autoCloseInput);
     }
 
+    @SuppressWarnings("resource")
     protected XMLStreamReader2 createSR(SystemId systemId, InputStream in, String enc,
     		boolean forER, boolean autoCloseInput)
         throws XMLStreamException
@@ -684,6 +689,7 @@ public class WstxInputFactory
         		(null, systemId, r, null), forER, autoCloseInput);
     }
 
+    @SuppressWarnings("resource")
     protected XMLStreamReader2 createSR(File f, boolean forER, boolean autoCloseInput)
         throws XMLStreamException
     {
@@ -717,6 +723,7 @@ public class WstxInputFactory
      * @param forER True, if the reader is being constructed to be used
      *   by an event reader; false if it is not (or the purpose is not known)
      */
+    @SuppressWarnings("resource")
     protected XMLStreamReader2 createSR(javax.xml.transform.Source src,
     		boolean forER)
         throws XMLStreamException
@@ -794,7 +801,7 @@ public class WstxInputFactory
         } else {
             throw new IllegalArgumentException("Can not instantiate Stax reader for XML source type "+src.getClass()+" (unrecognized type)");
         }
-		if (bs == null) { // may have already created boostrapper...
+        if (bs == null) { // may have already created boostrapper...
 		    if (r != null) { 
 		    	bs = ReaderBootstrapper.getInstance(pubId, SystemId.construct(sysId), r, encoding);
 		    } else if (in != null) {
@@ -814,7 +821,7 @@ public class WstxInputFactory
 		    } else {
 		    	throw new XMLStreamException("Can not create Stax reader for the Source passed -- neither reader, input stream nor system id was accessible; can not use other types of sources (like embedded SAX streams)");
 		    }
-		}
+        }
         return createSR(cfg, sysId, bs, forER, autoCloseInput);
     }
 
