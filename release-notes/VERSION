@@ -4,9 +4,13 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-5.0.1 (not yet released)
+5.0.1 (02-Apr-2015)
 
 #3: Initial 5.0.0 release did not contain class files (d'oh!)
  (reported by norrisjeremy@github)
 #4: Fix validation of text for an XMLStreamWriter
  (reported by Wilco G, wgreven-ibr@github)
+
+5.0.0 (earlier)
+
+Attempted initial release -- unfortunately, as per #3 (see above), not a working jar.
