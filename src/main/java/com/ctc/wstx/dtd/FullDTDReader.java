@@ -2102,7 +2102,7 @@ public class FullDTDReader
                         }
                         keyw = "EL" + keyw;
                     } else {
-                        keyw = readDTDKeyword("E");
+                        keyw = readDTDKeyword("E"+c);
                     }
                 } else if (c == 'N') { // NOTATION?
                     keyw = checkDTDKeyword("OTATION");
@@ -2123,7 +2123,6 @@ public class FullDTDReader
                 } else {
                     keyw = readDTDKeyword(String.valueOf(c));
                 }
-
                 // If we got this far, we got a problem...
                 _reportBadDirective(keyw);
             } while (false);
