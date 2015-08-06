@@ -16,7 +16,8 @@ Coordinates for this are:
 
 * Group id: `com.fasterxml.woodstox`
 * Artifact id: `woodstox-core`
-* Latest published version: 5.0.0
+* Latest published version: 5.0.1
+    * (NOTE! Version `5.0.0` was accidentally released as broken, not containing actual classes -- 5.0.1 is the first functioning 5.x version).
 
 Note that Maven id has changed since Woodstox 4.x.
 
@@ -28,5 +29,4 @@ and some other Stax implementations (like [Aalto](../../../aalto-xml).
 
 Optional dependency is [Multi-Schema Validator (MSV)](https://github.com/kohsuke/msv) that is needed if
 using XML Schema or RelaxNG validation functionality
-
 
