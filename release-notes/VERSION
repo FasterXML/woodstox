@@ -4,6 +4,11 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+5.0.2 (not yet released)
+
+#10: Stax 4.0.0 is not compatible with Woodstox 5.0.1
+ (reported by naveengopi@github)
+
 5.0.1 (02-Apr-2015)
 
 #3: Initial 5.0.0 release did not contain class files (d'oh!)

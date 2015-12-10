@@ -3,27 +3,31 @@ package com.ctc.wstx.util;
 import java.lang.reflect.Array;
 import java.util.*;
 
-import org.codehaus.stax2.ri.EmptyIterator;
 import org.codehaus.stax2.ri.SingletonIterator;
 
 public final class DataUtil
 {
     final static char[] EMPTY_CHAR_ARRAY = new char[0];
 
-    /**
-     * If baseline requirement was JDK 1.5, we wouldn't need to
-     * cache Integer instances like this (since it has
-     * Integer.valueOf() which does it); but until then, we
-     * alas need our known canonicalization.
-     */
-    final static Integer[] INTS = new Integer[100];
-    static {
-        for (int i = 0; i < INTS.length; ++i) {
-            INTS[i] = new Integer(i);
-        }
-    }
     final static Long MAX_LONG = new Long(Long.MAX_VALUE);
 
+    /**
+     * Due to [woodstox#10], we will need to use a work-around which (for now)
+     * includes a local copy of this iterator class.
+     *<p>
+     * TODO: Once we get to Java 7 / JDK 1.7, replace with one from Collections
+     * 
+     * @since 5.0.1
+     */
+    private final static class EmptyIterator implements Iterator<Object>
+    {
+        public final static Iterator<?> INSTANCE = new EmptyIterator();
+
+        public boolean hasNext() { return false; }
+        public Object next() { throw new java.util.NoSuchElementException(); }
+        public void remove() { throw new IllegalStateException(); }
+    }
+    
     private DataUtil() { }
 
     /*
@@ -36,25 +40,19 @@ public final class DataUtil
         return EMPTY_CHAR_ARRAY;
     }
 
-    public static Integer Integer(int i)
-    {
-        /* !!! 13-Sep-2008, TSa: JDK 1.5 can use Integer.valueOf(int)
-         *   which does the same. When upgrading baseline, can get rid
-         *   of this method.
-         */
-        if (i < 0 || i >= INTS.length) {
-            return new Integer(i);
-        }
-        return INTS[i];
+    // TODO: deprecate, not really needed post-JDK-1.4
+    public static Integer Integer(int i) {
+        return Integer.valueOf(i);
     }
-    
+
+    @Deprecated // since 5.0.1
     public static Long Long(long l)
     {
         if (l == Long.MAX_VALUE) {
             return MAX_LONG;
         }
-        return new Long(l);
-    }  
+        return Long.valueOf(l);
+    }
 
     /*
     ////////////////////////////////////////////////////////////
@@ -65,15 +63,16 @@ public final class DataUtil
     @SuppressWarnings("unchecked")
     public static <T> Iterator<T> singletonIterator(T item) {
         // TODO: with JDK 1.7, can use method from Collections
+        // TODO: alternatively, with Woodstox 5.1, can fix deprecation marker
         return (Iterator<T>) new SingletonIterator(item);
     }
 
     @SuppressWarnings("unchecked")
     public static <T> Iterator<T> emptyIterator() {
         // TODO: with JDK 1.7, can use method from Collections
-        return (Iterator<T>) EmptyIterator.getInstance();
+        return (Iterator<T>) EmptyIterator.INSTANCE;
     }
-    
+
     /*
     ////////////////////////////////////////////////////////////
     // Methods for common operations on std data structs
@@ -143,11 +142,7 @@ public final class DataUtil
         if (arr == null) {
             return new String[more];
         }
-        String[] old = arr;
-        int len = arr.length;
-        arr = new String[len + more];
-        System.arraycopy(old, 0, arr, 0, len);
-        return arr;
+        return Arrays.copyOf(arr, arr.length + more);
     }
 
     public static int[] growArrayBy(int[] arr, int more)
@@ -155,11 +150,6 @@ public final class DataUtil
         if (arr == null) {
             return new int[more];
         }
-        int[] old = arr;
-        int len = arr.length;
-        arr = new int[len + more];
-        System.arraycopy(old, 0, arr, 0, len);
-        return arr;
+        return Arrays.copyOf(arr, arr.length + more);
     }
 }
- 

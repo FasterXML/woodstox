@@ -1424,15 +1424,15 @@ public final class ReaderConfig
         case PROP_MAX_ELEMENT_DEPTH:
             return DataUtil.Integer(getMaxElementDepth());
         case PROP_MAX_ELEMENT_COUNT:
-            return DataUtil.Long(getMaxElementCount());
+            return Long.valueOf(getMaxElementCount());
         case PROP_MAX_CHARACTERS:
-            return DataUtil.Long(getMaxCharacters());
+            return Long.valueOf(getMaxCharacters());
         case PROP_MAX_TEXT_LENGTH:
-            return DataUtil.Long(getMaxTextLength());
+            return Long.valueOf(getMaxTextLength());
         case PROP_MAX_ENTITY_DEPTH:
             return DataUtil.Integer(getMaxEntityDepth());
         case PROP_MAX_ENTITY_COUNT:
-            return DataUtil.Long(getMaxEntityCount());
+            return Long.valueOf(getMaxEntityCount());
 
         case PROP_MIN_TEXT_SEGMENT:
             return DataUtil.Integer(getShortestReportedTextSegment());
