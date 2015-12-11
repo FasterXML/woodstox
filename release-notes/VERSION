@@ -4,7 +4,7 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-5.0.2 (not yet released)
+5.0.2 (10-Dec-2015)
 
 #10: Stax 4.0.0 is not compatible with Woodstox 5.0.1
  (reported by naveengopi@github)
