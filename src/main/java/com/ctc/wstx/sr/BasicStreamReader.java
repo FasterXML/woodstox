@@ -680,6 +680,7 @@ public abstract class BasicStreamReader
             mCurrToken = END_ELEMENT;
             return "";
         }
+
         // First need to find a textual event
         while (true) {
             int type = next();
@@ -694,9 +695,11 @@ public abstract class BasicStreamReader
             }
             break;
         }
-        if (mTokenState < TOKEN_FULL_SINGLE) {
+
+        if (mTokenState < TOKEN_FULL_COALESCED) {
             readCoalescedText(mCurrToken, false);
         }
+
         /* Ok: then a quick check; if it looks like we are directly
          * followed by the end tag, we need not construct String
          * quite yet.
@@ -718,7 +721,7 @@ public abstract class BasicStreamReader
         int extra = 1 + (mTextBuffer.size() >> 1); // let's add 50% space
         StringBuilder sb = mTextBuffer.contentsAsStringBuilder(extra);
         int type;
-        
+
         while ((type = next()) != END_ELEMENT) {
             if (((1 << type) & MASK_GET_ELEMENT_TEXT) != 0) {
                 if (mTokenState < mStTextThreshold) {

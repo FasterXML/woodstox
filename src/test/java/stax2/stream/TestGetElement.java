@@ -122,6 +122,36 @@ public class TestGetElement
         assertTokenType(END_DOCUMENT, sr.next());
     }
 
+    public void testGetMixedContentElementText() throws Exception
+    {
+        final String XML = "<root>foo<![CDATA[bar]]></root>";
+
+        XMLInputFactory ifact = getInputFactory();
+        XMLStreamReader sr;
+
+        // Start with non-coalescing case
+        setCoalescing(ifact, false);
+        sr = ifact.createXMLStreamReader(new StringReader(XML));
+        assertTokenType(START_ELEMENT, sr.next());
+
+        // this currently fails
+        assertEquals("foobar", sr.getElementText());
+        assertTokenType(END_ELEMENT, sr.getEventType());
+        assertTokenType(END_DOCUMENT, sr.next());
+        sr.close();
+
+        // and then with coalescing
+        setCoalescing(ifact, true);
+        sr = ifact.createXMLStreamReader(new StringReader(XML));
+        assertTokenType(START_ELEMENT, sr.next());
+
+        // this one passes
+        assertEquals("foobar", sr.getElementText());
+        assertTokenType(END_ELEMENT, sr.getEventType());
+        assertTokenType(END_DOCUMENT, sr.next());
+        sr.close();
+    }
+
     /*
     ///////////////////////////////////////////////
     // Helper methods

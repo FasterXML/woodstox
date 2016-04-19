@@ -4,6 +4,11 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+5.0.3 (not yet released)
+
+#13: BasicStreamReader.getElementText() behavior doesn't match Java documentation
+ (reported by Caleb-An@github)
+
 5.0.2 (10-Dec-2015)
 
 #10: Stax 4.0.0 is not compatible with Woodstox 5.0.1
