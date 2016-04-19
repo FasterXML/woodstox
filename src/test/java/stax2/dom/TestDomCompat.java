@@ -185,7 +185,7 @@ public class TestDomCompat
     {
         final String XML =
             "<root><![CDATA[...]]></root>";
-            ;
+
         Document doc = parseDomDoc(XML, true);
         XMLInputFactory2 ifact = getInputFactory();
         setCoalescing(ifact, true);
@@ -322,11 +322,10 @@ public class TestDomCompat
     }
 
     // [WSTX-244]
-    public void testGetElementTExt() throws Exception
+    public void testGetElementText() throws Exception
     {
         final String XML =
             "<root>Some<![CDATA[ ]]>text</root>";
-            ;
 
         XMLInputFactory2 ifact = getInputFactory();
         XMLStreamReader sr;
