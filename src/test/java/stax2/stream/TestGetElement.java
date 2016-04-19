@@ -133,8 +133,6 @@ public class TestGetElement
         setCoalescing(ifact, false);
         sr = ifact.createXMLStreamReader(new StringReader(XML));
         assertTokenType(START_ELEMENT, sr.next());
-
-        // this currently fails
         assertEquals("foobar", sr.getElementText());
         assertTokenType(END_ELEMENT, sr.getEventType());
         assertTokenType(END_DOCUMENT, sr.next());
@@ -144,8 +142,6 @@ public class TestGetElement
         setCoalescing(ifact, true);
         sr = ifact.createXMLStreamReader(new StringReader(XML));
         assertTokenType(START_ELEMENT, sr.next());
-
-        // this one passes
         assertEquals("foobar", sr.getElementText());
         assertTokenType(END_ELEMENT, sr.getEventType());
         assertTokenType(END_DOCUMENT, sr.next());
