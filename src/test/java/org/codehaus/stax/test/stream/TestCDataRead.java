@@ -227,7 +227,40 @@ public class TestCDataRead
         sr.close();
         in.close();
     }
-    
+
+    // [woodstox-core#21]: CDATA contents truncated to buffer size (500 initially)
+    public void testLongerCData2() throws Exception
+    {
+        String SRC_TEXT =
+                "\r\n123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678\r\n"
+                          + "<embededElement>Woodstox 4.0.5 does not like this embedded element.  However, if you take\r\n"
+                          + "out one or more characters from the really long line (so that less than 500 characters come between\r\n"
+                          + "'CDATA[' and the opening of the embeddedElement tag (including LF), then Woodstox will instead\r\n"
+                          + "complain that the CDATA section wasn't ended.";
+        String DST_TEXT = SRC_TEXT.replace("\r\n", "\n");
+        String XML = "<?xml version='1.0' encoding='utf-8'?>\r\n"
+                     + "<test><![CDATA[" + SRC_TEXT + "]]></test>";
+        XMLInputFactory f = getInputFactory();
+        // important: don't force coalescing, that'll convert CDATA to CHARACTERS
+        f.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
+
+        XMLStreamReader sr = f.createXMLStreamReader(new StringReader(XML));
+        assertTokenType(START_DOCUMENT, sr.getEventType());
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals("test", sr.getLocalName());
+        assertTokenType(CDATA, sr.next());
+        // This should still work, although with linefeed replacements
+        final String text = sr.getText();
+        if (text.length() != DST_TEXT.length()) {
+            fail("Length expected as "+DST_TEXT.length()+", was "+text.length());
+        }
+        if (!text.equals(DST_TEXT)) {
+            fail("Length as expected ("+DST_TEXT.length()+"), contents differ:\n"+text);
+        }
+        assertTokenType(END_ELEMENT, sr.next());
+        sr.close();
+    }
+
     /*
     ////////////////////////////////////////
     // Private methods, other

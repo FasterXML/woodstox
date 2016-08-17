@@ -8,6 +8,8 @@ Project: woodstox
 
 #13: BasicStreamReader.getElementText() behavior doesn't match Java documentation
  (reported by Caleb-An@github)
+#21: 500 characters limit when calling XMLStreamReader#getText() after CDATA event
+ (reported by elrodro83@github)
 
 5.0.2 (10-Dec-2015)
 

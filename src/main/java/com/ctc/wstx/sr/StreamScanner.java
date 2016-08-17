@@ -248,7 +248,7 @@ public abstract class StreamScanner
      * Custom resolver used to handle external entities that are to be expanded
      * by this reader (external param/general entity expander)
      */
-    XMLResolver mEntityResolver = null;
+    protected XMLResolver mEntityResolver = null;
 
     /**
      * This is the current depth of the input stack (same as what input
@@ -335,13 +335,13 @@ public abstract class StreamScanner
      * Input stream encoding, if known (passed in, or determined by
      * auto-detection); null if not.
      */
-    String mDocInputEncoding = null;
+    protected String mDocInputEncoding = null;
 
     /**
      * Character encoding from xml declaration, if any; null if no
      * declaration, or it didn't specify encoding.
      */
-    String mDocXmlEncoding = null;
+    protected String mDocXmlEncoding = null;
 
     /**
      * XML version as declared by the document; one of constants
@@ -415,8 +415,7 @@ public abstract class StreamScanner
     protected WstxInputLocation getLastCharLocation()
     {
         return mInput.getLocation(mCurrInputProcessed + mInputPtr - 1,
-                                  mCurrInputRow,
-                                  mInputPtr - mCurrInputRowStart);
+                mCurrInputRow, mInputPtr - mCurrInputRowStart);
     }
 
     protected URL getSource() throws IOException {
@@ -444,15 +443,14 @@ public abstract class StreamScanner
     public XMLStreamLocation2 getStartLocation()
     {
         // note: +1 is used as columns are 1-based...
-        return mInput.getLocation(mTokenInputTotal, mTokenInputRow,
-                                  mTokenInputCol + 1);
+        return mInput.getLocation(mTokenInputTotal,
+                mTokenInputRow, mTokenInputCol + 1);
     }
 
     public XMLStreamLocation2 getCurrentLocation()
     {
         return mInput.getLocation(mCurrInputProcessed + mInputPtr,
-                                  mCurrInputRow,
-                                  mInputPtr - mCurrInputRowStart + 1);
+                mCurrInputRow, mInputPtr - mCurrInputRowStart + 1);
     }
 
     /*
@@ -590,9 +588,8 @@ public abstract class StreamScanner
     public void reportValidationProblem(String msg)
         throws XMLStreamException
     {
-        reportValidationProblem(new XMLValidationProblem(getLastCharLocation(),
-                                                         msg,
-                                                         XMLValidationProblem.SEVERITY_ERROR));
+        reportValidationProblem(new XMLValidationProblem(getLastCharLocation(), msg,
+                XMLValidationProblem.SEVERITY_ERROR));
     }
 
     public void reportValidationProblem(Location loc, String msg)
@@ -651,15 +648,11 @@ public abstract class StreamScanner
         throw new WstxUnexpectedCharException(excMsg, getLastCharLocation(), c);
     }
 
-    protected void throwNullChar()
-        throws WstxException
-    {
+    protected void throwNullChar() throws WstxException {
         throw constructNullCharException();
     }
 
-    protected void throwInvalidSpace(int i)
-        throws WstxException
-    {
+    protected void throwInvalidSpace(int i) throws WstxException {
         throwInvalidSpace(i, false);
     }
 
@@ -686,9 +679,8 @@ public abstract class StreamScanner
     protected void throwUnexpectedEOF(String msg)
         throws WstxException
     {
-        throw new WstxEOFException("Unexpected EOF"
-                                   +(msg == null ? "" : msg),
-                                   getLastCharLocation());
+        throw new WstxEOFException("Unexpected EOF"+(msg == null ? "" : msg),
+                getLastCharLocation());
     }
 
     /**
@@ -700,19 +692,16 @@ public abstract class StreamScanner
     protected void throwUnexpectedEOB(String msg)
         throws WstxException
     {
-        throw new WstxEOFException("Unexpected end of input block"
-                                   +(msg == null ? "" : msg),
-                                   getLastCharLocation());
+        throw new WstxEOFException("Unexpected end of input block"+(msg == null ? "" : msg),
+                getLastCharLocation());
     }
 
-    protected void throwFromIOE(IOException ioe)
-        throws WstxException
-    {
+    protected void throwFromIOE(IOException ioe) throws WstxException {
         throw new WstxIOException(ioe);
     }
 
     protected void throwFromStrE(XMLStreamException strex)
-        throws WstxException
+            throws WstxException
     {
         if (strex instanceof WstxException) {
             throw (WstxException) strex;
@@ -732,8 +721,7 @@ public abstract class StreamScanner
         ExceptionUtil.throwRuntimeException(e);
     }
 
-    protected String tokenTypeDesc(int type)
-    {
+    protected String tokenTypeDesc(int type) {
         return ErrorConsts.tokenTypeDesc(type);
     }
 
@@ -758,8 +746,7 @@ public abstract class StreamScanner
     }
 
     @SuppressWarnings("cast")
-    protected final int getNext()
-        throws XMLStreamException
+    protected final int getNext() throws XMLStreamException
     {
         if (mInputPtr >= mInputEnd) {
             if (!loadMore()) {

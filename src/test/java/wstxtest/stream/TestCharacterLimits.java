@@ -95,20 +95,24 @@ public class TestCharacterLimits
             _verifyTextLimitException(ex);
         }
     }
+
     public void testLongCDATANextTag() throws Exception {
+        Reader reader = createLongReader("<![CDATA[", "]]>", true);
+        XMLInputFactory factory = getNewInputFactory();
+        factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, Integer.valueOf(1000));
+        XMLStreamReader xmlreader = factory.createXMLStreamReader(reader);
         try {
-            Reader reader = createLongReader("<![CDATA[", "]]>", true);
-            XMLInputFactory factory = getNewInputFactory();
-            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, Integer.valueOf(1000));
-            XMLStreamReader xmlreader = factory.createXMLStreamReader(reader);
+            int tokens = 0;
             while (xmlreader.next() != XMLStreamReader.START_ELEMENT) {
+                ++tokens;
             }
-            xmlreader.nextTag();
-            fail("Should have failed");
+            int code = xmlreader.nextTag();
+            fail("Should have failed: instead got "+tokens+" tokens; and one following START_ELEMENT: "+code);
         } catch (XMLStreamException ex) {
             _verifyTextLimitException(ex);
         }
     }
+
     public void testLongComment() throws Exception {
         try {
             Reader reader = createLongReader("<!--", "-->", true);
@@ -117,26 +121,14 @@ public class TestCharacterLimits
             XMLStreamReader xmlreader = factory.createXMLStreamReader(reader);
             while (xmlreader.next() != XMLStreamReader.COMMENT) {
             }
-            System.out.println(xmlreader.getText());
-            fail("Should have failed");
+            // important, due to lazy handling only triggers problem here:
+            String str = xmlreader.getText();
+            fail("Should have failed; instead got: "+str);
         } catch (Exception ex) {
             _verifyTextLimitException(ex);
         }
     }
-    public void testLongComment2() throws Exception {
-        try {
-            Reader reader = createLongReader("<!--", "-->", true);
-            XMLInputFactory factory = getNewInputFactory();
-            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, Integer.valueOf(1000));
-            XMLStreamReader xmlreader = factory.createXMLStreamReader(reader);
-            while (xmlreader.next() != XMLStreamReader.COMMENT) {
-            }
-            System.out.println(new String(xmlreader.getTextCharacters()));
-            fail("Should have failed");
-        } catch (Exception ex) {
-            _verifyTextLimitException(ex);
-        }
-    }
+
     public void testLongCommentNextTag() throws Exception {
         try {
             Reader reader = createLongReader("<!--", "-->", true);
@@ -184,9 +176,13 @@ public class TestCharacterLimits
         }
     }
     
-    private Reader createLongReader(final String pre, final String post, final boolean ws) {
-        final int max = Integer.MAX_VALUE;
+    private Reader createLongReader(final String pre, final String post, final boolean ws)
+    {
+        // 17-Aug-2016, tatu: used to be Integer.MAX_VALUE, but since we are testing with
+        //     way smaller limit, just do 1 meg
+        final int maxLength = 16 * 1024 * 1024;
         final StringBuffer start = new StringBuffer("<ns:element xmlns:ns=\"http://foo.com\">" + pre);
+
         return new Reader() {
             StringReader sreader = new StringReader(start.toString());
             int count;
@@ -194,23 +190,23 @@ public class TestCharacterLimits
             
             @Override
             public int read(char[] cbuf, int off, int len) throws IOException {
+                if (done) {
+                    return -1;
+                }
                 int i = sreader.read(cbuf, off, len);
-                if (i == -1) {
-                    if (count < max) {
-                        if (ws) {
-                            sreader = new StringReader("                              ");
-                        } else {
-                            sreader = new StringReader("1234567890123<?foo?>78901234567890");                            
-                        }
-                        count++;
-                    } else if (!done) {
-                        if (ws) {
-                            sreader = new StringReader(post + "</ns:element>");
-                        } else {
-                            sreader = new StringReader(post + "<ns:el2>foo</ns:el2></ns:element>");
-                        }
+                if (i < 0) {
+                    String text;
+                    if (count < maxLength) {
+                        text = ws ? "                              "
+                                : "1234567890123<?foo?>78901234567890";
+                    } else {
+                        text = post +
+                                (ws ? "</ns:element>"
+                                : "<ns:el2>foo</ns:el2></ns:element>");
                         done = true;
                     }
+                    sreader = new StringReader(text);
+                    count += text.length();
                     i = sreader.read(cbuf, off, len);
                 }
                 return i;

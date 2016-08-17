@@ -55,7 +55,6 @@ import com.ctc.wstx.util.TextBuilder;
  * all functionality other than DTD-validation-specific parts, and
  * Typed Access API (Stax2 v3.0), which are implemented at
  * sub-classes.
- *<p>
  *
  * @author Tatu Saloranta
  */
@@ -91,12 +90,13 @@ public abstract class BasicStreamReader
     // token type figured out, but not long enough:
     final static int TOKEN_STARTED = 1;
 
-    /* minimum token length returnable achieved; only used for CDATA and
-     * CHARACTERS events which allow fragments to be returned
+    /* minimum token length returnable achieved; only used for
+     * CHARACTERS event which allow fragments to be returned (and for
+     * CDATA in some limited cases)
      */
     final static int TOKEN_PARTIAL_SINGLE = 2;
 
-    /* a single physical event has been succesfully tokenized; as with
+    /* a single physical event has been successfully tokenized; as with
      * partial, only used with CDATA and CHARACTERS (meaningless for others,
      * which should only use TOKEN_FULL_COALESCED, TOKEN_NOT_STARTED or
      * TOKEN_STARTED.
@@ -292,7 +292,7 @@ public abstract class BasicStreamReader
      * physical segment; or just even a fragment of such a segment)
      */
     protected final int mStTextThreshold;
-    
+
     /**
      * Sized of currentTextLength for CDATA, CHARACTERS, WHITESPACE.
      * When segmenting, this records to size of all the segments
@@ -437,10 +437,9 @@ public abstract class BasicStreamReader
         } else {
             mStTextThreshold =  TOKEN_PARTIAL_SINGLE;
             if (forER) {
-                /* 30-Sep-2005, TSa: No point in returning runt segments for
-                 *   event readers (due to event object overhead, less
-                 *   convenient); let's just force returning of full length
-                 *   segments.
+                /* 30-Sep-2005, TSa: No point in returning runt segments for event readers
+                 *   (due to event object overhead, less convenient); let's just force
+                 *   returning of full length segments.
                  */
                 mShortestTextSegment = Integer.MAX_VALUE;
             } else {
@@ -884,16 +883,17 @@ public abstract class BasicStreamReader
     @Override
     public String getText()
     {
-        if (((1 << mCurrToken) & MASK_GET_TEXT) == 0) {
-            throwNotTextual(mCurrToken);
+        final int currToken = mCurrToken;
+        if (((1 << currToken) & MASK_GET_TEXT) == 0) {
+            throwNotTextual(currToken);
         }
         if (mTokenState < mStTextThreshold) {
             safeFinishToken();
         }
-        if (mCurrToken == ENTITY_REFERENCE) {
+        if (currToken == ENTITY_REFERENCE) {
             return (mCurrEntity == null) ? null : mCurrEntity.getReplacementText();
         }
-        if (mCurrToken == DTD) {
+        if (currToken == DTD) {
             /* 16-Aug-2004, TSa: Hmmh. Specs are bit ambiguous on whether this
              *   should return just the internal subset, or the whole
              *   thing...
@@ -906,16 +906,17 @@ public abstract class BasicStreamReader
     @Override
     public char[] getTextCharacters()
     {
-        if (((1 << mCurrToken) & MASK_GET_TEXT_XXX) == 0) {
-            throwNotTextXxx(mCurrToken);
+        final int currToken = mCurrToken;
+        if (((1 << currToken) & MASK_GET_TEXT_XXX) == 0) {
+            throwNotTextXxx(currToken);
         }
         if (mTokenState < mStTextThreshold) {
             safeFinishToken();
         }
-        if (mCurrToken == ENTITY_REFERENCE) {
+        if (currToken == ENTITY_REFERENCE) {
             return mCurrEntity.getReplacementChars();
         }
-        if (mCurrToken == DTD) {
+        if (currToken == DTD) {
             return getDTDInternalSubsetArray();
         }
         return mTextBuffer.getTextBuffer();
@@ -924,8 +925,9 @@ public abstract class BasicStreamReader
     @Override
     public int getTextCharacters(int sourceStart, char[] target, int targetStart, int len)
     {
-        if (((1 << mCurrToken) & MASK_GET_TEXT_XXX) == 0) {
-            throwNotTextXxx(mCurrToken);
+        final int currToken = mCurrToken;
+        if (((1 << currToken) & MASK_GET_TEXT_XXX) == 0) {
+            throwNotTextXxx(currToken);
         }
         if (mTokenState < mStTextThreshold) {
             safeFinishToken();
@@ -936,8 +938,9 @@ public abstract class BasicStreamReader
     @Override
     public int getTextLength()
     {
-        if (((1 << mCurrToken) & MASK_GET_TEXT_XXX) == 0) {
-            throwNotTextXxx(mCurrToken);
+        final int currToken = mCurrToken;
+        if (((1 << currToken) & MASK_GET_TEXT_XXX) == 0) {
+            throwNotTextXxx(currToken);
         }
         if (mTokenState < mStTextThreshold) {
             safeFinishToken();
@@ -948,8 +951,9 @@ public abstract class BasicStreamReader
     @Override
     public int getTextStart()
     {
-        if (((1 << mCurrToken) & MASK_GET_TEXT_XXX) == 0) {
-            throwNotTextXxx(mCurrToken);
+        final int currToken = mCurrToken;
+        if (((1 << currToken) & MASK_GET_TEXT_XXX) == 0) {
+            throwNotTextXxx(currToken);
         }
         if (mTokenState < mStTextThreshold) {
             safeFinishToken();
@@ -1021,7 +1025,8 @@ public abstract class BasicStreamReader
     @Override
     public boolean isWhiteSpace()
     {
-        if (mCurrToken == CHARACTERS || mCurrToken == CDATA) {
+        final int currToken = mCurrToken;
+        if (currToken == CHARACTERS || currToken == CDATA) {
             if (mTokenState < mStTextThreshold) {
                 safeFinishToken();
             }
@@ -1031,7 +1036,7 @@ public abstract class BasicStreamReader
             }
             return mWsStatus == ALL_WS_YES;
         }
-        return (mCurrToken == SPACE);
+        return (currToken == SPACE);
     }
 
     @Override
@@ -1193,8 +1198,7 @@ public abstract class BasicStreamReader
     }
 
     @Override
-    public int nextTag()
-        throws XMLStreamException
+    public int nextTag() throws XMLStreamException
     {
         while (true) {
             int next = next();
@@ -1218,7 +1222,7 @@ public abstract class BasicStreamReader
                     continue;
                 }
                 throwParseError("Received non-all-whitespace CHARACTERS or CDATA event in nextTag().");
-		break; // never gets here, but jikes complains without
+                break; // never gets here, but jikes complains without
             case START_ELEMENT:
             case END_ELEMENT:
                 return next;
@@ -1236,8 +1240,7 @@ public abstract class BasicStreamReader
      * set to true.
      */
     @Override
-    public void close()
-        throws XMLStreamException
+    public void close() throws XMLStreamException
     {
         if (mParseState != STATE_CLOSED) {
             mParseState = STATE_CLOSED;
@@ -1408,8 +1411,9 @@ public abstract class BasicStreamReader
     public int getText(Writer w, boolean preserveContents)
         throws IOException, XMLStreamException
     {
-        if (((1 << mCurrToken) & MASK_GET_TEXT_WITH_WRITER) == 0) {
-            throwNotTextual(mCurrToken);
+        final int currToken = mCurrToken;
+        if (((1 << currToken) & MASK_GET_TEXT_WITH_WRITER) == 0) {
+            throwNotTextual(currToken);
         }
         /* May need to be able to do fully streaming... but only for
          * text events that have not yet been fully read; for other
@@ -1417,7 +1421,7 @@ public abstract class BasicStreamReader
          * already have everything ready.
          */
         if (!preserveContents) {
-            if (mCurrToken == CHARACTERS) {
+            if (currToken == CHARACTERS) {
                 int count = mTextBuffer.rawContentsTo(w);
                 /* Let's also clear whatever was collected (as allowed by
                  * method contract) previously, to both save memory, and
@@ -1435,7 +1439,7 @@ public abstract class BasicStreamReader
                     }
                 }
                 return count;
-            } else if (mCurrToken == CDATA) {
+            } else if (currToken == CDATA) {
                 int count = mTextBuffer.rawContentsTo(w);
                 mTextBuffer.resetWithEmpty(); // same as with CHARACTERS
                 if (mTokenState < TOKEN_FULL_SINGLE) {
@@ -1456,10 +1460,10 @@ public abstract class BasicStreamReader
              */
             finishToken(false); // false -> shouldn't defer errors
         }
-        if (mCurrToken == ENTITY_REFERENCE) {
+        if (currToken == ENTITY_REFERENCE) {
             return mCurrEntity.getReplacementText(w);
         }
-        if (mCurrToken == DTD) {
+        if (currToken == DTD) {
             char[] ch = getDTDInternalSubsetArray();
             if (ch != null) {
                 w.write(ch);
@@ -3773,9 +3777,9 @@ public abstract class BasicStreamReader
             if (mCfgCoalesceText) {
                 readCoalescedText(mCurrToken, deferErrors);
             } else {
-                if (readCDataSecondary(mShortestTextSegment)) {
+                if (readCDataSecondary(Integer.MAX_VALUE)) {
                     mTokenState = TOKEN_FULL_SINGLE;
-                } else {
+                } else { // can this ever happen?
                     mTokenState = TOKEN_PARTIAL_SINGLE;
                 }
             }
@@ -4485,6 +4489,8 @@ public abstract class BasicStreamReader
                 // If not, need more buffer space:
                 outBuf = tb.finishCurrentSegment();
                 outPtr = 0;
+                // 17-Aug-2016, tatu: need to make sure to enforce size limits here too
+                verifyLimit("Text size", mConfig.getMaxTextLength(), mTextBuffer.size());
             }
         }
         // never gets here
@@ -5580,21 +5586,19 @@ public abstract class BasicStreamReader
                         +input.getEntityId()+" contains closing tag for <"+top+">");
     }
 
-    private void throwNotTextual(int type)
-    {
+    private void throwNotTextual(int type) {
         throw new IllegalStateException("Not a textual event ("
-                                        +tokenTypeDesc(type)+")");
+                +tokenTypeDesc(type)+")");
     }
 
-    private void throwNotTextXxx(int type)
-    {
+    private void throwNotTextXxx(int type) {
         throw new IllegalStateException("getTextXxx() methods can not be called on "
-                                        +tokenTypeDesc(type));
+                +tokenTypeDesc(type));
     }
 
-    protected void throwNotTextualOrElem(int type)
-    {
-        throw new IllegalStateException(MessageFormat.format(ErrorConsts.ERR_STATE_NOT_ELEM_OR_TEXT, new Object[] { tokenTypeDesc(type) }));
+    protected void throwNotTextualOrElem(int type) {
+        throw new IllegalStateException(MessageFormat.format(ErrorConsts.ERR_STATE_NOT_ELEM_OR_TEXT,
+                new Object[] { tokenTypeDesc(type) }));
     }
 
     /**
