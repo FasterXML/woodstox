@@ -39,6 +39,7 @@ final class AttributeProxy
     ///////////////////////////////////////////////
     */
 
+    @Override
     public int getIndex(String qName)
     {
         int cix = qName.indexOf(':');
@@ -68,21 +69,22 @@ final class AttributeProxy
         return -1;
     }
 
-    public int getIndex(String uri, String localName)
-    {
+    @Override
+    public int getIndex(String uri, String localName) {
         return mContext.findAttributeIndex(uri, localName);
     }
 
-    public int getLength()
-    {
+    @Override
+    public int getLength() {
         return mContext.getAttributeCount();
     }
 
-    public String getLocalName(int index)
-    {
+    @Override
+    public String getLocalName(int index) {
         return mContext.getAttributeLocalName(index);
     }
 
+    @Override
     public String getQName(int index)
     {
         String prefix = mContext.getAttributePrefix(index);
@@ -98,36 +100,43 @@ final class AttributeProxy
         return sb.toString();
     }
 
+    @Override
     public String getType(int index)
     {
         return mContext.getAttributeType(index);
     }
 
+    @Override
     public String getType(String qName)
     {
         return getType(getIndex(qName));
     }
 
+    @Override
     public String getType(String uri, String localName)
     {
         return getType(getIndex(uri, localName));
     }
 
+    @Override
     public String getURI(int index)
     {
         return mContext.getAttributeNamespace(index);
     }
 
+    @Override
     public String getValue(int index)
     {
         return mContext.getAttributeValue(index);
     }
 
+    @Override
     public String getValue(String qName)
     {
         return getValue(getIndex(qName));
     }
 
+    @Override
     public String getValue(String uri, String localName)     
     {
         return mContext.getAttributeValue(uri, localName);

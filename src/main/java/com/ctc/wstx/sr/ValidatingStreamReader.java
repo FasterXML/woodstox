@@ -595,6 +595,7 @@ public class ValidatingStreamReader
      * that actual DTD element structure problems are not reported
      * through this method.
      */
+    @Override
     protected void reportInvalidContent(int evtType)
         throws XMLStreamException
     {

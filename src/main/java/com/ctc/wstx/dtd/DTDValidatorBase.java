@@ -231,6 +231,7 @@ public abstract class DTDValidatorBase
     ///////////////////////////////////////
     */
 
+    @Override
     public final XMLValidationSchema getSchema() {
         return mSchema;
     }
@@ -241,19 +242,23 @@ public abstract class DTDValidatorBase
      * no DTD validation has been done. Validator is to do these validations,
      * including checking for attribute value (and existence) compatibility.
      */
+    @Override
     public abstract void validateElementStart(String localName, String uri, String prefix)
         throws XMLStreamException;
 
+    @Override
     public abstract String validateAttribute(String localName, String uri,
-                                             String prefix, String value)
+            String prefix, String value)
         throws XMLStreamException;
 
+    @Override
     public abstract String validateAttribute(String localName, String uri,
-                                    String prefix,
-                                    char[] valueChars, int valueStart,
-                                    int valueEnd)
+            String prefix,
+            char[] valueChars, int valueStart,
+            int valueEnd)
         throws XMLStreamException;
     
+    @Override
     public abstract int validateElementAndAttributes()
         throws XMLStreamException;
 
@@ -261,9 +266,11 @@ public abstract class DTDValidatorBase
      * @return Validation state that should be effective for the parent
      *   element state
      */
+    @Override
     public abstract int validateElementEnd(String localName, String uri, String prefix)
         throws XMLStreamException;
 
+    @Override
     public void validateText(String text, boolean lastTextSegment)
         throws XMLStreamException
     {
@@ -272,6 +279,7 @@ public abstract class DTDValidatorBase
          */
     }
 
+    @Override
     public void validateText(char[] cbuf, int textStart, int textEnd,
                              boolean lastTextSegment)
         throws XMLStreamException
@@ -281,6 +289,7 @@ public abstract class DTDValidatorBase
          */
     }
 
+    @Override
     public abstract void validationCompleted(boolean eod)
         throws XMLStreamException;
 
@@ -292,6 +301,7 @@ public abstract class DTDValidatorBase
 
     // // // Access to type info
 
+    @Override
     public String getAttributeType(int index)
     {
         DTDAttribute attr = mAttrSpecs[index];
@@ -308,6 +318,7 @@ public abstract class DTDValidatorBase
      * @return Index of the attribute with type ID, in the current
      *    element, if one exists: -1 otherwise
      */
+    @Override
     public int getIdAttrIndex()
     {
         // Let's figure out the index only when needed
@@ -340,6 +351,7 @@ public abstract class DTDValidatorBase
      * @return Index of the attribute with type NOTATION, in the current
      *    element, if one exists: -1 otherwise
      */
+    @Override
     public int getNotationAttrIndex()
     {
         /* If necessary, we could find this index when resolving the
@@ -366,6 +378,7 @@ public abstract class DTDValidatorBase
      * it will become available later on (via normal XMLValidator interface),
      * that's too late (after namespace binding and resolving).
      */
+    @Override
     public boolean mayHaveNsDefaults(String elemPrefix, String elemLN)
     {
         mTmpKey.reset(elemPrefix, elemLN);
@@ -374,6 +387,7 @@ public abstract class DTDValidatorBase
         return (elem != null) && elem.hasNsDefaults();
     }
 
+    @Override
     public void checkNsDefaults(InputElementStack nsStack)
         throws XMLStreamException
     {

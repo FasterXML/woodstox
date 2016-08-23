@@ -292,6 +292,7 @@ public abstract class OutputElementBase
     //////////////////////////////////////////////////
      */
 
+    @Override
     public final String getNamespaceURI(String prefix)
     {
         if (prefix.length() == 0) { //default NS
@@ -307,6 +308,7 @@ public abstract class OutputElementBase
             mRootNsContext.getNamespaceURI(prefix) : null;
     }
 
+    @Override
     public final String getPrefix(String uri)
     {
         if (mDefaultNsURI.equals(uri)) {
@@ -322,6 +324,7 @@ public abstract class OutputElementBase
             mRootNsContext.getPrefix(uri) : null;
     }
 
+    @Override
     public final Iterator<String> getPrefixes(String uri)
     {
         List<String> l = null;

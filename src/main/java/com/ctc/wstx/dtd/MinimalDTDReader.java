@@ -109,8 +109,8 @@ public class MinimalDTDReader
      * perceived start location (different from what stream readers actually
      * do)
      */
-    public final Location getLocation()
-    {
+    @Override
+    public final Location getLocation() {
         return getStartLocation();
     }
 
@@ -124,6 +124,7 @@ public class MinimalDTDReader
      * This is a VC, not WFC, nothing to do when skipping through
      * DTD in non-supporting mode.
      */
+    @Override
     protected void handleUndeclaredEntity(String id)
         throws XMLStreamException
     {
@@ -134,6 +135,7 @@ public class MinimalDTDReader
      * Since improper entity/PE nesting is VC, not WFC, let's not
      * react to this failure at all when only skipping the DTD subset.
      */
+    @Override
     protected void handleIncompleteEntityProblem(WstxInputSource closing)
         throws XMLStreamException
     {

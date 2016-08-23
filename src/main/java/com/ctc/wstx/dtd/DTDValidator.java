@@ -107,6 +107,7 @@ public class DTDValidator
         mValidators = new StructValidator[DEFAULT_STACK_SIZE];
     }
 
+    @Override
     public final boolean reallyValidating() { return true; }
 
     /*
@@ -123,6 +124,7 @@ public class DTDValidator
      * no DTD validation has been done. Validator is to do these validations,
      * including checking for attribute value (and existence) compatibility.
      */
+    @Override
     public void validateElementStart(String localName, String uri, String prefix)
         throws XMLStreamException
     {
@@ -196,6 +198,7 @@ public class DTDValidator
         }
     }
 
+    @Override
     public String validateAttribute(String localName, String uri,
                                     String prefix, String value)
         throws XMLStreamException
@@ -234,6 +237,7 @@ public class DTDValidator
         return result;
     }
 
+    @Override
     public String validateAttribute(String localName, String uri,
                                     String prefix,
                                     char[] valueChars, int valueStart,
@@ -280,7 +284,8 @@ public class DTDValidator
         }
         return result;
     }
-    
+
+    @Override
     public int validateElementAndAttributes()
         throws XMLStreamException
     {
@@ -321,6 +326,7 @@ public class DTDValidator
      * @return Validation state that should be effective for the parent
      *   element state
      */
+    @Override
     public int validateElementEnd(String localName, String uri, String prefix)
         throws XMLStreamException
     {
@@ -359,8 +365,8 @@ public class DTDValidator
     //public void validateText(String text, boolean lastTextSegment) ;
     //public void validateText(char[] cbuf, int textStart, int textEnd, boolean lastTextSegment) ;
 
-    public void validationCompleted(boolean eod)
-        throws XMLStreamException
+    @Override
+    public void validationCompleted(boolean eod) throws XMLStreamException
     {
         /* Need to now ensure that all IDREF/IDREFS references
          * point to defined ID attributes
@@ -374,6 +380,7 @@ public class DTDValidator
     ///////////////////////////////////////
     */
 
+    @Override
     protected ElementIdMap getIdMap() {
         if (mIdMap == null) {
             mIdMap = new ElementIdMap();

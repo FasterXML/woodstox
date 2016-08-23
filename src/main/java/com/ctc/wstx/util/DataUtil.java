@@ -23,8 +23,11 @@ public final class DataUtil
     {
         public final static Iterator<?> INSTANCE = new EmptyIterator();
 
+        @Override
         public boolean hasNext() { return false; }
+        @Override
         public Object next() { throw new java.util.NoSuchElementException(); }
+        @Override
         public void remove() { throw new IllegalStateException(); }
     }
     

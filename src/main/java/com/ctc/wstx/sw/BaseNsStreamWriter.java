@@ -127,14 +127,17 @@ public abstract class BaseNsStreamWriter
     ////////////////////////////////////////////////////
      */
 
+    @Override
     public NamespaceContext getNamespaceContext() {
         return mCurrElem;
     }
 
+    @Override
     public String getPrefix(String uri) {
         return mCurrElem.getPrefix(uri);
     }
 
+    @Override
     public abstract void setDefaultNamespace(String uri)
         throws XMLStreamException;
 
@@ -143,6 +146,7 @@ public abstract class BaseNsStreamWriter
      * Note: Root namespace context works best if automatic prefix
      * creation ("namespace/prefix repairing" in StAX lingo) is enabled.
      */
+    @Override
     public void setNamespaceContext(NamespaceContext ctxt)
         throws XMLStreamException
     {
@@ -155,6 +159,7 @@ public abstract class BaseNsStreamWriter
         mCurrElem.setRootNsContext(ctxt);
     }
 
+    @Override
     public void setPrefix(String prefix, String uri)
         throws XMLStreamException
     {
@@ -218,6 +223,7 @@ public abstract class BaseNsStreamWriter
      * an attribute that does not belong to any namespace; as such no
      * namespace checking or prefix generation is needed.
      */
+    @Override
     public void writeAttribute(String localName, String value)
         throws XMLStreamException
     {
@@ -228,11 +234,13 @@ public abstract class BaseNsStreamWriter
         doWriteAttr(localName, null, null, value);
     }
 
+    @Override
     public abstract void writeAttribute(String nsURI, String localName, String value)
         throws XMLStreamException;
 
+    @Override
     public abstract void writeAttribute(String prefix, String nsURI,
-                                        String localName, String value)
+            String localName, String value)
         throws XMLStreamException;
 
     /**
@@ -240,6 +248,7 @@ public abstract class BaseNsStreamWriter
      * Note: It is assumed caller just wants the element to belong to whatever
      * is the current default namespace.
      */
+    @Override
     public void writeEmptyElement(String localName)
         throws XMLStreamException
     {
@@ -260,6 +269,7 @@ public abstract class BaseNsStreamWriter
 
     }
 
+    @Override
     public void writeEmptyElement(String nsURI, String localName)
         throws XMLStreamException
     {
@@ -267,6 +277,7 @@ public abstract class BaseNsStreamWriter
         mEmptyElement = true;
     }
 
+    @Override
     public void writeEmptyElement(String prefix, String localName, String nsURI)
         throws XMLStreamException
     {
@@ -274,6 +285,7 @@ public abstract class BaseNsStreamWriter
         mEmptyElement = true;
     }
 
+    @Override
     public void writeEndElement()
         throws XMLStreamException
     {
@@ -284,6 +296,7 @@ public abstract class BaseNsStreamWriter
      * This method is assumed to just use default namespace (if any),
      * and no further checks should be done.
      */
+    @Override
     public void writeStartElement(String localName)
         throws XMLStreamException
     {
@@ -304,6 +317,7 @@ public abstract class BaseNsStreamWriter
         doWriteStartTag(localName);
     }
 
+    @Override
     public void writeStartElement(String nsURI, String localName)
         throws XMLStreamException
     {
@@ -311,6 +325,7 @@ public abstract class BaseNsStreamWriter
         mEmptyElement = false;
     }
 
+    @Override
     public void writeStartElement(String prefix, String localName, String nsURI)
         throws XMLStreamException
     {
@@ -318,6 +333,7 @@ public abstract class BaseNsStreamWriter
         mEmptyElement = false;
     }
 
+    @Override
     protected void writeTypedAttribute(String prefix, String nsURI, String localName,
                                        AsciiValueEncoder enc)
         throws XMLStreamException
@@ -354,6 +370,7 @@ public abstract class BaseNsStreamWriter
      * Similar to {@link #writeEndElement}, but never allows implicit
      * creation of empty elements.
      */
+    @Override
     public void writeFullEndElement()
         throws XMLStreamException
     {
@@ -366,11 +383,12 @@ public abstract class BaseNsStreamWriter
     ////////////////////////////////////////////////////
      */
 
-    public QName getCurrentElementName()
-    {
+    @Override
+    public QName getCurrentElementName() {
         return mCurrElem.getName();
     }
 
+    @Override
     public String getNamespaceURI(String prefix) {
         return mCurrElem.getNamespaceURI(prefix);
     }
@@ -387,6 +405,7 @@ public abstract class BaseNsStreamWriter
      * that takes no argument), so that we can verify it does match the
      * start element, if necessary
      */
+    @Override
     public void writeEndElement(QName name)
         throws XMLStreamException
     {
@@ -401,6 +420,7 @@ public abstract class BaseNsStreamWriter
      * @param emptyElem If true, the element being closed is an empty
      *   element; if false, a separate stand-alone start element.
      */
+    @Override
     protected void closeStartElement(boolean emptyElem)
         throws XMLStreamException
     {
@@ -439,6 +459,7 @@ public abstract class BaseNsStreamWriter
         }
     }
 
+    @Override
     protected String getTopElementDesc() {
         return mCurrElem.getNameDesc();
     }
@@ -736,12 +757,15 @@ public abstract class BaseNsStreamWriter
     public abstract void doSetPrefix(String prefix, String uri)
         throws XMLStreamException;
 
+    @Override
     public abstract void writeDefaultNamespace(String nsURI)
         throws XMLStreamException;
 
+    @Override
     public abstract void writeNamespace(String prefix, String nsURI)
         throws XMLStreamException;
 
+    @Override
     public abstract void writeStartElement(StartElement elem)
         throws XMLStreamException;
 

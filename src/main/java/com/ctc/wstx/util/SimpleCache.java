@@ -51,7 +51,8 @@ public final class SimpleCache<K,V>
             // Let's not allow silly low values...
             mMaxSize = size;
         }
-        
+
+        @Override
         public boolean removeEldestEntry(Map.Entry<K,V> eldest) {
             return (size() >= mMaxSize);
         }

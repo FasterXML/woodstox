@@ -89,6 +89,7 @@ public class DTDTypingNonValidator
     /**
      * @return False, since this is not a real validator
      */
+    @Override
     public final boolean reallyValidating() { return false; }
 
     /*
@@ -101,6 +102,7 @@ public class DTDTypingNonValidator
      * This 'validator' will not normalize any attributes,
      * so let's implement this as no-op.
      */
+    @Override
     public void setAttrValueNormalization(boolean state) {
         // nop
     }
@@ -113,6 +115,7 @@ public class DTDTypingNonValidator
 
     //public XMLValidationSchema getSchema()
 
+    @Override
     public void validateElementStart(String localName, String uri, String prefix)
         throws XMLStreamException
     {
@@ -174,6 +177,7 @@ public class DTDTypingNonValidator
         }
     }
 
+    @Override
     public String validateAttribute(String localName, String uri,
                                     String prefix, String value)
         throws XMLStreamException
@@ -213,10 +217,11 @@ public class DTDTypingNonValidator
         return null; // fine as is
     }
 
+    @Override
     public String validateAttribute(String localName, String uri,
-                                    String prefix,
-                                    char[] valueChars, int valueStart,
-                                    int valueEnd)
+            String prefix,
+            char[] valueChars, int valueStart,
+            int valueEnd)
         throws XMLStreamException
     {
         // note: cut'n pasted from above...
@@ -239,7 +244,8 @@ public class DTDTypingNonValidator
         }
         return null; // fine as is
     }
-    
+
+    @Override
     public int validateElementAndAttributes()
         throws XMLStreamException
     {
@@ -272,6 +278,7 @@ public class DTDTypingNonValidator
             elem.getAllowedContentIfSpace();
     }
 
+    @Override
     public int validateElementEnd(String localName, String uri, String prefix)
         throws XMLStreamException
     {
@@ -292,6 +299,7 @@ public class DTDTypingNonValidator
     //public void validateText(String text, boolean lastTextSegment)
     //public void validateText(char[] cbuf, int textStart, int textEnd, boolean lastTextSegment)
 
+    @Override
     public void validationCompleted(boolean eod)
         //throws XMLStreamException
     {
@@ -304,6 +312,7 @@ public class DTDTypingNonValidator
     ///////////////////////////////////////
     */
 
+    @Override
     protected ElementIdMap getIdMap()
     {
         /* should never be called; for now let's throw an exception, if it

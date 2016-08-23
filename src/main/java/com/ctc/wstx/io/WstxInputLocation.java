@@ -82,11 +82,16 @@ public class WstxInputLocation
     
     public long getCharacterOffsetLong() { return mCharOffset; }
 
+    @Override
     public int getCharacterOffset() { return (int)mCharOffset; }
+    @Override
     public int getColumnNumber() { return mCol; }
+    @Override
     public int getLineNumber() { return mRow; }
     
+    @Override
     public String getPublicId() { return mPublicId; }
+    @Override
     public String getSystemId() { return mSystemId; }
 
     /*
@@ -95,6 +100,7 @@ public class WstxInputLocation
     ////////////////////////////////////////////////////////
      */
 
+    @Override
     public XMLStreamLocation2 getContext() { return mContext; }
 
     /*

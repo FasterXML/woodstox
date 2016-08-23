@@ -918,6 +918,7 @@ public abstract class BaseStreamWriter
     ///////////////////////////////////////////////////////////
      */
 
+    @Override
     public void closeCompletely()
         throws XMLStreamException
     {
@@ -932,6 +933,7 @@ public abstract class BaseStreamWriter
 
     // NOTE: getProperty() defined in Stax 1.0 interface
 
+    @Override
     public boolean isPropertySupported(String name) {
         // !!! TBI: not all these properties are really supported
         return mConfig.isPropertySupported(name);
@@ -944,6 +946,7 @@ public abstract class BaseStreamWriter
      * @return True, if the specified property was <b>succesfully</b>
      *    set to specified value; false if its value was not changed
      */
+    @Override
     public boolean setProperty(String name, Object value)
     {
         /* Note: can not call local method, since it'll return false for
@@ -952,6 +955,7 @@ public abstract class BaseStreamWriter
         return mConfig.setProperty(name, value);
     }
 
+    @Override
     public XMLValidator validateAgainst(XMLValidationSchema schema)
         throws XMLStreamException
     {
@@ -971,6 +975,7 @@ public abstract class BaseStreamWriter
         return vld;
     }
 
+    @Override
     public XMLValidator stopValidatingAgainst(XMLValidationSchema schema)
         throws XMLStreamException
     {
@@ -987,6 +992,7 @@ public abstract class BaseStreamWriter
         return found;
     }
 
+    @Override
     public XMLValidator stopValidatingAgainst(XMLValidator validator)
         throws XMLStreamException
     {
@@ -1003,6 +1009,7 @@ public abstract class BaseStreamWriter
         return found;
     }
 
+    @Override
     public ValidationProblemHandler setValidationProblemHandler(ValidationProblemHandler h)
     {
         ValidationProblemHandler oldH = mVldProbHandler;
@@ -1023,6 +1030,7 @@ public abstract class BaseStreamWriter
     ///////////////////////////////////////////////////////////
      */
 
+    @Override
     public XMLStreamLocation2 getLocation()
     {
         return new WstxInputLocation(null, // no parent
@@ -1031,6 +1039,7 @@ public abstract class BaseStreamWriter
         		mWriter.getRow(), mWriter.getColumn());
     }
 
+    @Override
     public String getEncoding() {
         return mEncoding;
     }
@@ -1041,6 +1050,7 @@ public abstract class BaseStreamWriter
     ///////////////////////////////////////////////////////////
      */
 
+    @Override
     public void writeCData(char[] cbuf, int start, int len)
         throws XMLStreamException
     {
@@ -1084,6 +1094,7 @@ public abstract class BaseStreamWriter
                  info.getDTDPublicId(), info.getDTDInternalSubset());
     }
 
+    @Override
     public void writeDTD(String rootName, String systemId, String publicId,
                          String internalSubset)
         throws XMLStreamException
@@ -1097,8 +1108,10 @@ public abstract class BaseStreamWriter
         }
     }
 
+    @Override
     public abstract void writeFullEndElement() throws XMLStreamException;
 
+    @Override
     public void writeStartDocument(String version, String encoding,
                                    boolean standAlone)
         throws XMLStreamException
@@ -1106,6 +1119,7 @@ public abstract class BaseStreamWriter
         doWriteStartDocument(version, encoding, standAlone ? "yes" : "no");
     }
 
+    @Override
     public void writeRaw(String text)
         throws XMLStreamException
     {
@@ -1120,6 +1134,7 @@ public abstract class BaseStreamWriter
         }
     }
 
+    @Override
     public void writeRaw(String text, int start, int offset)
         throws XMLStreamException
     {
@@ -1134,6 +1149,7 @@ public abstract class BaseStreamWriter
         }
     }
 
+    @Override
     public void writeRaw(char[] text, int start, int offset)
         throws XMLStreamException
     {
@@ -1148,6 +1164,7 @@ public abstract class BaseStreamWriter
         }
     }
 
+    @Override
     public void writeSpace(String text)
         throws XMLStreamException
     {
@@ -1157,6 +1174,7 @@ public abstract class BaseStreamWriter
         writeRaw(text);
     }
 
+    @Override
     public void writeSpace(char[] text, int offset, int length)
         throws XMLStreamException
     {
@@ -1170,26 +1188,32 @@ public abstract class BaseStreamWriter
     ///////////////////////////////////////////////////////////
      */
 
+    @Override
     public String getXmlVersion() {
         return mXml11 ? XmlConsts.XML_V_11_STR : XmlConsts.XML_V_10_STR;
     }
 
+    @Override
     public abstract QName getCurrentElementName();
 
+    @Override
     public abstract String getNamespaceURI(String prefix);
 
     /**
      * As of now, there is no way to specify the base URI. Could be improved
      * in future, if xml:base is supported.
      */
+    @Override
     public String getBaseUri() {
         return null;
     }
 
+    @Override
     public Location getValidationLocation() {
         return getLocation();
     }
 
+    @Override
     public void reportProblem(XMLValidationProblem prob)
         throws XMLStreamException
     {
