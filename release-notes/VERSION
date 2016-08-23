@@ -6,8 +6,10 @@ Project: woodstox
 
 5.0.3 (not yet released)
 
-#13: BasicStreamReader.getElementText() behavior doesn't match Java documentation
+#13: `BasicStreamReader.getElementText()` behavior doesn't match Java documentation
  (reported by Caleb-An@github)
+#15: `BasicStreamReader` should use `WstxUnexpectedCharException` instead of WstxParsingException
+ (reported by dima-kapustin@github)
 #21: 500 characters limit when calling XMLStreamReader#getText() after CDATA event
  (reported by elrodro83@github)
 

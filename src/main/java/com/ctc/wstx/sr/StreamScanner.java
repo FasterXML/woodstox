@@ -438,6 +438,7 @@ public abstract class StreamScanner
      * apparently needs to be the end of current event, which is the same
      * as the start of the following event (or EOF if that's next).
      */
+    @Override
     public abstract Location getLocation();
 
     public XMLStreamLocation2 getStartLocation()
@@ -469,8 +470,8 @@ public abstract class StreamScanner
         return ex;
     }
 
-    public void throwParseError(String msg) throws XMLStreamException
-    {
+    @Override
+    public void throwParseError(String msg) throws XMLStreamException {
         throwParseError(msg, null, null);
     }
 
@@ -481,6 +482,7 @@ public abstract class StreamScanner
      * Note: public access only because core code in other packages needs
      * to access it.
      */
+    @Override
     public void throwParseError(String format, Object arg, Object arg2)
         throws XMLStreamException
     {
@@ -499,6 +501,7 @@ public abstract class StreamScanner
         }
     }
 
+    @Override
     public void reportProblem(Location loc, String probType,
                               String format, Object arg, Object arg2)
         throws XMLStreamException
@@ -548,6 +551,7 @@ public abstract class StreamScanner
      * Note: this is the base implementation used for implementing
      * <code>ValidationContext</code>
      */
+    @Override
     public void reportValidationProblem(XMLValidationProblem prob)
         throws XMLStreamException
     {
@@ -585,6 +589,7 @@ public abstract class StreamScanner
                                                          msg, severity));
     }
 
+    @Override
     public void reportValidationProblem(String msg)
         throws XMLStreamException
     {
@@ -598,6 +603,7 @@ public abstract class StreamScanner
         reportValidationProblem(new XMLValidationProblem(loc, msg));
     }
 
+    @Override
     public void reportValidationProblem(String format, Object arg, Object arg2)
         throws XMLStreamException
     {
@@ -640,8 +646,7 @@ public abstract class StreamScanner
                 getLastCharLocation(), CHAR_NULL);
     }
 
-    protected void throwUnexpectedChar(int i, String msg)
-        throws WstxException
+    protected void throwUnexpectedChar(int i, String msg) throws WstxException
     {
         char c = (char) i;
         String excMsg = "Unexpected character "+getCharDesc(c)+msg;
