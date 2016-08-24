@@ -4,7 +4,7 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-5.0.3 (not yet released)
+5.0.3 (23-Aug-2016)
 
 #13: `BasicStreamReader.getElementText()` behavior doesn't match Java documentation
  (reported by Caleb-An@github)
