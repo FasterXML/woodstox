@@ -39,6 +39,7 @@ public interface InvalidCharHandler
 
         public static FailingHandler getInstance() { return sInstance; }
         
+        @Override
         public char convertInvalidChar(int c) throws IOException
         {
             /* 17-May-2006, TSa: Would really be useful if we could throw
@@ -77,13 +78,12 @@ public interface InvalidCharHandler
     {
         final char mReplacementChar;
 
-        public ReplacingHandler(char c)
-        {
+        public ReplacingHandler(char c) {
             mReplacementChar = c;
         }
 
-        public char convertInvalidChar(int c) throws IOException
-        {
+        @Override
+        public char convertInvalidChar(int c) throws IOException {
             return mReplacementChar;
         }
     }

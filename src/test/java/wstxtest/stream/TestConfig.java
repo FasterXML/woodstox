@@ -95,12 +95,6 @@ public class TestConfig
 
     /*
     //////////////////////////////////////////////////////
-    // Internal methods
-    //////////////////////////////////////////////////////
-     */
-
-    /*
-    //////////////////////////////////////////////////////
     // Helper classes:
     //////////////////////////////////////////////////////
      */
@@ -108,6 +102,7 @@ public class TestConfig
     private final static class DTDResolver
         implements XMLResolver
     {
+        @Override
         public Object resolveEntity(String publicID, String systemID,
                                    String baseURI, String namespace)
         {
@@ -118,6 +113,7 @@ public class TestConfig
     private final static class EntityResolver
         implements XMLResolver
     {
+        @Override
         public Object resolveEntity(String publicID, String systemID,
                                    String baseURI, String namespace)
         {

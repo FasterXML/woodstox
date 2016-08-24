@@ -219,10 +219,9 @@ public class TestXMLReporter
 
         public void enableThrow() { _doThrow = true; }
 
-        public void report(String message,
-                           String errorType,
-                           Object relatedInfo,
-                           Location location)
+        @Override
+        public void report(String message,String errorType,
+                Object relatedInfo, Location location)
             throws XMLStreamException
         {
             ++_count;
@@ -253,6 +252,7 @@ public class TestXMLReporter
     {
         public MyReporter2() { super(); }
 
+        @Override
         public void report(String message, String errorType,
                            Object relatedInfo, Location location)
             throws XMLStreamException
@@ -260,6 +260,7 @@ public class TestXMLReporter
             throw new Error("Should not get a call through old XMLReporter interface, when registering XMLReporter2");
         }
 
+        @Override
         public void report(XMLValidationProblem prob)
             throws XMLStreamException
         {

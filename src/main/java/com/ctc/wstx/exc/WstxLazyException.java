@@ -44,13 +44,13 @@ public class WstxLazyException
      * Need to override this, to be able to dynamically construct and
      * display the location information...
      */
-    public String getMessage()
-    {
+    @Override
+    public String getMessage() {
         return "["+getClass().getName()+"] "+mOrig.getMessage();
     }
 
-    public String toString()
-    {
+    @Override
+    public String toString() {
         return "["+getClass().getName()+"] "+mOrig.toString();
     }
 }

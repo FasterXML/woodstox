@@ -646,9 +646,11 @@ public abstract class EncodingXmlWriter
 
     @Override
     public void writeTypedAttribute(String prefix, String localName,
-                                    AsciiValueEncoder enc)
+            AsciiValueEncoder enc)
         throws IOException, XMLStreamException
     {
+System.err.println("DEBUG: write typed attr/0 '"+localName+"'");
+
         writeAscii(BYTE_SPACE);
         writeName(prefix);
         writeAscii(BYTE_COLON);
@@ -670,14 +672,16 @@ public abstract class EncodingXmlWriter
 
     @Override
     public void writeTypedAttribute(String prefix, String localName, String nsURI,
-                                      AsciiValueEncoder enc,
-                                      XMLValidator validator, char[] copyBuffer)
+            AsciiValueEncoder enc,
+            XMLValidator validator, char[] copyBuffer)
         throws IOException, XMLStreamException
     {
         boolean hasPrefix = (prefix != null && prefix.length() > 0);
         if (nsURI == null) {
             nsURI = "";
         }
+System.err.println("DEBUG: write typed attr/1 '"+localName+"', vld == "+validator);
+
         //validator.validateAttribute(localName, nsURI, (hasPrefix ? prefix: ""), buf, offset, len);
 
         writeAscii(BYTE_SPACE);

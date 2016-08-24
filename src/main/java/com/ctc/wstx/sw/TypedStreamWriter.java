@@ -75,30 +75,35 @@ public abstract class TypedStreamWriter
 
     // // // Typed element content write methods
 
+    @Override
     public void writeBoolean(boolean value)
         throws XMLStreamException
     {
         writeTypedElement(valueEncoderFactory().getEncoder(value));
     }
 
+    @Override
     public void writeInt(int value)
         throws XMLStreamException
     {
         writeTypedElement(valueEncoderFactory().getEncoder(value));
     }
 
+    @Override
     public void writeLong(long value)
         throws XMLStreamException
     {
         writeTypedElement(valueEncoderFactory().getEncoder(value));
     }
 
+    @Override
     public void writeFloat(float value)
         throws XMLStreamException
     {
         writeTypedElement(valueEncoderFactory().getEncoder(value));
     }
 
+    @Override
     public void writeDouble(double value)
         throws XMLStreamException
     {
@@ -106,6 +111,7 @@ public abstract class TypedStreamWriter
 
     }
 
+    @Override
     public void writeInteger(BigInteger value)
         throws XMLStreamException
     {
@@ -115,6 +121,7 @@ public abstract class TypedStreamWriter
         writeTypedElement(valueEncoderFactory().getScalarEncoder(value.toString()));
     }
 
+    @Override
     public void writeDecimal(BigDecimal value)
         throws XMLStreamException
     {
@@ -124,6 +131,7 @@ public abstract class TypedStreamWriter
         writeTypedElement(valueEncoderFactory().getScalarEncoder(value.toString()));
     }
 
+    @Override
     public void writeQName(QName name)
         throws XMLStreamException
     {
@@ -133,30 +141,35 @@ public abstract class TypedStreamWriter
         writeCharacters(serializeQName(name));
     }
 
+    @Override
     public final void writeIntArray(int[] value, int from, int length)
         throws XMLStreamException
     {
         writeTypedElement(valueEncoderFactory().getEncoder(value, from, length));
     }
 
+    @Override
     public void writeLongArray(long[] value, int from, int length)
         throws XMLStreamException
     {
         writeTypedElement(valueEncoderFactory().getEncoder(value, from, length));
     }
 
+    @Override
     public void writeFloatArray(float[] value, int from, int length)
         throws XMLStreamException
     {
         writeTypedElement(valueEncoderFactory().getEncoder(value, from, length));
     }
 
+    @Override
     public void writeDoubleArray(double[] value, int from, int length)
         throws XMLStreamException
     {
         writeTypedElement(valueEncoderFactory().getEncoder(value, from, length));
     }
 
+    @Override
     public void writeBinary(byte[] value, int from, int length)
         throws XMLStreamException
     {
@@ -164,6 +177,7 @@ public abstract class TypedStreamWriter
         writeTypedElement(valueEncoderFactory().getEncoder(v, value, from, length));
     }
 
+    @Override
     public void writeBinary(Base64Variant v, byte[] value, int from, int length)
         throws XMLStreamException
     {
@@ -203,6 +217,7 @@ public abstract class TypedStreamWriter
 
     // // // Typed attribute value write methods
 
+    @Override
     public void writeBooleanAttribute(String prefix, String nsURI, String localName, boolean value)
         throws XMLStreamException
     {
@@ -210,6 +225,7 @@ public abstract class TypedStreamWriter
                             valueEncoderFactory().getEncoder(value));
     }
 
+    @Override
     public void writeIntAttribute(String prefix, String nsURI, String localName, int value)
         throws XMLStreamException
     {
@@ -217,6 +233,7 @@ public abstract class TypedStreamWriter
                               valueEncoderFactory().getEncoder(value));
     }
 
+    @Override
     public void writeLongAttribute(String prefix, String nsURI, String localName, long value)
         throws XMLStreamException
     {
@@ -224,6 +241,7 @@ public abstract class TypedStreamWriter
                               valueEncoderFactory().getEncoder(value));
     }
 
+    @Override
     public void writeFloatAttribute(String prefix, String nsURI, String localName, float value)
         throws XMLStreamException
     {
@@ -231,6 +249,7 @@ public abstract class TypedStreamWriter
                               valueEncoderFactory().getEncoder(value));
     }
 
+    @Override
     public void writeDoubleAttribute(String prefix, String nsURI, String localName, double value)
         throws XMLStreamException
     {
@@ -238,6 +257,7 @@ public abstract class TypedStreamWriter
                               valueEncoderFactory().getEncoder(value));
     }
 
+    @Override
     public void writeIntegerAttribute(String prefix, String nsURI, String localName, BigInteger value)
         throws XMLStreamException
     {
@@ -246,6 +266,7 @@ public abstract class TypedStreamWriter
                               valueEncoderFactory().getScalarEncoder(value.toString()));
     }
 
+    @Override
     public void writeDecimalAttribute(String prefix, String nsURI, String localName, BigDecimal value)
         throws XMLStreamException
     {
@@ -254,6 +275,7 @@ public abstract class TypedStreamWriter
                               valueEncoderFactory().getScalarEncoder(value.toString()));
     }
 
+    @Override
     public void writeQNameAttribute(String prefix, String nsURI, String localName, QName name)
         throws XMLStreamException
     {
@@ -263,6 +285,7 @@ public abstract class TypedStreamWriter
         writeAttribute(prefix, nsURI, localName, serializeQName(name));
     }
 
+    @Override
     public void writeIntArrayAttribute(String prefix, String nsURI, String localName, int[] value)
         throws XMLStreamException
     {
@@ -270,6 +293,7 @@ public abstract class TypedStreamWriter
                               valueEncoderFactory().getEncoder(value, 0, value.length));
     }
 
+    @Override
     public void writeLongArrayAttribute(String prefix, String nsURI, String localName, long[] value)
         throws XMLStreamException
     {
@@ -277,6 +301,7 @@ public abstract class TypedStreamWriter
                             valueEncoderFactory().getEncoder(value, 0, value.length));
     }
 
+    @Override
     public void writeFloatArrayAttribute(String prefix, String nsURI, String localName, float[] value)
         throws XMLStreamException
     {
@@ -284,6 +309,7 @@ public abstract class TypedStreamWriter
                             valueEncoderFactory().getEncoder(value, 0, value.length));
     }
 
+    @Override
     public void writeDoubleArrayAttribute(String prefix, String nsURI, String localName, double[] value)
         throws XMLStreamException
     {
@@ -291,19 +317,21 @@ public abstract class TypedStreamWriter
                             valueEncoderFactory().getEncoder(value, 0, value.length));
     }
 
+    @Override
     public void writeBinaryAttribute(String prefix, String nsURI, String localName, byte[] value)
         throws XMLStreamException
     {
         Base64Variant v = Base64Variants.getDefaultVariant();
         writeTypedAttribute(prefix, nsURI, localName,
-                            valueEncoderFactory().getEncoder(v, value, 0, value.length));
+                valueEncoderFactory().getEncoder(v, value, 0, value.length));
     }
 
+    @Override
     public void writeBinaryAttribute(Base64Variant v, String prefix, String nsURI, String localName, byte[] value)
         throws XMLStreamException
     {
         writeTypedAttribute(prefix, nsURI, localName,
-                            valueEncoderFactory().getEncoder(v, value, 0, value.length));
+                valueEncoderFactory().getEncoder(v, value, 0, value.length));
     }
 
     /**
@@ -311,8 +339,8 @@ public abstract class TypedStreamWriter
      * require additional escaping.
      */
     protected abstract void writeTypedAttribute(String prefix, String nsURI,
-                                                String localName,
-                                                AsciiValueEncoder enc)
+            String localName,
+            AsciiValueEncoder enc)
         throws XMLStreamException;
 
     private String serializeQName(QName name)

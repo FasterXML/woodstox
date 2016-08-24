@@ -23,7 +23,8 @@ class BlockingStream
     public boolean hasBlocked() {
         return mBlocked;
     }
-    
+
+    @Override
     public int read() throws IOException
     {
         int r = super.read();
@@ -32,7 +33,8 @@ class BlockingStream
         }
         return r;
     }
-    
+
+    @Override
     public int read(byte[] b, int off, int len) throws IOException
     {
         int r = super.read(b, off, len);

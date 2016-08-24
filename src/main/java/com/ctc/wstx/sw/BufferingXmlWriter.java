@@ -1309,8 +1309,8 @@ public final class BufferingXmlWriter
 
     @Override
     public void writeTypedAttribute(String prefix, String localName, String nsURI,
-                                    AsciiValueEncoder enc,
-                                    XMLValidator validator, char[] copyBuffer)
+            AsciiValueEncoder enc,
+            XMLValidator validator, char[] copyBuffer)
         throws IOException, XMLStreamException
     {
         if (mOut == null) {

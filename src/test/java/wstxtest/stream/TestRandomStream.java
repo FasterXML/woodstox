@@ -148,6 +148,7 @@ public class TestRandomStream
      * Method called via input config iterator, with all possible
      * configurations
      */
+    @Override
     public void runTest(XMLInputFactory f, InputConfigIterator it)
         throws Exception
     {
@@ -159,10 +160,4 @@ public class TestRandomStream
         // and then the 'real' test:
         streamAndCheck(f, it, mInput, exp, mReallyStreaming);
     }
-
-    /*
-    ////////////////////////////////////////
-    // Private methods, other
-    ////////////////////////////////////////
-     */
 }

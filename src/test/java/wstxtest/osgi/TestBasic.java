@@ -33,6 +33,7 @@ public class TestBasic
     final static class ContextHandler
         implements InvocationHandler
     {
+        @Override
         public Object invoke(Object proxy, Method method, Object[] args)
         {
             // !!! TODO: make do something...

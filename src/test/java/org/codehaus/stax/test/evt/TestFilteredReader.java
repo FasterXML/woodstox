@@ -54,6 +54,7 @@ public class TestFilteredReader
     final static class MyFilter
         implements EventFilter
     {
+        @Override
         public boolean accept(XMLEvent event) {
             return true;
         }

@@ -185,6 +185,7 @@ public final class DFAState
     ///////////////////////////////////////////////
      */
 
+    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();

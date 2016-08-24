@@ -35,6 +35,7 @@ public final class AsciiXmlWriter
         super(out, cfg, CharsetNames.CS_US_ASCII, autoclose);
     }
 
+    @Override
     public void writeRaw(char[] cbuf, int offset, int len)
         throws IOException
     {
@@ -87,6 +88,7 @@ public final class AsciiXmlWriter
         mOutputPtr = ptr;
     }
 
+    @Override
     public void writeRaw(String str, int offset, int len)
         throws IOException
     {
@@ -138,6 +140,7 @@ public final class AsciiXmlWriter
         mOutputPtr = ptr;
     }
 
+    @Override
     protected void writeAttrValue(String data)
         throws IOException
     {
@@ -220,6 +223,7 @@ public final class AsciiXmlWriter
         mOutputPtr = ptr;
     }
 
+    @Override
     protected void writeAttrValue(char[] data, int offset, int len)
         throws IOException
     {
@@ -300,6 +304,7 @@ public final class AsciiXmlWriter
         mOutputPtr = ptr;
     }
 
+    @Override
     protected int writeCDataContent(String data)
         throws IOException
     {
@@ -373,6 +378,7 @@ public final class AsciiXmlWriter
         return -1;
     }
 
+    @Override
     protected int writeCDataContent(char[] cbuf, int start, int len)
         throws IOException
     {
@@ -446,6 +452,7 @@ public final class AsciiXmlWriter
         return -1;
     }
 
+    @Override
     protected int writeCommentContent(String data)
         throws IOException
     {
@@ -524,6 +531,7 @@ public final class AsciiXmlWriter
         return -1;
     }
 
+    @Override
     protected int writePIData(String data)
         throws IOException, XMLStreamException
     {
@@ -580,8 +588,8 @@ public final class AsciiXmlWriter
         return -1;
     }
 
-    protected void writeTextContent(String data)
-        throws IOException
+    @Override
+    protected void writeTextContent(String data) throws IOException
     {
         int offset = 0;
         int len = data.length();
@@ -657,6 +665,7 @@ public final class AsciiXmlWriter
         }
     }
 
+    @Override
     protected void writeTextContent(char[] cbuf, int offset, int len)
         throws IOException
     {

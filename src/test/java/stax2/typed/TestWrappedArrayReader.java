@@ -12,6 +12,7 @@ import org.codehaus.stax2.ri.Stax2ReaderAdapter;
 public class TestWrappedArrayReader
     extends ReaderArrayTestBase
 {
+    @Override
     protected XMLStreamReader2 getReader(String contents)
         throws XMLStreamException
     {

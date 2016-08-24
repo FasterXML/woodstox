@@ -71,5 +71,6 @@ public final class SAXFeature
 
     public String getSuffix() { return mSuffix; }
 
+    @Override
     public String toString() { return STD_FEATURE_PREFIX + mSuffix; }
 }

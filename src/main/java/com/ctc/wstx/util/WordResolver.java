@@ -314,6 +314,7 @@ public final class WordResolver
     ////////////////////////////////////////////////
      */
 
+    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder(16 + (mWords.length << 3));
@@ -325,12 +326,6 @@ public final class WordResolver
         }
         return sb.toString();
     }
-
-    /*
-    ////////////////////////////////////////////////
-    // Private methods
-    ////////////////////////////////////////////////
-     */
 
     /*
     ////////////////////////////////////////////////

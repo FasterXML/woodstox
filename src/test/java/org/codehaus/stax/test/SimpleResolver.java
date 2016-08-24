@@ -24,6 +24,7 @@ public class SimpleResolver
         }
     }
 
+    @Override
     public Object resolveEntity(String publicID, String systemID, String baseURI, String namespace)
     {
         return new java.io.ByteArrayInputStream(mData);

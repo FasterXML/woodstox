@@ -15,6 +15,7 @@ import org.codehaus.stax2.ri.Stax2WriterAdapter;
 public class TestWrappedWriter
     extends WriterTestBase
 {
+    @Override
     protected XMLStreamWriter2 getTypedWriter(ByteArrayOutputStream out,
                                               boolean repairing)
         throws XMLStreamException
@@ -25,11 +26,12 @@ public class TestWrappedWriter
         return new MyAdapter(outf.createXMLStreamWriter(out, "UTF-8"));
     }
 
+    @Override
     protected byte[] closeWriter(XMLStreamWriter sw, ByteArrayOutputStream out)
         throws XMLStreamException
     {
-	sw.close();
-	return out.toByteArray();
+        sw.close();
+        return out.toByteArray();
     }
 
     /*

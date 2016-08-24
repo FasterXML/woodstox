@@ -222,6 +222,7 @@ public final class StringVector
     ///////////////////////////////////////////////////////
      */
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(mSize * 16);
         sb.append("[(size = ");

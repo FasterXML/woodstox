@@ -25,6 +25,7 @@ public abstract class BaseEventTest
     ///////////////////////////////////////////////////
      */
 
+    @Override
     protected XMLEventFactory getEventFactory()
         throws FactoryConfigurationError
     {
@@ -37,12 +38,13 @@ public abstract class BaseEventTest
         return f.createXMLEventReader(new StringReader(content));
     }
 
+    @SuppressWarnings("resource")
     protected static XMLEventReader constructEventReaderForFile(XMLInputFactory f, String filename)
         throws IOException, XMLStreamException
     {
         File inf = new File(filename);
         XMLEventReader er = f.createXMLEventReader(inf.toURL().toString(),
-                                                   new FileReader(inf));
+                new FileReader(inf));
         return er;
     }
 

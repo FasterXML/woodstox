@@ -68,5 +68,6 @@ public class W3CSchemaWriteTest
         if (validatedXML.indexOf("JobStatus") <= 0) {
             fail("Wrong XML: "+validatedXML);
         }
+//System.err.println("XML: "+validatedXML);
     }
 }

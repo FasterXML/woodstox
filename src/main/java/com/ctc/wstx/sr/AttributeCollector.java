@@ -1038,23 +1038,34 @@ public final class AttributeCollector
     }
 
     /**
+     * @deprecated Since 5.0.3
+     */
+    @Deprecated
+    public void writeAttribute(int index, XmlWriter xw) throws IOException, XMLStreamException {
+        writeAttribute(index, xw, null);
+    }
+    
+    /**
      * Method that basically serializes the specified (read-in) attribute
      * using Writers provided. Serialization is done by
      * writing out (fully-qualified) name
      * of the attribute, followed by the equals sign and quoted value.
      */
-
-    public void writeAttribute(int index, XmlWriter xw)
-        throws IOException, XMLStreamException
+    public void writeAttribute(int index, XmlWriter xw, XMLValidator validator)
+            throws IOException, XMLStreamException
     {
         // Note: here we assume index checks have been done by caller
         Attribute attr = mAttributes[index];
         String ln = attr.mLocalName;
         String prefix = attr.mPrefix;
+        final String value = getValue(index);
         if (prefix == null || prefix.length() == 0) {
-            xw.writeAttribute(ln, getValue(index));
+            xw.writeAttribute(ln, value);
         } else {
-            xw.writeAttribute(prefix, ln, getValue(index));
+            xw.writeAttribute(prefix, ln, value);
+        }
+        if (validator != null) {
+            validator.validateAttribute(ln, attr.mNamespaceURI, prefix, value);
         }
     }
 

@@ -467,6 +467,7 @@ public final class DTDElement
 
     public PrefixedName getName() { return mName; }
 
+    @Override
     public String toString() {
         return mName.toString();
     }

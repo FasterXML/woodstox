@@ -58,6 +58,7 @@ public class TestInputFactory
     final static class MyReporter
         implements XMLReporter
     {
+        @Override
         public void report(String message, String errorType, Object relatedInformation, Location location)
         {
             // fine...

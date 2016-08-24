@@ -406,7 +406,7 @@ public class NonNsStreamWriter
 
         if (attrCount > 0) {
             for (int i = 0; i < attrCount; ++i) {
-                attrCollector.writeAttribute(i, mWriter);
+                attrCollector.writeAttribute(i, mWriter, mValidator);
             }
         }
     }

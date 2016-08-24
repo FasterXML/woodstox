@@ -34,6 +34,7 @@ public abstract class PrefixedNameSet
 
     public abstract void appendNames(StringBuilder sb, String sep);
 
+    @Override
     public final String toString() {
         return toString(", ");
     }

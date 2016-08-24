@@ -315,10 +315,9 @@ public abstract class BaseStreamWriter
     public void writeCData(String data)
         throws XMLStreamException
     {
-        /* 02-Dec-2004, TSa: Maybe the writer is to "re-direct" these
-         *   writes as normal text? (sometimes useful to deal with broken
-         *   XML parsers, for example)
-         */
+        // 02-Dec-2004, TSa: Maybe the writer is to "re-direct" these
+        //   writes as normal text? (sometimes useful to deal with broken
+        //   XML parsers, for example)
         if (mCfgCDataAsText) {
             writeCharacters(data);
             return;
@@ -332,9 +331,8 @@ public abstract class BaseStreamWriter
         verifyWriteCData();
         if (mVldContent == XMLValidator.CONTENT_ALLOW_VALIDATABLE_TEXT
             && mValidator != null) {
-            /* Last arg is false, since we do not know if more text
-             * may be added with additional calls
-             */
+            // Last arg is false, since we do not know if more text
+            // may be added with additional calls
             mValidator.validateText(data, false);
         }
         int ix;
@@ -358,9 +356,7 @@ public abstract class BaseStreamWriter
             closeStartElement(mEmptyElement);
         }
 
-        /* Not legal outside main element tree, except if it's all
-         * white space
-         */
+        // Not legal outside main element tree, except if it's all white space
         if (mCheckStructure) {
             if (inPrologOrEpilog()) {
                 if (!StringUtil.isAllWhitespace(text, start, len)) {

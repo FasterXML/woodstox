@@ -12,6 +12,7 @@ import org.codehaus.stax2.XMLStreamReader2;
 public class TestWrappedReader
     extends ReaderTestBase
 {
+    @Override
     protected XMLStreamReader2 getReader(String contents)
         throws XMLStreamException
     {
@@ -32,14 +33,14 @@ public class TestWrappedReader
     ///////////////////////////////////////////////////////////////
      */
 
-    // @Override
+    @Override
     public void testInvalidQNameElemBadChars()
         throws Exception
     {
         System.out.println("(skipping TestWrappedReader.testInvalidQNameElemBadChars)");
     }
 
-    // @Override
+    @Override
     public void testInvalidQNameAttrBadChars()
     {
         System.out.println("(skipping TestWrappedReader.testInvalidQNameAttrBadChars)");

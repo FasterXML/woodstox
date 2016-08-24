@@ -42,6 +42,7 @@ public class WstxEventReader
     //////////////////////////////////////////////////////
      */
 
+    @Override
     protected String getErrorDesc(int errorType, int currEvent)
     {
         // Defaults are mostly fine, except we can easily add event type desc
@@ -58,11 +59,13 @@ public class WstxEventReader
         return null;
     }
 
+    @Override
     public boolean isPropertySupported(String name)
     {
         return ((XMLStreamReader2)getStreamReader()).isPropertySupported(name);
     }
 
+    @Override
     public boolean setProperty(String name, Object value)
     {
         return ((XMLStreamReader2)getStreamReader()).setProperty(name, value);

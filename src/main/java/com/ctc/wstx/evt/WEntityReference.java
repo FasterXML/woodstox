@@ -34,6 +34,7 @@ public class WEntityReference
         mName = name;
     }
 
+    @Override
     public String getName()
     {
         if (mName != null) {

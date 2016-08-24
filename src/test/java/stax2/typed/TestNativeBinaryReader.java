@@ -11,6 +11,7 @@ import org.codehaus.stax2.XMLStreamReader2;
 public class TestNativeBinaryReader
     extends ReaderBinaryTestBase
 {
+    @Override
     protected XMLStreamReader2 getReader(String contents)
         throws XMLStreamException
     {

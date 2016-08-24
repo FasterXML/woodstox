@@ -57,5 +57,6 @@ public final class SAXProperty
 
     public String getSuffix() { return mSuffix; }
 
+    @Override
     public String toString() { return STD_PROPERTY_PREFIX + mSuffix; }
 }

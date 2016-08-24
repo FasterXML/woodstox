@@ -109,6 +109,7 @@ public final class TextBuilder
     ///////////////////////////////////////////////
      */
 
+    @Override
     public String toString() {
         return new String(mBuffer, 0, mBufferLen);
     }

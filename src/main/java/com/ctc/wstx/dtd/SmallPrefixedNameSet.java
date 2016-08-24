@@ -45,6 +45,7 @@ public final class SmallPrefixedNameSet
         }
     }
 
+    @Override
     public boolean hasMultiple() {
         return mStrings.length > 1;
     }
@@ -52,6 +53,7 @@ public final class SmallPrefixedNameSet
     /**
      * @return True if the set contains specified name; false if not.
      */
+    @Override
     public boolean contains(PrefixedName name)
     {
         int len = mStrings.length;
@@ -82,6 +84,7 @@ public final class SmallPrefixedNameSet
         return false;
     }
 
+    @Override
     public void appendNames(StringBuilder sb, String sep)
     {
         for (int i = 0; i < mStrings.length; ) {

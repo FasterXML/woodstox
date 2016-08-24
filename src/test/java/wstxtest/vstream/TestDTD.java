@@ -20,7 +20,8 @@ public class TestDTD
     final static class MyReporter implements XMLReporter
     {
         public int count = 0;
-        
+
+        @Override
         public void report(String message, String errorType, Object relatedInformation, Location location)
         {
             ++count;

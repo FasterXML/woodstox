@@ -67,8 +67,8 @@ public class TestEntityResolver
             mContents = c;
         }
 
-        public InputSource resolveEntity(String publicId, String systemId)
-        {
+        @Override
+        public InputSource resolveEntity(String publicId, String systemId) {
             return new InputSource(new StringReader(mContents));
         }
     }

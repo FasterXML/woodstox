@@ -56,6 +56,7 @@ public class RelaxNGSchemaFactory
     ////////////////////////////////////////////////////////////
      */
 
+    @Override
     protected XMLValidationSchema loadSchema(InputSource src, Object sysRef)
         throws XMLStreamException
     {

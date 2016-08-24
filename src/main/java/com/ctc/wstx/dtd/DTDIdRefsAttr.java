@@ -150,6 +150,7 @@ public final class DTDIdRefsAttr
      * It's unlikely there will be default values... but just in case,
      * let's implement it properly.
      */
+    @Override
     public void validateDefault(InputProblemReporter rep, boolean normalize)
         throws XMLStreamException
     {

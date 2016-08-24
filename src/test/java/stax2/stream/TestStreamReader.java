@@ -127,6 +127,7 @@ public class TestStreamReader
             this.dtd = dtd;
         }
 
+        @Override
         public Object resolveEntity(String publicID, String systemID, String baseURI, String namespace)
         {
             if (sysId.equals(systemID)) {

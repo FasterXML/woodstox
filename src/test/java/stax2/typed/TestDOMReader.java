@@ -18,8 +18,8 @@ import org.codehaus.stax2.XMLStreamReader2;
 public class TestDOMReader
     extends ReaderTestBase
 {
-    protected XMLStreamReader2 getReader(String contents)
-        throws Exception
+    @Override
+    protected XMLStreamReader2 getReader(String contents) throws Exception
     {
         XMLInputFactory f = getInputFactory();
         setCoalescing(f, false); // shouldn't really matter
@@ -40,39 +40,39 @@ public class TestDOMReader
     ///////////////////////////////////////////////////////////////
      */
 
-    // @Override
+    @Override
     public void testValidQNameElem()
     {
         // Ugh: due to missing NS lookups, even this would fail...
         warn("(skipping TestDOMReader.testValidQNameElem()");
     }
 
-    // @Override
+    @Override
     public void testInvalidQNameElemBadChars()
     {
         warn("(skipping TestDOMReader.testInvalidQNameElemBadChars)");
     }
 
-    // @Override
+    @Override
     public void testInvalidQNameElemUnbound()
     {
         // Need DOM3 to support namespace lookups
         warn("(skipping TestDOMReader.testInvalidQNameElemUnbound()");
     }
 
-    // @Override
+    @Override
     public void testValidQNameAttr()
     {
         warn("(skipping TestDOMReader.testValidQNameAttr()");
     }
 
-    // @Override
+    @Override
     public void testInvalidQNameAttrBadChars()
     {
         warn("(skipping TestDOMReader.testInvalidQNameAttrBadChars)");
     }
 
-    // @Override
+    @Override
     public void testInvalidQNameAttrUnbound()
     {
         // Need DOM3 to support namespace lookups

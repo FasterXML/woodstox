@@ -132,6 +132,7 @@ public abstract class DTDAttribute
 
     public final PrefixedName getName() { return mName; }
 
+    @Override
     public final String toString() {
         return mName.toString();
     }

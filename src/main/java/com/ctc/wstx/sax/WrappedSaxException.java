@@ -34,5 +34,6 @@ public final class WrappedSaxException
 
     public SAXException getSaxException() { return mCause; }
 
+    @Override
     public String toString() { return mCause.toString(); }
 }

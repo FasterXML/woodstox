@@ -45,7 +45,6 @@ import com.ctc.wstx.cfg.XmlConsts;
 import com.ctc.wstx.dtd.MinimalDTDReader;
 import com.ctc.wstx.ent.EntityDecl;
 import com.ctc.wstx.exc.WstxException;
-import com.ctc.wstx.exc.WstxUnexpectedCharException;
 import com.ctc.wstx.io.*;
 import com.ctc.wstx.util.DefaultXmlSymbolTable;
 import com.ctc.wstx.util.TextBuffer;

@@ -306,8 +306,8 @@ public class SimpleNsStreamWriter
         }
 
         writeStartElement(elemStack.getPrefix(),
-                          elemStack.getLocalName(),
-                          elemStack.getNsURI());
+                elemStack.getLocalName(),
+                elemStack.getNsURI());
 
         if (nsCount > 0) {
             // And then output actual namespace declarations:
@@ -332,7 +332,7 @@ public class SimpleNsStreamWriter
 
         if (attrCount > 0) {
             for (int i = 0; i < attrCount; ++i) {
-                attrCollector.writeAttribute(i, mWriter);
+                attrCollector.writeAttribute(i, mWriter, mValidator);
             }
         }
     }

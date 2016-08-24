@@ -59,6 +59,7 @@ public class WstxSAXParserFactory
         setNamespaceAware(true);
     }
 
+    @Override
     public boolean getFeature(String name)
         throws SAXNotRecognizedException, SAXNotSupportedException
     {
@@ -105,11 +106,13 @@ public class WstxSAXParserFactory
         }
     }
 
+    @Override
     public SAXParser newSAXParser()
     {
         return new WstxSAXParser(mStaxFactory, mFeatNsPrefixes);
     }
 
+    @Override
     public void setFeature(String name, boolean value)
         throws SAXNotRecognizedException, SAXNotSupportedException
     {

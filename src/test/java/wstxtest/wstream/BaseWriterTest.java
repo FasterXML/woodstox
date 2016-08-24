@@ -13,6 +13,7 @@ abstract class BaseWriterTest
 {
     protected BaseWriterTest() { }
 
+    @Override
     protected XMLStreamReader2 constructNsStreamReader(String content, boolean coal)
         throws XMLStreamException
     {

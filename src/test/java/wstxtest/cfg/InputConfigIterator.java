@@ -83,10 +83,11 @@ public class InputConfigIterator
 
     /*
     /////////////////////////////////////////////////
-    // Overridden standard methods:
+    // Overridden standard methods
     /////////////////////////////////////////////////
      */
 
+    @Override
     public String toString()
     {
         int len = mConfigs.size();

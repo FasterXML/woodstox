@@ -52,7 +52,6 @@ public abstract class BaseNsStreamWriter
     final protected static String ERR_NSDECL_WRONG_STATE =
         "Trying to write a namespace declaration when there is no open start element.";
 
-
     /*
     ////////////////////////////////////////////////////
     // Configuration (options, features)
@@ -497,17 +496,15 @@ public abstract class BaseNsStreamWriter
     }
 
     protected final void doWriteAttr(String localName, String nsURI, String prefix,
-                                     String value)
+            String value)
         throws XMLStreamException
     {
         if (mCheckAttrs) { // still need to ensure no duplicate attrs?
             mCurrElem.checkAttrWrite(nsURI, localName);
         }
-
         if (mValidator != null) {
-            /* No need to get it normalized... even if validator does normalize
-             * it, we don't use that for anything
-             */
+            // No need to get it normalized... even if validator does normalize
+            // it, we don't use that for anything
             mValidator.validateAttribute(localName, nsURI, prefix, value);
         }
         try {
@@ -548,11 +545,9 @@ public abstract class BaseNsStreamWriter
         if (mCheckAttrs) { // still need to ensure no duplicate attrs?
             mCurrElem.checkAttrWrite(nsURI, localName);
         }
-
         if (mValidator != null) {
-            /* No need to get it normalized... even if validator does normalize
-             * it, we don't use that for anything
-             */
+            // No need to get it normalized... even if validator does normalize
+            // it, we don't use that for anything
             mValidator.validateAttribute(localName, nsURI, prefix, buf, start, len);
         }
         try {

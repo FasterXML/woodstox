@@ -32,6 +32,7 @@ public class TestComments
      * Method called via input config iterator, with all possible
      * configurations
      */
+    @Override
     public void runTest(XMLInputFactory f, InputConfigIterator it)
         throws Exception
     {

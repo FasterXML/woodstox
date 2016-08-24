@@ -74,6 +74,7 @@ public class WDTD
     /////////////////////////////////////////////////////
      */
 
+    @Override
     public List<EntityDeclaration> getEntities()
     {
         if (mEntities == null && (mSubset != null)) {
@@ -86,6 +87,7 @@ public class WDTD
         return mEntities;
     }
 
+    @Override
     public List<NotationDeclaration> getNotations() {
         if (mNotations == null && (mSubset != null)) {
             mNotations = new ArrayList<NotationDeclaration>(mSubset.getNotationList());

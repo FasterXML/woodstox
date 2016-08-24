@@ -39,6 +39,7 @@ public final class ISOLatin1XmlWriter
         super(out, cfg, CharsetNames.CS_ISO_LATIN1, autoclose);
     }
 
+    @Override
     public void writeRaw(char[] cbuf, int offset, int len)
         throws IOException
     {
@@ -94,6 +95,7 @@ public final class ISOLatin1XmlWriter
         mOutputPtr = ptr;
     }
 
+    @Override
     public void writeRaw(String str, int offset, int len)
         throws IOException
     {
@@ -148,6 +150,7 @@ public final class ISOLatin1XmlWriter
         mOutputPtr = ptr;
     }
 
+    @Override
     protected void writeAttrValue(String data)
         throws IOException
     {
@@ -233,6 +236,7 @@ public final class ISOLatin1XmlWriter
         mOutputPtr = ptr;
     }
 
+    @Override
     protected void writeAttrValue(char[] data, int offset, int len)
         throws IOException
     {
@@ -316,6 +320,7 @@ public final class ISOLatin1XmlWriter
         mOutputPtr = ptr;
     }
 
+    @Override
     protected int writeCDataContent(String data)
         throws IOException
     {
@@ -392,6 +397,7 @@ public final class ISOLatin1XmlWriter
         return -1;
     }
 
+    @Override
     protected int writeCDataContent(char[] cbuf, int start, int len)
         throws IOException
     {
@@ -468,6 +474,7 @@ public final class ISOLatin1XmlWriter
         return -1;
     }
 
+    @Override
     protected int writeCommentContent(String data)
         throws IOException
     {
@@ -549,6 +556,7 @@ public final class ISOLatin1XmlWriter
         return -1;
     }
 
+    @Override
     protected int writePIData(String data)
         throws IOException, XMLStreamException
     {
@@ -608,6 +616,7 @@ public final class ISOLatin1XmlWriter
         return -1;
     }
 
+    @Override
     protected void writeTextContent(String data)
         throws IOException
     {
@@ -688,6 +697,7 @@ public final class ISOLatin1XmlWriter
         }
     }
 
+    @Override
     protected void writeTextContent(char[] cbuf, int offset, int len)
         throws IOException
     {

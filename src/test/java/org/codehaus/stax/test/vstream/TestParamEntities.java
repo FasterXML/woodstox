@@ -43,6 +43,7 @@ public class TestParamEntities
             mEntities = entities;
         }
         
+        @Override
         public Object resolveEntity(String publicID, String systemID, String baseURI, String namespace)
         {
             String str = (String) mEntities.get(publicID);

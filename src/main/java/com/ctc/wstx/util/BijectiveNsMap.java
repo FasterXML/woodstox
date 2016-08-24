@@ -312,6 +312,7 @@ public final class BijectiveNsMap
     ///////////////////////////////////////////////
      */
 
+    @Override
     public String toString() {
         return "["+getClass().toString()+"; "+size()+" entries; of which "
             +localSize()+" local]";

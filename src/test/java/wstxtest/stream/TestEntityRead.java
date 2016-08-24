@@ -270,6 +270,7 @@ public class TestEntityRead
             mValue = value;
         }
 
+        @Override
         public Object resolveEntity(String publicID, String systemID, String baseURI, String namespace)
         {
             if (mKey.equals(namespace)) {

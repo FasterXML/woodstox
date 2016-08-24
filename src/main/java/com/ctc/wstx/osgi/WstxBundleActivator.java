@@ -23,6 +23,7 @@ public class WstxBundleActivator
      * Method called on activation. We need to register all providers we have at
      * this point.
      */
+    @Override
     public void start(BundleContext ctxt)
     {
         InputFactoryProviderImpl inputP = new InputFactoryProviderImpl();
@@ -36,10 +37,10 @@ public class WstxBundleActivator
         }
     }
 
+    @Override
     public void stop(BundleContext ctxt) {
-        /* Nothing to do here: OSGi automatically de-registers services upon
-         * deactivation.
-         */
+        // Nothing to do here: OSGi automatically de-registers services upon
+        // deactivation.
     }
 }
 
