@@ -31,3 +31,7 @@ and some other Stax implementations (like [Aalto](../../../aalto-xml).
 Optional dependency is [Multi-Schema Validator (MSV)](https://github.com/kohsuke/msv) that is needed if
 using XML Schema or RelaxNG validation functionality
 
+## License
+
+Woodstox 5.x is licensed under [Apache 2](http://www.apache.org/licenses/LICENSE-2.0.txt) license.
+

@@ -894,10 +894,8 @@ public abstract class BasicStreamReader
             return (mCurrEntity == null) ? null : mCurrEntity.getReplacementText();
         }
         if (currToken == DTD) {
-            /* 16-Aug-2004, TSa: Hmmh. Specs are bit ambiguous on whether this
-             *   should return just the internal subset, or the whole
-             *   thing...
-             */
+            // 16-Aug-2004, TSa: Hmmh. Specs are bit ambiguous on whether this
+            //   should return just the internal subset, or the whole thing...
             return getDTDInternalSubset();
         }
         return mTextBuffer.contentsAsString();
@@ -2709,18 +2707,15 @@ public abstract class BasicStreamReader
             i = skipToken();
             // note: skipToken() updates the start location
         } else {
-            /* Start/end elements are never unfinished (ie. are always
-             * completely read in)
-             */
+            // Start/end elements are never unfinished (ie. are always
+            // completely read in)
             if (mCurrToken == START_ELEMENT) {
                 // Start tag may be an empty tag:
                 if (mStEmptyElem) {
                     // and if so, we'll then get 'virtual' close tag:
                     mStEmptyElem = false;
                     // ... and location info is correct already
-                    /* 27-Feb-2009, TSa: but we do have to handle validation
-                     *    of the end tag now
-                     */
+                    // 27-Feb-2009, TSa: but we do have to handle validation of the end tag now
                     int vld = mElementStack.validateEndElement();
                     mVldContent = vld;
                     mValidateText = (vld == XMLValidator.CONTENT_ALLOW_VALIDATABLE_TEXT);
@@ -2752,23 +2747,20 @@ public abstract class BasicStreamReader
                 char c = (mInputPtr < mInputEnd) ? mInputBuffer[mInputPtr++]
                     : getNextChar(SUFFIX_IN_CDATA);
                 if (readCDataPrimary(c)) { // got it all!
-                    /* note: can not be in coalescing mode at this point;
-                     * as we can never have partial cdata without unfinished
-                     * token
-                     */
+                    // note: can not be in coalescing mode at this point;
+                    // as we can never have partial cdata without unfinished token
                     // ... still need to have gotten at least 1 char though:
                     if (mTextBuffer.size() > 0) {
                         return CDATA;
                     }
                     // otherwise need to continue and parse the next event
                 } else {
-                    /* Hmmh. Have to verify we get at least one char from
-                     * CData section; if so, we are good to go for now;
-                     * if not, need to get that damn char first:
-                     */
+                    // Hmmh. Have to verify we get at least one char from
+                    // CData section; if so, we are good to go for now;
+                    // if not, need to get that damn char first:
                     if (mTextBuffer.size() == 0
-                        && readCDataSecondary(mCfgLazyParsing
-                                              ? 1 : mShortestTextSegment)) {
+                            && readCDataSecondary(mCfgLazyParsing
+                                    ? 1 : mShortestTextSegment)) {
                         // Ok, all of it read
                         if (mTextBuffer.size() > 0) {
                             // And had some contents
@@ -2794,10 +2786,8 @@ public abstract class BasicStreamReader
         }
 
         if (i < 0) {
-            /* 07-Oct-2005, TSa: May be ok in fragment mode (not otherwise),
-             *   but we can just check if element stack has anything, as that
-             *   handles all cases
-             */
+            // 07-Oct-2005, TSa: May be ok in fragment mode (not otherwise),
+            //  but we can just check if element stack has anything, as that handles all cases
             if (!mElementStack.isEmpty()) {
                 throwUnexpectedEOF();
             }
@@ -4290,7 +4280,7 @@ public abstract class BasicStreamReader
     }
 
     /**
-     * Method called to read in consequtive beginning parts of a CDATA
+     * Method called to read in consecutive beginning parts of a CDATA
      * segment, up to either end of the segment (]] and >) or until
      * first 'hole' in text (buffer end, 2-char lf to convert, entity).
      *<p>
@@ -4541,7 +4531,7 @@ public abstract class BasicStreamReader
     }
 
     /**
-     * Method called to read in consequtive beginning parts of a text
+     * Method called to read in consecutive beginning parts of a text
      * segment, up to either end of the segment (lt char) or until
      * first 'hole' in text (buffer end, 2-char lf to convert, entity).
      *<p>
