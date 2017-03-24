@@ -67,7 +67,8 @@ public class TestDTD
     public void testFullValidationIssue23() throws XMLStreamException
     {
         final String DTD = "<!ELEMENT FreeFormText (#PCDATA) >\n"
-                +"<!ATTLIST FreeFormText  xml:lang CDATA #IMPLIED >\n";
+                +"<!ATTLIST FreeFormText  xml:lang CDATA #IMPLIED >\n"
+                ;
         String XML = "<FreeFormText xml:lang='en-US'>foobar</FreeFormText>";
         XMLInputFactory f = getInputFactory();
 
