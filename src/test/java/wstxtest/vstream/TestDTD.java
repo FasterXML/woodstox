@@ -53,14 +53,49 @@ public class TestDTD
         assertEquals(1, rep.count);
     }
 
-    public void testFullValidationOk()
-        throws XMLStreamException
+    public void testFullValidationOk() throws XMLStreamException
     {
         String XML = "<root attr='123'><leaf /></root>";
         XMLValidationSchema schema = parseDTDSchema(SIMPLE_DTD);
         XMLStreamReader2 sr = getReader(XML);
         sr.validateAgainst(schema);
         while (sr.next() != END_DOCUMENT) { }
+        sr.close();
+    }
+
+    // [woodstox#23]
+    public void testFullValidationIssue23() throws XMLStreamException
+    {
+        final String DTD = "<!ELEMENT FreeFormText (#PCDATA) >\n"
+                +"<!ATTLIST FreeFormText  xml:lang CDATA #IMPLIED >\n";
+        String XML = "<FreeFormText xml:lang='en-US'>foobar</FreeFormText>";
+        XMLInputFactory f = getInputFactory();
+
+        /*
+        Resolver resolver = new XMLResolver() {
+            @Override
+            public Object resolveEntity(String publicID, String systemID, String baseURI, String namespace) {
+                return new StringReader(DTD);
+            }
+        };
+        f.setXMLResolver(resolver);
+        */
+
+        XMLValidationSchemaFactory schemaFactory =
+                XMLValidationSchemaFactory.newInstance(XMLValidationSchema.SCHEMA_ID_DTD);
+        XMLValidationSchema schema = schemaFactory.createSchema(new StringReader(DTD));
+        XMLStreamReader2 sr = (XMLStreamReader2)f.createXMLStreamReader(
+                new StringReader(XML));
+
+        sr.validateAgainst(schema);
+        while (sr.next() != END_DOCUMENT) {
+            /*
+            System.err.println("Curr == "+sr.getEventType());
+            if (sr.getEventType() == CHARACTERS) {
+                System.err.println(" text: "+sr.getText());
+            }
+            */
+        }
         sr.close();
     }
 
