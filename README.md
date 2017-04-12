@@ -38,5 +38,5 @@ Woodstox 5.x is licensed under [Apache 2](http://www.apache.org/licenses/LICENSE
 ## Documentation etc
 
 * User mailing list for Qs: [woodstox-user](https://groups.google.com/forum/#!forum/woodstox-user) Google group 
-* Check out [../../wiki] for javadocs
+* Check out [project Wiki](../../wiki) for javadocs
 
