@@ -35,3 +35,8 @@ using XML Schema or RelaxNG validation functionality
 
 Woodstox 5.x is licensed under [Apache 2](http://www.apache.org/licenses/LICENSE-2.0.txt) license.
 
+## Documentation etc
+
+* User mailing list for Qs: [woodstox-user](https://groups.google.com/forum/#!forum/woodstox-user) Google group 
+* Check out [../../wiki] for javadocs
+
