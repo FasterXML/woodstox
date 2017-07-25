@@ -66,7 +66,7 @@ public class TestDTD
     // [woodstox#23]
     public void testFullValidationIssue23() throws XMLStreamException
     {
-        final String DTD = "<!ELEMENT FreeFormText (#PCDATA) >\n"
+        final String INPUT_DTD = "<!ELEMENT FreeFormText (#PCDATA) >\n"
                 +"<!ATTLIST FreeFormText  xml:lang CDATA #IMPLIED >\n"
                 ;
         String XML = "<FreeFormText xml:lang='en-US'>foobar</FreeFormText>";
@@ -84,7 +84,7 @@ public class TestDTD
 
         XMLValidationSchemaFactory schemaFactory =
                 XMLValidationSchemaFactory.newInstance(XMLValidationSchema.SCHEMA_ID_DTD);
-        XMLValidationSchema schema = schemaFactory.createSchema(new StringReader(DTD));
+        XMLValidationSchema schema = schemaFactory.createSchema(new StringReader(INPUT_DTD));
         XMLStreamReader2 sr = (XMLStreamReader2)f.createXMLStreamReader(
                 new StringReader(XML));
 

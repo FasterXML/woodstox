@@ -128,6 +128,7 @@ public final class WstxInputProperties
      * 
      * @deprecated Never implement, let's phase this out (deprecated in 4.2)
      */
+    @Deprecated
     public final static String P_SUPPORT_DTDPP = "com.ctc.wstx.supportDTDPP";
     
     

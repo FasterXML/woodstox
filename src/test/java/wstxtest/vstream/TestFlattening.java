@@ -28,7 +28,7 @@ public class TestFlattening
         /* Note: since we deal with this as an external resource, it may
          * need encoding pseudo-attribute if there's xml declaration
          */
-        final String DTD =
+        final String INPUT_DTD =
             "<?xml version='1.0' encoding='UTF-8'?>\n"
             +"<!ELEMENT root (branch+)>\n"
             +"<!ATTLIST root attr CDATA #IMPLIED\n"
@@ -52,7 +52,7 @@ public class TestFlattening
             boolean inclConditionals = (i & 2) != 0;
             boolean inclPEs = (i & 1) != 0;
             WstxInputSource input = DefaultInputResolver.sourceFromString
-                (null, cfg, "[dtd]", /*xml version for compat checks*/ XmlConsts.XML_V_UNKNOWN, DTD);
+                (null, cfg, "[dtd]", /*xml version for compat checks*/ XmlConsts.XML_V_UNKNOWN, INPUT_DTD);
             StringWriter strw = new StringWriter();
             /*DTDSubset ss =*/ FullDTDReader.flattenExternalSubset
                 (input, strw,
