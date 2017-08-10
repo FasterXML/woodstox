@@ -21,3 +21,4 @@ syntax: glob
 *.ipr
 *.iws
 /.idea/
+/bin/
