@@ -6,7 +6,7 @@ The gold standard Stax XML API implementation. Now at Github.
 
 [![Build Status](https://travis-ci.org/FasterXML/woodstox.svg)](https://travis-ci.org/FasterXML/woodstox)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.woodstox/woodstox-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.woodstox/woodstox-core/)
-[![Javadoc](https://javadoc-emblem.rhcloud.com/doc/com.fasterxml.woodstox/woodstox-core/badge.svg)](http://www.javadoc.io/doc/com.fasterxml.woodstox/woodstox-core)
+[![Javadoc](https://javadoc.io/badge/com.fasterxml.woodstox/woodstox-core.svg)](http://www.javadoc.io/doc/com.fasterxml.woodstox/woodstox-core)
 
 # Get it!
 
