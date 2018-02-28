@@ -511,6 +511,19 @@ public abstract class BaseStaxTest
 
     /*
     ///////////////////////////////////////////////////////////
+    // Cleansing
+    ///////////////////////////////////////////////////////////
+     */
+
+    protected static String stripXmlDecl(String xml) {
+        if (xml.startsWith("<?xml")) {
+            xml = xml.substring(xml.indexOf("?>") + 2);
+        }
+        return xml;
+    }
+    
+    /*
+    ///////////////////////////////////////////////////////////
     // Debug/output helpers
     ///////////////////////////////////////////////////////////
      */
