@@ -83,7 +83,7 @@ public class CompactStartElement
         if (ix < 0) {
             return null;
         }
-        return constructAttr(mRawAttrs, ix, !mAttrs.isDefault(ix));
+        return constructAttr(mRawAttrs, ix, mAttrs.isDefault(ix));
     }
 
     @Override
@@ -155,9 +155,9 @@ public class CompactStartElement
     ////////////////////////////////////////////////////////////
      */
 
-    public Attribute constructAttr(String[] raw, int rawIndex, boolean isDef)
+    protected Attribute constructAttr(String[] raw, int rawIndex, boolean isDef)
     {
         return new AttributeEventImpl(getLocation(), raw[rawIndex], raw[rawIndex+1],
-                raw[rawIndex+2], raw[rawIndex+3], isDef);
+                raw[rawIndex+2], raw[rawIndex+3], !isDef);
     }
 }

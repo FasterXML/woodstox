@@ -7,6 +7,8 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.*;
 import javax.xml.stream.events.*;
 
+import com.ctc.wstx.evt.DefaultEventAllocator;
+
 import stax2.BaseStax2Test;
 
 /**
@@ -16,18 +18,15 @@ import stax2.BaseStax2Test;
 public class TestStartElementEvent
     extends BaseStax2Test
 {
-    /**
-     * This test was inspired by Woodstox bug [WSTX-188]...
-     */
-    public void testStartEventAttrs()
-        throws XMLStreamException
+    private final XMLInputFactory XML_F = getNewInputFactory();
+
+    public void testStartEventAttrs() throws Exception
     {
         final String DOC = "<a>"
             +"<b a=\"aaa\" b=\"bbb\" c=\"ccc\" problem=\"problem\">some content</b>"
             +"<b a=\"aaa\" b=\"bbb\" c=\"ccc\" d=\"ddd\" problem=\"problem\">some content</b>"
             +"</a>";
-        XMLInputFactory f = getNewInputFactory();
-        XMLEventReader er = f.createXMLEventReader(new StringReader(DOC));
+        XMLEventReader er = XML_F.createXMLEventReader(new StringReader(DOC));
 
         ArrayList<StartElement> elemEvents = new ArrayList<StartElement>();
 
@@ -50,10 +49,33 @@ public class TestStartElementEvent
         assertTokenType(END_ELEMENT, er.nextEvent());
         er.close();
 
-        /* Ok, got 3 start elements, and accessing the SECOND one triggers
-         * the problem
-         */
+        // Ok, got 3 start elements, and accessing the SECOND one triggers
+        // the problem
         _verifyAttrCount(elemEvents.get(1), 4, true);
+    }
+
+    // From [woodstox-core#43]
+    public void testIsDefaultAttr() throws Exception
+    {
+        String DOC = "<a b='c'></a>";
+        XMLStreamReader stream = XML_F.createXMLStreamReader(new StringReader(DOC));
+        DefaultEventAllocator allocator = DefaultEventAllocator.getDefaultInstance();
+        XMLEventFactory eventFactory = getNewEventFactory();
+
+        assertTokenType(START_ELEMENT, stream.next());
+        XMLEvent event = allocator.allocate(stream);
+        assertTrue(event.isStartElement());
+
+        StartElement startOrig = event.asStartElement();
+        Attribute attr = startOrig.getAttributeByName(new QName("b"));
+        assertNotNull(attr);
+        assertTrue(attr.isSpecified());
+        StartElement startAlloc = eventFactory.createStartElement(startOrig.getName(),
+                startOrig.getAttributes(), startOrig.getNamespaces());
+
+        attr = startAlloc.getAttributeByName(new QName("b"));
+        assertNotNull(attr);
+        assertTrue(attr.isSpecified());
     }
 
     /*

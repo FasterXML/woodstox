@@ -4,6 +4,11 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+5.1.0 (not yet released)
+
+#43: `CompactStartElement` appears to incorrectly classify attributes as default
+ (reported by Jonathan T)
+
 5.0.3 (23-Aug-2016)
 
 #13: `BasicStreamReader.getElementText()` behavior doesn't match Java documentation

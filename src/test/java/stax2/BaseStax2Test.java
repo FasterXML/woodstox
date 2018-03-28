@@ -144,6 +144,10 @@ public abstract class BaseStax2Test
         return (XMLOutputFactory2) XMLOutputFactory.newInstance();
     }
 
+    protected XMLEventFactory getNewEventFactory() {
+        return XMLEventFactory.newFactory();
+    }
+
     protected static XMLStreamReader2 constructStreamReader(XMLInputFactory f, String content)
         throws XMLStreamException
     {

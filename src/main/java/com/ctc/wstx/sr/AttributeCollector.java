@@ -692,9 +692,8 @@ public final class AttributeCollector
         if (count == 0) {
             return null;
         }
-        /* If we have actual attributes, let's first just create the
-         * raw array that has all attribute information:
-         */
+        // If we have actual attributes, let's first just create the
+        // raw array that has all attribute information:
         String[] raw = new String[count << 2];
         for (int i = 0; i < count; ++i) {
             Attribute attr = mAttributes[i];

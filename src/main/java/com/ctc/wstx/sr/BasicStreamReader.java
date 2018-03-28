@@ -1732,9 +1732,9 @@ public abstract class BasicStreamReader
             return null;
         }
         return cb.withStartElement(loc, getName(), 
-                                   mElementStack.createNonTransientNsContext(loc),
-                                   mAttrCollector.buildAttrOb(),
-                                   mStEmptyElem);
+                mElementStack.createNonTransientNsContext(loc),
+                mAttrCollector.buildAttrOb(),
+                mStEmptyElem);
     }
 
     @Override
