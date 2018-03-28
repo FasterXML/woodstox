@@ -110,7 +110,7 @@
           <groupId>org.codehaus.woodstox</groupId>
           <artifactId>stax2-api</artifactId>
           <!--  27-Mar-2018, tatu: Upgraded from 3.1 for Woodstox 5.1 -->
-          <version>4.0.0</version>
+          <version>4.1</version>
         </dependency>
 
         <!-- Then optional ones (need for build, possibly
