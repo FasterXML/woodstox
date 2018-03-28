@@ -130,8 +130,7 @@ public final class WstxInputProperties
      */
     @Deprecated
     public final static String P_SUPPORT_DTDPP = "com.ctc.wstx.supportDTDPP";
-    
-    
+
     /**
      * Whether the Reader will treat character references as entities while parsing 
      * XML documents. 

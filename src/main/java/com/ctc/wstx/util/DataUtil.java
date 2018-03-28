@@ -29,15 +29,6 @@ public final class DataUtil
         return Integer.valueOf(i);
     }
 
-    @Deprecated // since 5.0.1
-    public static Long Long(long l)
-    {
-        if (l == Long.MAX_VALUE) {
-            return MAX_LONG;
-        }
-        return Long.valueOf(l);
-    }
-
     /*
     ////////////////////////////////////////////////////////////
     // Empty/singleton thingies

@@ -5,7 +5,6 @@ import java.util.*;
 import org.codehaus.stax2.XMLStreamProperties;
 
 import com.ctc.wstx.util.ArgUtil;
-import com.ctc.wstx.util.DataUtil;
 
 /**
  * Shared common base class for variour configuration container implementations
@@ -60,28 +59,24 @@ abstract class CommonConfig
     final static HashMap<String,Integer> sStdProperties = new HashMap<String,Integer>(16);
     static {
         // Basic information about the implementation:
-        sStdProperties.put(XMLStreamProperties.XSP_IMPLEMENTATION_NAME,
-                           DataUtil.Integer(PROP_IMPL_NAME));
-        sStdProperties.put(XMLStreamProperties.XSP_IMPLEMENTATION_VERSION,
-                           DataUtil.Integer(PROP_IMPL_VERSION));
+        sStdProperties.put(XMLStreamProperties.XSP_IMPLEMENTATION_NAME, PROP_IMPL_NAME);
+        sStdProperties.put(XMLStreamProperties.XSP_IMPLEMENTATION_VERSION, PROP_IMPL_VERSION);
 
         // XML version support:
-        sStdProperties.put(XMLStreamProperties.XSP_SUPPORTS_XML11,
-                           DataUtil.Integer(PROP_SUPPORTS_XML11));
+        sStdProperties.put(XMLStreamProperties.XSP_SUPPORTS_XML11, PROP_SUPPORTS_XML11);
 
         // Xml:id support:
-        sStdProperties.put(XMLStreamProperties.XSP_SUPPORT_XMLID,
-                           DataUtil.Integer(PROP_SUPPORT_XMLID));
+        sStdProperties.put(XMLStreamProperties.XSP_SUPPORT_XMLID, PROP_SUPPORT_XMLID);
 
         sStdProperties.put(WstxInputProperties.P_RETURN_NULL_FOR_DEFAULT_NAMESPACE,
-                DataUtil.Integer(PROP_RETURN_NULL_FOR_DEFAULT_NAMESPACE));
+                PROP_RETURN_NULL_FOR_DEFAULT_NAMESPACE);
 
         /* 23-Apr-2008, tatus: Additional interoperability property,
          *    one that Sun implementation uses. Can map to Stax2
          *    property quite easily.
          */
         sStdProperties.put("http://java.sun.com/xml/stream/properties/implementation-name",
-                           DataUtil.Integer(PROP_IMPL_NAME));
+                PROP_IMPL_NAME);
     }
 
     /*
@@ -104,16 +99,20 @@ abstract class CommonConfig
     
     /**
      * Constructor used by sub-classes
-     * 
+     *
      * @param base Base instance to copy settings from, if any; null for
      *   'root' configuration objects.
      */
     protected CommonConfig(CommonConfig base) {
         mReturnNullForDefaultNamespace = (base == null)
+                /* 27-Mar-2018, tatu: What the hell... why does it take it from System properties?
+                 *   I should have done better code review; Woodstox should not do that.
+                 *   System properties are evil for shared libraries, not to be used.
+                 */
                 ? Boolean.getBoolean(WstxInputProperties.P_RETURN_NULL_FOR_DEFAULT_NAMESPACE)
                 : base.mReturnNullForDefaultNamespace;
     }
-    
+
     /*
     ///////////////////////////////////////////////////////////////////////
     // Public API, generic StAX config methods
