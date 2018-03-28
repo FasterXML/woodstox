@@ -49,8 +49,11 @@
         -->
       <osgi.export>com.ctc.wstx.*;version=${project.version}</osgi.export>
 
-      <!-- 5.1 adds "Automatic-Module-Name" for JDK 9 -->
-      <jdk.module.name>com.fasterxml.classmate</jdk.module.name>
+      <!-- 5.1 adds "Automatic-Module-Name" for JDK 9
+           Note: choice between Maven group id and Java package bit tricky;
+           choose latter at this point (may change in future)
+        -->
+      <jdk.module.name>com.ctc.wstx</jdk.module.name>
     </properties>
 
     <licenses>
