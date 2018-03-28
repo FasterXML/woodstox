@@ -3,6 +3,7 @@ package com.ctc.wstx.util;
 import java.lang.reflect.Array;
 import java.util.*;
 
+import org.codehaus.stax2.ri.EmptyIterator;
 import org.codehaus.stax2.ri.SingletonIterator;
 
 public final class DataUtil
@@ -11,26 +12,6 @@ public final class DataUtil
 
     final static Long MAX_LONG = new Long(Long.MAX_VALUE);
 
-    /**
-     * Due to [woodstox#10], we will need to use a work-around which (for now)
-     * includes a local copy of this iterator class.
-     *<p>
-     * TODO: Once we get to Java 7 / JDK 1.7, replace with one from Collections
-     * 
-     * @since 5.0.1
-     */
-    private final static class EmptyIterator implements Iterator<Object>
-    {
-        public final static Iterator<?> INSTANCE = new EmptyIterator();
-
-        @Override
-        public boolean hasNext() { return false; }
-        @Override
-        public Object next() { throw new java.util.NoSuchElementException(); }
-        @Override
-        public void remove() { throw new IllegalStateException(); }
-    }
-    
     private DataUtil() { }
 
     /*
@@ -63,17 +44,15 @@ public final class DataUtil
     ////////////////////////////////////////////////////////////
     */
 
-    @SuppressWarnings("unchecked")
     public static <T> Iterator<T> singletonIterator(T item) {
         // TODO: with JDK 1.7, can use method from Collections
         // TODO: alternatively, with Woodstox 5.1, can fix deprecation marker
-        return (Iterator<T>) new SingletonIterator(item);
+        return SingletonIterator.create(item);
     }
 
-    @SuppressWarnings("unchecked")
     public static <T> Iterator<T> emptyIterator() {
         // TODO: with JDK 1.7, can use method from Collections
-        return (Iterator<T>) EmptyIterator.INSTANCE;
+        return EmptyIterator.getInstance();
     }
 
     /*

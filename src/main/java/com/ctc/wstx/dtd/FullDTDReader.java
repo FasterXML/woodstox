@@ -2284,7 +2284,6 @@ public class FullDTDReader
                 if (c == 'A') {
                     keyw = checkDTDKeyword("NY");
                     if (keyw == null) {
-                        val = null;
                         vldContent = XMLValidator.CONTENT_ALLOW_ANY_TEXT; // no DTD checks
                         break;
                     }

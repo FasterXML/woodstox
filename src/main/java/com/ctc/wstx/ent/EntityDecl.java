@@ -72,10 +72,13 @@ public abstract class EntityDecl
         return mName;
     }
 
+    // 27-Mar-2018, tatu: Implemented by `BaseEventImpl` so...
+    /*
     @Override
     public final Location getLocation() {
-        return mLocation;
+        return getLocation();
     }
+    */
 
     @Override
     public abstract String getNotationName();
@@ -101,18 +104,18 @@ public abstract class EntityDecl
     }
 
     /*
-    ///////////////////////////////////////////
+    ////////////////////////////////////////////////////////////
     // Implementation of abstract base methods
-    ///////////////////////////////////////////
+    ////////////////////////////////////////////////////////////
      */
 
     @Override
     public abstract void writeEnc(Writer w) throws IOException;
 
     /*
-    ///////////////////////////////////////////
+    ////////////////////////////////////////////////////////////
     // Extended API for Wstx core
-    ///////////////////////////////////////////
+    ////////////////////////////////////////////////////////////
      */
 
     // // // Access to data
@@ -137,7 +140,6 @@ public abstract class EntityDecl
      * value of the entity can be read.
      */
     public abstract WstxInputSource expand(WstxInputSource parent, 
-                                           XMLResolver res, ReaderConfig cfg,
-                                           int xmlVersion)
+            XMLResolver res, ReaderConfig cfg, int xmlVersion)
         throws IOException, XMLStreamException;
 }
