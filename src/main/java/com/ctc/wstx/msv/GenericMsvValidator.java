@@ -17,7 +17,9 @@ package com.ctc.wstx.msv;
 
 import java.util.*;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 
 import org.codehaus.stax2.validation.*;
@@ -47,7 +49,8 @@ import com.ctc.wstx.util.TextAccumulator;
  */
 public final class GenericMsvValidator
     extends XMLValidator
-    implements com.sun.msv.grammar.IDContextProvider2
+    implements com.sun.msv.grammar.IDContextProvider2,
+        XMLStreamConstants
 {
     /*
     ///////////////////////////////////////////////////////////
@@ -111,6 +114,11 @@ public final class GenericMsvValidator
      * so let's reuse one instance during a single validation.
      */
     final StartTagInfo mStartTag = new StartTagInfo("", "", "", null, (IDContextProvider2) null);
+
+    /**
+     * Since `StartTagInfo` has no place for prefix, hold reference to one here
+     */
+    protected String mStartTagPrefix = "";
 
     /**
      * This object provides limited access to attribute values of the
@@ -233,7 +241,6 @@ public final class GenericMsvValidator
     public void validateElementStart(String localName, String uri, String prefix)
         throws XMLStreamException
     {
-
         /* [WSTX-200]: If sub-tree we were to validate has ended, we
          *   have no current acceptor, and must quite. Ideally we would
          *   really handle this more cleanly but...
@@ -261,6 +268,7 @@ public final class GenericMsvValidator
         //String qname = (prefix == null || prefix.length() == 0) ? localName : (prefix + ":" +localName);
         String qname = localName;
         mStartTag.reinit(uri, localName, qname, mAttributeProxy, this);
+        mStartTagPrefix = prefix;
 
         mCurrAcceptor = mCurrAcceptor.createChildAcceptor(mStartTag, mErrorRef);
         /* As per documentation, the side-effect of getting the error message
@@ -268,7 +276,7 @@ public final class GenericMsvValidator
          * never (?) see null acceptor being returned
          */
         if (mErrorRef.str != null) {
-            reportError(mErrorRef);
+            reportError(mErrorRef, START_ELEMENT, _qname(uri, localName, prefix));
         }
         if (mProblem != null) { // pending problems (to throw exception on)?
             XMLValidationProblem p = mProblem;
@@ -299,7 +307,7 @@ public final class GenericMsvValidator
 
             if (!mCurrAcceptor.onAttribute2(uri, localName, qname, value, this, mErrorRef, typeRef)
                 || mErrorRef.str != null) {
-                reportError(mErrorRef);
+                reportError(mErrorRef, ATTRIBUTE, _qname(uri, localName, prefix));
             }
             if (mProblem != null) { // pending problems (to throw exception on)?
                 XMLValidationProblem p = mProblem;
@@ -307,23 +315,18 @@ public final class GenericMsvValidator
                 mContext.reportProblem(p);
             }
         }
-        /* No normalization done by RelaxNG, is there? (at least nothing
-         * visible to callers that is)
-         */
+        // No normalization done by RelaxNG, is there? (at least nothing
+        // visible to callers that is)
         return null;
     }
 
     @Override
-    public String validateAttribute(String localName, String uri,
-            String prefix,
-            char[] valueChars, int valueStart,
-            int valueEnd)
+    public String validateAttribute(String localName, String uri, String prefix,
+            char[] valueChars, int valueStart, int valueEnd)
         throws XMLStreamException
     {
         int len = valueEnd - valueStart;
-        /* This is very sub-optimal... but MSV doesn't deal with char
-         * arrays.
-         */
+        // This is very sub-optimal... but MSV doesn't deal with char arrays.
         return validateAttribute(localName, uri, prefix,
                                  new String(valueChars, valueStart, len));
     }
@@ -340,7 +343,7 @@ public final class GenericMsvValidator
              */
             if (!mCurrAcceptor.onEndAttributes(mStartTag, mErrorRef)
                 || mErrorRef.str != null) {
-                reportError(mErrorRef);
+                reportError(mErrorRef, XMLStreamConstants.END_ELEMENT, _startTagAsQName());
             }
 
             int stringChecks = mCurrAcceptor.getStringCareLevel();
@@ -375,19 +378,16 @@ public final class GenericMsvValidator
          */
         doValidateText(mTextAccumulator);
 
-        /* [WSTX-200]: need to avoid problems when doing sub-tree
-         *   validation... not a proper solution, but has to do for
-         *   now
-         */
+        // [WSTX-200]: need to avoid problems when doing sub-tree
+        //   validation... not a proper solution, but has to do for now
         int lastIx = mAcceptors.size()-1;
         if (lastIx < 0) {
             return XMLValidator.CONTENT_ALLOW_WS;
         }
-
         Acceptor acc = (Acceptor)mAcceptors.remove(lastIx);
         if (acc != null) { // may be null during error recovery? or not?
             if (!acc.isAcceptState(mErrorRef) || mErrorRef.str != null) {
-                reportError(mErrorRef);
+                reportError(mErrorRef, XMLStreamConstants.END_ELEMENT, _qname(uri, localName, prefix));
             }
         }
         if (lastIx == 0) { // root closed
@@ -398,7 +398,7 @@ public final class GenericMsvValidator
         if (mCurrAcceptor != null && acc != null) {
             if (!mCurrAcceptor.stepForward(acc, mErrorRef)
                 || mErrorRef.str != null) {
-                reportError(mErrorRef);
+                reportError(mErrorRef, XMLStreamConstants.END_ELEMENT, _qname(uri, localName, prefix));
             }
             int stringChecks = mCurrAcceptor.getStringCareLevel();
             switch (stringChecks) {
@@ -431,7 +431,7 @@ public final class GenericMsvValidator
 
     @Override
     public void validateText(char[] cbuf, int textStart, int textEnd,
-                             boolean lastTextSegment)
+            boolean lastTextSegment)
         throws XMLStreamException
     {
         /* If we got here, then it's likely we do need to call onText().
@@ -519,18 +519,31 @@ public final class GenericMsvValidator
             DatatypeRef typeRef = null;
             if (!mCurrAcceptor.onText2(str, this, mErrorRef, typeRef)
                 || mErrorRef.str != null) {
-                reportError(mErrorRef);
+                reportError(mErrorRef, CDATA, _startTagAsQName());
             }
         }
     }
 
-    private void reportError(StringRef errorRef)
-        throws XMLStreamException
+    private void reportError(StringRef errorRef, int type, QName name) throws XMLStreamException
     {
         String msg = errorRef.str;
         errorRef.str = null;
-        if (msg == null) {
-            msg = "Unknown reason";
+        if (msg == null || msg.isEmpty()) {
+            switch (type) {
+            case START_ELEMENT:
+                msg = "Unknown reason (at start element "+_name(name, "<", ">")+")";
+                break;
+            case END_ELEMENT:
+                msg = "Unknown reason (at end element "+_name(name, "</", ">")+")";
+                break;
+            case ATTRIBUTE:
+                msg = "Unknown reason (at attribute "+_name(name, "'", "'")+")";
+                break;
+            case CDATA:
+            default:
+                msg = "Unknown reason (at CDATA section, inside element "+_name(name, "<", ">")+")";
+                break;
+            }
         }
         reportError(msg);
     }
@@ -547,5 +560,35 @@ public final class GenericMsvValidator
         XMLValidationProblem prob = new XMLValidationProblem(loc, msg, XMLValidationProblem.SEVERITY_ERROR);
         prob.setReporter(this);
         mContext.reportProblem(prob);
+    }
+
+    private String _name(QName qn, String prefix, String suffix) {
+        if (qn == null) {
+            return "UNKNOWN";
+        }
+        String name = qn.getLocalPart();
+        String p = qn.getPrefix();
+        if (p != null && !p.isEmpty()) {
+            name = p + ":" + name;
+        }
+        return prefix + name + suffix;
+    }
+
+    private QName _startTagAsQName() {
+        return _qname(mStartTag.namespaceURI, mStartTag.localName, mStartTagPrefix);
+    }
+    
+    private QName _qname(String ns, String local, String prefix) {
+        if (prefix == null) {
+            prefix = "";
+        }
+        if (ns == null) {
+            ns = "";
+        }
+        // should we even allow this?
+        if (local == null) {
+            local = "";
+        }
+        return new QName(ns, local, prefix);
     }
 }

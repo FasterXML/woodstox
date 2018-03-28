@@ -375,18 +375,16 @@ public abstract class BaseStreamWriter
             }
         } else if (mVldContent == XMLValidator.CONTENT_ALLOW_VALIDATABLE_TEXT) {
             if (mValidator != null) {
-                /* Last arg is false, since we do not know if more text
-                 * may be added with additional calls
-                 */
+                // Last arg is false, since we do not know if more text
+                // may be added with additional calls
                 mValidator.validateText(text, start, start + len, false);
             }
         }
 
         if (len > 0) { // minor optimization
             try {
-                /* 21-Jun-2006, TSa: Fixing [WSTX-59]: no quoting can be done
-                 *   outside of element tree.
-                 */
+                // 21-Jun-2006, TSa: Fixing [WSTX-59]: no quoting can be done
+                //   outside of element tree.
                 if (inPrologOrEpilog()) {
                     mWriter.writeRaw(text, start, len);
                 } else {
@@ -758,10 +756,8 @@ public abstract class BaseStreamWriter
             case START_DOCUMENT:
                 {
                     String version = sr.getVersion();
-                    /* No real declaration? If so, we don't want to output
-                     * anything, to replicate as closely as possible the
-                     * source document
-                     */
+                    // No real declaration? If so, we don't want to output anything, to replicate
+                    // as closely as possible the source document
                     if (version == null || version.length() == 0) {
                         ; // no output if no real input
                     } else {
@@ -802,17 +798,26 @@ public abstract class BaseStreamWriter
                     if (mStartElementOpen) {
                         closeStartElement(mEmptyElement);
                     }
-                    /* No need to write as chars, should be pure space
-                     * (caller should have verified); also, no escaping
-                     * necessary.
-                     */
-                    sr.getText(wrapAsRawWriter(), preserveEventData);
+                    // No need to write as chars, should be pure space (caller should
+                    // have verified); also, no escaping necessary.
+
+                    // 28-Mar-2017, tatu: Various optimization do not work well when validation so:
+                    if (mValidator != null) {
+                        writeCData(sr.getText());
+                    } else {
+                        sr.getText(wrapAsRawWriter(), preserveEventData);
+                    }
                 }
                 return;
 
             case CDATA:
 
                 // First; is this to be changed to 'normal' text output?
+                // 28-Mar-2017, tatu: Various optimization do not work well when validation so:
+                if (mValidator != null) {
+                    writeCData(sr.getText());
+                    return;
+                }
                 if (!mCfgCDataAsText) {
                     mAnyOutput = true;
                     // Need to finish an open start element?
@@ -826,9 +831,8 @@ public abstract class BaseStreamWriter
                             reportNwfStructure(ErrorConsts.WERR_PROLOG_CDATA);
                         }
                     }
-                    /* Note: no need to check content, since reader is assumed
-                     * to have verified it to be valid XML.
-                     */
+                    // Note: no need to check content, since reader is assumed
+                    // to have verified it to be valid XML.
                     mWriter.writeCDataStart();
                     sr.getText(wrapAsRawWriter(), preserveEventData);
                     mWriter.writeCDataEnd();
@@ -837,7 +841,11 @@ public abstract class BaseStreamWriter
                 // fall down if it is to be converted...
 
             case CHARACTERS:
-                {
+
+                // 28-Mar-2017, tatu: Various optimization do not work well when validation so:
+                if (mValidator != null) {
+                    writeCharacters(sr.getText());
+                } else  {
                     // Let's just assume content is fine... not 100% reliably
                     // true, but usually is (not true if input had a root
                     // element surrounding text, but omitted for output)
@@ -877,15 +885,13 @@ public abstract class BaseStreamWriter
                 {
                     DTDInfo info = sr.getDTDInfo();
                     if (info == null) {
-                        // Hmmmh. It is legal for this to happen, for
-                        // non-DTD-aware readers. But what is the right
-                        // thing to do here?
+                        // Hmmmh. It is legal for this to happen, for non-DTD-aware
+                        // readers. But what is the right thing to do here?
                         throwOutputError("Current state DOCTYPE, but not DTDInfo Object returned -- reader doesn't support DTDs?");
                     }
-                    // Could optimize this a bit (stream the int. subset
-                    // possible), but it's never going to occur more than
-                    // once per document, so it's probably not much of a
-                    // bottleneck, ever
+                    // Could optimize this a bit (stream the int. subset possible),
+                    // but it's never going to occur more than once per document,
+                    // so it's probably not much of a bottleneck, ever
                     writeDTD(info);
                 }
                 return;
@@ -903,9 +909,8 @@ public abstract class BaseStreamWriter
         } catch (IOException ioe) {
             throw new WstxIOException(ioe);
         }
-
         throw new XMLStreamException("Unrecognized event type ("
-                                     +sr.getEventType()+"); not sure how to copy");
+                +sr.getEventType()+"); not sure how to copy");
     }
 
     /*

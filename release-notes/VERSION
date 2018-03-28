@@ -6,6 +6,8 @@ Project: woodstox
 
 5.1.0 (not yet released)
 
+#23: Text content is not validated correctly when copying events to `XmlStreamWriter`
+ (reported by hxc9@github)
 #43: `CompactStartElement` appears to incorrectly classify attributes as default
  (reported by Jonathan T)
 
