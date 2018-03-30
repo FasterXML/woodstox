@@ -130,4 +130,19 @@ public class TestEscaping
 
         assertTokenType(END_ELEMENT, sr.next());
     }
+
+    public void testLinefeedQuoting() throws Exception
+    {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        XMLStreamWriter2 w = getNonRepairingWriter(bos, "US-ASCII", true);
+
+        w.writeStartElement("root");
+        w.writeCharacters("a\nb\rc");
+        w.writeEndElement();
+        w.writeEndDocument();
+        w.close();
+
+        String xml = bos.toString("UTF-8");
+        assertEquals("<root>a\nb&#xd;c</root>", xml);
+    }
 }
