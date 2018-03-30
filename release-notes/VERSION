@@ -10,6 +10,8 @@ Project: woodstox
  (reported by hxc9@github)
 #43: `CompactStartElement` appears to incorrectly classify attributes as default
  (reported by Jonathan T)
+- Add `Automatic-Module-Name` indicator in jar metadata, for Java 9
+- Upgrade `stax2-api` dependency to 4.1 (from 3.1)
 
 5.0.3 (23-Aug-2016)
 
