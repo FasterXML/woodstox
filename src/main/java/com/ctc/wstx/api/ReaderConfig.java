@@ -251,101 +251,98 @@ public final class ReaderConfig
     final static HashMap<String,Integer> sProperties = new HashMap<String,Integer>(64); // we have about 40 entries
     static {
         // Standard ones; support for features
-        sProperties.put(XMLInputFactory.IS_COALESCING,
-                        DataUtil.Integer(PROP_COALESCE_TEXT));
+        sProperties.put(XMLInputFactory.IS_COALESCING, PROP_COALESCE_TEXT);
         sProperties.put(XMLInputFactory.IS_NAMESPACE_AWARE,
-                        DataUtil.Integer(PROP_NAMESPACE_AWARE));
+                        PROP_NAMESPACE_AWARE);
         sProperties.put(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES,
-                    DataUtil.Integer(PROP_REPLACE_ENTITY_REFS));
+                    PROP_REPLACE_ENTITY_REFS);
         sProperties.put(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES,
-                    DataUtil.Integer(PROP_SUPPORT_EXTERNAL_ENTITIES));
+                    PROP_SUPPORT_EXTERNAL_ENTITIES);
         sProperties.put(XMLInputFactory.IS_VALIDATING,
-                        DataUtil.Integer(PROP_VALIDATE_AGAINST_DTD));
+                        PROP_VALIDATE_AGAINST_DTD);
         sProperties.put(XMLInputFactory.SUPPORT_DTD,
-                        DataUtil.Integer(PROP_SUPPORT_DTD));
+                        PROP_SUPPORT_DTD);
 
         // Standard ones; pluggable components
         sProperties.put(XMLInputFactory.ALLOCATOR,
-                        DataUtil.Integer(PROP_EVENT_ALLOCATOR));
+                        PROP_EVENT_ALLOCATOR);
         sProperties.put(XMLInputFactory.REPORTER,
-                        DataUtil.Integer(PROP_WARNING_REPORTER));
+                        PROP_WARNING_REPORTER);
         sProperties.put(XMLInputFactory.RESOLVER,
-                        DataUtil.Integer(PROP_XML_RESOLVER));
+                        PROP_XML_RESOLVER);
 
         // StAX2-introduced flags:
         sProperties.put(XMLInputFactory2.P_INTERN_NAMES,
-                        DataUtil.Integer(PROP_INTERN_NAMES));
+                        PROP_INTERN_NAMES);
         sProperties.put(XMLInputFactory2.P_INTERN_NS_URIS,
-                        DataUtil.Integer(PROP_INTERN_NS_URIS));
+                        PROP_INTERN_NS_URIS);
         sProperties.put(XMLInputFactory2.P_REPORT_CDATA,
-                        DataUtil.Integer(PROP_REPORT_CDATA));
+                        PROP_REPORT_CDATA);
         sProperties.put(XMLInputFactory2.P_REPORT_PROLOG_WHITESPACE,
-                        DataUtil.Integer(PROP_REPORT_PROLOG_WS));
+                        PROP_REPORT_PROLOG_WS);
         sProperties.put(XMLInputFactory2.P_PRESERVE_LOCATION,
-                        DataUtil.Integer(PROP_PRESERVE_LOCATION));
+                        PROP_PRESERVE_LOCATION);
         sProperties.put(XMLInputFactory2.P_AUTO_CLOSE_INPUT,
-                        DataUtil.Integer(PROP_AUTO_CLOSE_INPUT));
+                        PROP_AUTO_CLOSE_INPUT);
         sProperties.put(XMLInputFactory2.XSP_SUPPORT_XMLID,
-                        DataUtil.Integer(PROP_SUPPORT_XMLID));
+                        PROP_SUPPORT_XMLID);
         sProperties.put(XMLInputFactory2.P_DTD_OVERRIDE,
-                        DataUtil.Integer(PROP_DTD_OVERRIDE));
+                        PROP_DTD_OVERRIDE);
 
         // Non-standard ones, flags:
 
-        sProperties.put(WstxInputProperties.P_CACHE_DTDS,
-                        DataUtil.Integer(PROP_CACHE_DTDS));
+        sProperties.put(WstxInputProperties.P_CACHE_DTDS, PROP_CACHE_DTDS);
         sProperties.put(WstxInputProperties.P_CACHE_DTDS_BY_PUBLIC_ID,
-                        DataUtil.Integer(PROP_CACHE_DTDS_BY_PUBLIC_ID));
-        sProperties.put(XMLInputFactory2.P_LAZY_PARSING,
-                        DataUtil.Integer(PROP_LAZY_PARSING));
+                        PROP_CACHE_DTDS_BY_PUBLIC_ID);
+        sProperties.put(XMLInputFactory2.P_LAZY_PARSING, PROP_LAZY_PARSING);
+        /*
         sProperties.put(WstxInputProperties.P_SUPPORT_DTDPP,
-                        DataUtil.Integer(PROP_SUPPORT_DTDPP));
+                        PROP_SUPPORT_DTDPP));
+                        */
         sProperties.put(WstxInputProperties.P_TREAT_CHAR_REFS_AS_ENTS,
-                DataUtil.Integer(PROP_TREAT_CHAR_REFS_AS_ENTS));
-        sProperties.put(WstxInputProperties.P_NORMALIZE_LFS,
-                DataUtil.Integer(PROP_NORMALIZE_LFS));
+                PROP_TREAT_CHAR_REFS_AS_ENTS);
+        sProperties.put(WstxInputProperties.P_NORMALIZE_LFS, PROP_NORMALIZE_LFS);
         
 
         // Non-standard ones, non-flags:
 
         sProperties.put(WstxInputProperties.P_INPUT_BUFFER_LENGTH,
-                        DataUtil.Integer(PROP_INPUT_BUFFER_LENGTH));
+                        PROP_INPUT_BUFFER_LENGTH);
         sProperties.put(WstxInputProperties.P_MIN_TEXT_SEGMENT,
-                        DataUtil.Integer(PROP_MIN_TEXT_SEGMENT));
+                        PROP_MIN_TEXT_SEGMENT);
         sProperties.put(WstxInputProperties.P_MAX_ATTRIBUTES_PER_ELEMENT,
-                        DataUtil.Integer(PROP_MAX_ATTRIBUTES_PER_ELEMENT));
+                        PROP_MAX_ATTRIBUTES_PER_ELEMENT);
         sProperties.put(WstxInputProperties.P_MAX_ATTRIBUTE_SIZE,
-                        DataUtil.Integer(PROP_MAX_ATTRIBUTE_SIZE));
+                        PROP_MAX_ATTRIBUTE_SIZE);
         sProperties.put(WstxInputProperties.P_MAX_CHILDREN_PER_ELEMENT,
-                        DataUtil.Integer(PROP_MAX_CHILDREN_PER_ELEMENT));
+                        PROP_MAX_CHILDREN_PER_ELEMENT);
         sProperties.put(WstxInputProperties.P_MAX_TEXT_LENGTH,
-                        DataUtil.Integer(PROP_MAX_TEXT_LENGTH));
+                        PROP_MAX_TEXT_LENGTH);
         sProperties.put(WstxInputProperties.P_MAX_ELEMENT_COUNT,
-                        DataUtil.Integer(PROP_MAX_ELEMENT_COUNT));
+                        PROP_MAX_ELEMENT_COUNT);
         sProperties.put(WstxInputProperties.P_MAX_ELEMENT_DEPTH,
-                        DataUtil.Integer(PROP_MAX_ELEMENT_DEPTH));
+                        PROP_MAX_ELEMENT_DEPTH);
          sProperties.put(WstxInputProperties.P_MAX_ENTITY_DEPTH,
-                 DataUtil.Integer(PROP_MAX_ENTITY_DEPTH));
+                 PROP_MAX_ENTITY_DEPTH);
          sProperties.put(WstxInputProperties.P_MAX_ENTITY_COUNT,
-                 DataUtil.Integer(PROP_MAX_ENTITY_COUNT));
-        sProperties.put(WstxInputProperties.P_MAX_CHARACTERS,
-                        DataUtil.Integer(PROP_MAX_CHARACTERS));
+                 PROP_MAX_ENTITY_COUNT);
+        sProperties.put(WstxInputProperties.P_MAX_CHARACTERS, PROP_MAX_CHARACTERS);
         
         {
             @SuppressWarnings("deprecation")
-        	String key = WstxInputProperties.P_CUSTOM_INTERNAL_ENTITIES;
-        	sProperties.put(key, Integer.valueOf(PROP_CUSTOM_INTERNAL_ENTITIES));
+            String key = WstxInputProperties.P_CUSTOM_INTERNAL_ENTITIES;
+        	    sProperties.put(key, Integer.valueOf(PROP_CUSTOM_INTERNAL_ENTITIES));
         }
         sProperties.put(WstxInputProperties.P_DTD_RESOLVER,
-                        DataUtil.Integer(PROP_DTD_RESOLVER));
+                        PROP_DTD_RESOLVER);
         sProperties.put(WstxInputProperties.P_ENTITY_RESOLVER,
-                        DataUtil.Integer(PROP_ENTITY_RESOLVER));
+                        PROP_ENTITY_RESOLVER);
         sProperties.put(WstxInputProperties.P_UNDECLARED_ENTITY_RESOLVER,
-                        DataUtil.Integer(PROP_UNDECLARED_ENTITY_RESOLVER));
+                        PROP_UNDECLARED_ENTITY_RESOLVER);
         sProperties.put(WstxInputProperties.P_BASE_URL,
-                        DataUtil.Integer(PROP_BASE_URL));
+                        PROP_BASE_URL);
         sProperties.put(WstxInputProperties.P_INPUT_PARSING_MODE,
-                        DataUtil.Integer(PROP_INPUT_PARSING_MODE));
+                        PROP_INPUT_PARSING_MODE);
     }
 
     /*
@@ -1414,28 +1411,28 @@ public final class ReaderConfig
 
             // then object values:
         case PROP_INPUT_BUFFER_LENGTH:
-            return DataUtil.Integer(getInputBufferLength());
+            return getInputBufferLength();
         case PROP_MAX_ATTRIBUTES_PER_ELEMENT:
-            return DataUtil.Integer(getMaxAttributesPerElement());
+            return getMaxAttributesPerElement();
         case PROP_MAX_ATTRIBUTE_SIZE:
-            return DataUtil.Integer(getMaxAttributeSize());
+            return getMaxAttributeSize();
         case PROP_MAX_CHILDREN_PER_ELEMENT:
-            return DataUtil.Integer(getMaxChildrenPerElement());
+            return getMaxChildrenPerElement();
         case PROP_MAX_ELEMENT_DEPTH:
-            return DataUtil.Integer(getMaxElementDepth());
+            return getMaxElementDepth();
         case PROP_MAX_ELEMENT_COUNT:
-            return Long.valueOf(getMaxElementCount());
+            return getMaxElementCount();
         case PROP_MAX_CHARACTERS:
-            return Long.valueOf(getMaxCharacters());
+            return getMaxCharacters();
         case PROP_MAX_TEXT_LENGTH:
-            return Long.valueOf(getMaxTextLength());
+            return getMaxTextLength();
         case PROP_MAX_ENTITY_DEPTH:
-            return DataUtil.Integer(getMaxEntityDepth());
+            return getMaxEntityDepth();
         case PROP_MAX_ENTITY_COUNT:
-            return Long.valueOf(getMaxEntityCount());
+            return getMaxEntityCount();
 
         case PROP_MIN_TEXT_SEGMENT:
-            return DataUtil.Integer(getShortestReportedTextSegment());
+            return getShortestReportedTextSegment();
         case PROP_CUSTOM_INTERNAL_ENTITIES:
             return getCustomInternalEntities();
         case PROP_DTD_RESOLVER:

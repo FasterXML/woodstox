@@ -44,13 +44,13 @@ abstract class CommonConfig
     ///////////////////////////////////////////////////////////////////////
     */
 
-    final static int PROP_IMPL_NAME = 1;
-    final static int PROP_IMPL_VERSION = 2;
+    final static int CPROP_IMPL_NAME = 1;
+    final static int CPROP_IMPL_VERSION = 2;
 
-    final static int PROP_SUPPORTS_XML11 = 3;
-    final static int PROP_SUPPORT_XMLID = 4;
+    final static int CPROP_SUPPORTS_XML11 = 3;
+    final static int CPROP_SUPPORT_XMLID = 4;
     
-    final static int PROP_RETURN_NULL_FOR_DEFAULT_NAMESPACE = 5; 
+    final static int CPROP_RETURN_NULL_FOR_DEFAULT_NAMESPACE = 5; 
 
     /**
      * Map to use for converting from String property ids to enumeration
@@ -59,24 +59,24 @@ abstract class CommonConfig
     final static HashMap<String,Integer> sStdProperties = new HashMap<String,Integer>(16);
     static {
         // Basic information about the implementation:
-        sStdProperties.put(XMLStreamProperties.XSP_IMPLEMENTATION_NAME, PROP_IMPL_NAME);
-        sStdProperties.put(XMLStreamProperties.XSP_IMPLEMENTATION_VERSION, PROP_IMPL_VERSION);
+        sStdProperties.put(XMLStreamProperties.XSP_IMPLEMENTATION_NAME, CPROP_IMPL_NAME);
+        sStdProperties.put(XMLStreamProperties.XSP_IMPLEMENTATION_VERSION, CPROP_IMPL_VERSION);
 
         // XML version support:
-        sStdProperties.put(XMLStreamProperties.XSP_SUPPORTS_XML11, PROP_SUPPORTS_XML11);
+        sStdProperties.put(XMLStreamProperties.XSP_SUPPORTS_XML11, CPROP_SUPPORTS_XML11);
 
         // Xml:id support:
-        sStdProperties.put(XMLStreamProperties.XSP_SUPPORT_XMLID, PROP_SUPPORT_XMLID);
+        sStdProperties.put(XMLStreamProperties.XSP_SUPPORT_XMLID, CPROP_SUPPORT_XMLID);
 
         sStdProperties.put(WstxInputProperties.P_RETURN_NULL_FOR_DEFAULT_NAMESPACE,
-                PROP_RETURN_NULL_FOR_DEFAULT_NAMESPACE);
+                CPROP_RETURN_NULL_FOR_DEFAULT_NAMESPACE);
 
         /* 23-Apr-2008, tatus: Additional interoperability property,
          *    one that Sun implementation uses. Can map to Stax2
          *    property quite easily.
          */
         sStdProperties.put("http://java.sun.com/xml/stream/properties/implementation-name",
-                PROP_IMPL_NAME);
+                CPROP_IMPL_NAME);
     }
 
     /*
@@ -255,7 +255,7 @@ abstract class CommonConfig
     {
         // Only one settable property...
         switch (id) {
-        case PROP_RETURN_NULL_FOR_DEFAULT_NAMESPACE:
+        case CPROP_RETURN_NULL_FOR_DEFAULT_NAMESPACE:
             mReturnNullForDefaultNamespace = ArgUtil.convertToBoolean(propName, value);
             return true;
         }
@@ -265,15 +265,15 @@ abstract class CommonConfig
     protected Object getStdProperty(int id)
     {
         switch (id) {
-        case PROP_IMPL_NAME:
+        case CPROP_IMPL_NAME:
             return IMPL_NAME;
-        case PROP_IMPL_VERSION:
+        case CPROP_IMPL_VERSION:
             return IMPL_VERSION;
-        case PROP_SUPPORTS_XML11:
+        case CPROP_SUPPORTS_XML11:
             return doesSupportXml11() ? Boolean.TRUE : Boolean.FALSE;
-        case PROP_SUPPORT_XMLID:
+        case CPROP_SUPPORT_XMLID:
             return doesSupportXmlId() ? Boolean.TRUE : Boolean.FALSE;
-        case PROP_RETURN_NULL_FOR_DEFAULT_NAMESPACE:
+        case CPROP_RETURN_NULL_FOR_DEFAULT_NAMESPACE:
             return returnNullForDefaultNamespace() ? Boolean.TRUE : Boolean.FALSE;
         default: // sanity check, should never happen
             throw new IllegalStateException("Internal error: no handler for property with internal id "+id+".");

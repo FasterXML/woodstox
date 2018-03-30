@@ -6,9 +6,8 @@ package com.ctc.wstx.util;
  */
 public final class XmlChars
 {
-    /* We don't need full 64k bits... (0x80 - 0x312C) / 32. But to
-     * simplify things, let's just include first 0x80 entries in there etc
-     */
+    // We don't need full 64k bits... (0x80 - 0x312C) / 32. But to
+    // simplify things, let's just include first 0x80 entries in there etc
     final static int SIZE = (0x3140 >> 5); // 32 bits per int
 
     final static int[] sXml10StartChars = new int[SIZE];

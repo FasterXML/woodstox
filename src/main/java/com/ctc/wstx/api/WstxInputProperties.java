@@ -23,9 +23,9 @@ public final class WstxInputProperties
     public final static String UNKNOWN_ATTR_TYPE = "CDATA";
 
     /*
-    ///////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Simple on/off settings:
-    ///////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
      */
 
     // // // Normalization:
@@ -54,12 +54,21 @@ public final class WstxInputProperties
      * that they are valid (including white space); if false, will not
      * check.
      *<p>
+     * Note that this property will NOT have effect on all encoding problems,
+     * specifically:
+     *<ul>
+     * <li>UTF-8 decoder will still report invalid UTF-8 byte sequences (and same
+     *     for other character encodings).
+     *  </li>
+     * <li>XML Name character rules follow separate validation which will not be affected
+     *  </li>
+     *</ul>
+     *<p>
      * Turning this option off may improve parsing performance; leaving
      * it on guarantees compatibility with XML 1.0 specs regarding character
      * validity rules.
      */
     public final static String P_VALIDATE_TEXT_CHARS = "com.ctc.wstx.validateTextChars";
-
 
     // // // Caching:
 
@@ -148,9 +157,9 @@ public final class WstxInputProperties
     //public final static String P_AUTOMATIC_W3C_SCHEMA = 0x00100000;
 
     /*
-    ///////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // More complex settings
-    ///////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
      */
 
     // // // Buffer sizes;
@@ -308,9 +317,9 @@ public final class WstxInputProperties
     // // // DTD defaulting, overriding
 
     /*
-    ////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Helper classes, values enumerations
-    ////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
      */
 
     public final static ParsingMode PARSING_MODE_DOCUMENT = new ParsingMode();
