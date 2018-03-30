@@ -36,7 +36,8 @@ public class TestBasicSax
         int cdatas = handler.getCDATASectionCount();
         int segments = handler.getSegmentCount();
 
-        assertEquals("Should only get a single CDATA segments, got "+cdatas+" (for "+segments+" text segments)", 1, cdatas);
+        assertEquals("Should only get a single CDATA segments, got "+cdatas+" (for "+segments+" text segments)",
+                1, cdatas);
     }
 
     /*

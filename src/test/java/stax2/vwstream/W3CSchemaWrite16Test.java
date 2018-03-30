@@ -1,4 +1,4 @@
-package failing;
+package stax2.vwstream;
 
 import java.io.StringWriter;
 
@@ -9,7 +9,7 @@ import org.codehaus.stax2.validation.XMLValidationSchema;
 import wstxtest.vstream.BaseValidationTest;
 
 // for [woodstox-core#16]
-public class W3CSchemaWriteTest
+public class W3CSchemaWrite16Test
     extends BaseValidationTest
 {
     final static String SIMPLE_WRITE_SCHEMA =

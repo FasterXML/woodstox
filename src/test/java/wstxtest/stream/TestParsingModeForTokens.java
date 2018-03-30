@@ -1,6 +1,9 @@
 package wstxtest.stream;
 
 import javax.xml.stream.*;
+import javax.xml.stream.events.XMLEvent;
+
+import org.codehaus.stax2.XMLEventReader2;
 
 import com.ctc.wstx.api.WstxInputProperties;
 
@@ -9,7 +12,7 @@ import com.ctc.wstx.api.WstxInputProperties;
  * (set via property {@link WstxInputProperties#P_INPUT_PARSING_MODE})
  * behave as expected
  */
-public class TestParsingMode
+public class TestParsingModeForTokens
     extends BaseStreamTest
 {
     final static String XML_SINGLE_DOC =
@@ -61,8 +64,7 @@ public class TestParsingMode
                              "Expected an exception for unbalanced xml content");
     }
 
-    public void testMultiDocumentMode()
-        throws XMLStreamException
+    public void testMultiDocumentMode() throws XMLStreamException
     {
         // First the main valid case:
         streamThroughOk(getReader(XML_MULTI_DOC,
@@ -85,7 +87,7 @@ public class TestParsingMode
 
         // And broken one not
         streamThroughFailing(getReader(XML_UNBALANCED,
-                                       WstxInputProperties.PARSING_MODE_DOCUMENTS),
+                WstxInputProperties.PARSING_MODE_DOCUMENTS),
                              "Expected an exception for unbalanced xml content");
     }
 

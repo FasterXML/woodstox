@@ -45,6 +45,7 @@ public class TestAttributeLimits extends BaseStreamTest
         } catch (XMLStreamException ex) {
             verifyException(ex, "Attribute limit (50)");
         }
+        reader.close();
     }
 
     public void testLongAttribute() throws Exception {

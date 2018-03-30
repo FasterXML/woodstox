@@ -14,9 +14,10 @@ public class TestW3CSchemaComplexTypes
 {
 	/**
 	 * For problem with MSV: https://github.com/kohsuke/msv/issues/2
-	 * 
+	 *
+	 * 29-Mar-2018, tatu: Oddly enough, problem itself allegedly resolved...
 	 */
-    public void testGithubIssue2() throws Exception
+    public void testMSVGithubIssue2() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(
 "<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:tns='http://MySchema' elementFormDefault='qualified' targetNamespace='http://MySchema' version='1.0'>"

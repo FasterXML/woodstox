@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.HashMap;
 
 import javax.xml.stream.*;
+import javax.xml.stream.events.XMLEvent;
 
 import org.codehaus.stax2.*;
 import org.codehaus.stax2.evt.*;
@@ -253,9 +254,8 @@ public abstract class BaseWstxTest
             int type = sr.next();
             result += type;
             if (sr.hasText()) {
-                /* will also do basic verification for text content, to 
-                 * see that all text accessor methods return same content
-                 */
+                // will also do basic verification for text content, to 
+                // see that all text accessor methods return same content
                 result += getAndVerifyText(sr).hashCode();
             }
             if (sr.hasName()) {
@@ -352,6 +352,26 @@ public abstract class BaseWstxTest
         }
     }
 
+    protected static void assertTokenType(int expType, XMLEvent event)
+    {
+        if (event == null) {
+            fail("Expected event of type "+tokenTypeDesc(expType)+"; got `null`");
+        }
+        int actType = event.getEventType();
+        if (expType != actType) {
+            String expStr = tokenTypeDesc(expType);
+            String actStr = tokenTypeDesc(actType);
+
+            if (expStr == null) {
+                expStr = ""+expType;
+            }
+            if (actStr == null) {
+                actStr = ""+actType;
+            }
+            fail("Expected token "+expStr+"; got "+actStr+".");
+        }
+    }
+    
     /**
      * Helper assertion that assert that the String is either null or
      * empty ("").

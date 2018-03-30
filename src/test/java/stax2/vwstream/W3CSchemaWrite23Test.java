@@ -5,7 +5,7 @@ import java.io.*;
 import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.XMLStreamWriter2;
 
-public class WriteValidate23Test
+public class W3CSchemaWrite23Test
     extends BaseOutputTest
 {
     public void testSchemaValidatingCopy23() throws Exception
