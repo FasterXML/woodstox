@@ -6,10 +6,10 @@ import javax.xml.stream.*;
 import org.codehaus.stax2.*;
 import org.codehaus.stax2.validation.*;
 
-import stax2.BaseStax2Test;
+import stax2.vstream.BaseStax2ValidationTest;
 
 abstract class BaseOutputTest
-    extends BaseStax2Test
+    extends BaseStax2ValidationTest // from sister package
 {
     public XMLStreamWriter2 getDTDValidatingWriter(Writer w, String dtdSrc,
             boolean nsAware, boolean repairing)

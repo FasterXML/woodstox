@@ -63,6 +63,76 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <dependencies>
+        <!-- First mandatory (and transitive) dependencies -->
+        <dependency>
+          <groupId>org.codehaus.woodstox</groupId>
+          <artifactId>stax2-api</artifactId>
+          <!--  27-Mar-2018, tatu: Upgraded from 3.1 for Woodstox 5.1 -->
+          <version>4.1</version>
+        </dependency>
+
+        <!-- Then optional ones (need for build, possibly
+           for runtime but not always)
+        -->
+
+        <!-- First, MSV, needed for RNG/W3C Schema validation -->
+        <!-- 05-Mar-2009, TSa: This gets messy, as there are
+          multiple alternatives, even at http://repo1.maven1.maven.org/maven2;
+          + main level ones (group ids "xsdlib", "relaxngDatatype")
+          + "msv" ones (3 subgroups)
+          + "com.sun.msv", but only for xsdlib
+
+          and all with varying sets of dependencies; 
+          For now, we'll just use "msv", which does not properly define
+          dependencies...
+
+          Also: make these 'provided', since user needs to include them
+          directly. Not sure what OSGi thinks about that but...
+        -->
+        <dependency>
+            <groupId>net.java.dev.msv</groupId>
+            <artifactId>msv-core</artifactId>
+            <version>${version.msv}</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.msv</groupId>
+            <artifactId>msv-rngconverter</artifactId>
+            <version>${version.msv}</version>
+         <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.msv</groupId>
+            <artifactId>xsdlib</artifactId>
+            <version>${version.msv}</version>
+         <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Then OSGi, needed if using OSGi discovery -->
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>1.4.0</version>
+            <optional>true</optional>
+         <scope>provided</scope>
+        </dependency>
+
+        <!-- Then test jars
+        -->
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -104,74 +174,6 @@
             </plugin>
         </plugins>
     </build>
-    <dependencies>
-        <!-- First mandatory (and transitive) dependencies -->
-        <dependency>
-          <groupId>org.codehaus.woodstox</groupId>
-          <artifactId>stax2-api</artifactId>
-          <!--  27-Mar-2018, tatu: Upgraded from 3.1 for Woodstox 5.1 -->
-          <version>4.1</version>
-        </dependency>
-
-        <!-- Then optional ones (need for build, possibly
-           for runtime but not always)
-        -->
-
-        <!-- First, MSV, needed for RNG/W3C Schema validation -->
-        <!-- 05-Mar-2009, TSa: This gets messy, as there are
-          multiple alternatives, even at http://repo1.maven1.maven.org/maven2;
-          + main level ones (group ids "xsdlib", "relaxngDatatype")
-          + "msv" ones (3 subgroups)
-          + "com.sun.msv", but only for xsdlib
-
-          and all with varying sets of dependencies; 
-          For now, we'll just use "msv", which does not properly define
-          dependencies...
-
-          Also: make these 'provided', since user needs to include them
-          directly. Not sure what OSGi thinks about that but...
-        -->
-        <dependency>
-            <groupId>net.java.dev.msv</groupId>
-            <artifactId>msv-core</artifactId>
-            <version>${version.msv}</version>
-	    <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>net.java.dev.msv</groupId>
-            <artifactId>msv-rngconverter</artifactId>
-            <version>${version.msv}</version>
-	    <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>net.java.dev.msv</groupId>
-            <artifactId>xsdlib</artifactId>
-            <version>${version.msv}</version>
-	    <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- Then OSGi, needed if using OSGi discovery -->
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>1.4.0</version>
-            <optional>true</optional>
-	    <scope>provided</scope>
-        </dependency>
-
-        <!-- Then test jars
-        -->
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
     <reporting>
         <plugins>
             <!--
