@@ -1,48 +1,52 @@
 package stax2.vstream;
 
 import java.io.StringReader;
-import java.net.URL;
 
 import javax.xml.stream.XMLStreamException;
 
 import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.validation.*;
 
+import com.ctc.wstx.dtd.DTDSchemaFactory;
+import com.ctc.wstx.msv.RelaxNGSchemaFactory;
+import com.ctc.wstx.msv.W3CSchemaFactory;
+
 import stax2.BaseStax2Test;
 
 public abstract class BaseStax2ValidationTest
     extends BaseStax2Test
 {
-    protected XMLValidationSchema parseSchema(String contents, String schemaType)
-        throws XMLStreamException
-    {
-        XMLValidationSchemaFactory schF = XMLValidationSchemaFactory.newInstance(schemaType);
-        return schF.createSchema(new StringReader(contents));
+    protected XMLValidationSchemaFactory newW3CSchemaValidatorFactory() {
+        return new W3CSchemaFactory();
     }
 
-    protected XMLValidationSchema parseSchema(URL ref, String schemaType)
-        throws XMLStreamException
-    {
-        XMLValidationSchemaFactory schF = XMLValidationSchemaFactory.newInstance(schemaType);
-        return schF.createSchema(ref);
+    protected XMLValidationSchemaFactory newRelaxNGValidatorFactory() {
+        return new RelaxNGSchemaFactory();
+    }
+
+    protected XMLValidationSchemaFactory newDTDValidatorFactory() {
+        return new DTDSchemaFactory();
     }
 
     protected XMLValidationSchema parseRngSchema(String contents)
         throws XMLStreamException
     {
-        return parseSchema(contents, XMLValidationSchema.SCHEMA_ID_RELAXNG);
+        return newRelaxNGValidatorFactory()
+                .createSchema(new StringReader(contents));
     }
 
     protected XMLValidationSchema parseDTDSchema(String contents)
         throws XMLStreamException
     {
-        return parseSchema(contents, XMLValidationSchema.SCHEMA_ID_DTD);
+        return newDTDValidatorFactory()
+                .createSchema(new StringReader(contents));
     }
 
     protected XMLValidationSchema parseW3CSchema(String contents)
         throws XMLStreamException
     {
-        return parseSchema(contents, XMLValidationSchema.SCHEMA_ID_W3C_SCHEMA);
+        return newW3CSchemaValidatorFactory()
+                .createSchema(new StringReader(contents));
     }
 
     protected void verifyFailure(String xml, XMLValidationSchema schema, String failMsg,

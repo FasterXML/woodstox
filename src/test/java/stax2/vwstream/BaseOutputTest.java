@@ -20,9 +20,7 @@ abstract class BaseOutputTest
         outf.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, new Boolean(repairing));
 
         XMLStreamWriter2 strw = (XMLStreamWriter2)outf.createXMLStreamWriter(w);
-        XMLValidationSchemaFactory vd = XMLValidationSchemaFactory.newInstance(XMLValidationSchema.SCHEMA_ID_DTD);
-
-        XMLValidationSchema schema = vd.createSchema(new StringReader(dtdSrc));
+        XMLValidationSchema schema = parseDTDSchema(dtdSrc);
 
         strw.validateAgainst(schema);
         strw.writeStartDocument();
@@ -38,9 +36,7 @@ abstract class BaseOutputTest
         outf.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, new Boolean(repairing));
 
         XMLStreamWriter2 strw = (XMLStreamWriter2)outf.createXMLStreamWriter(w);
-        XMLValidationSchemaFactory vd = XMLValidationSchemaFactory.newInstance(XMLValidationSchema.SCHEMA_ID_W3C_SCHEMA);
-
-        XMLValidationSchema schema = vd.createSchema(new StringReader(schemaSrc));
+        XMLValidationSchema schema = parseW3CSchema(schemaSrc);
 
         strw.validateAgainst(schema);
         strw.writeStartDocument();
