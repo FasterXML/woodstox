@@ -16,6 +16,10 @@ import stax2.BaseStax2Test;
 public abstract class BaseStax2ValidationTest
     extends BaseStax2Test
 {
+    // 02-Apr-2018, tatu: not the cleanest thing ever but has to do for now; needed
+    //    by implementations other than Woodstox, that do NOT support non-ns mode.
+    protected final static boolean HAS_NON_NS_MODE = true;
+    
     protected XMLValidationSchemaFactory newW3CSchemaValidatorFactory() {
         return new W3CSchemaFactory();
     }
