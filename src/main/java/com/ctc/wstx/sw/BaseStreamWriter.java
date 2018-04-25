@@ -803,7 +803,7 @@ public abstract class BaseStreamWriter
 
                     // 28-Mar-2017, tatu: Various optimization do not work well when validation so:
                     if (mValidator != null) {
-                        writeCData(sr.getText());
+                        writeCharacters(sr.getText());
                     } else {
                         sr.getText(wrapAsRawWriter(), preserveEventData);
                     }
