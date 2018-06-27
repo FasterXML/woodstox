@@ -102,6 +102,7 @@ public final class ReaderConfig
     final static int PROP_LAZY_PARSING = 44;
     final static int PROP_SUPPORT_DTDPP = 45;
     final static int PROP_TREAT_CHAR_REFS_AS_ENTS = 46;
+    final static int PROP_XML10_ALLOW_ALL_ESCAPED_CHARS = 47;
 
     // Object type properties:
 
@@ -301,6 +302,8 @@ public final class ReaderConfig
                         */
         sProperties.put(WstxInputProperties.P_TREAT_CHAR_REFS_AS_ENTS,
                 PROP_TREAT_CHAR_REFS_AS_ENTS);
+        sProperties.put(WstxInputProperties.P_XML10_ALLOW_ALL_ESCAPED_CHARS,
+                PROP_XML10_ALLOW_ALL_ESCAPED_CHARS);
         sProperties.put(WstxInputProperties.P_NORMALIZE_LFS, PROP_NORMALIZE_LFS);
         
 
@@ -700,6 +703,10 @@ public final class ReaderConfig
         return _hasConfigFlag(CFG_TREAT_CHAR_REFS_AS_ENTS);
     }
 
+    public boolean willXml10AllowAllEscapedChars() {
+        return _hasConfigFlag(CFG_XML10_ALLOW_ALL_ESCAPED_CHARS);
+    }
+
     public int getInputBufferLength() { return mInputBufferLen; }
 
     public int getShortestReportedTextSegment() { return mMinTextSegmentLen; }
@@ -892,7 +899,11 @@ public final class ReaderConfig
     public void doTreatCharRefsAsEnts(final boolean state) {
         setConfigFlag(CFG_TREAT_CHAR_REFS_AS_ENTS, state);
     }
-    
+
+    public void doXml10AllowAllEscapedChars(final boolean state) {
+        setConfigFlag(CFG_XML10_ALLOW_ALL_ESCAPED_CHARS, state);
+    }
+
     public void doNormalizeLFs(final boolean state) {
         setConfigFlag(CFG_NORMALIZE_LFS, state);
     }
@@ -1405,7 +1416,8 @@ public final class ReaderConfig
             
         case PROP_TREAT_CHAR_REFS_AS_ENTS:
             return willTreatCharRefsAsEnts() ? Boolean.TRUE : Boolean.FALSE;
-            
+        case PROP_XML10_ALLOW_ALL_ESCAPED_CHARS:
+            return willXml10AllowAllEscapedChars() ? Boolean.TRUE : Boolean.FALSE;
         case PROP_NORMALIZE_LFS:
             return willNormalizeLFs() ? Boolean.TRUE : Boolean.FALSE;
 
@@ -1568,6 +1580,10 @@ public final class ReaderConfig
             
         case PROP_TREAT_CHAR_REFS_AS_ENTS:
             doTreatCharRefsAsEnts(ArgUtil.convertToBoolean(propName, value));
+            break;
+
+        case PROP_XML10_ALLOW_ALL_ESCAPED_CHARS:
+            doXml10AllowAllEscapedChars(ArgUtil.convertToBoolean(propName, value));
             break;
 
         case PROP_NORMALIZE_LFS:
