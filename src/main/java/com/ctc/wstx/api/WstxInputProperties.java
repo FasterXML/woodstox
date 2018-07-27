@@ -77,6 +77,8 @@ public final class WstxInputProperties
      * allowed in XML 1.1.
      *<p>
      * Enable this flag to allow this non compliant content.
+     *
+     * @since 5.2
      */
     public final static String P_XML10_ALLOW_ALL_ESCAPED_CHARS = "com.ctc.wstx.xml10AllowAllEscapedChars";
 
