@@ -282,6 +282,11 @@ public abstract class StreamScanner
      */
     protected boolean mNormalizeLFs;
 
+    /**
+     * Flag that indicates whether all escaped chars are accepted in XML 1.0.
+     */
+    protected boolean mXml10AllowAllEscapedChars;
+
     /*
     ///////////////////////////////////////////////////////////////////////
     // Buffer(s) for local name(s) and text content
@@ -384,6 +389,8 @@ public abstract class StreamScanner
         int cf = cfg.getConfigFlags();
         mCfgNsEnabled = (cf & CFG_NAMESPACE_AWARE) != 0;
         mCfgReplaceEntities = (cf & CFG_REPLACE_ENTITY_REFS) != 0;
+
+        mXml10AllowAllEscapedChars = mConfig.willXml10AllowAllEscapedChars();
 
         mNormalizeLFs = mConfig.willNormalizeLFs();
         mInputBuffer = null;
@@ -2395,9 +2402,11 @@ public abstract class StreamScanner
                 throwParseError("Invalid character reference: null character not allowed in XML content.");
             }
             // XML 1.1 allows most other chars; 1.0 does not:
-            if (!mXml11 &&
-                (value != 0x9 && value != 0xA && value != 0xD)) {
-                reportIllegalChar(value);
+            if (!mXml10AllowAllEscapedChars) {
+                if (!mXml11 &&
+                        (value != 0x9 && value != 0xA && value != 0xD)) {
+                    reportIllegalChar(value);
+                }
             }
         }
     }
