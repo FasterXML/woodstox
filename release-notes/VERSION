@@ -4,6 +4,11 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+5.1.1 (not yet released)
+
+#47: Validation error due to white-space being handled as CData by `BaseStreamWriter`
+ (reported by Alexis H)
+
 5.1.0 (31-Mar-2018)
 
 #23: Text content is not validated correctly when copying events to `XmlStreamWriter`
