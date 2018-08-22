@@ -4,10 +4,15 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-5.1.1 (not yet released)
+5.2.0 (not yet released)
 
+#46: NoSuchMethodError after update to Woodstox 5.1.0
+ (reported by Alexander V, veita@github)
 #47: Validation error due to white-space being handled as CData by `BaseStreamWriter`
  (reported by Alexis H)
+#56: Add `WstxInputProperties.P_XML10_ALLOW_ALL_ESCAPED_CHARS` to allow XML 1.1 escaped
+ characters in XML 1.0 content
+  (suggested by Mickaël G, mguessan@github)
 
 5.1.0 (31-Mar-2018)
 

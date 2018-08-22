@@ -102,6 +102,10 @@ public final class ReaderConfig
     final static int PROP_LAZY_PARSING = 44;
     final static int PROP_SUPPORT_DTDPP = 45;
     final static int PROP_TREAT_CHAR_REFS_AS_ENTS = 46;
+    
+    /**
+     * @since 5.2
+     */
     final static int PROP_XML10_ALLOW_ALL_ESCAPED_CHARS = 47;
 
     // Object type properties:

@@ -3,7 +3,6 @@ package com.ctc.wstx.util;
 import java.lang.reflect.Array;
 import java.util.*;
 
-import org.codehaus.stax2.ri.EmptyIterator;
 import org.codehaus.stax2.ri.SingletonIterator;
 
 public final class DataUtil
@@ -11,6 +10,28 @@ public final class DataUtil
     final static char[] EMPTY_CHAR_ARRAY = new char[0];
 
     final static Long MAX_LONG = new Long(Long.MAX_VALUE);
+
+    // Replace with Java 7 `Collections.emptyIterator()` once we can use it
+    private final static class EI implements Iterator<Object>
+    {
+        public final static Iterator<?> sInstance = new EI();
+
+        @SuppressWarnings("unchecked")
+        public static <T> Iterator<T> getInstance() { return (Iterator<T>) sInstance; }
+
+        @Override
+        public boolean hasNext() { return false; }
+
+        @Override
+        public Object next() {
+            throw new java.util.NoSuchElementException();
+        }
+
+        @Override
+        public void remove() {
+            throw new IllegalStateException();
+        }
+    }
 
     private DataUtil() { }
 
@@ -43,7 +64,7 @@ public final class DataUtil
 
     public static <T> Iterator<T> emptyIterator() {
         // TODO: with JDK 1.7, can use method from Collections
-        return EmptyIterator.getInstance();
+        return EI.getInstance();
     }
 
     /*

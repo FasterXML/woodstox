@@ -204,7 +204,7 @@ public interface InputConfigFlags
     /**
      * If true, the XML parser will allow XML 1.1 escaped chars in XML 1.0 file.
      *
+     * @since 5.2
      */
     final static int CFG_XML10_ALLOW_ALL_ESCAPED_CHARS = 0x01000000;
 }
-

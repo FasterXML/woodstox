@@ -284,6 +284,8 @@ public abstract class StreamScanner
 
     /**
      * Flag that indicates whether all escaped chars are accepted in XML 1.0.
+     *
+     * @since 5.2
      */
     protected boolean mXml10AllowAllEscapedChars;
 
@@ -2402,11 +2404,9 @@ public abstract class StreamScanner
                 throwParseError("Invalid character reference: null character not allowed in XML content.");
             }
             // XML 1.1 allows most other chars; 1.0 does not:
-            if (!mXml10AllowAllEscapedChars) {
-                if (!mXml11 &&
-                        (value != 0x9 && value != 0xA && value != 0xD)) {
-                    reportIllegalChar(value);
-                }
+            if (!mXml11 && !mXml10AllowAllEscapedChars
+                && (value != 0x9 && value != 0xA && value != 0xD)) {
+                reportIllegalChar(value);
             }
         }
     }
