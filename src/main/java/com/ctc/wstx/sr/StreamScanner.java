@@ -407,6 +407,13 @@ public abstract class StreamScanner
         }
     }
 
+    /**
+     * @since 5.2
+     */
+    public ReaderConfig getConfig() {
+        return mConfig;
+    }
+
     /*
     ///////////////////////////////////////////////////////////////////////
     // Package API

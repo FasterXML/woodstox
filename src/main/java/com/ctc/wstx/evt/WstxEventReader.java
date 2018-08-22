@@ -23,6 +23,7 @@ import org.codehaus.stax2.ri.Stax2EventReaderImpl;
 
 import com.ctc.wstx.cfg.ErrorConsts;
 import com.ctc.wstx.exc.WstxParsingException;
+import com.ctc.wstx.sr.StreamScanner;
 
 /**
  * Woodstox version, based on generic Stax reference implementation
@@ -31,9 +32,13 @@ import com.ctc.wstx.exc.WstxParsingException;
 public class WstxEventReader
     extends Stax2EventReaderImpl
 {
+    protected final boolean mCfgMultiDocMode;
+
     public WstxEventReader(XMLEventAllocator a, XMLStreamReader2 r)
     {
         super(a, r);
+        mCfgMultiDocMode = (r instanceof StreamScanner)
+                && ((StreamScanner) r).getConfig().inputParsingModeDocuments();
     }
 
     /*
