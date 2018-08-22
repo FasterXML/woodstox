@@ -10,7 +10,7 @@ import com.ctc.wstx.api.WstxInputProperties;
 
 import wstxtest.stream.BaseStreamTest;
 
-public class TestParsingModeForEvents
+public class TestParsingModeForEvents42
     extends BaseStreamTest
 {
     final static String XML_MULTI_DOC =
