@@ -259,13 +259,8 @@ public final class WstxInputProperties
      * internal (generic) entities that will define of override any entities
      * defined in internal or external subsets; except for the 5 pre-defined
      * entities (lt, gt, amp, apos, quot). Can be used to explicitly define
-     * entites that would normally come from a DTD.
-     *<p>
-     * @deprecated This feature may be removed from future versions of
-     *   Woodstox, since the same functionality can be achieved by using
-     *   custom entity resolvers.
+     * entities that would normally come from a DTD.
      */
-    @Deprecated
     public final static String P_CUSTOM_INTERNAL_ENTITIES = "com.ctc.wstx.customInternalEntities";
 
     /**

@@ -119,7 +119,6 @@ public class TestEntityRead
      * This unit test verifies that it's possible to add a Map of
      * expansions from Entity names to 
      */
-    @SuppressWarnings("deprecation")
 	public void testUndeclaredUsingCustomMap()
         throws XMLStreamException
     {

@@ -334,12 +334,8 @@ public final class ReaderConfig
          sProperties.put(WstxInputProperties.P_MAX_ENTITY_COUNT,
                  PROP_MAX_ENTITY_COUNT);
         sProperties.put(WstxInputProperties.P_MAX_CHARACTERS, PROP_MAX_CHARACTERS);
-        
-        {
-            @SuppressWarnings("deprecation")
-            String key = WstxInputProperties.P_CUSTOM_INTERNAL_ENTITIES;
-        	    sProperties.put(key, Integer.valueOf(PROP_CUSTOM_INTERNAL_ENTITIES));
-        }
+        sProperties.put(WstxInputProperties.P_CUSTOM_INTERNAL_ENTITIES,
+                Integer.valueOf(PROP_CUSTOM_INTERNAL_ENTITIES));
         sProperties.put(WstxInputProperties.P_DTD_RESOLVER,
                         PROP_DTD_RESOLVER);
         sProperties.put(WstxInputProperties.P_ENTITY_RESOLVER,
@@ -730,7 +726,7 @@ public final class ReaderConfig
 
     public Map<String,EntityDecl> getCustomInternalEntities()
     {
-	@SuppressWarnings("unchecked")
+        @SuppressWarnings("unchecked")
         Map<String,EntityDecl> custEnt = (Map<String,EntityDecl>) _getSpecialProperty(SP_IX_CUSTOM_ENTITIES);
         if (custEnt == null) {
             return Collections.emptyMap();
@@ -746,7 +742,7 @@ public final class ReaderConfig
 
     public EntityDecl findCustomInternalEntity(String id)
     {
-	    @SuppressWarnings("unchecked")
+        @SuppressWarnings("unchecked")
         Map<String,EntityDecl> custEnt = (Map<String,EntityDecl>) _getSpecialProperty(SP_IX_CUSTOM_ENTITIES);
         if (custEnt == null) {
             return null;

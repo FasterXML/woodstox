@@ -1,9 +1,6 @@
 package wstxtest.stream;
 
 import javax.xml.stream.*;
-import javax.xml.stream.events.XMLEvent;
-
-import org.codehaus.stax2.XMLEventReader2;
 
 import com.ctc.wstx.api.WstxInputProperties;
 
