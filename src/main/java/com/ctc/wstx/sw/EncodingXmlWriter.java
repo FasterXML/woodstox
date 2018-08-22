@@ -600,7 +600,7 @@ public abstract class EncodingXmlWriter
      */
     @Override
     public final void writeTypedElement(AsciiValueEncoder enc,
-                                        XMLValidator validator, char[] copyBuffer)
+            XMLValidator validator, char[] copyBuffer)
         throws IOException, XMLStreamException
     {
         if (mSurrogate != 0) {
