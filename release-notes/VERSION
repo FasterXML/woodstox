@@ -6,6 +6,8 @@ Project: woodstox
 
 5.2.0 (not yet released)
 
+#42: Multi-document mode produces events only for first document
+ (reported by display-none@github)
 #46: NoSuchMethodError after update to Woodstox 5.1.0
  (reported by Alexander V, veita@github)
 #47: Validation error due to white-space being handled as CData by `BaseStreamWriter`
