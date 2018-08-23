@@ -57,9 +57,9 @@ final class Attribute
     protected String mReusableValue;
 
     /*
-    //////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Life-cycle
-    //////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
      */
 
     public Attribute(String prefix, String localName, int valueStart)
@@ -86,9 +86,9 @@ final class Attribute
     }
 
     /*
-    //////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Accessors
-    //////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
      */
 
     /**
@@ -112,6 +112,13 @@ final class Attribute
             return (mNamespaceURI == null) || mNamespaceURI.length() == 0;
         }
         return (mNamespaceURI != null && uri.equals(mNamespaceURI));
+    }
+
+    /**
+     * @since 5.2
+     */
+    public boolean hasLocalName(String localName) {
+        return (localName == mLocalName) || localName.equals(mLocalName);
     }
 
     public QName getQName()

@@ -1,4 +1,4 @@
-package failing;
+package wstxtest.evt;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -10,7 +10,7 @@ import com.ctc.wstx.api.WstxInputProperties;
 
 import wstxtest.stream.BaseStreamTest;
 
-public class TestParsingModeForEvents42
+public class TestParsingModeForEvents
     extends BaseStreamTest
 {
     final static String XML_MULTI_DOC =

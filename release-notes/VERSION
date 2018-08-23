@@ -12,6 +12,8 @@ Project: woodstox
  (reported by Alexander V, veita@github)
 #47: Validation error due to white-space being handled as CData by `BaseStreamWriter`
  (reported by Alexis H)
+#52: `XMLStreamReader.getAttributeValue(null, localName)` does not ignore namespace URI
+ (reported by flappingeagle@github)
 #56: Add `WstxInputProperties.P_XML10_ALLOW_ALL_ESCAPED_CHARS` to allow XML 1.1 escaped
  characters in XML 1.0 content
   (suggested by Mickaël G, mguessan@github)

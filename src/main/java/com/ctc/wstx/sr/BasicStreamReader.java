@@ -642,6 +642,11 @@ public abstract class BasicStreamReader
         if (mCurrToken != START_ELEMENT) {
             throw new IllegalStateException(ErrorConsts.ERR_STATE_NOT_STELEM);
         }
+        // 22-Aug-2018, tatu: As per [woodstox-core#53], need different logic
+        //   for `null` namespace URI argument
+        if (nsURI == null) {
+            return mAttrCollector.getValueByLocalName(localName);
+        }
         return mAttrCollector.getValue(nsURI, localName);
     }
 

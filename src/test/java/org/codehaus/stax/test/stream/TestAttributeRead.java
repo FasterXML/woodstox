@@ -71,6 +71,28 @@ public class TestAttributeRead
         assertEquals(END_DOCUMENT, sr.next());
     }
 
+    // [woodstox-core#53]: oddly enough, `null` for namespace should, as per Javadocs,
+    // IGNORE any namespace information from matches.
+    public void testValidNsAttrsIgnoreNamespace()
+        throws XMLStreamException
+    {
+        XMLStreamReader sr = getReader("<root xmlns:ns='foo:bar' ns:a='1' b='2' />", true);
+        assertEquals(START_ELEMENT, sr.next());
+        assertEquals(1, sr.getNamespaceCount());
+        assertEquals(2, sr.getAttributeCount());
+
+        assertEquals("1", sr.getAttributeValue("foo:bar", "a"));
+        assertEquals("1", sr.getAttributeValue(null, "a"));
+        assertNull(sr.getAttributeValue("bar:foo", "a"));
+
+        assertEquals("2", sr.getAttributeValue("", "b"));
+        assertEquals("2", sr.getAttributeValue(null, "b"));
+        assertNull(sr.getAttributeValue("foo:bar", "b"));
+
+        assertEquals(END_ELEMENT, sr.next());
+        assertEquals(END_DOCUMENT, sr.next());
+    }
+
     public void testValidNsAttrsByIndex()
         throws XMLStreamException
     {

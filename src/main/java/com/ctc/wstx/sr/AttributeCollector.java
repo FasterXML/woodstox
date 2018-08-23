@@ -396,16 +396,14 @@ public final class AttributeCollector
             return getValue(ix);
         }
 
-        /* Nope, need to traverse spill list, which has 2 entries for
-         * each spilled attribute id; first for hash value, second index.
-         */
+        // Nope, need to traverse spill list, which has 2 entries for
+        // each spilled attribute id; first for hash value, second index.
         for (int i = hashSize, len = mAttrSpillEnd; i < len; i += 2) {
             if (mAttrMap[i] != hash) {
                 continue;
             }
-            /* Note: spill indexes are not off-by-one, since there's no need
-             * to mask 0
-             */
+            // Note: spill indexes are not off-by-one, since there's no need
+            // to mask 0
             ix = mAttrMap[i+1];
             if (mAttributes[ix].hasQName(nsURI, localName)) {
                 return getValue(ix);
@@ -415,6 +413,46 @@ public final class AttributeCollector
         return null;
     }
 
+    /**
+     * Specialized version in which namespace information is completely ignored.
+     *
+     * @since 5.2
+     */
+    public String getValueByLocalName(String localName)
+    {
+        // NOTE: can't use hashing, must do linear scan
+        
+        switch (mAttrCount) {
+        case 4:
+            if (mAttributes[0].hasLocalName(localName)) return getValue(0);
+            if (mAttributes[1].hasLocalName(localName)) return getValue(1);
+            if (mAttributes[2].hasLocalName(localName)) return getValue(2);
+            if (mAttributes[3].hasLocalName(localName)) return getValue(3);
+            return null;
+        case 3:
+            if (mAttributes[0].hasLocalName(localName)) return getValue(0);
+            if (mAttributes[1].hasLocalName(localName)) return getValue(1);
+            if (mAttributes[2].hasLocalName(localName)) return getValue(2);
+            return null;
+        case 2:
+            if (mAttributes[0].hasLocalName(localName)) return getValue(0);
+            if (mAttributes[1].hasLocalName(localName)) return getValue(1);
+            return null;
+        case 1:
+            if (mAttributes[0].hasLocalName(localName)) return getValue(0);
+            return null;
+        case 0:
+            return null;
+        default:
+            for (int i = 0, end = mAttrCount; i < end; ++i) {
+                if (mAttributes[i].hasLocalName(localName)) {
+                    return getValue(i);
+                }
+            }
+            return null;
+        }
+    }
+    
     public int getMaxAttributesPerElement() {
         return mMaxAttributesPerElement;
     }
