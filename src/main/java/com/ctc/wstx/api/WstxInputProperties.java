@@ -80,7 +80,7 @@ public final class WstxInputProperties
      *
      * @since 5.2
      */
-    public final static String P_XML10_ALLOW_ALL_ESCAPED_CHARS = "com.ctc.wstx.xml10AllowAllEscapedChars";
+    public final static String P_ALLOW_XML11_ESCAPED_CHARS_IN_XML10 = "com.ctc.wstx.allowXml11EscapedCharsInXml10";
 
     // // // Caching:
 

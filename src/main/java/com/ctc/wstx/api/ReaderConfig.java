@@ -10,7 +10,6 @@ import org.codehaus.stax2.XMLInputFactory2; // for property consts
 import org.codehaus.stax2.XMLStreamProperties; // for property consts
 import org.codehaus.stax2.validation.DTDValidationSchema;
 
-import com.ctc.wstx.api.WstxInputProperties;
 import com.ctc.wstx.cfg.InputConfigFlags;
 import com.ctc.wstx.dtd.DTDEventListener;
 import com.ctc.wstx.ent.IntEntity;
@@ -106,7 +105,7 @@ public final class ReaderConfig
     /**
      * @since 5.2
      */
-    final static int PROP_XML10_ALLOW_ALL_ESCAPED_CHARS = 47;
+    final static int PROP_ALLOW_XML11_ESCAPED_CHARS_IN_XML10 = 47;
 
     // Object type properties:
 
@@ -306,8 +305,8 @@ public final class ReaderConfig
                         */
         sProperties.put(WstxInputProperties.P_TREAT_CHAR_REFS_AS_ENTS,
                 PROP_TREAT_CHAR_REFS_AS_ENTS);
-        sProperties.put(WstxInputProperties.P_XML10_ALLOW_ALL_ESCAPED_CHARS,
-                PROP_XML10_ALLOW_ALL_ESCAPED_CHARS);
+        sProperties.put(WstxInputProperties.P_ALLOW_XML11_ESCAPED_CHARS_IN_XML10,
+                PROP_ALLOW_XML11_ESCAPED_CHARS_IN_XML10);
         sProperties.put(WstxInputProperties.P_NORMALIZE_LFS, PROP_NORMALIZE_LFS);
         
 
@@ -703,7 +702,7 @@ public final class ReaderConfig
         return _hasConfigFlag(CFG_TREAT_CHAR_REFS_AS_ENTS);
     }
 
-    public boolean willXml10AllowAllEscapedChars() {
+    public boolean willAllowXml11EscapedCharsInXml10() {
         return _hasConfigFlag(CFG_XML10_ALLOW_ALL_ESCAPED_CHARS);
     }
 
@@ -900,7 +899,7 @@ public final class ReaderConfig
         setConfigFlag(CFG_TREAT_CHAR_REFS_AS_ENTS, state);
     }
 
-    public void doXml10AllowAllEscapedChars(final boolean state) {
+    public void doAllowXml11EscapedCharsInXml10(final boolean state) {
         setConfigFlag(CFG_XML10_ALLOW_ALL_ESCAPED_CHARS, state);
     }
 
@@ -1416,8 +1415,8 @@ public final class ReaderConfig
             
         case PROP_TREAT_CHAR_REFS_AS_ENTS:
             return willTreatCharRefsAsEnts() ? Boolean.TRUE : Boolean.FALSE;
-        case PROP_XML10_ALLOW_ALL_ESCAPED_CHARS:
-            return willXml10AllowAllEscapedChars() ? Boolean.TRUE : Boolean.FALSE;
+        case PROP_ALLOW_XML11_ESCAPED_CHARS_IN_XML10:
+            return willAllowXml11EscapedCharsInXml10() ? Boolean.TRUE : Boolean.FALSE;
         case PROP_NORMALIZE_LFS:
             return willNormalizeLFs() ? Boolean.TRUE : Boolean.FALSE;
 
@@ -1582,8 +1581,8 @@ public final class ReaderConfig
             doTreatCharRefsAsEnts(ArgUtil.convertToBoolean(propName, value));
             break;
 
-        case PROP_XML10_ALLOW_ALL_ESCAPED_CHARS:
-            doXml10AllowAllEscapedChars(ArgUtil.convertToBoolean(propName, value));
+        case PROP_ALLOW_XML11_ESCAPED_CHARS_IN_XML10:
+            doAllowXml11EscapedCharsInXml10(ArgUtil.convertToBoolean(propName, value));
             break;
 
         case PROP_NORMALIZE_LFS:

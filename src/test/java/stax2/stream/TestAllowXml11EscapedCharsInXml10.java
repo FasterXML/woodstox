@@ -6,17 +6,17 @@ import stax2.BaseStax2Test;
 
 import javax.xml.stream.XMLStreamReader;
 
-import static com.ctc.wstx.api.WstxInputProperties.P_XML10_ALLOW_ALL_ESCAPED_CHARS;
+import static com.ctc.wstx.api.WstxInputProperties.P_ALLOW_XML11_ESCAPED_CHARS_IN_XML10;
 
-public class TestXML10AllowAllEscapedChars extends BaseStax2Test {
+public class TestAllowXml11EscapedCharsInXml10 extends BaseStax2Test {
     /**
      * Unit test to verify workaround for XML 1.1 escaped chars in XML 1.0 file.
      */
-    public void testXML10AllowAllEscapedChars() throws Exception {
+    public void testAllowXml11EscapedCharsInXml10() throws Exception {
         XMLInputFactory2 f = getInputFactory();
         setNamespaceAware(f, true);
         setCoalescing(f, true);
-        f.setProperty(P_XML10_ALLOW_ALL_ESCAPED_CHARS, true);
+        f.setProperty(P_ALLOW_XML11_ESCAPED_CHARS_IN_XML10, true);
         XMLStreamReader sr = constructStreamReader(f, "<?xml version=\"1.0\" encoding=\"utf-8\"?><root>&#x2;</root>");
         assertTokenType(START_ELEMENT, sr.next());
         assertTokenType(CHARACTERS, sr.next());
