@@ -703,7 +703,7 @@ public final class ReaderConfig
     }
 
     public boolean willAllowXml11EscapedCharsInXml10() {
-        return _hasConfigFlag(CFG_XML10_ALLOW_ALL_ESCAPED_CHARS);
+        return _hasConfigFlag(CFG_ALLOW_XML11_ESCAPED_CHARS_IN_XML10);
     }
 
     public int getInputBufferLength() { return mInputBufferLen; }
@@ -900,7 +900,7 @@ public final class ReaderConfig
     }
 
     public void doAllowXml11EscapedCharsInXml10(final boolean state) {
-        setConfigFlag(CFG_XML10_ALLOW_ALL_ESCAPED_CHARS, state);
+        setConfigFlag(CFG_ALLOW_XML11_ESCAPED_CHARS_IN_XML10, state);
     }
 
     public void doNormalizeLFs(final boolean state) {
