@@ -26,7 +26,7 @@ public class TestAllowXml11EscapedCharsInXml10 extends BaseStax2Test {
     /**
      * Unit test to verify failure for XML 1.1 escaped chars in XML 1.0 file.
      */
-    public void testXML10DoNotAllowAllEscapedChars() throws Exception {
+    public void testDoNotAllowXml11EscapedCharsInXml10() throws Exception {
         XMLInputFactory2 f = getInputFactory();
         setNamespaceAware(f, true);
         setCoalescing(f, true);
