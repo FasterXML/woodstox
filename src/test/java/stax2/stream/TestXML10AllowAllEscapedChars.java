@@ -1,12 +1,11 @@
 package stax2.stream;
 
+import com.ctc.wstx.api.WstxInputProperties;
 import com.ctc.wstx.exc.WstxParsingException;
 import org.codehaus.stax2.XMLInputFactory2;
 import stax2.BaseStax2Test;
 
 import javax.xml.stream.XMLStreamReader;
-
-import static com.ctc.wstx.api.WstxInputProperties.P_XML10_ALLOW_ALL_ESCAPED_CHARS;
 
 public class TestXML10AllowAllEscapedChars extends BaseStax2Test {
     /**
@@ -16,7 +15,7 @@ public class TestXML10AllowAllEscapedChars extends BaseStax2Test {
         XMLInputFactory2 f = getInputFactory();
         setNamespaceAware(f, true);
         setCoalescing(f, true);
-        f.setProperty(P_XML10_ALLOW_ALL_ESCAPED_CHARS, true);
+        f.setProperty(WstxInputProperties.P_ALLOW_XML11_ESCAPED_CHARS_IN_XML10, true);
         XMLStreamReader sr = constructStreamReader(f, "<?xml version=\"1.0\" encoding=\"utf-8\"?><root>&#x2;</root>");
         assertTokenType(START_ELEMENT, sr.next());
         assertTokenType(CHARACTERS, sr.next());

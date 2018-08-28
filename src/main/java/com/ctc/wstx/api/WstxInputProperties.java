@@ -65,22 +65,22 @@ public final class WstxInputProperties
      *</ul>
      *<p>
      * Turning this option off may improve parsing performance; leaving
-     * it on guarantees compatibility with XML 1.0 specs regarding character
+     * it on guarantees compatibility with XML 1.0 specification regarding character
      * validity rules.
      */
     public final static String P_VALIDATE_TEXT_CHARS = "com.ctc.wstx.validateTextChars";
 
 
     /**
-     * Allow XML 1.1 escaped chars in XML 1.0 file.
-     * Some XML sources advertise XML 1.0 and use escaped characters that are only
-     * allowed in XML 1.1.
+     * Allow all XML 1.1 characters escapes even if input document is described as XML 1.0
+     * (in addition to ones allowed in 1.l0).
      *<p>
-     * Enable this flag to allow this non compliant content.
+     * Since this is non-standard option (that is, deviates from XML  specification), it is
+     * disabled by default.
      *
      * @since 5.2
      */
-    public final static String P_XML10_ALLOW_ALL_ESCAPED_CHARS = "com.ctc.wstx.xml10AllowAllEscapedChars";
+    public final static String P_ALLOW_XML11_ESCAPED_CHARS_IN_XML10 = "com.ctc.wstx.allowXml11EscapedCharsInXml10";
 
     // // // Caching:
 

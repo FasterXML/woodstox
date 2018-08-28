@@ -14,7 +14,7 @@ Project: woodstox
  (reported by Alexis H)
 #53: `XMLStreamReader.getAttributeValue(null, localName)` does not ignore namespace URI
  (reported by flappingeagle@github)
-#56: Add `WstxInputProperties.P_XML10_ALLOW_ALL_ESCAPED_CHARS` to allow XML 1.1 escaped
+#56: Add `WstxInputProperties.P_ALLOW_XML11_ESCAPED_CHARS_IN_XML10` to allow XML 1.1 escaped
  characters in XML 1.0 content
   (suggested by Mickaël G, mguessan@github)
 

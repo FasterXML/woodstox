@@ -306,7 +306,7 @@ public final class ReaderConfig
                         */
         sProperties.put(WstxInputProperties.P_TREAT_CHAR_REFS_AS_ENTS,
                 PROP_TREAT_CHAR_REFS_AS_ENTS);
-        sProperties.put(WstxInputProperties.P_XML10_ALLOW_ALL_ESCAPED_CHARS,
+        sProperties.put(WstxInputProperties.P_ALLOW_XML11_ESCAPED_CHARS_IN_XML10,
                 PROP_XML10_ALLOW_ALL_ESCAPED_CHARS);
         sProperties.put(WstxInputProperties.P_NORMALIZE_LFS, PROP_NORMALIZE_LFS);
         
