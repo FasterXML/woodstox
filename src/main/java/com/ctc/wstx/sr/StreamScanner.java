@@ -287,7 +287,7 @@ public abstract class StreamScanner
      *
      * @since 5.2
      */
-    protected boolean mXml10AllowAllEscapedChars;
+    protected boolean mAllowXml11EscapedCharsInXml10;
 
     /*
     ///////////////////////////////////////////////////////////////////////
@@ -392,7 +392,7 @@ public abstract class StreamScanner
         mCfgNsEnabled = (cf & CFG_NAMESPACE_AWARE) != 0;
         mCfgReplaceEntities = (cf & CFG_REPLACE_ENTITY_REFS) != 0;
 
-        mXml10AllowAllEscapedChars = mConfig.willXml10AllowAllEscapedChars();
+        mAllowXml11EscapedCharsInXml10 = mConfig.willAllowXml11EscapedCharsInXml10();
 
         mNormalizeLFs = mConfig.willNormalizeLFs();
         mInputBuffer = null;
@@ -2411,7 +2411,7 @@ public abstract class StreamScanner
                 throwParseError("Invalid character reference: null character not allowed in XML content.");
             }
             // XML 1.1 allows most other chars; 1.0 does not:
-            if (!mXml11 && !mXml10AllowAllEscapedChars
+            if (!mXml11 && !mAllowXml11EscapedCharsInXml10
                 && (value != 0x9 && value != 0xA && value != 0xD)) {
                 reportIllegalChar(value);
             }

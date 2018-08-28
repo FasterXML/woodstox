@@ -206,5 +206,5 @@ public interface InputConfigFlags
      *
      * @since 5.2
      */
-    final static int CFG_XML10_ALLOW_ALL_ESCAPED_CHARS = 0x01000000;
+    final static int CFG_ALLOW_XML11_ESCAPED_CHARS_IN_XML10 = 0x01000000;
 }
