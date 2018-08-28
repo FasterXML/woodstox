@@ -7,11 +7,11 @@ import stax2.BaseStax2Test;
 
 import javax.xml.stream.XMLStreamReader;
 
-public class TestXML10AllowAllEscapedChars extends BaseStax2Test {
+public class TestAllowXml11EscapedCharsInXml10 extends BaseStax2Test {
     /**
      * Unit test to verify workaround for XML 1.1 escaped chars in XML 1.0 file.
      */
-    public void testXML10AllowAllEscapedChars() throws Exception {
+    public void testAllowXml11EscapedCharsInXml10() throws Exception {
         XMLInputFactory2 f = getInputFactory();
         setNamespaceAware(f, true);
         setCoalescing(f, true);
@@ -25,7 +25,7 @@ public class TestXML10AllowAllEscapedChars extends BaseStax2Test {
     /**
      * Unit test to verify failure for XML 1.1 escaped chars in XML 1.0 file.
      */
-    public void testXML10DoNotAllowAllEscapedChars() throws Exception {
+    public void testDoNotAllowXml11EscapedCharsInXml10() throws Exception {
         XMLInputFactory2 f = getInputFactory();
         setNamespaceAware(f, true);
         setCoalescing(f, true);
