@@ -4,7 +4,7 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-5.2.0 (not yet released)
+5.2.0 (02-Nov-2018)
 
 #42: Multi-document mode produces events only for first document
  (reported by display-none@github)
