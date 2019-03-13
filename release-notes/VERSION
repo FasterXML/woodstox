@@ -4,6 +4,10 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+5.3.0 (not yet released)
+
+-- NOT YET --- #70: Add Java 9+ module info using Moditect
+
 5.2.0 (02-Nov-2018)
 
 #42: Multi-document mode produces events only for first document
