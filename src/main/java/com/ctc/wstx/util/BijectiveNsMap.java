@@ -20,8 +20,6 @@ import java.util.*;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 
-import com.ctc.wstx.util.DataUtil;
-
 /**
  * Helper class that implements "bijective map" (Map that allows use of values
  * as keys and vice versa, bidirectional access), and is specifically
@@ -287,7 +285,8 @@ public final class BijectiveNsMap
              * have something too?
              */
 
-            if (ctxt != null && ctxt.getNamespaceURI(prefix) != null) {
+            if (ctxt != null && ctxt.getNamespaceURI(prefix) != null
+                    && !ctxt.getNamespaceURI(prefix).equals(XMLConstants.NULL_NS_URI)) {
                 continue;
             }
             break;
