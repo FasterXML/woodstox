@@ -14,7 +14,7 @@ import com.ctc.wstx.exc.*;
  * Input bootstrap class used with streams, when encoding is not known
  * (when encoding is specified by application, a reader is constructed,
  * and then reader-based bootstrapper is used).
- *<p
+ *<p>
  * Encoding used for an entity (including
  * main document entity) is determined using algorithms suggested in
  * XML 1.0#3 spec, appendix F

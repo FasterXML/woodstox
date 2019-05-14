@@ -33,7 +33,6 @@ import org.codehaus.stax2.AttributeInfo;
 import org.codehaus.stax2.DTDInfo;
 import org.codehaus.stax2.LocationInfo;
 import org.codehaus.stax2.XMLStreamLocation2;
-import org.codehaus.stax2.XMLStreamProperties;
 import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.typed.TypedXMLStreamException;
 import org.codehaus.stax2.validation.*;
@@ -375,7 +374,7 @@ public abstract class BasicStreamReader
     protected int mVldContent = XMLValidator.CONTENT_ALLOW_ANY_TEXT;
     
     /**
-     * Configuration from {@link XMLStreamProperties.RETURN_NULL_FOR_DEFAULT_NAMESPACE}
+     * Configuration from {@code WstxInputProperties#RETURN_NULL_FOR_DEFAULT_NAMESPACE}
      * 
      * @since 4.1.2
      */
@@ -657,8 +656,8 @@ public abstract class BasicStreamReader
      * this is not a text-only element.
      * Regardless of value of javax.xml.stream.isCoalescing this method always
      * returns coalesced content.
-     *<br/>Precondition: the current event is START_ELEMENT.
-     *<br/>Postcondition: the current event is the corresponding END_ELEMENT. 
+     *<br>Precondition: the current event is START_ELEMENT.
+     *<br>Postcondition: the current event is the corresponding END_ELEMENT. 
      *</blockquote>
      */
     @Override
@@ -666,7 +665,7 @@ public abstract class BasicStreamReader
         throws XMLStreamException
     {
         if (mCurrToken != START_ELEMENT) {
-            throwParseError(ErrorConsts.ERR_STATE_NOT_STELEM, null, null);
+             throwParseError(ErrorConsts.ERR_STATE_NOT_STELEM, null, null);
         }
         /* Ok, now: with START_ELEMENT we know that it's not partially
          * processed; that we are in-tree (not prolog or epilog).
@@ -1491,7 +1490,7 @@ public abstract class BasicStreamReader
 
     /**
      * @return True, if cursor points to a start or end element that is
-     *    constructed from 'empty' element (ends with '/>');
+     *    constructed from 'empty' element (ends with {@code '/>'});
      *    false otherwise.
      */
     @Override
@@ -4689,7 +4688,7 @@ public abstract class BasicStreamReader
      *   variable, instead of immediately throwing it. If true, will
      *   just store the exception; if false, will not store, just throw.
      *
-     * @return True if the text segment was completely read ('<' was hit,
+     * @return True if the text segment was completely read ({@code '<'} was hit,
      *   or in non-entity-expanding mode, a non-char entity); false if
      *   it may still continue
      */

@@ -72,8 +72,8 @@ public abstract class StreamScanner
     /**
      * Character that allows quick check of whether a char can potentially
      * be some kind of markup, WRT input stream processing;
-     * has to contain linefeeds, &, < and > (">" only matters when
-     * quoting text, as part of "]]>")
+     * has to contain linefeeds, {@code &}, {@code <} and {@code >} (note: {@code >} only matters when
+     * quoting text, as part of {@code ]]>})
      */
     protected final static char CHAR_FIRST_PURE_TEXT = (char) ('>' + 1);
 
@@ -2122,7 +2122,7 @@ public abstract class StreamScanner
      * NOTE: returned String is not canonicalized, on assumption that
      * external ids may be longish, and are not shared all that often, as
      * they are generally just used for resolving paths, if anything.
-     *<br />
+     *<br>
      * Also note that this method is not heavily optimized, as it's not
      * likely to be a bottleneck for parsing.
      */
@@ -2183,7 +2183,7 @@ public abstract class StreamScanner
      * NOTE: returned String is not canonicalized, on assumption that
      * external ids may be longish, and are not shared all that often, as
      * they are generally just used for resolving paths, if anything.
-     *<br />
+     *<br>
      * Also note that this method is not heavily optimized, as it's not
      * likely to be a bottleneck for parsing.
      */
