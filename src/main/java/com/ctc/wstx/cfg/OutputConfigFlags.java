@@ -40,7 +40,7 @@ public interface OutputConfigFlags
 
     /**
      * Flag that indicates
-     * whether writer is to add a single white space before closing "/>"
+     * whether writer is to add a single white space before closing {@code "/>"}
      * of the empty element or not. It is sometimes useful to add to
      * increase compatibility with HTML browsers, or to increase
      * readability.
@@ -65,7 +65,7 @@ public interface OutputConfigFlags
      * nodes that have constraints.
      *<p>
      * Specifically: comments can not have '--', CDATA sections can not
-     * have ']]>' and processing instruction can not have '?&lt;' character
+     * have {@code ']]>'} and processing instruction can not have {@code '?>};' character
      * combinations in content passed in.
      */
     final static int CFG_VALIDATE_CONTENT =    0x0200;

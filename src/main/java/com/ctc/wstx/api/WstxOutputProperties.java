@@ -2,9 +2,8 @@ package com.ctc.wstx.api;
 
 /**
  * Class that contains constant for property names used to configure
- * cursor and event writers produced by Wstx implementation of
+ * cursor and event writers produced by Woodstox implementation of
  * {@link javax.xml.stream.XMLOutputFactory}.
- *<p>
  */
 public final class WstxOutputProperties
 {
@@ -47,7 +46,7 @@ public final class WstxOutputProperties
     public final static String P_COPY_DEFAULT_ATTRS = "com.ctc.wstx.copyDefaultAttrs";
 
     /**
-     * Whether writer is to add a single white space before closing "/>"
+     * Whether writer is to add a single white space before closing {@code "/>"}
      * of the empty element or not. It is sometimes useful to add to
      * increase compatibility with HTML browsers, or to increase
      * readability.
@@ -91,8 +90,8 @@ public final class WstxOutputProperties
      * Whether output classes should do basic verification that the textual
      * content output as part of nodes should be checked for validity,
      * if there's a possibility of invalid content. Nodes that include
-     * such constraints are: comment/'--', cdata/']]>',
-     * proc. instr/'?>'.
+     * such constraints are: comment/'--', cdata/{@code ']]>'},
+     * proc. instr/{@code '?>'}.
      */
     public final static String P_OUTPUT_VALIDATE_CONTENT = "com.ctc.wstx.outputValidateContent";
 
@@ -113,7 +112,7 @@ public final class WstxOutputProperties
      * that if {@link #P_OUTPUT_VALIDATE_CONTENT} is enabled, instead of
      * reporting an error, writer will try to fix the problem.
      * Invalid content in this context refers  to comment
-     * content with "--", CDATA with "]]>" and proc. instr data with "?>".
+     * content with "--", CDATA with {@code "]]>"} and proc. instr data with {@code "?>"}.
      * This can
      * be done for some content (CDATA, possibly comment), by splitting
      * content into separate
