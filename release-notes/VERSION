@@ -4,9 +4,11 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-5.3.0 (not yet released)
+5.2.1 (14-May-2019)
 
--- NOT YET --- #70: Add Java 9+ module info using Moditect
+#74: Infinite loop in BijectiveNsMap#addGeneratedMapping when ctxt.getNamespaceURI(prefix)
+   returns an empty String
+ (reported by Ioan M)
 
 5.2.0 (02-Nov-2018)
 

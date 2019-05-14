@@ -1,0 +1,11 @@
+Here are people who have contributed to the development of Woodstox XML processor
+databind core component, version 5.x (earlier contributors included with 4.x
+codebase)
+
+Tatu Saloranta, tatu.saloranta@iki.fi: author
+
+Ioan Marcu (ioanmarcu@github)
+
+* Reported #74, suggested fix: Infinite loop in BijectiveNsMap#addGeneratedMapping
+  when ctxt.getNamespaceURI(prefix) returns an empty String
+ (5.2.1)

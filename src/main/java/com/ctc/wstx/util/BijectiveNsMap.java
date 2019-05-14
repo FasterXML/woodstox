@@ -48,6 +48,12 @@ public final class BijectiveNsMap
      */
     final static int DEFAULT_ARRAY_SIZE = 2 * 16;
 
+    /**
+     * As a simple protection against infinite loops, use an arbitrary but bound
+     * limit for iterators
+     */
+    private final static int MAX_LOOP_FOR_NEW_PREFIX = 999999;
+    
     /*
     ///////////////////////////////////////////////
     // Member vars
@@ -260,12 +266,11 @@ public final class BijectiveNsMap
         String[] strs = mNsStrings;
         int seqNr = seqArr[0];
         String prefix;
+        int attempts = 0;
 
         main_loop:
         while (true) {
-            /* We better intern the resulting prefix? Or not?
-             * TODO: maybe soft cache these for other docs?
-             */
+            // We better intern the resulting prefix? Or not?
             prefix = (prefixBase + seqNr).intern();
             ++seqNr;
 
@@ -283,13 +288,22 @@ public final class BijectiveNsMap
                     continue main_loop;
                 }
             }
-            /* So far so good... but do we have a root context that might
-             * have something too?
-             */
+            // So far so good... but do we have a root context that might
+            // have something too?
 
-            if (ctxt != null && ctxt.getNamespaceURI(prefix) != null) {
-                continue;
+            // [woodstox-core#74]: had infinite loop for certain Namespace implementations
+            if (ctxt != null) {
+                String existing = ctxt.getNamespaceURI(prefix);
+                if (existing != null && !existing.isEmpty()) {
+                    continue;
+                }
             }
+            // also... guard against infinite loops in general, just in case
+            if (++attempts > MAX_LOOP_FOR_NEW_PREFIX) {
+                throw new IllegalStateException("Internal error: failed to find a mapping prefix for URI '"+uri
+                        +" in "+MAX_LOOP_FOR_NEW_PREFIX+" attempts");
+            }
+            
             break;
         }
         seqArr[0] = seqNr;
