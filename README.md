@@ -17,8 +17,7 @@ Coordinates for this are:
 
 * Group id: `com.fasterxml.woodstox`
 * Artifact id: `woodstox-core`
-* Latest published version: 5.0.3 (23-Aug-2016)
-    * (NOTE! Version `5.0.0` was accidentally released as broken, not containing actual classes -- 5.0.1 is the first functioning 5.x version).
+* Latest published version: 5.2.1 (14-May-2019)
 
 Note that Maven id has changed since Woodstox 4.x.
 
