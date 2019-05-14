@@ -9,7 +9,7 @@
 
     <groupId>com.fasterxml.woodstox</groupId>
     <artifactId>woodstox-core</artifactId>
-    <version>5.2.2-SNAPSHOT</version>
+    <version>5.2.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Woodstox</name>
     <description>
