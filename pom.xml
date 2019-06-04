@@ -104,6 +104,12 @@
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
+<!-- 03-Jun-2019, tatu: Not sure why this is added as a dep as it's only one class,
+   `com.sun.msv.writer.relaxng.Driver`, and some metadata. I assumed it was needed by MSV
+   but at least unit tests do not cache issues. So, will remove from 5.3.0
+-->
+
+<!--
         <dependency>
             <groupId>net.java.dev.msv</groupId>
             <artifactId>msv-rngconverter</artifactId>
@@ -111,6 +117,7 @@
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
+-->
         <dependency>
             <groupId>net.java.dev.msv</groupId>
             <artifactId>xsdlib</artifactId>
@@ -179,9 +186,11 @@
                 </configuration>
             </plugin>
 
-	    <!--  12-Mar-2019, tatu: Add rudimentary JDK9+ module info. To build with JDK 8
+	    <!--  03-Jun-2019, tatu: Trying to rudimentary JDK9+ module info. To build with JDK 8
 		  will have to use `moduleInfoFile` which is crappy but anything else requires
-		  JDK 9+. With Jackson 3.0 will upgrade.
+		  JDK 9+.
+
+                  ... does not yet work tho, commented out
               -->
 <!--
 	    <plugin>
@@ -209,13 +218,13 @@
 
     <reporting>
         <plugins>
-            <!--
-            <plugin>
-                <artifactId>maven-changelog-plugin</artifactId>
-            </plugin>
-            -->
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
+		<!--
+		    <plugin>
+                      <artifactId>maven-changelog-plugin</artifactId>
+		    </plugin>
+		 -->
                 <configuration>
                     <show>private</show>
                     <serialwarn>true</serialwarn>
