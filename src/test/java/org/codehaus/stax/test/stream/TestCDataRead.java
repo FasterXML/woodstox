@@ -284,7 +284,7 @@ public class TestCDataRead
         // This should still work, although with linefeed replacements
         String text = sr.getText();
         if (text.length() != DST_TEXT.length()) {
-            System.err.println("DEBUG: initial length = "+text.length());
+//            System.err.println("DEBUG: initial length = "+text.length());
             while (sr.next() == CDATA) {
                 text += sr.getText();
                 System.err.println("DEBUG: another CDATA, len now: "+text.length());

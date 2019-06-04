@@ -9,7 +9,7 @@ public final class DataUtil
 {
     final static char[] EMPTY_CHAR_ARRAY = new char[0];
 
-    final static Long MAX_LONG = new Long(Long.MAX_VALUE);
+    final static Long MAX_LONG = Long.valueOf(Long.MAX_VALUE);
 
     // Replace with Java 7 `Collections.emptyIterator()` once we can use it
     private final static class EI implements Iterator<Object>

@@ -24,7 +24,7 @@ public class TestArgUtil
 
         // and then errors:
         try {
-            /*boolean b =*/ ArgUtil.convertToBoolean("test", new Integer(0));
+            /*boolean b =*/ ArgUtil.convertToBoolean("test", Integer.valueOf(0));
             fail("Expected an IllegalArgumentException");
         } catch (IllegalArgumentException iae) { }
 
@@ -37,10 +37,10 @@ public class TestArgUtil
     public void testInt()
     {
         assertEquals(14, ArgUtil.convertToInt("test", "14", 0));
-        assertEquals(14, ArgUtil.convertToInt("test", new Integer(14), 0));
-        assertEquals(14, ArgUtil.convertToInt("test", new Long(14L), 0));
-        assertEquals(14, ArgUtil.convertToInt("test", new Short((short) 14), 0));
-        assertEquals(14, ArgUtil.convertToInt("test", new Byte((byte) 14), 0));
+        assertEquals(14, ArgUtil.convertToInt("test", Integer.valueOf(14), 0));
+        assertEquals(14, ArgUtil.convertToInt("test", Long.valueOf(14L), 0));
+        assertEquals(14, ArgUtil.convertToInt("test", Short.valueOf((short) 14), 0));
+        assertEquals(14, ArgUtil.convertToInt("test", Byte.valueOf((byte) 14), 0));
 
         // and then errors:
         try {

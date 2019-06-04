@@ -192,11 +192,11 @@ public class TestCommentRead
                     break;
                 case 4:
                     method = "getNamespaceCount";
-                    result = new Integer(sr.getNamespaceCount());
+                    result = Integer.valueOf(sr.getNamespaceCount());
                     break;
                 case 5:
                     method = "getAttributeCount";
-                    result = new Integer(sr.getAttributeCount());
+                    result = Integer.valueOf(sr.getAttributeCount());
                     break;
                 case 6:
                     method = "getPITarget";
