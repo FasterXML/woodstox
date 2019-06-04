@@ -104,10 +104,19 @@
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
-<!-- 03-Jun-2019, tatu: Not sure why this is added as a dep as it's only one class,
-   `com.sun.msv.writer.relaxng.Driver`, and some metadata. I assumed it was needed by MSV
-   but at least unit tests do not cache issues. So, will remove from 5.3.0
--->
+
+        <dependency>
+            <groupId>net.java.dev.msv</groupId>
+            <artifactId>xsdlib</artifactId>
+            <version>${version.msv}</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+	<!-- 03-Jun-2019, tatu: Not sure why this was added as a dep as it's only one class,
+	     `com.sun.msv.writer.relaxng.Driver`, and some metadata. I assumed it was needed by MSV
+	     but at least unit tests do not cache issues. So, will remove from 5.3.0
+	  -->
 
 <!--
         <dependency>
@@ -118,13 +127,6 @@
             <optional>true</optional>
         </dependency>
 -->
-        <dependency>
-            <groupId>net.java.dev.msv</groupId>
-            <artifactId>xsdlib</artifactId>
-            <version>${version.msv}</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
 
         <!-- Then OSGi, needed if using OSGi discovery -->
         <dependency>
