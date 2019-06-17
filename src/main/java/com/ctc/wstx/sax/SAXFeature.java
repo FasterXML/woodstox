@@ -16,6 +16,8 @@ package com.ctc.wstx.sax;
 
 import java.util.HashMap;
 
+import javax.xml.XMLConstants;
+
 /**
  * Type safe (pre-Java5) enumeration for listing all currently (SAX 2.0.2)
  * defined standard features
@@ -48,6 +50,9 @@ public final class SAXFeature
     final static SAXFeature XMLNS_URIS = new SAXFeature("xmlns-uris");
     final static SAXFeature XML_1_1 = new SAXFeature("xml-1.1");
 
+    // since 5.3.0
+    final static SAXFeature JDK_SECURE_PROCESSING = new SAXFeature(XMLConstants.FEATURE_SECURE_PROCESSING);
+    
     private final String mSuffix;
 
     private SAXFeature(String suffix)
@@ -61,7 +66,7 @@ public final class SAXFeature
         if (uri.startsWith(STD_FEATURE_PREFIX)) {
             return findBySuffix(uri.substring(STD_FEATURE_PREFIX.length()));
         }
-        return null;
+        return findBySuffix(uri);
     }
 
     public static SAXFeature findBySuffix(String suffix)
