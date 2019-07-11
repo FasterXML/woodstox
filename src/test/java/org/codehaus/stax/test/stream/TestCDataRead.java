@@ -287,7 +287,7 @@ public class TestCDataRead
 //            System.err.println("DEBUG: initial length = "+text.length());
             while (sr.next() == CDATA) {
                 text += sr.getText();
-                System.err.println("DEBUG: another CDATA, len now: "+text.length());
+//                System.err.println("DEBUG: another CDATA, len now: "+text.length());
             }
 //            fail("Length expected as " + DST_TEXT.length() + ", was " + text.length());
         }

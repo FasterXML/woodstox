@@ -4,6 +4,10 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+5.3.0 (not yet released)
+
+#78: Shade MSV dependency
+
 5.2.1 (14-May-2019)
 
 #74: Infinite loop in BijectiveNsMap#addGeneratedMapping when ctxt.getNamespaceURI(prefix)
