@@ -511,8 +511,8 @@ public class TestRelaxNG
     private void verifyRngFailure(String xml, XMLValidationSchema schema, String failMsg, String failPhrase)
         throws XMLStreamException
     {
-    	// By default, yes we are strict...
-    	verifyRngFailure(xml, schema, failMsg, failPhrase, true);
+        // By default, yes we are strict...
+        verifyRngFailure(xml, schema, failMsg, failPhrase, true);
     }
 
     private void verifyRngFailure(String xml, XMLValidationSchema schema, String failMsg, String failPhrase,

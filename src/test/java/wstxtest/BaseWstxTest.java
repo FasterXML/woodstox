@@ -332,8 +332,8 @@ public abstract class BaseWstxTest
 
     protected static String tokenTypeDesc(int tt)
     {
-	String desc = mTokenTypes.get(Integer.valueOf(tt));
-	return (desc == null) ? ("["+tt+"]") : desc;
+        String desc = mTokenTypes.get(Integer.valueOf(tt));
+        return (desc == null) ? ("["+tt+"]") : desc;
     }
 
     protected static void assertTokenType(int expType, int actType)

@@ -113,8 +113,17 @@
             <version>${version.msv}</version>
 <!--
             <scope>provided</scope>
-        -->
+ -->
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>relaxngDatatype</groupId>
+            <artifactId>relaxngDatatype</artifactId>
+            <version>20020414</version>
+<!--
+            <scope>provided</scope>
+ -->
         </dependency>
 
 	<!-- 03-Jun-2019, tatu: Not sure why this was added as a dep as it's only one class,
@@ -204,23 +213,40 @@
 	               <goal>shade</goal>
 	             </goals>
 	             <configuration>
-                    <minimizeJar>true</minimizeJar>
+	               <!-- Too many dynamically resolved dependencies (via class names)
+	                    so can not do this, alas: 
+	                 -->
+                    <minimizeJar>false</minimizeJar>
 	               <artifactSet>
 	                 <includes>
 	                   <!-- the bundle plugin already did the pulling-in, all we need is the renaming! -->
 	                   <include>net.java.dev.msv:msv-core</include>
                         <include>net.java.dev.msv:xsdlib</include>
+                        <include>relaxngDatatype:relaxngDatatype</include>
+                        <include>com.sun.xml.bind.jaxb:isorelax</include>
 	                 </includes>
 	               </artifactSet>
 	               <relocations>
 	                 <!-- First, xsdlib (must order first) -->
                       <relocation>
                         <pattern>com.sun.msv.xsd</pattern>
-                        <shadedPattern>com.ctc.wstx.shaded.msv-xsd</shadedPattern>
+                        <shadedPattern>com.ctc.wstx.shaded.msv.xsd</shadedPattern>
                       </relocation>
                       <relocation> <!--  and one stupid little class xsdlib has for reasons -->
                         <pattern>com.sun.xml.util</pattern>
-                        <shadedPattern>com.ctc.wstx.shaded.msv-xsd-util</shadedPattern>
+                        <shadedPattern>com.ctc.wstx.shaded.msv.xsd_util</shadedPattern>
+                      </relocation>
+                      <relocation>
+                        <pattern>org.relaxng.datatype</pattern>
+                        <shadedPattern>com.ctc.wstx.shaded.msv.relaxng_datatype</shadedPattern>
+                      </relocation>
+                      <relocation>
+                        <pattern>org.iso_relax</pattern>
+                        <shadedPattern>com.ctc.wstx.shaded.msv.org_isorelax</shadedPattern>
+                      </relocation>
+                      <relocation>
+                        <pattern>jp.gr.xml.relax</pattern>
+                        <shadedPattern>com.ctc.wstx.shaded.msv.org_jp_gr_xml</shadedPattern>
                       </relocation>
 
                       <!-- then msv-core -->
@@ -229,6 +255,10 @@
 	                   <shadedPattern>com.ctc.wstx.shaded.msv-core</shadedPattern>
 	                 </relocation>
 	               </relocations>
+	               <!--  Need to ensure class names for services get translated as well... -->
+                    <transformers>
+                      <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                    </transformers>	               
 	             </configuration>
 	           </execution>
 	         </executions>
