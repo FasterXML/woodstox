@@ -6,7 +6,7 @@ Project: woodstox
 
 5.3.0 (not yet released)
 
-#61: Add support for `XMLConstants.FEATURE_SECURE_PROCESSING`
+#61: Add support for `XMLConstants.FEATURE_SECURE_PROCESSING` via SAX/Stax factories
 #78: Shade MSV dependency
 
 5.2.1 (14-May-2019)
