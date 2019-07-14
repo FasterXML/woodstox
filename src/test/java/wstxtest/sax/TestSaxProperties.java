@@ -1,11 +1,9 @@
 package wstxtest.sax;
 
-import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.InputSource;
 
@@ -16,7 +14,7 @@ import wstxtest.sax.TestBasicSax.MyHandler;
 
 public class TestSaxProperties extends BaseWstxTest
 {
-    // [woodstox-core#77]: Don't barf of "secure processing" setting
+    // [woodstox-core#77]: Don't barf on "secure processing" setting
     public void testSecureProcessingFactory() throws Exception
     {
         WstxSAXParserFactory f = new WstxSAXParserFactory();        
@@ -36,21 +34,18 @@ public class TestSaxProperties extends BaseWstxTest
     public void testSecureProcessingReader() throws Exception
     {
         WstxSAXParserFactory f = new WstxSAXParserFactory();        
+        f.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         SAXParser sp = f.newSAXParser();
-        /*
-        assertFalse(sp.getFeature(XMLConstants.FEATURE_SECURE_PROCESSING));
-                MyHandler h = new MyHandler();
 
-                InputSource src;
+        // 13-Jul-2019, tatu: as far as I can see, there is no way to set or get
+        //    feature setting via parser instance (only "properties", not "features",
+        //    accessible). So... can't verify or change
+//        assertNull(sp.getProperty(XMLConstants.FEATURE_SECURE_PROCESSING));
 
-                if (useReader) {
-                    src = new InputSource(new StringReader(XML));
-                } else {
-                    src = new InputSource(new ByteArrayInputStream(XML.getBytes("UTF-8")));
-                }
 
-                sp.parse(src, h);
-
-*/
+        // so let's simply check that basic parsing still works:
+        MyHandler h = new MyHandler();
+        InputSource src = new InputSource(new StringReader("<root></root>"));
+        sp.parse(src, h);
     }
 }
