@@ -1,5 +1,7 @@
 package org.codehaus.stax.test.stream;
 
+import java.io.InputStream;
+
 import javax.xml.stream.*;
 
 /**
@@ -21,6 +23,24 @@ public class TestCommentRead
         XML = "  <root>  </root>  <!-- hee&haw - - -->";
         streamThrough(getReader(XML, true));
         streamThrough(getReader(XML, false));
+    }
+
+    // for [woodstox-58]: comment read outside main XML Ntree, after long (enough) CHARACTERS
+    // (probably also affect PIs)
+    public void testIssue58CommentRead() throws Exception
+    {
+        XMLInputFactory f = getNewInputFactory();
+        setCoalescing(f, true);
+        InputStream in = getClass().getResource("issue58.xml").openStream();
+        XMLStreamReader r = f.createXMLStreamReader(in);
+
+        // starts with couple of comments:
+        assertTokenType(COMMENT, r.next());
+        r.getText();
+        // but should be enough to stream and access contents
+        streamThrough(r);
+
+        in.close();
     }
 
     /**

@@ -183,15 +183,12 @@ public final class TextBuffer
     {
         if (mConfig != null && mCurrentSegment != null) {
             if (force) {
-                /* If we are allowed to wipe out all existing data, it's
-                 * quite easy; we'll just wipe out contents, and return
-                 * biggest buffer:
-                 */
+                // If we are allowed to wipe out all existing data, it's quite easy;
+                // we'll just wipe out contents, and return biggest buffer:
                 resetWithEmpty();
             } else {
-                /* But if there's non-shared data (ie. buffer is still
-                 * in use), can't return it yet:
-                 */
+                // But if there's non-shared data (i.e. buffer is still in use),
+                // can't return it yet:
                 if (mInputStart < 0 && (mSegmentSize + mCurrentSize) > 0) {
                     return;
                 }
@@ -202,7 +199,6 @@ public final class TextBuffer
                     mSegmentSize = 0;
                 }
             }
-
             char[] buf = mCurrentSegment;
             mCurrentSegment = null;
             mConfig.freeMediumCBuffer(buf);
@@ -282,12 +278,15 @@ public final class TextBuffer
         // And then reset internal input buffers, if necessary:
         if (mHasSegments) {
             clearSegments();
-        } else {
-            if (mCurrentSegment == null) {
-                mCurrentSegment = allocBuffer(len);
-            }
-            mCurrentSize = mSegmentSize = 0;
         }
+
+        // 14-Jul-2019, tatu: As per [woodstox-core#58] there are cases
+        //   in which current segment has been recycled and needs to be restored
+        if (mCurrentSegment == null) {
+            mCurrentSegment = allocBuffer(len);
+        }
+        mCurrentSize = mSegmentSize = 0;
+
         append(buf, start, len);
     }
 
