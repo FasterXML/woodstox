@@ -9,7 +9,7 @@
 
     <groupId>com.fasterxml.woodstox</groupId>
     <artifactId>woodstox-core</artifactId>
-    <version>5.3.1-SNAPSHOT</version>
+    <version>6.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Woodstox</name>
     <description>
@@ -94,16 +94,44 @@
           For now, we'll just use "msv", which does not properly define
           dependencies...
 
-          Also: make these 'provided', since user needs to include them
-          directly. Not sure what OSGi thinks about that but...
+          Also: keep `optional` (`provided` will not work for some reason
+          with shade plugin?) to prevent dependency
         -->
         <dependency>
             <groupId>net.java.dev.msv</groupId>
             <artifactId>msv-core</artifactId>
             <version>${version.msv}</version>
+<!--
             <scope>provided</scope>
+       -->
             <optional>true</optional>
         </dependency>
+
+        <dependency>
+            <groupId>net.java.dev.msv</groupId>
+            <artifactId>xsdlib</artifactId>
+            <version>${version.msv}</version>
+<!--
+            <scope>provided</scope>
+ -->
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>relaxngDatatype</groupId>
+            <artifactId>relaxngDatatype</artifactId>
+            <version>20020414</version>
+<!--
+            <scope>provided</scope>
+ -->
+        </dependency>
+
+	<!-- 03-Jun-2019, tatu: Not sure why this was added as a dep as it's only one class,
+	     `com.sun.msv.writer.relaxng.Driver`, and some metadata. I assumed it was needed by MSV
+	     but at least unit tests do not cache issues. So, will remove from 5.3.0
+	  -->
+
+<!--
         <dependency>
             <groupId>net.java.dev.msv</groupId>
             <artifactId>msv-rngconverter</artifactId>
@@ -111,13 +139,7 @@
             <scope>provided</scope>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>net.java.dev.msv</groupId>
-            <artifactId>xsdlib</artifactId>
-            <version>${version.msv}</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
+-->
 
         <!-- Then OSGi, needed if using OSGi discovery -->
         <dependency>
@@ -125,11 +147,10 @@
             <artifactId>org.osgi.core</artifactId>
             <version>1.4.0</version>
             <optional>true</optional>
-         <scope>provided</scope>
+            <scope>provided</scope>
         </dependency>
 
-        <!-- Then test jars
-        -->
+        <!-- Then test deps -->
 
         <dependency>
             <groupId>junit</groupId>
@@ -179,9 +200,76 @@
                 </configuration>
             </plugin>
 
-	    <!--  12-Mar-2019, tatu: Add rudimentary JDK9+ module info. To build with JDK 8
+            <plugin>
+            <!--  We will shade MSV, partly to simplify deployment, but also to work
+                  around Java 9+ module-info issues (MSV not retrofitted)
+              -->
+	         <groupId>org.apache.maven.plugins</groupId>
+	         <artifactId>maven-shade-plugin</artifactId>
+	         <executions>
+	           <execution>
+	             <phase>package</phase>
+	             <goals>
+	               <goal>shade</goal>
+	             </goals>
+	             <configuration>
+	               <!-- Too many dynamically resolved dependencies (via class names)
+	                    so can not do this, alas: 
+	                 -->
+                    <minimizeJar>false</minimizeJar>
+	               <artifactSet>
+	                 <includes>
+	                   <!-- the bundle plugin already did the pulling-in, all we need is the renaming! -->
+	                   <include>net.java.dev.msv:msv-core</include>
+                        <include>net.java.dev.msv:xsdlib</include>
+                        <include>relaxngDatatype:relaxngDatatype</include>
+                        <include>com.sun.xml.bind.jaxb:isorelax</include>
+	                 </includes>
+	               </artifactSet>
+	               <relocations>
+	                 <!-- First, xsdlib (must order first) -->
+                      <relocation>
+                        <pattern>com.sun.msv.xsd</pattern>
+                        <shadedPattern>com.ctc.wstx.shaded.msv.xsd</shadedPattern>
+                      </relocation>
+                      <relocation> <!--  and one stupid little class xsdlib has for reasons -->
+                        <pattern>com.sun.xml.util</pattern>
+                        <shadedPattern>com.ctc.wstx.shaded.msv.xsd_util</shadedPattern>
+                      </relocation>
+                      <relocation>
+                        <pattern>org.relaxng.datatype</pattern>
+                        <shadedPattern>com.ctc.wstx.shaded.msv.relaxng_datatype</shadedPattern>
+                      </relocation>
+                      <relocation>
+                        <pattern>org.iso_relax</pattern>
+                        <shadedPattern>com.ctc.wstx.shaded.msv.org_isorelax</shadedPattern>
+                      </relocation>
+                      <relocation>
+                        <pattern>jp.gr.xml.relax</pattern>
+                        <shadedPattern>com.ctc.wstx.shaded.msv.org_jp_gr_xml</shadedPattern>
+                      </relocation>
+
+                      <!-- then msv-core -->
+	                 <relocation>
+	                   <pattern>com.sun.msv</pattern>
+	                   <shadedPattern>com.ctc.wstx.shaded.msv-core</shadedPattern>
+	                 </relocation>
+	               </relocations>
+	               <!--  Need to ensure class names for services get translated as well... -->
+                    <transformers>
+                      <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                    </transformers>	               
+	             </configuration>
+	           </execution>
+	         </executions>
+            </plugin>
+
+
+	    <!--  03-Jun-2019, tatu: Trying to rudimentary JDK9+ module info. To build with JDK 8
 		  will have to use `moduleInfoFile` which is crappy but anything else requires
-		  JDK 9+. With Jackson 3.0 will upgrade.
+		  JDK 9+.
+
+                  ... does not yet work tho, commented out
               -->
 <!--
 	    <plugin>
@@ -209,13 +297,13 @@
 
     <reporting>
         <plugins>
-            <!--
-            <plugin>
-                <artifactId>maven-changelog-plugin</artifactId>
-            </plugin>
-            -->
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
+		<!--
+		    <plugin>
+                      <artifactId>maven-changelog-plugin</artifactId>
+		    </plugin>
+		 -->
                 <configuration>
                     <show>private</show>
                     <serialwarn>true</serialwarn>
