@@ -28,5 +28,3 @@ module com.ctc.wstx {
     provides javax.xml.stream.XMLInputFactory with com.ctc.wstx.stax.WstxInputFactory;
     provides javax.xml.stream.XMLOutputFactory with com.ctc.wstx.stax.WstxOutputFactory;
 }
-
-
