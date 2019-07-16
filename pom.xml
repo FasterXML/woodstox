@@ -9,7 +9,7 @@
 
     <groupId>com.fasterxml.woodstox</groupId>
     <artifactId>woodstox-core</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
+    <version>6.0.0.pr1-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Woodstox</name>
     <description>
@@ -49,11 +49,10 @@
         -->
       <osgi.export>com.ctc.wstx.*;version=${project.version}</osgi.export>
 
-      <!-- 5.1 adds "Automatic-Module-Name" for JDK 9
-           Note: choice between Maven group id and Java package bit tricky;
-           choose latter at this point (may change in future)
-        -->
+      <!-- 5.1 added "Automatic-Module-Name" for JDK 9 but 6.0 adds full module-info -->
+<!--
       <jdk.module.name>com.ctc.wstx</jdk.module.name>
+-->
     </properties>
 
     <licenses>
@@ -193,11 +192,6 @@
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
-                <configuration>
-                  <instructions combine.children="merge">
-                    <Automatic-Module-Name>${jdk.module.name}</Automatic-Module-Name>
-                  </instructions>
-                </configuration>
             </plugin>
 
             <plugin>
