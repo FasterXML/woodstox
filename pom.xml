@@ -9,7 +9,7 @@
 
     <groupId>com.fasterxml.woodstox</groupId>
     <artifactId>woodstox-core</artifactId>
-    <version>6.0.0.pr1-SNAPSHOT</version>
+    <version>6.0.0.pr1</version>
     <packaging>bundle</packaging>
     <name>Woodstox</name>
     <description>
@@ -35,7 +35,7 @@
         <connection>scm:git:git@github.com:FasterXML/woodstox.git</connection>
         <developerConnection>scm:git:git@github.com:FasterXML/woodstox.git</developerConnection>
         <url>https://github.com/FasterXML/woodstox</url>
-        <tag>HEAD</tag>
+        <tag>woodstox-core-6.0.0.pr1</tag>
     </scm>
 
     <properties>
@@ -253,7 +253,7 @@
 	               </relocations>
 	               <!--  Need to ensure class names for services get translated as well... -->
                     <transformers>
-                      <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                      <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                     </transformers>	               
 	             </configuration>
 	           </execution>
