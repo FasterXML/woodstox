@@ -40,6 +40,8 @@
 
     <properties>
       <version.msv>2013.6.1</version.msv>
+      <version.plugin.javadoc>3.1.1</version.plugin.javadoc>
+
       <!-- Woodstox 5.0 is 1.6+ -->
       <javac.src.version>1.6</javac.src.version>
       <javac.target.version>1.6</javac.target.version>
