@@ -42,6 +42,11 @@ public class WstxSAXParserFactory
      */
     protected boolean mFeatNsPrefixes = false;
 
+    /**
+     * @since 5.3
+     */
+//    protected boolean mSecureProcessing = false;
+    
     public WstxSAXParserFactory()
     {
         this(new WstxInputFactory());
@@ -101,6 +106,8 @@ public class WstxSAXParserFactory
             return true;
         } else if (stdFeat == SAXFeature.XML_1_1) {
             return true;
+        } else if (stdFeat == SAXFeature.JDK_SECURE_PROCESSING) {
+            return mStaxFactory.getConfig().willProcessSecurely();
         } else {
             throw new SAXNotRecognizedException("Feature '"+name+"' not recognized");
         }
@@ -150,6 +157,8 @@ public class WstxSAXParserFactory
             invalidValue = !value;
         } else if (stdFeat == SAXFeature.XML_1_1) {
             readOnly = true;
+        } else if (stdFeat == SAXFeature.JDK_SECURE_PROCESSING) {
+            mStaxFactory.getConfig().doProcessSecurely(value);
         } else {
             throw new SAXNotRecognizedException("Feature '"+name+"' not recognized");
         }

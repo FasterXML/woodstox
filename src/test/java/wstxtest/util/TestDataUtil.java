@@ -27,12 +27,12 @@ public class TestDataUtil
         c1.add(new String("bar"));
         Collection<Object> c2 = new ArrayList<Object>();
         c2.add("foobar");
-        c2.add(new Integer(3));
+        c2.add(Integer.valueOf(3));
 
         assertFalse(DataUtil.anyValuesInCommon(c1, c2));
 
         // Then a match
-        c1.add(new Integer(3));
+        c1.add(Integer.valueOf(3));
         assertTrue(DataUtil.anyValuesInCommon(c1, c2));
 
         // And another one:

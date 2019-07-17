@@ -207,4 +207,11 @@ public interface InputConfigFlags
      * @since 5.2
      */
     final static int CFG_ALLOW_XML11_ESCAPED_CHARS_IN_XML10 = 0x01000000;
+
+    /**
+     * Flag that matches pseudo-setting {@code XMLConstants.FEATURE_SECURE_PROCESSING}
+     *
+     * @since 5.3
+     */
+    final static int CFG_JAXP_FEATURE_SECURE_PROCESSING = 0x02000000;
 }

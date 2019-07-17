@@ -542,11 +542,11 @@ public class TestEntityRead
                     break;
                 case 3:
                     method = "getNamespaceCount";
-                    result = new Integer(sr.getNamespaceCount());
+                    result = Integer.valueOf(sr.getNamespaceCount());
                     break;
                 case 4:
                     method = "getAttributeCount";
-                    result = new Integer(sr.getAttributeCount());
+                    result = Integer.valueOf(sr.getAttributeCount());
                     break;
                 case 5:
                     method = "getPITarget";
@@ -562,11 +562,11 @@ public class TestEntityRead
                     break;
                 case 8:
                     method = "getTextStart";
-                    result = new Integer(sr.getTextStart());
+                    result = Integer.valueOf(sr.getTextStart());
                     break;
                 case 9:
                     method = "getTextLength";
-                    result = new Integer(sr.getTextLength());
+                    result = Integer.valueOf(sr.getTextLength());
                     break;
                 }
                 fail("Expected IllegalArgumentException, when calling "

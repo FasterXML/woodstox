@@ -4,6 +4,15 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+6.0.0.pr1 (16-Jul-2019)
+
+#78: Shade MSV dependency
+
+5.3.0 (15-Jul-2019)
+
+#58: Reading comment comments after Root Element closed sometimes throws `NullPointerException`
+#61: Add support for `XMLConstants.FEATURE_SECURE_PROCESSING` via SAX/Stax factories
+
 5.2.1 (14-May-2019)
 
 #74: Infinite loop in BijectiveNsMap#addGeneratedMapping when ctxt.getNamespaceURI(prefix)

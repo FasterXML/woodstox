@@ -2962,7 +2962,7 @@ public abstract class BasicStreamReader
     }
 
     /**
-     * Method called when advacing stream past the end tag that closes
+     * Method called when advancing stream past the end tag that closes
      * the root element of the open document.
      * Document can be either the singular one, in regular mode, or one of
      * possibly multiple, in multi-doc mode: this method is never called
@@ -2987,10 +2987,8 @@ public abstract class BasicStreamReader
         if (mSymbols.isDirty()) {
             mOwner.updateSymbolTable(mSymbols);
         }
-        /* May be able to recycle, but not certain; and
-         * definitely can not just clean contents (may
-         * contain space(s) read)
-         */
+        // May be able to recycle, but not certain; and definitely can not just
+        // clean contents (may contain space(s) read)
         mTextBuffer.recycle(false);
         return mCurrToken;
     }
@@ -3886,9 +3884,8 @@ public abstract class BasicStreamReader
                 // Ok; need to get '->', can not get '--'
                 
                 if ((ptr + 1) >= inputLen) {
-                    /* Can't check next 2, let's push '-' back, for rest of
-                     * code to take care of
-                     */
+                    // Can't check next 2, let's push '-' back, for rest of
+                    // code to take care of
                     --ptr;
                     break;
                 }
@@ -3907,7 +3904,6 @@ public abstract class BasicStreamReader
                 return;
             }
         }
-
         mInputPtr = ptr;
         mTextBuffer.resetWithCopy(inputBuf, start, ptr-start);
         readComment2(mTextBuffer);

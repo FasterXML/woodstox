@@ -34,20 +34,20 @@ public abstract class BaseStaxTest
 
     final static HashMap<Integer,String> mTokenTypes = new HashMap<Integer,String>();
     static {
-        mTokenTypes.put(new Integer(START_ELEMENT), "START_ELEMENT");
-        mTokenTypes.put(new Integer(END_ELEMENT), "END_ELEMENT");
-        mTokenTypes.put(new Integer(START_DOCUMENT), "START_DOCUMENT");
-        mTokenTypes.put(new Integer(END_DOCUMENT), "END_DOCUMENT");
-        mTokenTypes.put(new Integer(CHARACTERS), "CHARACTERS");
-        mTokenTypes.put(new Integer(CDATA), "CDATA");
-        mTokenTypes.put(new Integer(COMMENT), "COMMENT");
-        mTokenTypes.put(new Integer(PROCESSING_INSTRUCTION), "PROCESSING_INSTRUCTION");
-        mTokenTypes.put(new Integer(DTD), "DTD");
-        mTokenTypes.put(new Integer(SPACE), "SPACE");
-        mTokenTypes.put(new Integer(ENTITY_REFERENCE), "ENTITY_REFERENCE");
-        mTokenTypes.put(new Integer(NAMESPACE), "NAMESPACE_DECLARATION");
-        mTokenTypes.put(new Integer(NOTATION_DECLARATION), "NOTATION_DECLARATION");
-        mTokenTypes.put(new Integer(ENTITY_DECLARATION), "ENTITY_DECLARATION");
+        mTokenTypes.put(Integer.valueOf(START_ELEMENT), "START_ELEMENT");
+        mTokenTypes.put(Integer.valueOf(END_ELEMENT), "END_ELEMENT");
+        mTokenTypes.put(Integer.valueOf(START_DOCUMENT), "START_DOCUMENT");
+        mTokenTypes.put(Integer.valueOf(END_DOCUMENT), "END_DOCUMENT");
+        mTokenTypes.put(Integer.valueOf(CHARACTERS), "CHARACTERS");
+        mTokenTypes.put(Integer.valueOf(CDATA), "CDATA");
+        mTokenTypes.put(Integer.valueOf(COMMENT), "COMMENT");
+        mTokenTypes.put(Integer.valueOf(PROCESSING_INSTRUCTION), "PROCESSING_INSTRUCTION");
+        mTokenTypes.put(Integer.valueOf(DTD), "DTD");
+        mTokenTypes.put(Integer.valueOf(SPACE), "SPACE");
+        mTokenTypes.put(Integer.valueOf(ENTITY_REFERENCE), "ENTITY_REFERENCE");
+        mTokenTypes.put(Integer.valueOf(NAMESPACE), "NAMESPACE_DECLARATION");
+        mTokenTypes.put(Integer.valueOf(NOTATION_DECLARATION), "NOTATION_DECLARATION");
+        mTokenTypes.put(Integer.valueOf(ENTITY_DECLARATION), "ENTITY_DECLARATION");
     }
 
     /*
@@ -530,7 +530,7 @@ public abstract class BaseStaxTest
 
     protected static String tokenTypeDesc(int tt)
     {
-        String desc = (String) mTokenTypes.get(new Integer(tt));
+        String desc = (String) mTokenTypes.get(Integer.valueOf(tt));
         if (desc == null) {
             return "["+tt+"]";
         }

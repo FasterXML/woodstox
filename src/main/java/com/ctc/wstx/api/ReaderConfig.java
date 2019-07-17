@@ -4,6 +4,7 @@ import java.lang.ref.SoftReference;
 import java.net.URL;
 import java.util.*;
 
+import javax.xml.XMLConstants;
 import javax.xml.stream.*;
 
 import org.codehaus.stax2.XMLInputFactory2; // for property consts
@@ -79,6 +80,9 @@ public final class ReaderConfig
     // Enum / Object type properties:
     final static int PROP_SUPPORT_XMLID = 26; // shared with WriterConfig
     final static int PROP_DTD_OVERRIDE = 27;
+
+    // And then JAXB feature(s) (since 5.3)
+    final static int PROP_JAXP_SECURE_PROCESSING = 30;
 
     // // // Constants for additional Wstx properties:
 
@@ -293,6 +297,12 @@ public final class ReaderConfig
         sProperties.put(XMLInputFactory2.P_DTD_OVERRIDE,
                         PROP_DTD_OVERRIDE);
 
+        // JAXP-features/properties:
+
+        
+        sProperties.put(XMLConstants.FEATURE_SECURE_PROCESSING,
+                PROP_JAXP_SECURE_PROCESSING);
+
         // Non-standard ones, flags:
 
         sProperties.put(WstxInputProperties.P_CACHE_DTDS, PROP_CACHE_DTDS);
@@ -327,9 +337,9 @@ public final class ReaderConfig
                         PROP_MAX_ELEMENT_COUNT);
         sProperties.put(WstxInputProperties.P_MAX_ELEMENT_DEPTH,
                         PROP_MAX_ELEMENT_DEPTH);
-         sProperties.put(WstxInputProperties.P_MAX_ENTITY_DEPTH,
+        sProperties.put(WstxInputProperties.P_MAX_ENTITY_DEPTH,
                  PROP_MAX_ENTITY_DEPTH);
-         sProperties.put(WstxInputProperties.P_MAX_ENTITY_COUNT,
+        sProperties.put(WstxInputProperties.P_MAX_ENTITY_COUNT,
                  PROP_MAX_ENTITY_COUNT);
         sProperties.put(WstxInputProperties.P_MAX_CHARACTERS, PROP_MAX_CHARACTERS);
         sProperties.put(WstxInputProperties.P_CUSTOM_INTERNAL_ENTITIES,
@@ -667,6 +677,12 @@ public final class ReaderConfig
         return _hasConfigFlag(CFG_AUTO_CLOSE_INPUT);
     }
 
+    // // // JAXP on/off
+
+    public boolean willProcessSecurely() {
+        return _hasConfigFlag(CFG_JAXP_FEATURE_SECURE_PROCESSING);
+    }
+    
     // // // Woodstox on/off property accessors
 
     public boolean willReportPrologWhitespace() {
@@ -844,6 +860,31 @@ public final class ReaderConfig
         setConfigFlag(CFG_VALIDATE_AGAINST_DTD, state);
     }
 
+    // // // Mutators for JAXB features/properties
+
+    /**
+     * Method called when {code XMLConstants.FEATURE_SECURE_PROCESSING} is being
+     * enabled or disabled.
+     *<p>
+     * Note that disabling (passing {code false} as argument) does not actually
+     * change any settings.
+     *<p>
+     * Calls made when {@code true} is passed (that is, secure processing enabled):
+     *<ul>
+     * <li>{@code doSupportExternalEntities(false)}
+     *  </li>
+     *</ul>
+     *
+     * @since 5.3
+     */
+    public void doProcessSecurely(boolean value) {
+        // if disabling, nothing special to do; only matters if it's being enabled
+        setConfigFlag(CFG_JAXP_FEATURE_SECURE_PROCESSING, value);
+        if (value) {
+            doSupportExternalEntities(false);
+        }
+    }
+    
     // // // Mutators for Woodstox-specific properties
 
     public void doInternNames(boolean state) {
@@ -1391,11 +1432,16 @@ public final class ReaderConfig
             return willAutoCloseInput() ? Boolean.TRUE : Boolean.FALSE;
 
         case PROP_DTD_OVERRIDE:
-            return getDTDOverride();
+            return getDTDOverride();            
+
+        // // // JAXP
+
+        case PROP_JAXP_SECURE_PROCESSING:
+            return _hasConfigFlag(CFG_JAXP_FEATURE_SECURE_PROCESSING);
 
         // // // Then Woodstox custom properties:
 
-            // first, flags:
+        // first, flags:
         case PROP_CACHE_DTDS:
             return willCacheDTDs() ? Boolean.TRUE : Boolean.FALSE;
         case PROP_CACHE_DTDS_BY_PUBLIC_ID:
@@ -1487,7 +1533,7 @@ public final class ReaderConfig
             doSupportDTDs(ArgUtil.convertToBoolean(propName, value));
             break;
             
-            // // // Then ones that can be dispatched:
+        // // // Then ones that can be dispatched:
 
         case PROP_VALIDATE_AGAINST_DTD:
             doValidateWithDTD(ArgUtil.convertToBoolean(propName, value));
@@ -1562,7 +1608,14 @@ public final class ReaderConfig
             setDTDOverride((DTDValidationSchema) value);
             break;
 
-        // // // And then Woodstox specific, flags
+        // // // JAXB properties
+
+        case PROP_JAXP_SECURE_PROCESSING:
+            // 13-Jul-2019, tatu: This is an alias... 
+            doProcessSecurely(ArgUtil.convertToBoolean(propName, value));
+            break;
+
+            // // // And then Woodstox specific, flags
 
         case PROP_CACHE_DTDS:
             doCacheDTDs(ArgUtil.convertToBoolean(propName, value));
