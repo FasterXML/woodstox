@@ -246,9 +246,10 @@
                       </relocation>
 
                       <!-- then msv-core -->
+                       <!-- GedMarc 20190717 - package names can't have dashes -->
 	                 <relocation>
 	                   <pattern>com.sun.msv</pattern>
-	                   <shadedPattern>com.ctc.wstx.shaded.msv-core</shadedPattern>
+	                   <shadedPattern>com.ctc.wstx.shaded.msv_core</shadedPattern>
 	                 </relocation>
 	               </relocations>
 	               <!--  Need to ensure class names for services get translated as well... -->
@@ -311,10 +312,12 @@
     </reporting>
 
   <profiles>
-    <profile>
+      <!-- @GedMarc 20190717 - Because of shading cannot use a legitimate module file - must be dynamically built up like above-->
+
+   <!-- <profile>
       <id>moditect</id>
       <properties>
-        <!-- Not only do we need JDK 9+, must target later JDK too -->
+        &lt;!&ndash; Not only do we need JDK 9+, must target later JDK too &ndash;&gt;
         <java.version>1.9</java.version>
       </properties>
       <dependencies>
@@ -325,7 +328,7 @@
             <scope>provided</scope>
             <optional>true</optional>
             <exclusions>
-	      <!-- 12-Mar-2019, tatu: xercesImpl causes heartburn to Moditect/jdeps so... -->
+	      &lt;!&ndash; 12-Mar-2019, tatu: xercesImpl causes heartburn to Moditect/jdeps so... &ndash;&gt;
               <exclusion>
 		<groupId>xerces</groupId>
 		<artifactId>xercesImpl</artifactId>
@@ -361,7 +364,7 @@
 	  </plugin>
 	</plugins>
       </build>
-    </profile>
+    </profile>-->
   </profiles>
 
 </project>

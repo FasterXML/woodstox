@@ -27,4 +27,12 @@ module com.ctc.wstx {
     provides javax.xml.stream.XMLEventFactory with com.ctc.wstx.stax.WstxEventFactory;
     provides javax.xml.stream.XMLInputFactory with com.ctc.wstx.stax.WstxInputFactory;
     provides javax.xml.stream.XMLOutputFactory with com.ctc.wstx.stax.WstxOutputFactory;
+
+    //Include shaded in provisions
+    provides com.ctc.wstx.shaded.msv.relaxng_datatype.DatatypeLibraryFactory with com.ctc.wstx.shaded.msv_core.datatype.xsd.ngimpl.DataTypeLibraryImpl;
+    provides com.ctc.wstx.shaded.msv.org_isorelax.verifier.VerifierFactoryLoader with com.ctc.wstx.shaded.msv_core.verifier.jarv.FactoryLoaderImpl;
+    provides org.codehaus.stax2.validation.XMLValidationSchemaFactory.dtd with com.ctc.wstx.dtd.DTDSchemaFactory;
+    provides org.codehaus.stax2.validation.XMLValidationSchemaFactory.relaxng with com.ctc.wstx.msv.RelaxNGSchemaFactory;
+    provides org.codehaus.stax2.validation.XMLValidationSchemaFactory.w3c with com.ctc.wstx.msv.W3CSchemaFactory;
+
 }
