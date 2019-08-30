@@ -1966,6 +1966,7 @@ public abstract class BasicStreamReader
         int outPtr = tb.getCharSize();
         int outLen = outBuf.length;
         WstxInputSource currScope = mInput;
+        final int maxAttributeSize = mConfig.getMaxAttributeSize();
 
         while (true) {
             char c = (mInputPtr < mInputEnd) ? mInputBuffer[mInputPtr++]
@@ -2034,9 +2035,10 @@ public abstract class BasicStreamReader
                 throwUnexpectedChar(c, SUFFIX_IN_ATTR_VALUE);
             }
 
+            verifyLimit("Maximum attribute size", maxAttributeSize, outPtr);
+
             // Ok, let's just add char in, whatever it was
             if (outPtr >= outLen) {
-                verifyLimit("Maximum attribute size", mConfig.getMaxAttributeSize(), tb.getCharSize());
                 outBuf = tb.bufferFull(1);
                 outLen = outBuf.length;
             }

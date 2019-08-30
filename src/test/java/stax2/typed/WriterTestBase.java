@@ -944,6 +944,7 @@ public abstract class WriterTestBase
         XMLInputFactory f = getInputFactory();
         setCoalescing(f, false); // shouldn't really matter
         setNamespaceAware(f, true);
+        setMaxAttributeSize(f, 1048576);
         return (XMLStreamReader2) f.createXMLStreamReader(new ByteArrayInputStream(data));
     }
 

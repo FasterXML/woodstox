@@ -3,6 +3,7 @@ package stax2;
 import java.io.*;
 import java.util.HashMap;
 
+import com.ctc.wstx.api.WstxInputProperties;
 import junit.framework.TestCase;
 
 import javax.xml.stream.*;
@@ -275,6 +276,12 @@ public abstract class BaseStax2Test
     {
         f.setProperty(XMLInputFactory2.P_LAZY_PARSING,
                       state ? Boolean.TRUE : Boolean.FALSE);
+    }
+
+    protected static void setMaxAttributeSize(XMLInputFactory f, int maxAttributeSize)
+        throws XMLStreamException
+    {
+        f.setProperty(WstxInputProperties.P_MAX_ATTRIBUTE_SIZE, Integer.valueOf(maxAttributeSize));
     }
 
     /*

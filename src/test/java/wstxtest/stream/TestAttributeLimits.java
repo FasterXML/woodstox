@@ -84,4 +84,41 @@ public class TestAttributeLimits extends BaseStreamTest
         }
         reader.close(); // never gets here
     }
+
+    public void testPrettyShortAttribute() throws Exception {
+        final int max = 11;
+        Reader reader = new Reader() {
+            StringReader sreader = new StringReader("<ns:element xmlns:ns=\"http://foo.com\" blah=\"");
+            int count;
+            boolean done;
+            @Override
+            public int read(char[] cbuf, int off, int len) throws IOException {
+                int i = sreader.read(cbuf, off, len);
+                if (i == -1) {
+                    if (count < max) {
+                        sreader = new StringReader("c");
+                        count++;
+                    } else if (!done) {
+                        sreader = new StringReader("\"/>");
+                        done = true;
+                    }
+                    i = sreader.read(cbuf, off, len);
+                }
+                return i;
+            }
+            @Override
+            public void close() throws IOException { }
+        };
+        try {
+            XMLInputFactory factory = getNewInputFactory();
+            factory.setProperty(WstxInputProperties.P_MAX_ATTRIBUTE_SIZE, Integer.valueOf(10));
+            XMLStreamReader xmlreader = factory.createXMLStreamReader(reader);
+            while (xmlreader.next() != XMLStreamReader.END_DOCUMENT) {
+            }
+            fail("Should have failed");
+        } catch (XMLStreamException ex) {
+            verifyException(ex, "Maximum attribute size");
+        }
+        reader.close(); // never gets here
+    }
 }
