@@ -7,6 +7,8 @@ The gold standard Stax XML API implementation. Now at Github.
 [![Build Status](https://travis-ci.org/FasterXML/woodstox.svg)](https://travis-ci.org/FasterXML/woodstox)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.woodstox/woodstox-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.woodstox/woodstox-core/)
 [![Javadoc](https://javadoc.io/badge/com.fasterxml.woodstox/woodstox-core.svg)](http://www.javadoc.io/doc/com.fasterxml.woodstox/woodstox-core)
+[![Coverage Status](https://coveralls.io/repos/github/FasterXML/woodstox/badge.svg?branch=master)](https://coveralls.io/github/FasterXML/woodstox?branch=master)
+[![Tidelift](https://tidelift.com/badges/package/maven/com.fasterxml.woodstox:woodstox-core)](https://tidelift.com/subscription/pkg/maven-com-fasterxml-woodstox-woodstox-core?utm_source=maven-com-fasterxml-woodstox-woodstox-core&utm_medium=referral&utm_campaign=readme)
 
 # Get it!
 
@@ -17,7 +19,7 @@ Coordinates for this are:
 
 * Group id: `com.fasterxml.woodstox`
 * Artifact id: `woodstox-core`
-* Latest published version: 5.2.1 (14-May-2019)
+* Latest published version: 6.0.0 (2019-08-29)
 
 Note that Maven id has changed since Woodstox 4.x.
 

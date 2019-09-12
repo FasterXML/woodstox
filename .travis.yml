@@ -4,6 +4,11 @@ jdk:
   - openjdk8
   - openjdk11
 
+# TODO: travis snapshots?
+after_success:
+  - "mvn -B cobertura:cobertura coveralls:report"
+
 branches:
   only:
     - master
+    - "5.3"
