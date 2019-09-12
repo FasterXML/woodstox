@@ -9,3 +9,8 @@ Ioan Marcu (ioanmarcu@github)
 * Reported #74, suggested fix: Infinite loop in BijectiveNsMap#addGeneratedMapping
   when ctxt.getNamespaceURI(prefix) returns an empty String
  (5.2.1)
+
+Jamie Phelps (jphelp32@github)
+
+* Reported #82: Recycled buffers in XMLStreamWriter are colliding between multiple writer
+ (6.0.1)

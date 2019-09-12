@@ -4,6 +4,12 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+6.0.1 (not yet released)
+
+#82: Recycled buffers in XMLStreamWriter are colliding between multiple writer
+  instances when used in an Akka stream
+ (reported by Jamie P)
+
 6.0.0 (29-Aug-2019)
 
 #78: Shade MSV dependency

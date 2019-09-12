@@ -18,11 +18,11 @@ package com.ctc.wstx.io;
  */
 public final class BufferRecycler
 {
-    private char[] mSmallCBuffer = null; // temp buffers
-    private char[] mMediumCBuffer = null; // text collector
-    private char[] mFullCBuffer = null; // for actual parsing buffer
+    private volatile char[] mSmallCBuffer = null; // temp buffers
+    private volatile char[] mMediumCBuffer = null; // text collector
+    private volatile char[] mFullCBuffer = null; // for actual parsing buffer
 
-    private byte[] mFullBBuffer = null;
+    private volatile byte[] mFullBBuffer = null;
 
     public BufferRecycler() { }
 
@@ -30,18 +30,18 @@ public final class BufferRecycler
 
     // // Small buffers, for temporary parsing
 
-    public char[] getSmallCBuffer(int minSize)
+    public synchronized char[] getSmallCBuffer(int minSize)
     {
-        char[] result = null;
-        if (mSmallCBuffer != null && mSmallCBuffer.length >= minSize) {
-            result = mSmallCBuffer;
+        char[] result = mSmallCBuffer;
+        if (result != null && result.length >= minSize) {
             mSmallCBuffer = null;
+            return result;
         }
 //System.err.println("DEBUG: Alloc CSmall: "+result);
-        return result;
+        return null;
     }
 
-    public void returnSmallCBuffer(char[] buffer)
+    public synchronized void returnSmallCBuffer(char[] buffer)
     {
 //System.err.println("DEBUG: Return CSmall ("+buffer.length+"): "+buffer);
         mSmallCBuffer = buffer;
@@ -49,18 +49,18 @@ public final class BufferRecycler
 
     // // Medium buffers, for text output collection
 
-    public char[] getMediumCBuffer(int minSize)
+    public synchronized char[] getMediumCBuffer(int minSize)
     {
-        char[] result = null;
-        if (mMediumCBuffer != null && mMediumCBuffer.length >= minSize) {
-            result = mMediumCBuffer;
+        char[] result = mMediumCBuffer;
+        if (result != null && result.length >= minSize) {
             mMediumCBuffer = null;
+            return result;
         }
 //System.err.println("DEBUG: Alloc CMed: "+result);
-        return result;
+        return null;
     }
 
-    public void returnMediumCBuffer(char[] buffer)
+    public synchronized void returnMediumCBuffer(char[] buffer)
     {
         mMediumCBuffer = buffer;
 //System.err.println("DEBUG: Return CMed ("+buffer.length+"): "+buffer);
@@ -68,18 +68,18 @@ public final class BufferRecycler
 
     // // Full buffers, for parser buffering
 
-    public char[] getFullCBuffer(int minSize)
+    public synchronized char[] getFullCBuffer(int minSize)
     {
-        char[] result = null;
-        if (mFullCBuffer != null && mFullCBuffer.length >= minSize) {
-            result = mFullCBuffer;
+        char[] result = mFullCBuffer;
+        if (result != null && result.length >= minSize) {
             mFullCBuffer = null;
+            return result;
         }
 //System.err.println("DEBUG: Alloc CFull: "+result);
-        return result;
+        return null;
     }
 
-    public void returnFullCBuffer(char[] buffer)
+    public synchronized void returnFullCBuffer(char[] buffer)
     {
         mFullCBuffer = buffer;
 //System.err.println("DEBUG: Return CFull ("+buffer.length+"): "+buffer);
@@ -89,18 +89,18 @@ public final class BufferRecycler
 
     // // Full byte buffers, for byte->char conversion (Readers)
 
-    public byte[] getFullBBuffer(int minSize)
+    public synchronized byte[] getFullBBuffer(int minSize)
     {
-        byte[] result = null;
-        if (mFullBBuffer != null && mFullBBuffer.length >= minSize) {
-            result = mFullBBuffer;
+        byte[] result = mFullBBuffer;
+        if (result != null && result.length >= minSize) {
             mFullBBuffer = null;
+            return result;
         }
 //System.err.println("DEBUG: Alloc BFull: "+result);
-        return result;
+        return null;
     }
 
-    public void returnFullBBuffer(byte[] buffer)
+    public synchronized void returnFullBBuffer(byte[] buffer)
     {
         mFullBBuffer = buffer;
 //System.err.println("DEBUG: Return BFull ("+buffer.length+"): "+buffer);
