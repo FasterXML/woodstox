@@ -51,8 +51,14 @@ Names of properties available, including standard Stax 1.x ones, are documented 
 * [Stax2 extension](https://medium.com/@cowtowncoder/configuring-woodstox-xml-parser-stax2-properties-c80ef5a32ef1) configuration properties
 * [Woodstox-specific](https://medium.com/@cowtowncoder/configuring-woodstox-xml-parser-woodstox-specific-properties-1ce5030a5173) configuration properties
 
-### Other
+## Support
 
-* User mailing list for Qs: [woodstox-user](https://groups.google.com/forum/#!forum/woodstox-user) Google group 
+There are 2 types of support available:
+
+* Community support via mailing lists: [woodstox-user](https://groups.google.com/forum/#!forum/woodstox-user)
+* Optional Commercial Support is available via [Tidelift Subscriptions](https://tidelift.com/subscription/pkg/maven-com-fasterxml-woodstox-woodstox-core?utm_source=maven-com-fasterxml-woodstox-woodstox-core&utm_medium=referral&utm_campaign=readme)
+
+## Other
+
 * Check out [project Wiki](../../wiki) for javadocs
 
