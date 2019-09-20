@@ -62,7 +62,7 @@ There are 2 types of support available:
 
 For simple bug reports and fixes, and feature requests, please simply use projects
 [Issue Tracker](../../issues), with exception of security-related issues for which
-we recommend filing via
+we recommend filing a
 [Tidelift security contact](https://tidelift.com/security) (NOTE: you do NOT have to be
 a subscriber to do this).
 
