@@ -58,6 +58,14 @@ There are 2 types of support available:
 * Community support via mailing lists: [woodstox-user](https://groups.google.com/forum/#!forum/woodstox-user)
 * Optional Commercial Support is available via [Tidelift Subscriptions](https://tidelift.com/subscription/pkg/maven-com-fasterxml-woodstox-woodstox-core?utm_source=maven-com-fasterxml-woodstox-woodstox-core&utm_medium=referral&utm_campaign=readme)
 
+## Contributing
+
+For simple bug reports and fixes, and feature requests, please simply use projects
+[Issue Tracker](../../issues), with exception of security-related issues for which
+we recommend filing via
+[Tidelift security contact](https://tidelift.com/security) (NOTE: you do NOT have to be
+a subscriber to do this).
+
 ## Other
 
 * Check out [project Wiki](../../wiki) for javadocs
