@@ -8,6 +8,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.ctc.wstx.exc.WstxException;
 import com.ctc.wstx.sax.WstxSAXParserFactory;
 
 import wstxtest.BaseWstxTest;
@@ -37,8 +38,14 @@ public class TestEntityResolver
          */
         try {
             sp.parse(new InputSource(new StringReader(XML)), h);
+            fail("Should not pass");
         } catch (SAXException e) {
-            verifyException(e, "No such file or directory");
+            Throwable cause = e.getCause();
+            assertNotNull(cause);
+            assertTrue(cause instanceof WstxException);
+            // [woodstox-core#84]: actual message varies by OS so only verify this:
+            verifyException(e, " file ");
+            verifyException(e, "no-such-thing.dtd");
         }
 
         // And then with dummy resolver; should work ok now
