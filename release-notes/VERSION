@@ -4,6 +4,11 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+6.0.2 (not yet released)
+
+#85: OSGi dependency on relaxng should be `optional`
+ (reprted by Colm H)
+
 6.0.1 (14-Sep-2019)
 
 #82: Recycled buffers in XMLStreamWriter are colliding between multiple writer

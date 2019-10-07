@@ -14,3 +14,8 @@ Jamie Phelps (jphelp32@github)
 
 * Reported #82: Recycled buffers in XMLStreamWriter are colliding between multiple writer
  (6.0.1)
+
+Colm O hEigeartaigh (coheigea@github)
+
+* Reported #85: OSGi dependency on relaxng should be `optional`
+ (6.0.2)
