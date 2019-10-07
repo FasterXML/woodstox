@@ -125,6 +125,7 @@
 <!--
             <scope>provided</scope>
  -->
+            <optional>true</optional>
         </dependency>
 
 	<!-- 03-Jun-2019, tatu: Not sure why this was added as a dep as it's only one class,
