@@ -179,9 +179,8 @@
             <configuration>
               <serverId>sonatype-nexus-staging</serverId>
               <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-<!--
-              <stagingProfileId></stagingProfileId>
--->
+              <!-- 12-Oct-2019, tatu: Found this from output of mvn:relase -->
+              <stagingProfileId>b34f19b9cc6224</stagingProfileId>
             </configuration>
           </plugin>
 
