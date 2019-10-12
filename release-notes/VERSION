@@ -4,7 +4,7 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-6.0.2 (not yet released)
+6.0.2 (12-Oct-2019)
 
 #85: OSGi dependency on relaxng should be `optional`
  (reprted by Colm H)
