@@ -1359,12 +1359,13 @@ public final class BufferingXmlWriter
             flush();
         }
         int start = mOutputPtr;
-
         // First, let's see if one call is enough
         mOutputPtr = enc.encodeMore(mOutputBuffer, mOutputPtr, mOutputBufLen);
         if (enc.isCompleted()) { // yup
-            fastWriteRaw('"');
+            // and if so, validate with content
             validator.validateAttribute(localName, nsURI, prefix, mOutputBuffer, start, mOutputPtr);
+            // and then append closing quote
+            fastWriteRaw('"');
             return;
         }
 
@@ -1382,7 +1383,6 @@ public final class BufferingXmlWriter
             }
         }
         fastWriteRaw('"');
-
         // Then validate
         String valueStr = sb.toString();
         validator.validateAttribute(localName, nsURI, prefix, valueStr);

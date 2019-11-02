@@ -76,7 +76,7 @@ public class TestW3CSchemaTypes
 
     // // // Writing
 
-    public void testValdiationWhenWritingAttribute() throws Exception
+    public void testValidationWhenWritingAttribute() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(SCHEMA_ATTRIBUTE);
 
@@ -90,7 +90,8 @@ public class TestW3CSchemaTypes
         sw.writeEndElement();
         sw.flush();
 
-        XMLStreamReader2 sr = getReader(stringWriter.toString());
+        final String XML = stringWriter.toString();
+        XMLStreamReader2 sr = getReader(XML);
         sr.validateAgainst(schema);
         streamThrough(sr);
     }
