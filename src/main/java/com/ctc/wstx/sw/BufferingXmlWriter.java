@@ -1364,6 +1364,7 @@ public final class BufferingXmlWriter
         mOutputPtr = enc.encodeMore(mOutputBuffer, mOutputPtr, mOutputBufLen);
         if (enc.isCompleted()) { // yup
             validator.validateAttribute(localName, nsURI, prefix, mOutputBuffer, start, mOutputPtr);
+            fastWriteRaw('"');
             return;
         }
 

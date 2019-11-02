@@ -30,6 +30,16 @@ public class TestW3CSchemaTypes
         +"\n</xsd:schema>"
         ;
 
+    final static String SCHEMA_ATTRIBUTE =
+        "<xsd:schema xmlns:xsd='http://www.w3.org/2001/XMLSchema'>\n"
+        +"<xsd:element name='price'>\n"
+        +"<xsd:complexType>\n"
+        +"<xsd:attribute name='amount' type='xsd:int' use='required'/>\n"
+        +"</xsd:complexType>\n"
+        +"</xsd:element>\n"
+        +"</xsd:schema>"
+        ;
+
     // // // First 'int' datatype
 
     public void testSimpleValidInt() throws Exception
@@ -65,6 +75,25 @@ public class TestW3CSchemaTypes
     }
 
     // // // Writing
+
+    public void testValdiationWhenWritingAttribute() throws Exception
+    {
+        XMLValidationSchema schema = parseW3CSchema(SCHEMA_ATTRIBUTE);
+
+        XMLOutputFactory2 f = getOutputFactory();
+        final StringWriter stringWriter = new StringWriter();
+        XMLStreamWriter2 sw = (XMLStreamWriter2)f.createXMLStreamWriter(stringWriter);
+        sw.validateAgainst(schema);
+
+        sw.writeStartElement("price");
+        sw.writeIntAttribute(null, null, "amount", 129);
+        sw.writeEndElement();
+        sw.flush();
+
+        XMLStreamReader2 sr = getReader(stringWriter.toString());
+        sr.validateAgainst(schema);
+        streamThrough(sr);
+    }
 
     public void testValdiationWhenWritingCharactersFromArray() throws Exception
     {
