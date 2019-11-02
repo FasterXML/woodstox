@@ -1363,8 +1363,8 @@ public final class BufferingXmlWriter
         // First, let's see if one call is enough
         mOutputPtr = enc.encodeMore(mOutputBuffer, mOutputPtr, mOutputBufLen);
         if (enc.isCompleted()) { // yup
-            validator.validateAttribute(localName, nsURI, prefix, mOutputBuffer, start, mOutputPtr);
             fastWriteRaw('"');
+            validator.validateAttribute(localName, nsURI, prefix, mOutputBuffer, start, mOutputPtr);
             return;
         }
 

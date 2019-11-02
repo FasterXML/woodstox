@@ -4,10 +4,15 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+6.0.3 (not yet released)
+
+#88: Missing closing quote for attribute values during in Validating output mode
+ (reported, fixed by michaelsiegel@github)
+
 6.0.2 (12-Oct-2019)
 
 #85: OSGi dependency on relaxng should be `optional`
- (reprted by Colm H)
+ (reported by Colm H)
 
 6.0.1 (14-Sep-2019)
 
