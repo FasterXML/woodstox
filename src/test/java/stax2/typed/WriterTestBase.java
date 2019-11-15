@@ -25,7 +25,9 @@ public abstract class WriterTestBase
     extends BaseStax2Test
 {
     final static int[] ARRAY_TEST_LENGTHS = new int[] {
-        3, 8, 25, 120, 16, 99, 253, 1099, 2866, 37242
+            // 15-Nov-2019, tatu: careful wrt [woodstox-core#93] so as not to exceed
+            //    maximum attribute value lengths!
+            3, 8, 25, 120, 16, 99, 253, 1099, 2866, 7777, 23242
     };
 
     /*
@@ -514,7 +516,8 @@ public abstract class WriterTestBase
             }
             String contents;
             if (testAttr) {
-                contents = getAttributeContent(writeDoubleArrayAttrDoc("root", "attr", data));
+                final byte[] xml = writeDoubleArrayAttrDoc("root", "attr", data);
+                contents = getAttributeContent(xml);
             } else {
                 contents = getElementContent(writeDoubleArrayElemDoc("root", data));
             }

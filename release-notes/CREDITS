@@ -19,3 +19,14 @@ Colm O hEigeartaigh (coheigea@github)
 
 * Reported #85: OSGi dependency on relaxng should be `optional`
  (6.0.2)
+
+Michael Siegel (michaelsiegel@github)
+
+* Reported, contributed fix for #88: Missing closing quote for attribute values during
+  Validating output mode
+ (6.0.3)
+
+Ivo Studensky (istudens@github)
+
+* Reported #93: Stax `maxAttributeSize` limit is only vaguely respected
+ (6.0.3)

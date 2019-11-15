@@ -48,6 +48,31 @@ public class TestAttributeLimits extends BaseStreamTest
         reader.close();
     }
 
+    // [woodstox-core#93]: should use stricter verification of max attr length
+    public void testShorterAttribute() throws Exception
+    {
+        XMLInputFactory factory = getNewInputFactory();
+        factory.setProperty(WstxInputProperties.P_MAX_ATTRIBUTE_SIZE, 4);
+
+        // First: ok document
+        XMLStreamReader r = factory.createXMLStreamReader(new StringReader(
+                "<root attr='1234' other='ab' x='yz&amp;0' />"));
+        assertTokenType(START_ELEMENT, r.next());
+        assertEquals(3, r.getAttributeCount());
+        assertTokenType(END_ELEMENT, r.next());
+        r.close();
+
+        // then not so much
+        r = factory.createXMLStreamReader(new StringReader(
+                "<root attr='1234' other='abcde'  />"));
+        try {
+            r.next();
+            fail("Should not pass");
+        } catch (XMLStreamException ex) {
+            verifyException(ex, "Maximum attribute size limit (4)");
+        }
+    }
+
     public void testLongAttribute() throws Exception {
         final int max = 500;
         Reader reader = new Reader() {

@@ -46,6 +46,7 @@ import com.ctc.wstx.ent.EntityDecl;
 import com.ctc.wstx.exc.WstxException;
 import com.ctc.wstx.io.*;
 import com.ctc.wstx.util.DefaultXmlSymbolTable;
+import com.ctc.wstx.util.ExceptionUtil;
 import com.ctc.wstx.util.TextBuffer;
 import com.ctc.wstx.util.TextBuilder;
 
@@ -1964,8 +1965,11 @@ public abstract class BasicStreamReader
     {
         char[] outBuf = tb.getCharBuffer();
         int outPtr = tb.getCharSize();
-        int outLen = outBuf.length;
-        WstxInputSource currScope = mInput;
+        // important! Underlying buffer may be shared, does not necessarily start from 0
+        final int startingOffset = outPtr;
+        final int maxAttrSize = mConfig.getMaxAttributeSize();
+        int outLimit = Math.min(startingOffset+maxAttrSize, outBuf.length);
+        final WstxInputSource currScope = mInput;
 
         while (true) {
             char c = (mInputPtr < mInputEnd) ? mInputBuffer[mInputPtr++]
@@ -1976,14 +1980,11 @@ public abstract class BasicStreamReader
                     if (c == '\n') {
                         markLF();
                     } else if (c == '\r') {
-                        /* 04-Mar-2006, TSa: Linefeed normalization only
-                         *   done if enabled -- specifically, 2-char lfs
-                         *   from int. entities are not coalesced. Now...
-                         *   whether to try to count them as one or not...
-                         *   easier not to; esp. since we may not be able to
-                         *   distinguish char entity originated ones from
-                         *   real ones.
-                         */
+                        // 04-Mar-2006, TSa: Linefeed normalization only done if enabled -
+                        //   specifically, 2-char lfs from int. entities are not coalesced.
+                        //   Now... whether to try to count them as one or not... easier not to;
+                        //   esp. since we may not be able to distinguish char entity originated ones
+                        //   from real ones.
                         if (mNormalizeLFs) {
                             c = getNextChar(SUFFIX_IN_ATTR_VALUE);
                             if (c != '\n') { // nope, not 2-char lf (Mac?)
@@ -1997,11 +1998,9 @@ public abstract class BasicStreamReader
                     // Whatever it was, it'll be 'normal' space now.
                     c = CHAR_SPACE;
                 } else if (c == openingQuote) {
-                    /* 06-Aug-2004, TSa: Can get these via entities; only "real"
-                     *    end quotes in same scope count. Note, too, that since
-                     *    this will only be done at root level, there's no need
-                     *    to check for "runaway" values; they'll hit EOF
-                     */
+                    // 06-Aug-2004, TSa: Can get these via entities; only "real" end quotes in same
+                    //    scope count. Note, too, that since  this will only be done at root level,
+                    //    there's no need  to check for "runaway" values; they'll hit EOF
                     if (mInput == currScope) {
                         break;
                     }
@@ -2022,9 +2021,9 @@ public abstract class BasicStreamReader
                         c = (char) ch;
                     } else {
                         ch -= 0x10000;
-                        if (outPtr >= outLen) {
-                            outBuf = tb.bufferFull(1);
-                            outLen = outBuf.length;
+                        if (outPtr >= outLimit) {
+                            outBuf = _checkAttributeLimit(tb, outBuf, outPtr, outPtr - startingOffset, maxAttrSize);
+                            outLimit = Math.min(startingOffset+maxAttrSize, outBuf.length);
                         }
                         outBuf[outPtr++] = (char) ((ch >> 10)  + 0xD800);
                         c = (char) ((ch & 0x3FF)  + 0xDC00);
@@ -2035,10 +2034,9 @@ public abstract class BasicStreamReader
             }
 
             // Ok, let's just add char in, whatever it was
-            if (outPtr >= outLen) {
-                verifyLimit("Maximum attribute size", mConfig.getMaxAttributeSize(), tb.getCharSize());
-                outBuf = tb.bufferFull(1);
-                outLen = outBuf.length;
+            if (outPtr >= outLimit) {
+                outBuf = _checkAttributeLimit(tb, outBuf, outPtr, outPtr - startingOffset, maxAttrSize);
+                outLimit = Math.min(startingOffset+maxAttrSize, outBuf.length);
             }
             outBuf[outPtr++] = c;
         }
@@ -2046,7 +2044,21 @@ public abstract class BasicStreamReader
         // Fine; let's tell TextBuild we're done:
         tb.setBufferSize(outPtr);
     }
-    
+
+    private final char[] _checkAttributeLimit(TextBuilder tb,
+            char[] outBuf, int outPtr, int currAttrSize, int maxAttrSize)
+        throws XMLStreamException
+    {
+        // Add +1 since we are at point where we are to append (at least) one more character
+        verifyLimit("Maximum attribute size", maxAttrSize , currAttrSize+1);
+        // just sanity check
+        if (outPtr < outBuf.length) {
+            ExceptionUtil.throwInternal("Expected either attr limit ("+maxAttrSize
+                    +") >= currAttrSize ("+currAttrSize+") OR >= outBuf.length ("+outBuf.length+")");
+        }
+        return tb.bufferFull(1);
+    }
+
     /*
     ///////////////////////////////////////////////////////////////////////
     // Internal methods, parsing prolog (before root) and epilog
