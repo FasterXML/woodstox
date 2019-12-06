@@ -5140,7 +5140,7 @@ public abstract class BasicStreamReader
 
         main_loop:
         while (true) {
-	    char c;
+            char c;
             // Reached the end of buffer? Need to flush, then
             if (mInputPtr >= mInputEnd) {
                 int len = mInputPtr - start;
@@ -5160,12 +5160,12 @@ public abstract class BasicStreamReader
                         markLF();
                     } else if (c == '\r') {
                         char d;
-                        if (mInputPtr >= mInputEnd) {
-                            /* If we can't peek easily, let's flush past stuff
-                             * and load more... (have to flush, since new read
-                             * will overwrite inbut buffers)
-                             */
-                            int len = mInputPtr - start;
+                        final boolean atBoundary = (mInputPtr >= mInputEnd);
+                        if (atBoundary) {
+                            // If we can't peek easily, let's flush past stuff and load
+                            // more... (have to flush, since new read will overwrite input buffers)
+                            // 06-Dec-2019, tatu: [woodstox-core#97] Need to avoid copying \r tho:
+                            int len = mInputPtr - start - 1;
                             if (len > 0) {
                                 w.write(mInputBuffer, start, len);
                                 count += len;
@@ -5177,24 +5177,33 @@ public abstract class BasicStreamReader
                         }
                         if (d == '\n') {
                             if (mNormalizeLFs) {
-                                /* Let's flush content prior to 2-char LF, and
-                                 * start the new segment on the second char...
-                                 * this way, no mods are needed for the buffer,
-                                 * AND it'll also  work on split 2-char lf!
-                                 */
-                                int len = mInputPtr - 2 - start;
+                                // Let's flush content prior to 2-char LF, and start the new
+                                // segment on the second char... this way, no mods are needed
+                                // for the buffer, AND it'll also work on split 2-char lf!
+                                int len = mInputPtr - start - 2;
                                 if (len > 0) {
                                     w.write(mInputBuffer, start, len);
                                     count += len;
                                 }
                                 start = mInputPtr-1; // so '\n' is the first char
                             } else {
-                                ; // otherwise it's good as is
+                                // otherwise it's good as is... almost
+                                if (atBoundary) { // except, we don't want to lose that \r!
+                                    w.write(c);
+                                }
                             }
                         } else { // not 2-char... need to replace?
+                            // First: push back whatever non-linefeed we got:
                             --mInputPtr;
-                            if (mNormalizeLFs) {
-                                mInputBuffer[mInputPtr-1] = '\n';
+                            // 06-Dec-2019, tatu: But beware [woodstox-core#97]
+                            if (atBoundary) {
+                                // If at boundary, no room to replace; must write single lf char
+                                w.write(mNormalizeLFs ? '\n' : c);
+                                ++count;
+                            } else { // but if not at boundary, can just replace lone '\r' if need be
+                                if (mNormalizeLFs) { // replace \r with \n
+                                    mInputBuffer[mInputPtr-1] = '\n';
+                                }
                             }
                         }
                         markLF();
@@ -5204,9 +5213,8 @@ public abstract class BasicStreamReader
                 } else if (c == '<') { // end is nigh!
                     break main_loop;
                 } else if (c == '&') {
-                    /* Have to flush all stuff, since entities pretty much
-                     * force it; input buffer won't be contiguous
-                     */
+                    // Have to flush all stuff, since entities pretty much
+                    // force it; input buffer won't be contiguous
                     int len = mInputPtr - 1 - start; // -1 to remove ampersand
                     if (len > 0) {
                         w.write(mInputBuffer, start, len);

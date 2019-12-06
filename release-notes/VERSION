@@ -8,8 +8,10 @@ Project: woodstox
 
 #88: Missing closing quote for attribute values during in Validating output mode
  (reported, fixed by michaelsiegel@github)
-#93: Stax `maxAttributeSize` limit is only vaguely respected
+#93: Stax2 `maxAttributeSize` limit is only vaguely respected
  (reported by Ivo S)
+#97: `copyEventFromReader()` `ArrayIndexOutOfBoundsException`
+ (reported by Daniel L)
 
 6.0.2 (12-Oct-2019)
 

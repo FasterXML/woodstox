@@ -30,3 +30,8 @@ Ivo Studensky (istudens@github)
 
 * Reported #93: Stax `maxAttributeSize` limit is only vaguely respected
  (6.0.3)
+
+Daniel Lowe (dan2097@github)
+
+* Reported #97: `copyEventFromReader()` `ArrayIndexOutOfBoundsException`
+ (6.0.3)

@@ -18,7 +18,7 @@ public abstract class BaseWriterTest
     public XMLStreamWriter2 getRepairingWriter(Writer w)
         throws XMLStreamException
     {
-        XMLOutputFactory f = getOutputFactory();
+        XMLOutputFactory2 f = getOutputFactory();
         f.setProperty(XMLStreamProperties.XSP_NAMESPACE_AWARE, Boolean.TRUE);
         f.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES,
                       Boolean.TRUE);
@@ -38,7 +38,7 @@ public abstract class BaseWriterTest
     public XMLStreamWriter2 getNonRepairingWriter(Writer w, boolean nsAware)
         throws XMLStreamException
     {
-        XMLOutputFactory f = getOutputFactory();
+        XMLOutputFactory2 f = getOutputFactory();
         f.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES,
                       Boolean.FALSE);
         f.setProperty(XMLStreamProperties.XSP_NAMESPACE_AWARE,
