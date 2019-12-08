@@ -35,7 +35,7 @@ public class TestExtLocationInfo
      */
     final static String TEST_EXT_ENT_INCL =
         "<include></include>"; // first char: 0; row 1
-    // EOF, fc: 40; row 2
+    // EOF, fc: 19; row 1
 
 
 
@@ -56,25 +56,25 @@ public class TestExtLocationInfo
         };
         XMLStreamReader2 sr = getReader(TEST_EXT_ENT, URI, resolver);
 
-        assertRow(sr, 1, 1);
+        assertOffset(sr, 0, 21);
 
         assertTokenType(DTD, sr.next());
         assertTokenType(START_ELEMENT, sr.next());
         assertEquals("main", sr.getLocalName());
-        assertRow(sr, 4, 4, URI);
+        assertOffset(sr, 77, 83, URI);
 
         assertTokenType(START_ELEMENT, sr.next());
         assertEquals("include", sr.getLocalName());
-        assertRow(sr, 1, 1, INCL_URI);
+        assertOffset(sr, 0, 9, INCL_URI);
 
 
 
         assertTokenType(END_ELEMENT, sr.next());
-        assertRow(sr, 1, 1, INCL_URI);
+        assertOffset(sr, 9, 19, INCL_URI);
 
 
         assertTokenType(END_ELEMENT, sr.next());
-        assertRow(sr, 4, 4, URI);
+        assertOffset(sr, 89, 96, URI);
 
         sr.close();
     }
@@ -85,7 +85,7 @@ public class TestExtLocationInfo
     ////////////////////////////////////////
      */
 
-    private void assertRow(XMLStreamReader2 sr, int startRow, int endRow, String systemId)
+    private void assertOffset(XMLStreamReader2 sr, int startOffset, int endOffset, String systemId)
         throws XMLStreamException
     {
         LocationInfo li = sr.getLocationInfo();
@@ -93,16 +93,16 @@ public class TestExtLocationInfo
         assertEquals("Incorrect starting systemID for event " + tokenTypeDesc(sr.getEventType()), systemId, startLoc.getSystemId());
         Location endLoc = li.getEndLocation();
         assertEquals("Incorrect ending systemID for event " + tokenTypeDesc(sr.getEventType()), systemId, endLoc.getSystemId());
-        assertRow(sr, startRow, endRow);
+        assertOffset(sr, startOffset, endOffset);
     }
-    private void assertRow(XMLStreamReader2 sr, int startRow, int endRow)
+    private void assertOffset(XMLStreamReader2 sr, int startOffset, int endOffset)
         throws XMLStreamException
     {
         LocationInfo li = sr.getLocationInfo();
         Location startLoc = li.getStartLocation();
-        assertEquals("Incorrect starting row for event "+tokenTypeDesc(sr.getEventType()), startRow, startLoc.getLineNumber());
+        assertEquals("Incorrect starting offset for event "+tokenTypeDesc(sr.getEventType()), startOffset, startLoc.getCharacterOffset());
         Location endLoc = li.getEndLocation();
-        assertEquals("Incorrect ending row for event "+tokenTypeDesc(sr.getEventType()), endRow, endLoc.getLineNumber());
+        assertEquals("Incorrect ending offset for event "+tokenTypeDesc(sr.getEventType()), endOffset, endLoc.getCharacterOffset());
     }
 
 
