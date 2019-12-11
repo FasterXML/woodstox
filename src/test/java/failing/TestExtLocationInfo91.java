@@ -1,4 +1,4 @@
-package stax2.stream;
+package failing;
 
 import org.codehaus.stax2.LocationInfo;
 import org.codehaus.stax2.XMLStreamReader2;
@@ -12,11 +12,12 @@ import java.io.StringReader;
  * Set of unit tests that checks that the {@link LocationInfo} implementation
  * works as expected, provides proper values or -1 to indicate "don't know".
  */
-public class TestExtLocationInfo
+public class TestExtLocationInfo91
     extends BaseStax2Test
 {
     final static String URI = "main.xml";
     final static String INCL_URI = "include.xml";
+
     /**
      * This document fragment tries ensure that external entities works ok
      */
@@ -37,12 +38,10 @@ public class TestExtLocationInfo
         "<include></include>"; // first char: 0; row 1
     // EOF, fc: 19; row 1
 
-
-
+    // For [woodstox-core#91]
     public void testLocationsWithExtEntity()
             throws XMLStreamException
     {
-
         XMLResolver resolver = new XMLResolver() {
             @Override
             public Object resolveEntity(String publicID, String systemID, String baseURI, String namespace) throws XMLStreamException {
