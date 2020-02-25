@@ -233,7 +233,7 @@
 	               <!-- Too many dynamically resolved dependencies (via class names)
 	                    so can not do this, alas: 
 	                 -->
-                    <minimizeJar>false</minimizeJar>
+                   <minimizeJar>false</minimizeJar>
 	               <artifactSet>
 	                 <includes>
 	                   <!-- the bundle plugin already did the pulling-in, all we need is the renaming! -->
@@ -243,6 +243,17 @@
                         <include>com.sun.xml.bind.jaxb:isorelax</include>
 	                 </includes>
 	               </artifactSet>
+                   <filters>
+                     <filter>
+                       <artifact>net.java.dev.msv:msv-core</artifact>
+                       <includes>
+                         <include>com/sun/msv/**</include>
+                       </includes>
+                       <excludes>
+                         <exclude>com/sun/msv/driver/textui/**</exclude>
+                       </excludes>
+                     </filter>
+                   </filters>
 	               <relocations>
 	                 <!-- First, xsdlib (must order first) -->
                       <relocation>
