@@ -4,6 +4,11 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+6.1.0 (27-Feb-2020)
+
+#96: woodstox-core.jar 6.0.2 uses JDK-11 removed internal APIs
+ (reported by rohitgaikwad09@github, fix contributed by Konrad W)
+
 6.0.3 (07-Dec-2019)
 
 #88: Missing closing quote for attribute values during in Validating output mode

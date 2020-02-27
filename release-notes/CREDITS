@@ -35,3 +35,8 @@ Daniel Lowe (dan2097@github)
 
 * Reported #97: `copyEventFromReader()` `ArrayIndexOutOfBoundsException`
  (6.0.3)
+
+Konrad Windszus (kwin@github)
+
+* Contributed fix for #96: woodstox-core.jar 6.0.2 uses JDK-11 removed internal APIs
+ (6.1.0)
