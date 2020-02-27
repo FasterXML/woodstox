@@ -241,7 +241,7 @@
                        <include>net.java.dev.msv:xsdlib</include>
                        <include>relaxngDatatype:relaxngDatatype</include>
                        <include>com.sun.xml.bind.jaxb:isorelax</include>
-                    </includes>
+                     </includes>
                    </artifactSet>
                    <filters>
                      <filter>
@@ -249,8 +249,16 @@
                        <includes>
                          <include>com/sun/msv/**</include>
                        </includes>
+                       <!-- 27-Feb-2020, tatu: Need to be careful; initial
+                          [woodstox-core#96] fix excluded `com.sun.msv.driver.textui.Debug`
+                          which is (alas) referenced by other part(s) of codebase.
+                          What we do want to get rid of is `Driver`, but couple of other
+                          classes here refer to it so try to only include `Debug` and nothing else
+                        -->
                        <excludes>
-                         <exclude>com/sun/msv/driver/textui/**</exclude>
+                         <exclude>com/sun/msv/driver/textui/DebugController*</exclude>
+                         <exclude>com/sun/msv/driver/textui/Driver*</exclude>
+                         <exclude>com/sun/msv/driver/textui/Messages*</exclude>
                        </excludes>
                      </filter>
                    </filters>
