@@ -230,19 +230,19 @@
 	               <goal>shade</goal>
 	             </goals>
 	             <configuration>
-	               <!-- Too many dynamically resolved dependencies (via class names)
-	                    so can not do this, alas: 
-	                 -->
+                   <!-- Too many dynamically resolved dependencies (via class names)
+                        so can not do this, alas:
+                    -->
                    <minimizeJar>false</minimizeJar>
-	               <artifactSet>
-	                 <includes>
-	                   <!-- the bundle plugin already did the pulling-in, all we need is the renaming! -->
-	                   <include>net.java.dev.msv:msv-core</include>
-                        <include>net.java.dev.msv:xsdlib</include>
-                        <include>relaxngDatatype:relaxngDatatype</include>
-                        <include>com.sun.xml.bind.jaxb:isorelax</include>
-	                 </includes>
-	               </artifactSet>
+                   <artifactSet>
+                     <includes>
+                       <!-- the bundle plugin already did the pulling-in, all we need is the renaming! -->
+                       <include>net.java.dev.msv:msv-core</include>
+                       <include>net.java.dev.msv:xsdlib</include>
+                       <include>relaxngDatatype:relaxngDatatype</include>
+                       <include>com.sun.xml.bind.jaxb:isorelax</include>
+                    </includes>
+                   </artifactSet>
                    <filters>
                      <filter>
                        <artifact>net.java.dev.msv:msv-core</artifact>
@@ -254,8 +254,8 @@
                        </excludes>
                      </filter>
                    </filters>
-	               <relocations>
-	                 <!-- First, xsdlib (must order first) -->
+                   <relocations>
+                     <!-- First, xsdlib (must order first) -->
                       <relocation>
                         <pattern>com.sun.msv.xsd</pattern>
                         <shadedPattern>com.ctc.wstx.shaded.msv.xsd</shadedPattern>
