@@ -4,7 +4,7 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-6.1.1 (xx-Feb-2020)
+6.1.1 (28-Feb-2020)
 
 - Fix for #96 (see below) had an issue leading to non-functioning
   RelaxNG, W3C Schema validation
