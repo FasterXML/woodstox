@@ -19,6 +19,9 @@ Colm O hEigeartaigh (coheigea@github)
 
 * Reported #85: OSGi dependency on relaxng should be `optional`
  (6.0.2)
+* Reported #105, contributed fix: W3CSchemaFactory constructor incorrectly references
+  relaxng
+ (6.1.2)
 
 Michael Siegel (michaelsiegel@github)
 

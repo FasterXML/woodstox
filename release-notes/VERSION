@@ -39,6 +39,10 @@ Project: woodstox
 #78: Shade MSV dependency
 - Add `module-info.class` for Java 9+ module system
 
+5.3.1 (not yet released)
+
+#105: W3CSchemaFactory constructor incorrectly references relaxng
+
 5.3.0 (15-Jul-2019)
 
 #58: Reading comment comments after Root Element closed sometimes throws `NullPointerException`
