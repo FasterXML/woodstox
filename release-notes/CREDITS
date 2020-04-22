@@ -9,3 +9,9 @@ Ioan Marcu (ioanmarcu@github)
 * Reported #74, suggested fix: Infinite loop in BijectiveNsMap#addGeneratedMapping
   when ctxt.getNamespaceURI(prefix) returns an empty String
  (5.2.1)
+
+Colm O hEigeartaigh (coheigea@github)
+
+* Reported #105, contributed fix: W3CSchemaFactory constructor incorrectly references
+  relaxng
+ (5.3.1)
