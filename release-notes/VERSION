@@ -6,6 +6,9 @@ Project: woodstox
 
 6.x.x (not yet released)
 
+#104: `NullPointerException` in `DTDValidator.validateElementEnd()`
+  for element undefined in DTD
+ (reported by ChrisTrenkamp@github)
 #105: W3CSchemaFactory constructor incorrectly references relaxng
  (reported by Colm H)
 
