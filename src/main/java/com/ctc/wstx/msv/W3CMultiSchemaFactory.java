@@ -15,13 +15,10 @@
 
 package com.ctc.wstx.msv;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.XMLStreamException;
@@ -32,10 +29,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 
-import com.ctc.wstx.msv.BaseSchemaFactory;
 import com.ctc.wstx.msv.W3CSchema;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
@@ -59,14 +54,13 @@ import org.codehaus.stax2.validation.XMLValidationSchema;
  * to work, and acts as a quite thin wrapper layer, similar to
  * how matching RelaxNG validator works
  */
-public class W3CMultiSchemaFactory extends BaseSchemaFactory {
+public class W3CMultiSchemaFactory {
 
     private MultiSchemaReader multiSchemaReader;
     private SAXParserFactory parserFactory;
     private RecursiveAllowedXMLSchemaReader xmlSchemaReader;
 
     public W3CMultiSchemaFactory() {
-        super(XMLValidationSchema.SCHEMA_ID_W3C_SCHEMA);
     }
     
     static class RecursiveAllowedXMLSchemaReader extends XMLSchemaReader {
@@ -116,8 +110,10 @@ public class W3CMultiSchemaFactory extends BaseSchemaFactory {
     }
 
     /**
-     * Creates an XMLValidateSchema that can be used to validate XML instances against any of the shemas
+     * Creates an XMLValidateSchema that can be used to validate XML instances against any of the schemas
      * defined in the Map of schemaSources.
+     * 
+     * Map of schemas is namespace -> Source
      */
     public XMLValidationSchema createSchema(String baseURI,
                                             Map<String, Source> schemaSources) throws XMLStreamException {
@@ -135,8 +131,10 @@ public class W3CMultiSchemaFactory extends BaseSchemaFactory {
                 embeddedSources.put(source.getKey(), new EmbeddedSchema(source.getValue().getSystemId(), el));
             }
         }
-        parserFactory = getSaxFactory();
-
+        
+        parserFactory = SAXParserFactory.newInstance();
+        parserFactory.setNamespaceAware(true); 
+        
         WSDLGrammarReaderController ctrl = new WSDLGrammarReaderController(null, baseURI, embeddedSources);
         xmlSchemaReader = new RecursiveAllowedXMLSchemaReader(ctrl, parserFactory);
         multiSchemaReader = new MultiSchemaReader(xmlSchemaReader);
@@ -151,8 +149,4 @@ public class W3CMultiSchemaFactory extends BaseSchemaFactory {
         return new W3CSchema(grammar);
     }
 
-    @Override
-    protected XMLValidationSchema loadSchema(InputSource src, Object sysRef) throws XMLStreamException {
-        throw new XMLStreamException("W3CMultiSchemaFactory does not support the provider API.");
-    }
 }
