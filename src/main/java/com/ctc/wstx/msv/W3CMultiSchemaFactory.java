@@ -128,11 +128,11 @@ public class W3CMultiSchemaFactory
     }
 
     /**
-     * Creates an XMLValidateSchema that can be used to validate XML instances against any of the schemas
-     * defined in the Map of schemaSources.
+     * Creates an XMLValidateSchema that can be used to validate XML instances against
+     * any of the schemas defined in the Map of schemaSources.
      *
      * @param baseURI Base URI for resolving dependant schemas
-     * @param schemaSources Map of schemas, namespace -> Source
+     * @param schemaSources Map of schemas, namespace to Source
      */
     public XMLValidationSchema createSchema(String baseURI,
             Map<String, Source> schemaSources) throws XMLStreamException
