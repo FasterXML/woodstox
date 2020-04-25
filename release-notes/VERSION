@@ -4,8 +4,10 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-6.x.x (not yet released)
+6.2.0 (not yet released)
 
+#103: Issue caused by MSV shading
+ (fix contributed by Daniel K)
 #104: `NullPointerException` in `DTDValidator.validateElementEnd()`
   for element undefined in DTD
  (reported by ChrisTrenkamp@github)

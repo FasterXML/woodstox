@@ -43,3 +43,8 @@ Konrad Windszus (kwin@github)
 
 * Contributed fix for #96: woodstox-core.jar 6.0.2 uses JDK-11 removed internal APIs
  (6.1.0)
+
+Daniel Kulp (dkulp@github)
+
+* Contributed fix for #103: Issue caused by MSV shading
+ (6.2.0)

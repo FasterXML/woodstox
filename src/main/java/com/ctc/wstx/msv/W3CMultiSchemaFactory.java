@@ -51,30 +51,45 @@ import org.codehaus.stax2.validation.XMLValidationSchema;
  * against specific W3C Schema instances. It requires
  * Sun Multi-Schema Validator
  * (http://www.sun.com/software/xml/developers/multischema/)
- * to work, and acts as a quite thin wrapper layer, similar to
- * how matching RelaxNG validator works
+ * to work (bundled by Woodstox, no need to add dependency separately,
+ * and acts as a quite thin wrapper layer, similar to
+ * how matching RelaxNG validator works.
+ *<p>
+ * Note: intentionally does NOT (claim to) implement {@link org.codehaus.stax2.validation.XMLValidationSchemaFactory}
+ * since interface (that is, {@link W3CMultiSchemaFactory#createSchema(String, Map)})
+ * is not incompatible with that of other "standard" schema factories; means that
+ * usage must be explicit, direct and can not be triggered via Stax2 API.
+ *
+ * @since 6.2
+ *
+ * @author Daniel Kulp
  */
-public class W3CMultiSchemaFactory {
-
-    private MultiSchemaReader multiSchemaReader;
-    private SAXParserFactory parserFactory;
-    private RecursiveAllowedXMLSchemaReader xmlSchemaReader;
+public class W3CMultiSchemaFactory
+{
+    private final SAXParserFactory parserFactory;
 
     public W3CMultiSchemaFactory() {
+        parserFactory = SAXParserFactory.newInstance();
+        parserFactory.setNamespaceAware(true); 
     }
-    
+
     static class RecursiveAllowedXMLSchemaReader extends XMLSchemaReader {
         Set<String> sysIds = new TreeSet<String>();
         RecursiveAllowedXMLSchemaReader(GrammarReaderController controller, SAXParserFactory parserFactory) {
             super(controller, parserFactory, new StateFactory() {
+                @Override
                 public State schemaHead(String expectedNamespace) {
                     return new SchemaState(expectedNamespace) {
                         private XMLSchemaSchema old;
+
+                        @Override
                         protected void endSelf() {
                             super.endSelf();
                             RecursiveAllowedXMLSchemaReader r = (RecursiveAllowedXMLSchemaReader)reader;
                             r.currentSchema = old;
                         }
+
+                        @Override
                         protected void onTargetNamespaceResolved(String targetNs, boolean ignoreContents) {
 
                             RecursiveAllowedXMLSchemaReader r = (RecursiveAllowedXMLSchemaReader)reader;
@@ -93,12 +108,15 @@ public class W3CMultiSchemaFactory {
             }, new ExpressionPool());
         }
 
+        @Override
         public void setLocator(Locator locator) {
             if (locator == null && getLocator() != null && getLocator().getSystemId() != null) {
                 sysIds.add(getLocator().getSystemId());
             }
             super.setLocator(locator);
         }
+
+        @Override
         public void switchSource(Source source, State newState) {
             String url = source.getSystemId();
             if (url != null && sysIds.contains(url)) {
@@ -112,12 +130,13 @@ public class W3CMultiSchemaFactory {
     /**
      * Creates an XMLValidateSchema that can be used to validate XML instances against any of the schemas
      * defined in the Map of schemaSources.
-     * 
-     * Map of schemas is namespace -> Source
+     *
+     * @param baseURI Base URI for resolving dependant schemas
+     * @param schemaSources Map of schemas, namespace -> Source
      */
     public XMLValidationSchema createSchema(String baseURI,
-                                            Map<String, Source> schemaSources) throws XMLStreamException {
-        
+            Map<String, Source> schemaSources) throws XMLStreamException
+    {
         Map<String, EmbeddedSchema> embeddedSources = new HashMap<String, EmbeddedSchema>();
         for (Map.Entry<String, Source> source : schemaSources.entrySet()) {
             if (source.getValue() instanceof DOMSource) {
@@ -132,12 +151,9 @@ public class W3CMultiSchemaFactory {
             }
         }
         
-        parserFactory = SAXParserFactory.newInstance();
-        parserFactory.setNamespaceAware(true); 
-        
         WSDLGrammarReaderController ctrl = new WSDLGrammarReaderController(null, baseURI, embeddedSources);
-        xmlSchemaReader = new RecursiveAllowedXMLSchemaReader(ctrl, parserFactory);
-        multiSchemaReader = new MultiSchemaReader(xmlSchemaReader);
+        final RecursiveAllowedXMLSchemaReader xmlSchemaReader = new RecursiveAllowedXMLSchemaReader(ctrl, parserFactory);
+        final MultiSchemaReader multiSchemaReader = new MultiSchemaReader(xmlSchemaReader);
         for (Source source : schemaSources.values()) {
             multiSchemaReader.parse(source);
         }
