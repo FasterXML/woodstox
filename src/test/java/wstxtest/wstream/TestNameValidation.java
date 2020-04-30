@@ -129,7 +129,7 @@ public class TestNameValidation
             try {
                 XMLStreamWriter sw = startDoc(true, ns);
                 sw.writeStartElement("dummy");
-                
+
                 if (prefix == null) {
                     if (empty) {
                         sw.writeEmptyElement(name);
@@ -156,6 +156,71 @@ public class TestNameValidation
             fail("Failed to catch an invalid element name/prefix (ns = "+ns+"); name='"
                  +name+"', prefix = "
                  +((prefix == null) ? "NULL" : ("'"+prefix+"'"))+".");
+        }
+    }
+
+    // [woodstox-core#107]: need to include more info
+    public void testInvalidElemNameExceptionMessage() throws XMLStreamException
+    {
+        // First, empty "name":
+        _testInvalidElemNameExceptionMessage(false, null, "", -1);
+        _testInvalidElemNameExceptionMessage(false, "prefix", "", -1);
+        _testInvalidElemNameExceptionMessage(true, null, "", -1);
+        _testInvalidElemNameExceptionMessage(true, "prefix", "", -1);
+
+        // Then non-empty, first char bad
+        _testInvalidElemNameExceptionMessage(false, null, "1", 0);
+        _testInvalidElemNameExceptionMessage(false, "prefix", "1", 0);
+        _testInvalidElemNameExceptionMessage(true, null, "1", 0);
+        _testInvalidElemNameExceptionMessage(true, "prefix", "1", 0);
+
+        _testInvalidElemNameExceptionMessage(true, null, ":", 0);
+        _testInvalidElemNameExceptionMessage(true, "prefix", ":", 0);
+
+        // and then some other
+
+        _testInvalidElemNameExceptionMessage(false, null, "a b", 1);
+        _testInvalidElemNameExceptionMessage(false, "prefix", "a b", 1);
+        _testInvalidElemNameExceptionMessage(true, null, "a b", 1);
+        _testInvalidElemNameExceptionMessage(true, "prefix", "a b", 1);
+
+        _testInvalidElemNameExceptionMessage(true, null, "a:b", 1);
+        _testInvalidElemNameExceptionMessage(true, "prefix", "a:b", 1);
+    }
+
+    private void _testInvalidElemNameExceptionMessage(boolean ns, String prefix,
+            String name, int index)
+        throws XMLStreamException
+    {
+        try {
+            XMLStreamWriter sw = startDoc(true, ns);
+            sw.writeStartElement("dummy");
+
+            if (prefix == null) {
+                sw.writeStartElement(name);
+                sw.writeEndElement();
+            } else {
+                sw.writeStartElement(prefix, name, DUMMY_URL);
+                sw.writeEndElement();
+            }
+            
+            sw.writeEndElement();
+            closeDoc(sw);
+
+            fail("Failed to catch an invalid element name/prefix (ns = "+ns+"); name='"
+                    +name+"', prefix = "
+                    +((prefix == null) ? "NULL" : ("'"+prefix+"'"))+".");
+        } catch (XMLStreamException sex) {
+            if (name.isEmpty()) {
+                verifyException(sex, "Illegal to pass empty name");
+            } else if (index == 0) {
+                verifyException(sex, "Illegal first name character '");
+                verifyException(sex, "in name \""+name+"\"");
+            } else {
+                verifyException(sex, "Illegal name character '");
+                verifyException(sex, "in name \""+name+"\"");
+                verifyException(sex, " (index #"+index+")");
+            }
         }
     }
 

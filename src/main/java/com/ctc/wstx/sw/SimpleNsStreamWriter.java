@@ -163,7 +163,6 @@ public class SimpleNsStreamWriter
     public void writeStartElement(StartElement elem) throws XMLStreamException
     {
         QName name = elem.getName();
-        @SuppressWarnings("unchecked")
         Iterator<Namespace> it = elem.getNamespaces();
 
         while (it.hasNext()) {
@@ -196,7 +195,6 @@ public class SimpleNsStreamWriter
         }
 
         // And now we need to output namespaces (including default), if any:
-        @SuppressWarnings("unchecked")
         Iterator<Namespace> it2 = elem.getNamespaces();
         while (it2.hasNext()) {
             Namespace ns = it2.next();
@@ -210,7 +208,6 @@ public class SimpleNsStreamWriter
 
 
         // And finally, need to output attributes as well:
-        @SuppressWarnings("unchecked")
         Iterator<Attribute> ait = elem.getAttributes();
         while (ait.hasNext()) {
             Attribute attr = ait.next();

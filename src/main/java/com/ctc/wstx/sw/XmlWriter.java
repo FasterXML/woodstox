@@ -546,20 +546,29 @@ public abstract class XmlWriter
     public final void verifyNameValidity(String name, boolean checkNs)
         throws XMLStreamException
     {
-        /* No empty names... caller must have dealt with optional arguments
-         * prior to calling this method
-         */
+        // No empty names... caller must have dealt with optional arguments
+        // prior to calling this method
         if (name == null || name.length() == 0) {
             reportNwfName(ErrorConsts.WERR_NAME_EMPTY);
         }
         int illegalIx = WstxInputData.findIllegalNameChar(name, checkNs, mXml11);
         if (illegalIx >= 0) {
+            String msg;
             if (illegalIx == 0) {
-                reportNwfName(ErrorConsts.WERR_NAME_ILLEGAL_FIRST_CHAR,
-                              WstxInputData.getCharDesc(name.charAt(0)));
+                msg = MessageFormat.format(ErrorConsts.WERR_NAME_ILLEGAL_FIRST_CHAR,
+                        new Object[] {
+                                WstxInputData.getCharDesc(name.charAt(0)),
+                                name
+                });
+            } else {
+                msg = MessageFormat.format(ErrorConsts.WERR_NAME_ILLEGAL_CHAR,
+                        new Object[] {
+                                WstxInputData.getCharDesc(name.charAt(illegalIx)),
+                                name,
+                                illegalIx
+                });
             }
-            reportNwfName(ErrorConsts.WERR_NAME_ILLEGAL_CHAR,
-                          WstxInputData.getCharDesc(name.charAt(illegalIx)));
+            reportNwfName(msg);
         }
     }
 
@@ -573,12 +582,6 @@ public abstract class XmlWriter
         throws XMLStreamException
     {
         throwOutputError(msg);
-    }
-
-    protected void reportNwfName(String msg, Object arg)
-        throws XMLStreamException
-    {
-        throwOutputError(msg, arg);
     }
 
     protected void reportNwfContent(String msg)
@@ -603,8 +606,7 @@ public abstract class XmlWriter
     protected void throwOutputError(String format, Object arg)
         throws XMLStreamException
     {
-        String msg = MessageFormat.format(format, new Object[] { arg });
-        throwOutputError(msg);
+        throwOutputError(MessageFormat.format(format, new Object[] { arg }));
     }
 
     /**
