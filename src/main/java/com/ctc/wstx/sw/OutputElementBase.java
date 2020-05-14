@@ -44,8 +44,11 @@ public abstract class OutputElementBase
     public final static int PREFIX_OK = 1;
     public final static int PREFIX_MISBOUND = 2;
 
-    final static String sXmlNsPrefix = XMLConstants.XML_NS_PREFIX;
-    final static String sXmlNsURI = XMLConstants.XML_NS_URI;
+    protected final static String sXmlNsPrefix = XMLConstants.XML_NS_PREFIX;
+    protected final static String sXmlNsURI = XMLConstants.XML_NS_URI;
+
+    // @since 4.2.1
+    protected final static BijectiveNsMap DEFAULT_XML_BINDINGS = BijectiveNsMap.createEmpty();
 
     /*
     ////////////////////////////////////////////
@@ -143,14 +146,16 @@ public abstract class OutputElementBase
      */
     public final String getExplicitPrefix(String uri)
     {
-        if (mNsMapping != null) {
-            String prefix = mNsMapping.findPrefixByUri(uri);
-            if (prefix != null) {
-                return prefix;
-            }
+        BijectiveNsMap mappings = mNsMapping;
+        if (mappings == null) {
+            mappings = DEFAULT_XML_BINDINGS;
+        }
+        String prefix = mappings.findPrefixByUri(uri);
+        if (prefix != null) {
+            return prefix;
         }
         if (mRootNsContext != null) {
-            String prefix = mRootNsContext.getPrefix(uri);
+            prefix = mRootNsContext.getPrefix(uri);
             if (prefix != null) {
                 // Hmmh... still can't use the default NS:
                 if (prefix.length() > 0) {
@@ -188,9 +193,8 @@ public abstract class OutputElementBase
             nsURI = "";
         }
 
-        /* First thing is to see if specified prefix is bound to a namespace;
-         * and if so, verify it matches with data passed in:
-         */
+        // First thing is to see if specified prefix is bound to a namespace;
+        // and if so, verify it matches with data passed in:
 
         // Checking default namespace?
         if (prefix == null || prefix.length() == 0) {
@@ -200,9 +204,8 @@ public abstract class OutputElementBase
                     return PREFIX_OK;
                 }
             } else {
-                /* Attributes never use the default namespace: "no prefix"
-                 * can only mean "no namespace"
-                 */
+                // Attributes never use the default namespace: "no prefix"
+                // can only mean "no namespace"
                 if (nsURI.length() == 0) {
                     return PREFIX_OK;
                 }
@@ -210,9 +213,8 @@ public abstract class OutputElementBase
             return PREFIX_MISBOUND;
         }
 
-        /* Need to handle 'xml' prefix and its associated
-         *   URI; they are always declared by default
-         */
+        // Need to handle 'xml' prefix and its associated
+        // URI; they are always declared by default
         if (prefix.equals(sXmlNsPrefix)) {
             // Should we thoroughly verify its namespace matches...?
             // 01-Apr-2005, TSa: Yes, let's always check this
@@ -298,11 +300,13 @@ public abstract class OutputElementBase
         if (prefix.length() == 0) { //default NS
             return mDefaultNsURI;
         }
-        if (mNsMapping != null) {
-            String uri = mNsMapping.findUriByPrefix(prefix);
-            if (uri != null) {
-                return uri;
-            }
+        BijectiveNsMap mappings = mNsMapping;
+        if (mappings == null) {
+            mappings = DEFAULT_XML_BINDINGS;
+        }
+        String uri = mappings.findUriByPrefix(prefix);
+        if (uri != null) {
+            return uri;
         }
         return (mRootNsContext != null) ?
             mRootNsContext.getNamespaceURI(prefix) : null;
@@ -314,11 +318,13 @@ public abstract class OutputElementBase
         if (mDefaultNsURI.equals(uri)) {
             return "";
         }
-        if (mNsMapping != null) {
-            String prefix = mNsMapping.findPrefixByUri(uri);
-            if (prefix != null) {
-                return prefix;
-            }
+        BijectiveNsMap mappings = mNsMapping;
+        if (mappings == null) {
+            mappings = DEFAULT_XML_BINDINGS;
+        }
+        String prefix = mappings.findPrefixByUri(uri);
+        if (prefix != null) {
+            return prefix;
         }
         return (mRootNsContext != null) ?
             mRootNsContext.getPrefix(uri) : null;

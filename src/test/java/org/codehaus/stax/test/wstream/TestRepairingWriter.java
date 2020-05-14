@@ -29,9 +29,8 @@ public class TestRepairingWriter
 
         w.writeStartDocument();
 
-        /* Calling setPrefix() should be optional; but if we call it,
-         * exceptation is that it does properly cause URL to be bound.
-         */
+        // Calling setPrefix() should be optional; but if we call it,
+        // expectation is that it does properly cause URL to be bound.
         w.setPrefix("p1", URL_P1);
         w.writeStartElement(URL_P1, "test");
 
@@ -440,5 +439,35 @@ public class TestRepairingWriter
         assertEquals(0, sr.getNamespaceCount());
 
         sr.close();
+    }
+
+    public void testPreBoundXmlNamespaceAsAttribute()
+        throws IOException, XMLStreamException
+    {
+        StringWriter strw = new StringWriter();
+        XMLStreamWriter w = getRepairingWriter(strw);
+        w.writeStartDocument();
+        w.writeStartElement("test");
+        w.writeAttribute(javax.xml.XMLConstants.XML_NS_URI, "lang", "en-US");
+        w.writeEndElement();
+        w.writeEndDocument();
+        w.close();
+        final String XML = strw.toString().trim();
+        assertEquals("<?xml version='1.0' encoding='UTF-8'?><test xml:lang=\"en-US\"/>", XML);
+    }
+
+    public void testPreBoundXmlNamespaceAsElement()
+        throws IOException, XMLStreamException
+    {
+        StringWriter strw = new StringWriter();
+        XMLStreamWriter w = getRepairingWriter(strw);
+        w.writeStartDocument();
+        w.writeStartElement(javax.xml.XMLConstants.XML_NS_URI, "test");
+        w.writeEndElement();
+        w.writeEndDocument();
+        w.close();
+
+        final String XML = strw.toString().trim();
+        assertEquals("<?xml version='1.0' encoding='UTF-8'?><xml:test/>", XML);
     }
 }

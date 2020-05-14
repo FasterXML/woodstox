@@ -4,9 +4,10 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-6.2.1 (not yet released)
+6.2.1 (14-May-2020)
 
 #107: Sub-optimal exception with `WstxOutputProperties.P_OUTPUT_VALIDATE_NAMES`
+#108: Repairing `XMLStreamWriter` tries to bind `xml` namespace URI
 
 6.2.0 (25-Apr-2020)
 

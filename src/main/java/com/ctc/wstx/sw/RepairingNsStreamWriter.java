@@ -231,13 +231,11 @@ public final class RepairingNsStreamWriter
     public void writeStartElement(StartElement elem)
         throws XMLStreamException
     {
-        /* In repairing mode this is simple: let's just pass info
-         * we have, and things should work... a-may-zing!
-         */
+        // In repairing mode this is simple: let's just pass info
+        // we have, and things should work... a-may-zing!
         QName name = elem.getName();
         writeStartElement(name.getPrefix(), name.getLocalPart(),
                           name.getNamespaceURI());
-        @SuppressWarnings("unchecked")
         Iterator<Attribute> it = elem.getAttributes();
         while (it.hasNext()) {
             Attribute attr = it.next();
@@ -494,7 +492,7 @@ public final class RepairingNsStreamWriter
      * to create and bind a namespace mapping for specified namespace.
      */
     protected final String generateElemPrefix(String suggPrefix, String nsURI,
-                                              SimpleOutputElement elem)
+            SimpleOutputElement elem)
         throws XMLStreamException
     {
         /* Ok... now, since we do not have an existing mapping, let's
@@ -551,7 +549,7 @@ public final class RepairingNsStreamWriter
      *   will be added.
      */
     protected final String findOrCreateAttrPrefix(String suggPrefix, String nsURI,
-                                                  SimpleOutputElement elem)
+            SimpleOutputElement elem)
         throws XMLStreamException
     {
         if (nsURI == null || nsURI.length() == 0) {
@@ -568,17 +566,17 @@ public final class RepairingNsStreamWriter
                 return suggPrefix;
             }
             /* Otherwise, if the prefix is unbound, let's just bind
-	     * it -- if caller specified a prefix, it probably prefers
-	     * binding that prefix even if another prefix already existed?
-	     * The remaining case (already bound to another URI) we don't
-	     * want to touch, at least not yet: it may or not be safe
-	     * to change binding, so let's just not try it.
-	     */
+             * it -- if caller specified a prefix, it probably prefers
+             * binding that prefix even if another prefix already existed?
+             * The remaining case (already bound to another URI) we don't
+             * want to touch, at least not yet: it may or not be safe
+             * to change binding, so let's just not try it.
+             */
             if (status == SimpleOutputElement.PREFIX_UNBOUND) {
-		elem.addPrefix(suggPrefix, nsURI);
-		doWriteNamespace(suggPrefix, nsURI);
-		return suggPrefix;
-	    }
+                elem.addPrefix(suggPrefix, nsURI);
+                doWriteNamespace(suggPrefix, nsURI);
+                return suggPrefix;
+            }
         }
 
         // If not, perhaps there's another existing binding available?
@@ -587,14 +585,12 @@ public final class RepairingNsStreamWriter
             return prefix;
         }
 
-        /* Nope, need to create one. First, let's see if there's a
-         * preference...
-         */
+        // Nope, need to create one. First, let's see if there's a preference...
         if (suggPrefix != null) {
             prefix = suggPrefix;
         } else if (mSuggestedPrefixes != null) {
             prefix = mSuggestedPrefixes.get(nsURI);
-	    // note: def ns is never added to suggested prefix map
+            // note: def ns is never added to suggested prefix map
         }
 
         if (prefix != null) {

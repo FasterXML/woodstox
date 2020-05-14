@@ -33,7 +33,6 @@ import com.ctc.wstx.util.DataUtil;
  * Currently only used by stream writers, but could be more generally useful
  * too.
  */
-
 public final class BijectiveNsMap
 {
     /*
@@ -91,9 +90,8 @@ public final class BijectiveNsMap
         strs[2] = XMLConstants.XMLNS_ATTRIBUTE;
         strs[3] = XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
 
-        /* Let's consider pre-defined ones to be 'out of scope', i.e.
-         * conceptually be part of (missing) parent's mappings.
-         */
+        // Let's consider pre-defined ones to be 'out of scope', i.e.
+        // conceptually be part of (missing) parent's mappings.
         return new BijectiveNsMap(4, strs);
     }
 
