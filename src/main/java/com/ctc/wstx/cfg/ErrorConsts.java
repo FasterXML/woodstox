@@ -85,17 +85,17 @@ public class ErrorConsts
     public static String ERR_NS_UNDECLARED = "Undeclared namespace prefix \"{0}\"";
     public static String ERR_NS_UNDECLARED_FOR_ATTR = "Undeclared namespace prefix \"{0}\" (for attribute \"{1}\")";
 
-    public static String ERR_NS_REDECL_XML = "Trying to redeclare prefix 'xml' from its default URI '"
+    public static String ERR_NS_REDECL_XML = "Trying to redeclare prefix \"xml\" from its default URI \""
                                                +XMLConstants.XML_NS_URI
-                                               +"' to \"{0}\"";
+                                               +"\" to \"{0}\"";
 
-    public static String ERR_NS_REDECL_XMLNS = "Trying to declare prefix 'xmlns' (illegal as per NS 1.1 #4)";
+    public static String ERR_NS_REDECL_XMLNS = "Trying to declare prefix \"xmlns\" (illegal as per NS 1.1 #4)";
 
-    public static String ERR_NS_REDECL_XML_URI = "Trying to bind URI '"
-        +XMLConstants.XML_NS_URI+" to prefix \"{0}\" (can only bind to 'xml')";
+    public static String ERR_NS_REDECL_XML_URI = "Trying to bind URI \""
+        +XMLConstants.XML_NS_URI+"\" to prefix \"{0}\" (can only bind to \"xml\")";
 
-    public static String ERR_NS_REDECL_XMLNS_URI = "Trying to bind URI '"
-        +XMLConstants.XMLNS_ATTRIBUTE_NS_URI+" to prefix \"{0}\" (can not be explicitly bound)";
+    public static String ERR_NS_REDECL_XMLNS_URI = "Trying to bind URI \""
+        +XMLConstants.XMLNS_ATTRIBUTE_NS_URI+"\" to prefix \"{0}\" (can not be explicitly bound)";
 
     public static String ERR_NS_EMPTY = 
 "Non-default namespace can not map to empty URI (as per Namespace 1.0 # 2) in XML 1.0 documents";

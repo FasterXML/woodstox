@@ -499,8 +499,8 @@ public abstract class StreamScanner
     public void throwParseError(String format, Object arg, Object arg2)
         throws XMLStreamException
     {
-        String msg = (arg != null || arg2 != null) ?
-            MessageFormat.format(format, new Object[] { arg, arg2 }) : format;
+        String msg = (arg == null && arg2 == null) ? format
+                : MessageFormat.format(format, new Object[] { arg, arg2 });
         throw constructWfcException(msg);
     }
 
