@@ -8,6 +8,7 @@ Project: woodstox
 
 #107: Sub-optimal exception with `WstxOutputProperties.P_OUTPUT_VALIDATE_NAMES`
 #108: Repairing `XMLStreamWriter` tries to bind `xml` namespace URI
+- Update stax2-api dependency to 4.2.1
 
 6.2.0 (25-Apr-2020)
 

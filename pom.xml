@@ -70,7 +70,7 @@ SAX2 and Stax2 APIs
           <groupId>org.codehaus.woodstox</groupId>
           <artifactId>stax2-api</artifactId>
           <!-- 13-Mar-2019, tatu: Upgraded to 4.2 (for Woodstox 5.3) get JDK 9 module-info -->
-          <version>4.2</version>
+          <version>4.2.1</version>
 	  <exclusions>
             <exclusion>
               <groupId>javax.xml.stream</groupId>
