@@ -1,5 +1,7 @@
 package com.ctc.wstx.osgi;
 
+import java.util.Dictionary;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -23,17 +25,21 @@ public class WstxBundleActivator
      * Method called on activation. We need to register all providers we have at
      * this point.
      */
+    @SuppressWarnings("rawtypes") // for compatibility between older and new OSGi-core jars
     @Override
     public void start(BundleContext ctxt)
     {
         InputFactoryProviderImpl inputP = new InputFactoryProviderImpl();
-        ctxt.registerService(Stax2InputFactoryProvider.class.getName(), inputP, inputP.getProperties());
+        final Dictionary inputProps = inputP.getProperties();
+        ctxt.registerService(Stax2InputFactoryProvider.class.getName(), inputP, inputProps);
         OutputFactoryProviderImpl outputP = new OutputFactoryProviderImpl();
-        ctxt.registerService(Stax2OutputFactoryProvider.class.getName(), outputP, outputP.getProperties());
+        final Dictionary outputProps = outputP.getProperties();
+        ctxt.registerService(Stax2OutputFactoryProvider.class.getName(), outputP, outputProps);
         ValidationSchemaFactoryProviderImpl[] impls = ValidationSchemaFactoryProviderImpl.createAll();
         for (int i = 0, len = impls.length; i < len; ++i) {
             ValidationSchemaFactoryProviderImpl impl = impls[i];
-            ctxt.registerService(Stax2ValidationSchemaFactoryProvider.class.getName(), impl, impl.getProperties());
+            final Dictionary implProps = impl.getProperties();
+            ctxt.registerService(Stax2ValidationSchemaFactoryProvider.class.getName(), impl, implProps);
         }
     }
 
@@ -43,4 +49,3 @@ public class WstxBundleActivator
         // deactivation.
     }
 }
-
