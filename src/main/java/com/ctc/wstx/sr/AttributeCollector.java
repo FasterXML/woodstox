@@ -84,8 +84,8 @@ public final class AttributeCollector
 
     // // Settings for matching Xml:id attribute
 
-    final String mXmlIdPrefix;
-    final String mXmlIdLocalName;
+    protected final String mXmlIdPrefix;
+    protected final String mXmlIdLocalName;
 
     /*
     ///////////////////////////////////////////////////////////
@@ -802,7 +802,8 @@ public final class AttributeCollector
                 if ((mAttrCount + mNsCount) >= mMaxAttributesPerElement) {
                     throw new XMLStreamException("Attribute limit ("+mMaxAttributesPerElement+") exceeded");
                 }
-                mAttributes = (Attribute[]) DataUtil.growArrayBy50Pct(mAttributes);
+                mAttributes = (Attribute[]) DataUtil.growArrayToAtMost(mAttributes,
+                        mMaxAttributesPerElement);
             }
             Attribute curr = mAttributes[mAttrCount];
             if (curr == null) {
@@ -914,7 +915,7 @@ public final class AttributeCollector
         // first: must verify that it's not a dup
         if (mNsCount == 0) {
             if (mNamespaces == null) {
-                mNamespaces = new Attribute[EXP_NS_COUNT];
+                mNamespaces = new Attribute[Math.min(EXP_NS_COUNT, mMaxAttributesPerElement)];
             }
             mNamespaces[0] = new Attribute(null, prefix, 0);
         } else {
@@ -934,7 +935,8 @@ public final class AttributeCollector
                 if ((mAttrCount + mNsCount) >= mMaxAttributesPerElement) {
                     throw new XMLStreamException("Attribute limit ("+mMaxAttributesPerElement+") exceeded");
                 }
-                mNamespaces = (Attribute[]) DataUtil.growArrayBy50Pct(mNamespaces);
+                mNamespaces = (Attribute[]) DataUtil.growArrayToAtMost(mNamespaces,
+                        mMaxAttributesPerElement);
             }
             int uriStart = mNamespaceBuilder.getCharSize();
             Attribute curr = mNamespaces[len];
@@ -1113,7 +1115,7 @@ public final class AttributeCollector
     protected final void allocBuffers()
     {
         if (mAttributes == null) {
-            mAttributes = new Attribute[8];
+            mAttributes = new Attribute[Math.min(8, mMaxAttributesPerElement)];
         }
         if (mValueBuilder == null) {
             mValueBuilder = new TextBuilder(EXP_ATTR_COUNT);

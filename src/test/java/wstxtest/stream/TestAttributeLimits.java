@@ -48,6 +48,40 @@ public class TestAttributeLimits extends BaseStreamTest
         reader.close();
     }
 
+    // [woodstox-core#112]: Let's apply stricter limit actually
+    public void testExactSmallMaxAttributeCount() throws Exception
+    {
+        // First: check for very small limit, lower than default collector
+        // size (8)
+        
+        XMLInputFactory factory = getNewInputFactory();
+        factory.setProperty(WstxInputProperties.P_MAX_ATTRIBUTES_PER_ELEMENT, 4);
+        XMLStreamReader r = factory.createXMLStreamReader(new StringReader(
+                "<root a='1' b='2' c='3' d='4' e='5' />"
+        ));
+        try {
+            r.nextTag();
+            fail("Should have failed");
+        } catch (XMLStreamException ex) {
+            verifyException(ex, "Attribute limit (4)");
+        }
+        r.close();
+
+        // And then something bit bigger, above default of 8:
+        factory = getNewInputFactory();
+        factory.setProperty(WstxInputProperties.P_MAX_ATTRIBUTES_PER_ELEMENT, 9);
+        r = factory.createXMLStreamReader(new StringReader(
+                "<root a1='1' a2='2' a3='3' a4='4' a5='5' a6='6' a7='7' a8='8' a9='9' a10='10' />"
+        ));
+        try {
+            r.nextTag();
+            fail("Should have failed");
+        } catch (XMLStreamException ex) {
+            verifyException(ex, "Attribute limit (9)");
+        }
+        r.close();
+    }
+    
     // [woodstox-core#93]: should use stricter verification of max attr length
     public void testShorterAttribute() throws Exception
     {

@@ -4,6 +4,11 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+6.2.2 (not yet released)
+
+#112: Max attributes per element limit only loosely enforced
+ (reported by jhaeyaert@github)
+
 6.2.1 (14-May-2020)
 
 #107: Sub-optimal exception with `WstxOutputProperties.P_OUTPUT_VALIDATE_NAMES`

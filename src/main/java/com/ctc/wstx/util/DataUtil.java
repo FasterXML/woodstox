@@ -131,6 +131,26 @@ public final class DataUtil
         return arr;
     }
 
+    /**
+     * Method similar to {@link #growArrayBy50Pct}, but it also ensures that
+     * the new size is no bigger than specific maximum size.
+     */
+    public static Object growArrayToAtMost(Object arr, int maxLen)
+    {
+        if (arr == null) {
+            throw new IllegalArgumentException(NO_TYPE);
+        }
+        Object old = arr;
+        int oldLen = Array.getLength(arr);
+        int newLen = oldLen + ((oldLen + 1) >> 1);
+        if (newLen > maxLen) {
+            newLen = maxLen;
+        }
+        arr = Array.newInstance(arr.getClass().getComponentType(), newLen);
+        System.arraycopy(old, 0, arr, 0, oldLen);
+        return arr;
+    }
+
     public static String[] growArrayBy(String[] arr, int more)
     {
         if (arr == null) {
