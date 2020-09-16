@@ -12,8 +12,13 @@ import com.ctc.wstx.api.WstxOutputProperties;
 public class TestAutoEndElems
     extends BaseWriterTest
 {
-    public void testAutomaticEndElemsEnabled()
-        throws XMLStreamException
+    public void testDefaultSetting() throws Exception
+    {
+        XMLOutputFactory f = getOutputFactory();
+        assertEquals(Boolean.TRUE, f.getProperty(WstxOutputProperties.P_AUTOMATIC_END_ELEMENTS));
+    }
+
+    public void testAutomaticEndElemsEnabled() throws Exception
     {
         StringWriter strw = new StringWriter();
         XMLStreamWriter sw = getFactory(true).createXMLStreamWriter(strw);
@@ -25,8 +30,7 @@ public class TestAutoEndElems
         assertEquals("<root><leaf></leaf></root>", strw.toString());
     }
 
-    public void testAutomaticEndElemsDisabled()
-        throws XMLStreamException
+    public void testAutomaticEndElemsDisabled() throws Exception
     {
         StringWriter strw = new StringWriter();
         XMLStreamWriter sw = getFactory(false).createXMLStreamWriter(strw);
@@ -39,18 +43,16 @@ public class TestAutoEndElems
     }
 
     /*
-    ////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Helper methods
-    ////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
      */
 
-    private XMLOutputFactory getFactory(boolean autoEndElems)
-        throws XMLStreamException
+    private XMLOutputFactory getFactory(boolean autoEndElems) throws XMLStreamException
     {
         XMLOutputFactory f = getOutputFactory();
         // ns-awareness, repairing shouldn't matter, just whether automatic end elems enabled
         f.setProperty(WstxOutputProperties.P_AUTOMATIC_END_ELEMENTS, autoEndElems ? Boolean.TRUE : Boolean.FALSE);
         return f;
-    }
-    
+    }    
 }
