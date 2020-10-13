@@ -4,10 +4,11 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-6.2.2 (not yet released)
+6.2.2 (13-Oct-2020)
 
 #112: Max attributes per element limit only loosely enforced
  (reported by jhaeyaert@github)
+- Update junit dependency (via oss-parent:41)
 
 6.2.1 (14-May-2020)
 

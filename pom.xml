@@ -4,7 +4,7 @@
     <parent>
       <groupId>com.fasterxml</groupId>
       <artifactId>oss-parent</artifactId>
-      <version>39</version>
+      <version>41</version>
     </parent>
 
     <groupId>com.fasterxml.woodstox</groupId>
