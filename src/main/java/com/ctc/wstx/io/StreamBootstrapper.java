@@ -149,6 +149,7 @@ public final class StreamBootstrapper
         return new StreamBootstrapper(pubId, sysId, data, start, end);
     }
 
+    @SuppressWarnings("resource")
     @Override
     public Reader bootstrapInput(ReaderConfig cfg, boolean mainDoc, int xmlVersion)
         throws IOException, XMLStreamException
@@ -160,9 +161,9 @@ public final class StreamBootstrapper
         if (bufSize < MIN_BUF_SIZE) {
             bufSize = MIN_BUF_SIZE;
         }
-	if (mByteBuffer == null) { // non-null if we were passed a buffer
-	    mByteBuffer = cfg.allocFullBBuffer(bufSize);
-	}
+        if (mByteBuffer == null) { // non-null if we were passed a buffer
+            mByteBuffer = cfg.allocFullBBuffer(bufSize);
+        }
 
         resolveStreamEncoding();
 
@@ -233,12 +234,17 @@ public final class StreamBootstrapper
             // Ok; first, do we need to merge stuff back?
             InputStream in = mIn;
             if (mInputPtr < mInputEnd) {
-                in = new MergedStream(cfg, in, mByteBuffer, mInputPtr, mInputEnd);
+                // 16-Oct-2020, tatu: But we may or may not have InputStream to merge
+                //    as per [woodstox-core#117]
+                if (in == null) {
+                    in = new ByteArrayInputStream(mByteBuffer, mInputPtr, mInputEnd - mInputPtr);
+                } else {
+                    in = new MergedStream(cfg, in, mByteBuffer, mInputPtr, mInputEnd);
+                }
             }
-            /* 20-Jan-2006, TSa: Ok; although it is possible to declare
-             *   stream as 'UTF-16', JDK may need help in figuring out
-             *   the right order, so let's be explicit:
-             */
+            // 20-Jan-2006, TSa: Ok; although it is possible to declare
+            //   stream as 'UTF-16', JDK may need help in figuring out
+            //   the right order, so let's be explicit:
             if (normEnc == CharsetNames.CS_UTF16) {
                 mInputEncoding = normEnc = mBigEndian ? CharsetNames.CS_UTF16BE : CharsetNames.CS_UTF16LE;
             }
@@ -474,9 +480,8 @@ public final class StreamBootstrapper
     protected boolean ensureLoaded(int minimum)
         throws IOException
     {
-        /* Let's assume here buffer has enough room -- this will always
-         * be true for the limited used this method gets
-         */
+        // Let's assume here buffer has enough room -- this will always
+        // be true for the limited used this method gets
         int gotten = (mInputEnd - mInputPtr);
         while (gotten < minimum) {
             int count = (mIn == null) ? -1 : mIn.read(mByteBuffer, mInputEnd, mByteBuffer.length - mInputEnd);

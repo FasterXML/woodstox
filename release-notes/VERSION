@@ -4,6 +4,10 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+6.2.3 (16-Oct-2020)
+
+#117: Problem with `Stax2ByteArraySource`, encodings other than UTF-8
+
 6.2.2 (13-Oct-2020)
 
 #112: Max attributes per element limit only loosely enforced

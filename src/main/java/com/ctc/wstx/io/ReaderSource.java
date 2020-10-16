@@ -80,24 +80,21 @@ public class ReaderSource
     public int readInto(WstxInputData reader)
         throws IOException, XMLStreamException
     {
-        /* Shouldn't really try to read after closing, but it may be easier
-         * for caller not to have to keep track of closure...
-         */
+        // Shouldn't really try to read after closing, but it may be easier
+        // for caller not to have to keep track of closure...
         if (mBuffer == null) {
             return -1;
         }
         int count = mReader.read(mBuffer, 0, mBuffer.length);
         if (count < 1) {
-            /* Let's prevent caller from accidentally being able to access
-             * data, first.
-             */
+            // Let's prevent caller from accidentally being able to access
+            // data, first.
             mInputLast = 0;
             reader.mInputPtr = 0;
             reader.mInputEnd = 0;
             if (count == 0) {
-                /* Sanity check; should never happen with correctly written
-                 * Readers:
-                 */
+                // Sanity check; should never happen with correctly written
+                // Readers:
                 throw new WstxException("Reader (of type "+mReader.getClass().getName()+") returned 0 characters, even when asked to read up to "+mBuffer.length, getLocation());
             }
             return -1;

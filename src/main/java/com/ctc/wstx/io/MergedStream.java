@@ -15,19 +15,22 @@ import com.ctc.wstx.api.ReaderConfig;
 public final class MergedStream
     extends InputStream
 {
-    final ReaderConfig mConfig;
+    final private ReaderConfig mConfig;
 
-    final InputStream mIn;
+    final private  InputStream mIn;
 
-    byte[] mData;
+    private byte[] mData;
 
-    int mPtr;
+    private int mPtr;
 
-    final int mEnd;
+    final private int mEnd;
 
     public MergedStream(ReaderConfig cfg,
-                        InputStream in, byte[] buf, int start, int end)
+            InputStream in, byte[] buf, int start, int end)
     {
+        if (in == null) {
+            throw new IllegalArgumentException("InputStream `in` should not be `null`");
+        }
         mConfig = cfg;
         mIn = in;
         mData = buf;
@@ -60,8 +63,7 @@ public final class MergedStream
     
     @Override
     public boolean markSupported() {
-        /* Only supports marks past the initial rewindable section...
-         */
+        // Only supports marks past the initial rewindable section...
         return (mData == null) && mIn.markSupported();
     }
     

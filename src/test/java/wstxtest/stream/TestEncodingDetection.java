@@ -1,8 +1,9 @@
 package wstxtest.stream;
 
-import java.io.*;
-
 import javax.xml.stream.*;
+
+import org.codehaus.stax2.XMLInputFactory2;
+import org.codehaus.stax2.io.Stax2ByteArraySource;
 
 /**
  * This set on unit tests checks that woodstox-specific invariants
@@ -17,8 +18,7 @@ public class TestEncodingDetection
 
     final static String ENC_EBCDIC_OUT_PREFIX = "IBM";
 
-    public void testUtf8()
-        throws IOException, XMLStreamException
+    public void testUtf8() throws Exception
     {
         /* Default is, in absence of any other indications, UTF-8...
          * let's check the shortest legal doc:
@@ -34,8 +34,23 @@ public class TestEncodingDetection
         sr.close();
     }
 
-    public void testUtf16()
-        throws XMLStreamException
+    // for [woodstox-core#117]
+    public void testWindows1252() throws Exception
+    {
+        final String doc = "<?xml version='1.0' encoding='WINDOWS-1252'?><x/>";
+        // it's just ASCII so getBytes() can use whatever
+        final byte[] b = doc.getBytes("UTF-8");
+        XMLStreamReader sr = getReader(b);
+        assertTokenType(START_DOCUMENT, sr.getEventType());
+        assertEquals("WINDOWS-1252", sr.getCharacterEncodingScheme());
+        assertEquals("WINDOWS-1252", sr.getEncoding());
+        // let's iterate just for fun though
+        assertTokenType(START_ELEMENT, sr.next());
+        assertTokenType(END_ELEMENT, sr.next());
+        sr.close();
+    }
+
+    public void testUtf16() throws Exception
     {
         // Should be able to figure out encoding...
         String XML = ".<?xml version='1.0'?><root/>";
@@ -73,8 +88,7 @@ public class TestEncodingDetection
      * But let's try a straight-forward (naive?) test
      * to verify that what is supposed to work does.
      */
-    public void testEBCDIC()
-        throws IOException, XMLStreamException
+    public void testEBCDIC() throws Exception
     {
         final String[] subtypes = new String[] {
             "037", "277", "278", "280", "284", "285", "297",
@@ -130,10 +144,10 @@ public class TestEncodingDetection
         return b;
     }
 
-    private XMLStreamReader getReader(byte[] b)
-        throws XMLStreamException
+    private XMLStreamReader getReader(byte[] b) throws Exception
     {
-        XMLInputFactory f = getInputFactory();
-        return f.createXMLStreamReader(new ByteArrayInputStream(b));
+        XMLInputFactory2 f = getInputFactory();
+        Stax2ByteArraySource src = new Stax2ByteArraySource(b, 0, b.length);
+        return f.createXMLStreamReader(src);
     }
 }
