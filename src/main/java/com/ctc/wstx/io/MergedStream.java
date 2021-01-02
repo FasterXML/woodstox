@@ -55,7 +55,7 @@ public final class MergedStream
     }
 
     @Override
-    public void mark(int readlimit) {
+    public synchronized void mark(int readlimit) {
         if (mData == null) {
             mIn.mark(readlimit);
         }
@@ -105,7 +105,7 @@ public final class MergedStream
     }
 
     @Override
-    public void reset() throws IOException
+    public synchronized void reset() throws IOException
     {
         if (mData == null) {
             mIn.reset();
