@@ -95,20 +95,20 @@ public abstract class InputBootstrapper
     ////////////////////////////////////////
     */
 
-    //boolean mHadDeclaration = false;
+    //protected  boolean mHadDeclaration = false;
 
     /**
      * XML declaration from the input (1.0, 1.1 or 'unknown')
      */
-    int mDeclaredXmlVersion = XmlConsts.XML_V_UNKNOWN;
+    protected int mDeclaredXmlVersion = XmlConsts.XML_V_UNKNOWN;
 
     /**
      * Value of encoding pseudo-attribute from xml declaration, if
      * one was found; null otherwise.
      */
-    String mFoundEncoding;
+    protected String mFoundEncoding;
 
-    String mStandalone;
+    protected String mStandalone;
 
     /**
      * Flag that indicates whether input read from this input source
@@ -116,7 +116,7 @@ public abstract class InputBootstrapper
      * State of this flag depends on parent context (if one existed), or if
      * not, on xml declaration of this input source.
      */
-    boolean mXml11Handling = false;
+    protected boolean mXml11Handling = false;
 
     /*
     ////////////////////////////////////////
@@ -130,7 +130,7 @@ public abstract class InputBootstrapper
      * for the longest anticipated encoding id... and maybe few chars just
      * in case (for additional white space that we ignore)
      */
-    final char[] mKeyword = new char[60];
+    protected final char[] mKeywordBuffer = new char[60];
 
     /*
     ////////////////////////////////////////
@@ -318,11 +318,11 @@ public abstract class InputBootstrapper
             reportUnexpectedChar(c, XmlConsts.XML_DECL_KW_VERSION);
         }
         c = handleEq(XmlConsts.XML_DECL_KW_VERSION);
-        int len = readQuotedValue(mKeyword, c);
+        int len = readQuotedValue(mKeywordBuffer, c);
 
         if (len == 3) {
-            if (mKeyword[0] == '1' && mKeyword[1] == '.') {
-                c = mKeyword[2];
+            if (mKeywordBuffer[0] == '1' && mKeywordBuffer[1] == '.') {
+                c = mKeywordBuffer[2];
                 if (c == '0') {
                     return XmlConsts.XML_V_10;
                 }
@@ -336,11 +336,11 @@ public abstract class InputBootstrapper
         String got;
 
         if (len < 0) {
-            got = "'"+new String(mKeyword)+"[..]'";
+            got = "'"+new String(mKeywordBuffer)+"[..]'";
         } else if (len == 0) {
             got = "<empty>";
         } else {
-            got = "'"+new String(mKeyword, 0, len)+"'";
+            got = "'"+new String(mKeywordBuffer, 0, len)+"'";
         }
         reportPseudoAttrProblem(XmlConsts.XML_DECL_KW_VERSION, got,
                                 XmlConsts.XML_V_10_STR, XmlConsts.XML_V_11_STR);
@@ -356,20 +356,18 @@ public abstract class InputBootstrapper
         }
         c = handleEq(XmlConsts.XML_DECL_KW_ENCODING);
 
-        int len = readQuotedValue(mKeyword, c);
+        int len = readQuotedValue(mKeywordBuffer, c);
 
-        /* Hmmh. How about "too long" encodings? Maybe just truncate them,
-         * for now?
-         */
+        // How about "too long" encodings? Maybe just truncate them for now?
         if (len == 0) { // let's still detect missing value...
             reportPseudoAttrProblem(XmlConsts.XML_DECL_KW_ENCODING, null,
                                     null, null);
         }
 
         if (len < 0) { // will be truncated...
-            return new String(mKeyword);
+            return new String(mKeywordBuffer);
         }
-        return new String(mKeyword, 0, len);
+        return new String(mKeywordBuffer, 0, len);
     }
 
     private final String readXmlStandalone()
@@ -380,15 +378,15 @@ public abstract class InputBootstrapper
             reportUnexpectedChar(c, XmlConsts.XML_DECL_KW_STANDALONE);
         }
         c = handleEq(XmlConsts.XML_DECL_KW_STANDALONE);
-        int len = readQuotedValue(mKeyword, c);
+        int len = readQuotedValue(mKeywordBuffer, c);
 
         if (len == 2) {
-            if (mKeyword[0] == 'n' && mKeyword[1] == 'o') {
+            if (mKeywordBuffer[0] == 'n' && mKeywordBuffer[1] == 'o') {
                 return XmlConsts.XML_SA_NO;
             }
         } else if (len == 3) {
-            if (mKeyword[0] == 'y' && mKeyword[1] == 'e'
-                && mKeyword[2] == 's') {
+            if (mKeywordBuffer[0] == 'y' && mKeywordBuffer[1] == 'e'
+                && mKeywordBuffer[2] == 's') {
                 return XmlConsts.XML_SA_YES;
             }
         }
@@ -397,11 +395,11 @@ public abstract class InputBootstrapper
         String got;
 
         if (len < 0) {
-            got = "'"+new String(mKeyword)+"[..]'";
+            got = "'"+new String(mKeywordBuffer)+"[..]'";
         } else if (len == 0) {
             got = "<empty>";
         } else {
-            got = "'"+new String(mKeyword, 0, len)+"'";
+            got = "'"+new String(mKeywordBuffer, 0, len)+"'";
         }
 
         reportPseudoAttrProblem(XmlConsts.XML_DECL_KW_STANDALONE, got,

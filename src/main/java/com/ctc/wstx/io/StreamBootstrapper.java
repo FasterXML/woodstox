@@ -596,15 +596,15 @@ public final class StreamBootstrapper
     }
 
     @Override
-    protected int readQuotedValue(char[] kw, int quoteChar)
+    protected int readQuotedValue(char[] outputBuffer, int quoteChar)
         throws IOException, WstxException
     {
-        int i = 0;
-        int len = kw.length;
+        int outputPtr = 0;
+        int outputBufferLen = outputBuffer.length;
         boolean simple = (mBytesPerChar == 1);
         boolean mb = !simple && (mBytesPerChar > 1);
 
-        while (i < len) {
+        while (outputPtr < outputBufferLen) {
             int c;
 
             if (simple) {
@@ -635,12 +635,9 @@ public final class StreamBootstrapper
             }
 
             if (c == quoteChar) {
-                return (i < len) ? i : -1;
+                return outputPtr;
             }
-
-            if (i < len) {
-                kw[i++] = (char) c;
-            }
+            outputBuffer[outputPtr++] = (char) c;
         }
 
         // If we end up this far, we ran out of buffer space... let's let
