@@ -2769,7 +2769,7 @@ public class FullDTDReader
                 throwDTDAttrError("Unrecognized attribute default value directive #"+defTypeStr
                                    +ErrorConsts.ERR_DTD_DEFAULT_TYPE,
                                    elem, attrName);
-                defVal = null; // never gets here...
+                return; // never gets here...
             }
         } else {
             defVal = DefaultAttrValue.constructOptional();
