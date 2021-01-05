@@ -65,30 +65,36 @@ public class TestStreaming
     public void testCDataStreaming()
         throws IOException, XMLStreamException
     {
-        String CONTENT_INOUT =
-            "Some content\nthat will be stored in a\n"
-            +"CDATA <yes!> Block <[*]>\n"
+        // 05-Jan-2021, tatu: let's quickly verify LF-normalization too
+        //    (changed for [woodstox-core#121] verification)
+        final String CONTENT_IN =
+            "Some content\r\nthat will be stored in a\n"
+            +"CDATA <yes!> Block <[*]>\r"
             +" yet not be split in any way...."
             ;
+
+        final String CONTENT_OUT = CONTENT_IN.replace("\r\n", "\n")
+                .replace("\r", "\n");
+
         /* Let's also add trailing text, to ensure no coalescing is done
          * when not requested
          */
-        String XML = "<root><![CDATA[" + CONTENT_INOUT + "]]>some text!</root>";
+        String XML = "<root><![CDATA[" + CONTENT_IN + "]]>some text!</root>";
         XMLStreamReader2 sr = getReader(XML, false);
         assertTokenType(START_ELEMENT, sr.next());
         assertTokenType(CDATA, sr.next());
         StringWriter sw = new StringWriter();
         sr.getText(sw, false);
         String act = sw.toString();
-        if (!act.equals(CONTENT_INOUT)) {
-            if (CONTENT_INOUT.startsWith(act)) {
+        if (!act.equals(CONTENT_OUT)) {
+            if (CONTENT_OUT.startsWith(act)) {
                 fail("Streaming text accessors returned partial match; first "
                      +act.length()+" chars of the expected "
-                     +CONTENT_INOUT.length()+" chars");
+                     +CONTENT_OUT.length()+" chars");
             }
             fail("Content accessed using streaming text accessor (len "
-                     +act.length()+"; exp "+CONTENT_INOUT.length()+" chars) wrong: "
-                 +"expected ["+CONTENT_INOUT+"], got ["+act+"]");
+                     +act.length()+"; exp "+CONTENT_OUT.length()+" chars) wrong: "
+                 +"expected ["+CONTENT_OUT+"], got ["+act+"]");
         }
 
         // And should get the following CHARACTERS then:

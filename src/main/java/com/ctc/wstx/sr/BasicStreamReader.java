@@ -5317,58 +5317,54 @@ public abstract class BasicStreamReader
 
             quick_loop:
             while (true) {
-                if (c > CHAR_CR_LF_OR_NULL) {
+                if (c >= CHAR_SPACE) {
                     if (c == ']') {
                         break quick_loop;
                     }
-                } else {
-                    if (c < CHAR_SPACE) {
-                        if (c == '\n') {
-                            markLF();
-                        } else if (c == '\r') {
-                            char d;
-                            if (mInputPtr >= mInputEnd) {
-                                /* If we can't peek easily, let's flush past stuff
-                                 * and load more... (have to flush, since new read
-                                 * will overwrite inbut buffers)
-                                 */
-                                int len = mInputPtr - start;
-                                if (len > 0) {
-                                    w.write(mInputBuffer, start, len);
-                                    count += len;
-                                }
-                                d = getNextChar(SUFFIX_IN_CDATA);
-                                start = mInputPtr; // to mark 'no past content'
-                            } else {
-                                d = mInputBuffer[mInputPtr++];
+                } else if (c == '\n') {
+                    markLF();
+                } else if (c == '\r') {
+                    char d;
+                    if (mInputPtr >= mInputEnd) {
+                        /* If we can't peek easily, let's flush past stuff
+                         * and load more... (have to flush, since new read
+                         * will overwrite inbut buffers)
+                         */
+                        int len = mInputPtr - start;
+                        if (len > 0) {
+                            w.write(mInputBuffer, start, len);
+                            count += len;
+                        }
+                        d = getNextChar(SUFFIX_IN_CDATA);
+                        start = mInputPtr; // to mark 'no past content'
+                    } else {
+                        d = mInputBuffer[mInputPtr++];
+                    }
+                    if (d == '\n') {
+                        if (mNormalizeLFs) {
+                            /* Let's flush content prior to 2-char LF, and
+                             * start the new segment on the second char...
+                             * this way, no mods are needed for the buffer,
+                             * AND it'll also  work on split 2-char lf!
+                             */
+                            int len = mInputPtr - 2 - start;
+                            if (len > 0) {
+                                w.write(mInputBuffer, start, len);
+                                count += len;
                             }
-                            if (d == '\n') {
-                                if (mNormalizeLFs) {
-                                    /* Let's flush content prior to 2-char LF, and
-                                     * start the new segment on the second char...
-                                     * this way, no mods are needed for the buffer,
-                                     * AND it'll also  work on split 2-char lf!
-                                     */
-                                    int len = mInputPtr - 2 - start;
-                                    if (len > 0) {
-                                        w.write(mInputBuffer, start, len);
-                                        count += len;
-                                    }
-                                    start = mInputPtr-1; // so '\n' is the first char
-                                } else {
-                                    // otherwise it's good as is
-                                }
-                            } else { // not 2-char... need to replace?
-                                --mInputPtr;
-                                if (mNormalizeLFs) {
-                                    mInputBuffer[mInputPtr-1] = '\n';
-                                }
-                            }
-                            markLF();
-                        } else if (c != '\t') {
-                            throwInvalidSpace(c);
+                            start = mInputPtr-1; // so '\n' is the first char
+                        } else {
+                            // otherwise it's good as is
+                        }
+                    } else { // not 2-char... need to replace?
+                        --mInputPtr;
+                        if (mNormalizeLFs) {
+                            mInputBuffer[mInputPtr-1] = '\n';
                         }
                     }
+                    markLF();
+                } else if (c != '\t') {
+                    throwInvalidSpace(c);
                 }
                 // Reached the end of buffer? Need to flush, then
                 if (mInputPtr >= mInputEnd) {
@@ -5386,9 +5382,8 @@ public abstract class BasicStreamReader
 
             // Anything to flush once we hit ']'?
             {
-                /* -1 since the last char in there (a '[') is NOT to be
-                 * output at this point
-                 */
+                // -1 since the last char in there (a '[') is NOT to be
+                // output at this point
                 int len = mInputPtr - start - 1;
                 if (len > 0) {
                     w.write(mInputBuffer, start, len);
