@@ -1334,9 +1334,8 @@ public abstract class StreamScanner
              * the entity), so let's push it back first
              */
             --mInputPtr;
-            /* Shortest valid reference would be 3 chars ('&a;'); which
-             * would only be legal from an expanded entity...
-             */
+            // Shortest valid reference would be 3 chars ('&a;'); which
+            // would only be legal from an expanded entity...
             if (!ensureInput(6)) {
                 avail = inputInBuffer();
                 if (avail < 3) {
@@ -1349,9 +1348,8 @@ public abstract class StreamScanner
             ++mInputPtr;
         }
 
-        /* Ok, now we have one more character to check, and that's enough
-         * to determine type decisively.
-         */
+        // Ok, now we have one more character to check, and that's enough
+        // to determine type decisively.
         char c = mInputBuffer[mInputPtr];
 
         // A char reference?
@@ -1381,15 +1379,15 @@ public abstract class StreamScanner
                     }
                 }
             } else if (c == 'l') {
-                if (avail >= 3
-                    && mInputBuffer[mInputPtr+1] == 't'
+                // guaranteed at least 3 minimum so
+                if (mInputBuffer[mInputPtr+1] == 't'
                     && mInputBuffer[mInputPtr+2] == ';') {
                     mInputPtr += 3;
                     return '<';
                 }
             } else if (c == 'g') {
-                if (avail >= 3
-                    && mInputBuffer[mInputPtr+1] == 't'
+                // guaranteed at least 3 minimum so
+                if (mInputBuffer[mInputPtr+1] == 't'
                     && mInputBuffer[mInputPtr+2] == ';') {
                     mInputPtr += 3;
                     return '>';
@@ -1474,14 +1472,14 @@ public abstract class StreamScanner
                 }
             }
         } else if (c == 'l') {
-            if (avail >= 3
-                && mInputBuffer[mInputPtr+1] == 't'
+            // guaranteed at least 3 minimum so
+            if (mInputBuffer[mInputPtr+1] == 't'
                 && mInputBuffer[mInputPtr+2] == ';') {
                 return null;
             }
         } else if (c == 'g') {
-            if (avail >= 3
-                && mInputBuffer[mInputPtr+1] == 't'
+            // guaranteed at least 3 minimum so
+            if (mInputBuffer[mInputPtr+1] == 't'
                 && mInputBuffer[mInputPtr+2] == ';') {
                 return null;
             }
@@ -2229,9 +2227,6 @@ public abstract class StreamScanner
              * white space, and coalescing remaining ws into single spaces.
              */
             if (spaceToAdd) { // pending white space to add?
-                if (c == CHAR_SPACE) { // still a space; let's skip
-                    continue;
-                }
                 /* ok: if we have non-space, we'll either forget about
                  * space(s) (if nothing has been output, ie. leading space),
                  * or output a single space (in-between non-white space)

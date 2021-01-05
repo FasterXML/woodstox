@@ -111,7 +111,7 @@ public final class ISOLatinReader
                     if (c <= 0x9F) {
                         if (c == 0x85) { // NEL, let's convert?
                             c = CONVERT_NEL_TO;
-                        } else if (c >= 0x7F) { // DEL, ctrl chars
+                        } else { // DEL, ctrl chars
                             int pos = mByteCount + i;
                             reportInvalidXml11(c, pos, pos);
                         }
