@@ -3130,6 +3130,7 @@ public abstract class BasicStreamReader
                 // returns null if it's a dupe:
                 if (null == tb) {
                     throwParseError("Duplicate declaration for namespace prefix '"+localName+"'.");
+                    return false; // never gets here but static analyzers have a fit...
                 }
                 startLen = tb.getCharSize();
             } else if (localName == sPrefixXmlns && prefix == null) {

@@ -431,7 +431,7 @@ public final class InputElementStack
                         mReporter.throwParseError(ErrorConsts.ERR_NS_REDECL_XMLNS);
                     } else if (prefix == "xml") {
                         // whereas xml is ok, as long as it's same URI:
-                        if (!nsUri.equals(XMLConstants.XML_NS_URI)) {
+                        if (!XMLConstants.XML_NS_URI.equals(nsUri)) {
                             mReporter.throwParseError(ErrorConsts.ERR_NS_REDECL_XML,
                                                       nsUri, null);
                         }
@@ -988,7 +988,7 @@ public final class InputElementStack
                 return false;
             }
         } else {
-            if (thisPrefix != prefix && !thisPrefix.equals(prefix)) {
+            if (thisPrefix != prefix && !prefix.equals(thisPrefix)) {
                 return false;
             }
         }
