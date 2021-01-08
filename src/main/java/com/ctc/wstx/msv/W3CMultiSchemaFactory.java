@@ -31,7 +31,6 @@ import org.w3c.dom.Node;
 
 import org.xml.sax.Locator;
 
-import com.ctc.wstx.msv.W3CSchema;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;

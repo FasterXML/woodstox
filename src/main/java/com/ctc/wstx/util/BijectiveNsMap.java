@@ -20,8 +20,6 @@ import java.util.*;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 
-import com.ctc.wstx.util.DataUtil;
-
 /**
  * Helper class that implements "bijective map" (Map that allows use of values
  * as keys and vice versa, bidirectional access), and is specifically

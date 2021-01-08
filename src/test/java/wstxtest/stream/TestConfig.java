@@ -99,7 +99,7 @@ public class TestConfig
     //////////////////////////////////////////////////////
      */
 
-    private final static class DTDResolver
+    final static class DTDResolver
         implements XMLResolver
     {
         @Override
@@ -110,7 +110,7 @@ public class TestConfig
         }
     }
 
-    private final static class EntityResolver
+    final static class EntityResolver
         implements XMLResolver
     {
         @Override

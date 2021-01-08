@@ -4,8 +4,6 @@ import java.util.*;
 
 import javax.xml.stream.XMLInputFactory;
 
-import wstxtest.cfg.InputTestConfig;
-
 /**
  * Class that implements iteration over set of input configuration
  * Objects, so that the input factory gets configured to all test

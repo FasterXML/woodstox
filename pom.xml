@@ -305,26 +305,26 @@ SAX2 and Stax2 APIs
 		  will have to use `moduleInfoFile` which is crappy but anything else requires
 		  JDK 9+.
               -->
-	    <plugin>
+         <plugin>
               <groupId>org.moditect</groupId>
               <artifactId>moditect-maven-plugin</artifactId>
               <executions>
-		<execution>
-		  <id>add-module-infos</id>
-		  <phase>package</phase>
-		  <goals>
-		    <goal>add-module-info</goal>
-		  </goals>
-		  <configuration>
-		    <overwriteExistingFiles>true</overwriteExistingFiles>
-		    <module>
+                <execution>
+                  <id>add-module-infos</id>
+                  <phase>package</phase>
+                  <goals>
+                    <goal>add-module-info</goal>
+                  </goals>
+                  <configuration>
+                    <overwriteExistingFiles>true</overwriteExistingFiles>
+                    <module>
                       <moduleInfoFile>src/moditect/module-info.java</moduleInfoFile>
-		    </module>
-		  </configuration>
-		</execution>
+                    </module>
+                  </configuration>
+                </execution>
               </executions>
-	    </plugin>
-	</plugins>
+         </plugin>
+       </plugins>
     </build>
 
     <reporting>

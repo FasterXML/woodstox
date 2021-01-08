@@ -42,11 +42,11 @@ public class TestBasicSax
 
     /*
     ////////////////////////////////////////////////////
-    // Helper methods
+    // Helper classes
     ////////////////////////////////////////////////////
      */
 
-    private static class CDATASectionCounter extends DefaultHandler2 {
+    static class CDATASectionCounter extends DefaultHandler2 {
         private int cdataSectionCount;
         private int segmentCount;
         

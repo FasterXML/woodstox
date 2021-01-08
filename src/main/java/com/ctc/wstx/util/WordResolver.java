@@ -59,7 +59,7 @@ public final class WordResolver
     ////////////////////////////////////////////////
      */
 
-    private WordResolver(String[] words, char[] index) {
+    WordResolver(String[] words, char[] index) {
         mWords = words;
         mData = index;
     }

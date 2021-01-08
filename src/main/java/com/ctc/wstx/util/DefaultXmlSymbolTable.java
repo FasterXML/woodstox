@@ -1,7 +1,5 @@
 package com.ctc.wstx.util;
 
-import com.ctc.wstx.util.SymbolTable;
-
 /**
  * Factory class used for instantiating pre-populated XML symbol
  * tables. Such tables already have basic String constants that

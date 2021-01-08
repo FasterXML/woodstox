@@ -19,7 +19,6 @@ import org.codehaus.stax2.ri.typed.CharArrayBase64Decoder;
 import com.ctc.wstx.api.ReaderConfig;
 import com.ctc.wstx.dtd.DTDEventListener;
 import com.ctc.wstx.sr.InputProblemReporter;
-import com.ctc.wstx.util.StringUtil;
 
 /**
  * TextBuffer is a class similar to {@link StringBuilder}, with

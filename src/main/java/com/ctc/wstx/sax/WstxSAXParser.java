@@ -168,11 +168,11 @@ public class WstxSAXParser
 
     protected ContentHandler mContentHandler;
     protected DTDHandler mDTDHandler;
-    private EntityResolver mEntityResolver;
-    private ErrorHandler mErrorHandler;
+    protected EntityResolver mEntityResolver;
+    protected ErrorHandler mErrorHandler;
 
-    private LexicalHandler mLexicalHandler;
-    private DeclHandler mDeclHandler;
+    protected LexicalHandler mLexicalHandler;
+    protected DeclHandler mDeclHandler;
 
     // // // State:
 

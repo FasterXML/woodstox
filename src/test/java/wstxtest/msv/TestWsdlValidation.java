@@ -28,10 +28,9 @@ import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.reader.GrammarReaderController2;
 import com.sun.msv.reader.xmlschema.WSDLSchemaReader;
 
-public class TestWsdlValidation extends BaseStax2Test {
-	
-	 private static class LocalController implements GrammarReaderController2 {
-
+public class TestWsdlValidation extends BaseStax2Test
+{
+    static class LocalController implements GrammarReaderController2 {
 	     @Override
 	     public LSResourceResolver getLSResourceResolver() {
 	         return null;

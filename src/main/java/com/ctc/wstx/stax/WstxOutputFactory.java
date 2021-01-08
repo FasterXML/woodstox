@@ -303,8 +303,8 @@ public class WstxOutputFactory
     }
 
     /**
-     * Called by {@link #createSW(OutputStream, Writer, String, boolean)} after all of the nessesary configuration
-     * logic is complete.
+     * Called by {code createSW(OutputStream, Writer, String, boolean)} after all of the
+     * necessary configuration logic is complete.
      */
     protected XMLStreamWriter2 createSW(String enc, WriterConfig cfg, XmlWriter xw) {
         if (cfg.willSupportNamespaces()) {

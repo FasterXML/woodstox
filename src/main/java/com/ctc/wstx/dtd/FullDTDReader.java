@@ -713,7 +713,7 @@ public class FullDTDReader
 
     /**
      * Method similar to {@link #parseDirective}, but one that takes care
-     * to properly output dtd contents via {@link com.ctc.wstx.dtd.DTDWriter}
+     * to properly output dtd contents using {@code com.ctc.wstx.dtd.DTDWriter}
      * as necessary.
      * Separated to simplify both methods; otherwise would end up with
      * 'if (... flatten...) ... else ...' spaghetti code.
