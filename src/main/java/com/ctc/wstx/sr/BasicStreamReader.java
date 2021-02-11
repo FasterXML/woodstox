@@ -1968,7 +1968,7 @@ public abstract class BasicStreamReader
         // important! Underlying buffer may be shared, does not necessarily start from 0
         final int startingOffset = outPtr;
         final int maxAttrSize = mConfig.getMaxAttributeSize();
-        int outLimit = Math.min(startingOffset+maxAttrSize, outBuf.length);
+        int outLimit = _outputLimit(outBuf, startingOffset, maxAttrSize);
         final WstxInputSource currScope = mInput;
 
         while (true) {
@@ -2023,7 +2023,7 @@ public abstract class BasicStreamReader
                         ch -= 0x10000;
                         if (outPtr >= outLimit) {
                             outBuf = _checkAttributeLimit(tb, outBuf, outPtr, outPtr - startingOffset, maxAttrSize);
-                            outLimit = Math.min(startingOffset+maxAttrSize, outBuf.length);
+                            outLimit = _outputLimit(outBuf, startingOffset, maxAttrSize);
                         }
                         outBuf[outPtr++] = (char) ((ch >> 10)  + 0xD800);
                         c = (char) ((ch & 0x3FF)  + 0xDC00);
@@ -2036,13 +2036,18 @@ public abstract class BasicStreamReader
             // Ok, let's just add char in, whatever it was
             if (outPtr >= outLimit) {
                 outBuf = _checkAttributeLimit(tb, outBuf, outPtr, outPtr - startingOffset, maxAttrSize);
-                outLimit = Math.min(startingOffset+maxAttrSize, outBuf.length);
+                outLimit = _outputLimit(outBuf, startingOffset, maxAttrSize);
             }
             outBuf[outPtr++] = c;
         }
 
         // Fine; let's tell TextBuild we're done:
         tb.setBufferSize(outPtr);
+    }
+
+    private final int _outputLimit(char[] outBuf, int offset, int maxAttrLen) {
+        // [woodstox-core#122]: make sure "offset + max-size" does not overflow:
+        return Math.min(outBuf.length, Math.max(maxAttrLen, offset+maxAttrLen));
     }
 
     private final char[] _checkAttributeLimit(TextBuilder tb,
@@ -2053,8 +2058,9 @@ public abstract class BasicStreamReader
         verifyLimit("Maximum attribute size", maxAttrSize , currAttrSize+1);
         // just sanity check
         if (outPtr < outBuf.length) {
-            ExceptionUtil.throwInternal("Expected either attr limit ("+maxAttrSize
-                    +") >= currAttrSize ("+currAttrSize+") OR >= outBuf.length ("+outBuf.length+")");
+            ExceptionUtil.throwInternal(String.format(
+"Expected either currAttrSize (%d) > maxAttrSize (%d) OR outPtr (%d) >= outBuf.length (%d)",
+currAttrSize, maxAttrSize, outPtr, outBuf.length));
         }
         return tb.bufferFull(1);
     }

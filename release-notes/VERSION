@@ -4,6 +4,11 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+6.2.4 (11-Feb-2021)
+
+#122: Expected either attr limit (2147483647) >= currAttrSize (0) OR >= outBuf.length (96)
+ (reported by j3rem1e@github)
+
 6.2.3 (16-Oct-2020)
 
 #117: Problem with `Stax2ByteArraySource`, encodings other than UTF-8
