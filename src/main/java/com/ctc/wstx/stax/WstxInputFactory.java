@@ -745,24 +745,21 @@ public class WstxInputFactory
             encoding = ss.getEncoding();
 
             try {
-            	/* 11-Nov-2008, TSa: Let's add optimized handling for byte-block
-            	 *   source
-            	 */
-            	if (src instanceof Stax2ByteArraySource) {
-            		Stax2ByteArraySource bas = (Stax2ByteArraySource) src;
-            		bs = StreamBootstrapper.getInstance(pubId, SystemId.construct(sysId), bas.getBuffer(), bas.getBufferStart(), bas.getBufferEnd());
-            	} else {
-            		in = ss.constructInputStream();
-            		if (in == null) {
-            			r = ss.constructReader();
-            		}
-            	}
+                // 11-Nov-2008, TSa: Let's add optimized handling for byte-block source
+                if (src instanceof Stax2ByteArraySource) {
+                    Stax2ByteArraySource bas = (Stax2ByteArraySource) src;
+                    bs = StreamBootstrapper.getInstance(pubId, SystemId.construct(sysId), bas.getBuffer(), bas.getBufferStart(), bas.getBufferEnd());
+                } else {
+                    in = ss.constructInputStream();
+                    if (in == null) {
+                        r = ss.constructReader();
+                    }
+                }
             } catch (IOException ioe) {
                 throw new WstxIOException(ioe);
             }
-            /* Caller has no direct access to stream/reader, Woodstox
-             * owns it and thus has to close too
-             */
+            // Caller has no direct access to stream/reader, Woodstox
+            // owns it and thus has to close too
             autoCloseInput = true;
         } else  if (src instanceof StreamSource) {
             StreamSource ss = (StreamSource) src;
@@ -772,15 +769,13 @@ public class WstxInputFactory
             if (in == null) {
                 r = ss.getReader();
             }
-            /* Caller still has access to stream/reader; no need to
-             * force auto-close-input
-             */
+            // Caller still has access to stream/reader; no need to
+            // force auto-close-input
             autoCloseInput = cfg.willAutoCloseInput();
         } else if (src instanceof SAXSource) {
             SAXSource ss = (SAXSource) src;
-            /* 28-Jan-2006, TSa: Not a complete implementation, but maybe
-             *   even this might help...
-             */
+            // 28-Jan-2006, TSa: Not a complete implementation, but maybe
+            //   even this might help...
             sysId = ss.getSystemId();
             InputSource isrc = ss.getInputSource();
             if (isrc != null) {
@@ -790,9 +785,8 @@ public class WstxInputFactory
                     r = isrc.getCharacterStream();
                 }
             }
-            /* Caller still has access to stream/reader; no need to
-             * force auto-close-input
-             */
+            // Caller still has access to stream/reader; no need to
+            // force auto-close-input
             autoCloseInput = cfg.willAutoCloseInput();
         } else if (src instanceof DOMSource) {
             DOMSource domSrc = (DOMSource) src;
@@ -802,25 +796,25 @@ public class WstxInputFactory
             throw new IllegalArgumentException("Can not instantiate Stax reader for XML source type "+src.getClass()+" (unrecognized type)");
         }
         if (bs == null) { // may have already created boostrapper...
-		    if (r != null) { 
-		    	bs = ReaderBootstrapper.getInstance(pubId, SystemId.construct(sysId), r, encoding);
-		    } else if (in != null) {
-		    	bs = StreamBootstrapper.getInstance(pubId, SystemId.construct(sysId), in);
-		    } else if (sysId != null && sysId.length() > 0) {
-		    	/* 26-Dec-2008, TSa: If we must construct URL from system id,
-		    	 *   it means caller will not have access to resulting
-		    	 *   stream, thus we will force auto-closing.
-		    	 */
-		    	autoCloseInput = true;
-		    	try {
-		    		return createSR(cfg, URLUtil.urlFromSystemId(sysId),
-		    				forER, autoCloseInput);
-		    	} catch (IOException ioe) {
-		    		throw new WstxIOException(ioe);
-		    	}
-		    } else {
-		    	throw new XMLStreamException("Can not create Stax reader for the Source passed -- neither reader, input stream nor system id was accessible; can not use other types of sources (like embedded SAX streams)");
-		    }
+            if (r != null) { 
+                bs = ReaderBootstrapper.getInstance(pubId, SystemId.construct(sysId), r, encoding);
+            } else if (in != null) {
+                bs = StreamBootstrapper.getInstance(pubId, SystemId.construct(sysId), in);
+            } else if (sysId != null && sysId.length() > 0) {
+                /* 26-Dec-2008, TSa: If we must construct URL from system id,
+                 *   it means caller will not have access to resulting
+                 *   stream, thus we will force auto-closing.
+                 */
+                autoCloseInput = true;
+                try {
+                    return createSR(cfg, URLUtil.urlFromSystemId(sysId),
+                            forER, autoCloseInput);
+                } catch (IOException ioe) {
+                    throw new WstxIOException(ioe);
+                }
+            } else {
+                throw new XMLStreamException("Can not create Stax reader for the Source passed -- neither reader, input stream nor system id was accessible; can not use other types of sources (like embedded SAX streams)");
+            }
         }
         return createSR(cfg, sysId, bs, forER, autoCloseInput);
     }

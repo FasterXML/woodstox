@@ -175,9 +175,8 @@ public final class StreamBootstrapper
                 normEnc = verifyXmlEncoding(mFoundEncoding);
             }
         } else {
-            /* We'll actually then just inherit whatever main doc had...
-             * (or in case there was no parent, just copy the 'unknown')
-             */
+            // We'll actually then just inherit whatever main doc had...
+            // (or in case there was no parent, just copy the 'unknown')
             mXml11Handling = (XmlConsts.XML_V_11 == xmlVersion);
         }
 
@@ -208,12 +207,10 @@ public final class StreamBootstrapper
                 normEnc = CharsetNames.CS_UTF8;
             }
         }
-
         mInputEncoding = normEnc;
 
-        /* And then the reader. Let's figure out if we can use our own fast
-         * implementations first:
-         */
+        // And then the reader. Let's figure out if we can use our own fast
+        // implementations first:
         BaseReader r;
 
         // Normalized, can thus use straight equality checks now
@@ -241,6 +238,13 @@ public final class StreamBootstrapper
                     in = new ByteArrayInputStream(mByteBuffer, mInputPtr, mInputEnd - mInputPtr);
                 } else {
                     in = new MergedStream(cfg, in, mByteBuffer, mInputPtr, mInputEnd);
+                }
+            } else {
+                // 03-Apr-2021, tatu: [woodstox-core#123] Edge case possible, too:
+                //   specifically, input only contains XML declaration, with an unknown
+                //   encoding, and no more input.
+                if (in == null) {
+                    in = new ByteArrayInputStream(mByteBuffer, 0, 0);
                 }
             }
             // 20-Jan-2006, TSa: Ok; although it is possible to declare

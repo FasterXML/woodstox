@@ -4,6 +4,10 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+6.2.5 (not yet released)
+
+#123: NPE for content that only has XML declaration and unknown encoding
+
 6.2.4 (11-Feb-2021)
 
 #122: Expected either attr limit (2147483647) >= currAttrSize (0) OR >= outBuf.length (96)

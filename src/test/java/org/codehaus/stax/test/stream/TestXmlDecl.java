@@ -72,12 +72,10 @@ public class TestXmlDecl
 
     public void testInvalidDeclXXX() throws Exception
     {
-        final String XML = "<?xml version=\"1.1\" encoding=\"U\"?>";
+        final byte[] XML = "<?xml version=\"1.1\" encoding=\"U\"?>".getBytes("UTF-8");
         final XMLInputFactory xmlF = getFactory(true);
-
         try {
-            XMLStreamReader sr = xmlF.createXMLStreamReader(new ByteArrayInputStream(
-                    XML.getBytes("UTF-8")));
+            XMLStreamReader sr = xmlF.createXMLStreamReader(new ByteArrayInputStream(XML));
             sr.next();
             fail("Should not pass");
         } catch (XMLStreamException e) {
