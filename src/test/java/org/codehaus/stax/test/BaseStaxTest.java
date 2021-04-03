@@ -509,6 +509,16 @@ public abstract class BaseStaxTest
         }
     }
 
+    protected void verifyException(Throwable e, String match)
+    {
+        String msg = e.getMessage();
+        String lmsg = msg.toLowerCase();
+        String lmatch = match.toLowerCase();
+        if (lmsg.indexOf(lmatch) < 0) {
+            fail("Expected an exception with sub-string \""+match+"\": got one with message \""+msg+"\"");
+        }
+    }
+
     /*
     ///////////////////////////////////////////////////////////
     // Cleansing

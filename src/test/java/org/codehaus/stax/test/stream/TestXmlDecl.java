@@ -64,11 +64,25 @@ public class TestXmlDecl
         assertEquals("US-ASCII", sr.getCharacterEncodingScheme());
     }
 
-    public void testInvalidDecl() 
-        throws XMLStreamException
+    public void testInvalidDecl() throws XMLStreamException
     {
         doTestInvalid(false);
         doTestInvalid(true);
+    }
+
+    public void testInvalidDeclXXX() throws Exception
+    {
+        final String XML = "<?xml version=\"1.1\" encoding=\"U\"?>";
+        final XMLInputFactory xmlF = getFactory(true);
+
+        try {
+            XMLStreamReader sr = xmlF.createXMLStreamReader(new ByteArrayInputStream(
+                    XML.getBytes("UTF-8")));
+            sr.next();
+            fail("Should not pass");
+        } catch (XMLStreamException e) {
+            verifyException(e, "Unsupported encoding: U");
+        }
     }
 
     /*

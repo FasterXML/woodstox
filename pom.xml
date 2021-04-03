@@ -34,7 +34,7 @@ SAX2 and Stax2 APIs
         <connection>scm:git:git@github.com:FasterXML/woodstox.git</connection>
         <developerConnection>scm:git:git@github.com:FasterXML/woodstox.git</developerConnection>
         <url>https://github.com/FasterXML/woodstox</url>
-        <tag>woodstox-core-6.2.4</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>
