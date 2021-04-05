@@ -496,17 +496,56 @@ public abstract class BaseWstxTest
 
     /*
     //////////////////////////////////////////////////
+    // Misc other helpers
+    //////////////////////////////////////////////////
+     */
+
+    protected byte[] utf8Bytes(String str) {
+        // With Java 1.7/7:
+//        return str.getBytes(StandardCharsets.UTF_8);
+        try {
+            return str.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected byte[] readResource(String ref)
+    {
+       ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+       final byte[] buf = new byte[4000];
+
+       InputStream in = getClass().getResourceAsStream(ref);
+       if (in != null) {
+           try {
+               int len;
+               while ((len = in.read(buf)) > 0) {
+                   bytes.write(buf, 0, len);
+               }
+               in.close();
+           } catch (IOException e) {
+               throw new RuntimeException("Failed to read resource '"+ref+"': "+e);
+           }
+       }
+       if (bytes.size() == 0) {
+           throw new IllegalArgumentException("Failed to read resource '"+ref+"': empty resource?");
+       }
+       return bytes.toByteArray();
+    }
+
+    /*
+    //////////////////////////////////////////////////
     // Debug/output helpers
     //////////////////////////////////////////////////
      */
 
     public static void warn(String msg)
     {
-	System.err.println("WARN: "+msg);
+        System.err.println("WARN: "+msg);
     }
 
     @SuppressWarnings("cast")
-	public static String printable(char ch)
+    public static String printable(char ch)
     {
         if (ch == '\n') {
             return "\\n";

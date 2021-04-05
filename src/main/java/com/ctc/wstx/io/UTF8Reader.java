@@ -90,10 +90,14 @@ public final class UTF8Reader
             cbuf[outPtr++] = mSurrogate;
             mSurrogate = NULL_CHAR;
             // No need to load more, already got one char
+            // 05-Apr-2021, tatu: but if at the end must return:
+            if (mBytePtr >= mByteBufferEnd) {
+                mCharCount += 1;
+                return 1;
+            }
         } else {
-            /* To prevent unnecessary blocking (esp. with network streams),
-             * we'll only require decoding of a single char
-             */
+            // To prevent unnecessary blocking (esp. with network streams),
+            // we'll only require decoding of a single char
             int left = (mByteBufferEnd - mBytePtr);
 
             /* So; only need to load more if we can't provide at least
@@ -129,9 +133,7 @@ public final class UTF8Reader
             // At this point we have at least one byte available
             int c = (int) buf[inPtr++];
 
-            /* Let's first do the quickie loop for common case; 7-bit
-             * ascii:
-             */
+            // Let's first do the quickie loop for common case; 7-bit ascii:
             if (c >= 0) { // ascii? can probably loop, then
                 if (c == 0x7F && mXml11) { // DEL illegal in xml1.1
                     int bytePos = mByteCount + inPtr - 1;
@@ -345,27 +347,25 @@ public final class UTF8Reader
      * @return True, if enough bytes were read to allow decoding of at least
      *   one full character; false if EOF was encountered instead.
      */
-	private boolean loadMore(int available)
+    private boolean loadMore(int available)
         throws IOException
     {
         mByteCount += (mByteBufferEnd - available);
 
         // Bytes that need to be moved to the beginning of buffer?
         if (available > 0) {
-	    /* 11-Nov-2008, TSa: can only move if we own the buffer; otherwise
-	     *   we are stuck with the data.
-	     */
+            // 11-Nov-2008, TSa: can only move if we own the buffer; otherwise
+            // we are stuck with the data.
             if (mBytePtr > 0 && canModifyBuffer()) {
                 for (int i = 0; i < available; ++i) {
                     mByteBuffer[i] = mByteBuffer[mBytePtr+i];
                 }
                 mBytePtr = 0;
-		mByteBufferEnd = available;
+                mByteBufferEnd = available;
             }
         } else {
-            /* Ok; here we can actually reasonably expect an EOF,
-             * so let's do a separate read right away:
-             */
+            // Ok; here we can actually reasonably expect an EOF,
+            // so let's do a separate read right away:
             int count = readBytes();
             if (count < 1) {
                 if (count < 0) { // -1
@@ -377,9 +377,8 @@ public final class UTF8Reader
             }
         }
 
-        /* We now have at least one byte... and that allows us to
-         * calculate exactly how many bytes we need!
-         */
+        // We now have at least one byte... and that allows us to
+        // calculate exactly how many bytes we need!
         @SuppressWarnings("cast")
         int c = (int) mByteBuffer[mBytePtr];
         if (c >= 0) { // single byte (ascii) char... cool, can return

@@ -7,6 +7,7 @@ Project: woodstox
 6.2.5 (not yet released)
 
 #123: NPE for content that only has XML declaration and unknown encoding
+#124: ArrayIndexOutOfBoundsException for 4-byte UTF-8 character at end of CDATA
 
 6.2.4 (11-Feb-2021)
 
