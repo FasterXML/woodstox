@@ -11,17 +11,15 @@ import wstxtest.stream.BaseStreamTest;
 import com.ctc.wstx.exc.WstxEOFException;
 import com.ctc.wstx.stax.WstxInputFactory;
 
+//[woodstox-core#465]: UTF-8/Surrogate handling at the end of CDATA (and
+//document)
 public class Fuzz32906_CDataReadTest extends BaseStreamTest
 {
     private final byte[] DOC = readResource("/fuzz/fuzz-32906.xml");
 
     private final WstxInputFactory STAX_F = getWstxInputFactory();
-    
-    /**
-     * This test case was added after encountering a specific problem, which
-     * only occurs when many attributes were spilled from main hash area....
-     * and that's why exact attribute names do matter.
-     */
+
+    //[woodstox-core#465] with InputStream
     public void testIssue465InputStream() throws Exception
     {
         XMLStreamReader sr = STAX_F.createXMLStreamReader(new ByteArrayInputStream(DOC));
@@ -34,9 +32,9 @@ public class Fuzz32906_CDataReadTest extends BaseStreamTest
         sr.close();
     }
     
+    //[woodstox-core#465] with Reader
     public void testIssue465Reader() throws Exception
     {
-        // then Reader
         Reader r = new InputStreamReader(new ByteArrayInputStream(DOC),
                 "UTF-8");
         XMLStreamReader sr = STAX_F.createXMLStreamReader(r);
@@ -49,6 +47,7 @@ public class Fuzz32906_CDataReadTest extends BaseStreamTest
         sr.close();
     }
 
+    //[woodstox-core#465] with Stax2 byte array source
     public void testIssue465Stax2ByteARray() throws Exception
     {
         // Then "native" Byte array
