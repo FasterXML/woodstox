@@ -11,16 +11,16 @@ import wstxtest.stream.BaseStreamTest;
 import com.ctc.wstx.exc.WstxEOFException;
 import com.ctc.wstx.stax.WstxInputFactory;
 
-//[woodstox-core#465]: UTF-8/Surrogate handling at the end of CDATA (and
+//[woodstox-core#124]: UTF-8/Surrogate handling at the end of CDATA (and
 //document)
-public class Fuzz32906_CDataReadTest extends BaseStreamTest
+public class Fuzz124_32906_CDataReadTest extends BaseStreamTest
 {
     private final byte[] DOC = readResource("/fuzz/fuzz-32906.xml");
 
     private final WstxInputFactory STAX_F = getWstxInputFactory();
 
-    //[woodstox-core#465] with InputStream
-    public void testIssue465InputStream() throws Exception
+    //[woodstox-core#124] with InputStream
+    public void testIssue124InputStream() throws Exception
     {
         XMLStreamReader sr = STAX_F.createXMLStreamReader(new ByteArrayInputStream(DOC));
         try {
@@ -32,8 +32,8 @@ public class Fuzz32906_CDataReadTest extends BaseStreamTest
         sr.close();
     }
     
-    //[woodstox-core#465] with Reader
-    public void testIssue465Reader() throws Exception
+    //[woodstox-core#124] with Reader
+    public void testIssue124Reader() throws Exception
     {
         Reader r = new InputStreamReader(new ByteArrayInputStream(DOC),
                 "UTF-8");
@@ -47,7 +47,7 @@ public class Fuzz32906_CDataReadTest extends BaseStreamTest
         sr.close();
     }
 
-    //[woodstox-core#465] with Stax2 byte array source
+    //[woodstox-core#124] with Stax2 byte array source
     public void testIssue465Stax2ByteARray() throws Exception
     {
         // Then "native" Byte array
