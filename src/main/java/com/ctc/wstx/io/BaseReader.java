@@ -69,7 +69,7 @@ abstract class BaseReader
         mByteBuffer = buf;
         mBytePtr = ptr;
         mByteBufferEnd = len;
-	mRecycleBuffer = recycleBuffer;
+        mRecycleBuffer = recycleBuffer;
     }
 
     /*
@@ -189,19 +189,17 @@ abstract class BaseReader
      */
     public final void freeBuffers()
     {
-        /* 11-Apr-2005, TSa: Ok, we can release the buffer now, to be
-         *   recycled by the next stream reader instantiated by this
-         *   thread (if any).
-         */
-	if (mRecycleBuffer) {
-	    byte[] buf = mByteBuffer;
-	    if (buf != null) {
-		mByteBuffer = null;
-		if (mConfig != null) {
-		    mConfig.freeFullBBuffer(buf);
-		}
-	    }
-	}
+        // 11-Apr-2005, TSa: Ok, we can release the buffer now, to be
+        //   recycled by the next stream reader instantiated by this thread (if any).
+        if (mRecycleBuffer) {
+            byte[] buf = mByteBuffer;
+            if (buf != null) {
+                mByteBuffer = null;
+                if (mConfig != null) {
+                    mConfig.freeFullBBuffer(buf);
+                }
+            }
+        }
     }
 
     protected void reportBounds(char[] cbuf, int start, int len)
@@ -220,8 +218,8 @@ abstract class BaseReader
         throws IOException
     {
         throw new CharConversionException("Invalid character 0x"
-                                          +Integer.toHexString(value)
-                                          +", can only be included in xml 1.1 using character entities (at char #"+charPos+", byte #"+bytePos+")");
+                +Integer.toHexString(value)
+                +", can only be included in xml 1.1 using character entities (at char #"+charPos+", byte #"+bytePos+")");
     }
 }
 

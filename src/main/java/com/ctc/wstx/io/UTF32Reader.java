@@ -27,26 +27,26 @@ import com.ctc.wstx.cfg.XmlConsts;
 public final class UTF32Reader
     extends BaseReader
 {
-    final boolean mBigEndian;
+    protected final boolean mBigEndian;
 
-    boolean mXml11;
+    protected boolean mXml11;
 
     /**
      * Although input is fine with full Unicode set, Java still uses
      * 16-bit chars, so we may have to split high-order chars into
      * surrogate pairs.
      */
-    char mSurrogate = NULL_CHAR;
+    protected char mSurrogate = NULL_CHAR;
 
     /**
      * Total read character count; used for error reporting purposes
      */
-    int mCharCount = 0;
+    protected int mCharCount = 0;
 
     /**
      * Total read byte count; used for error reporting purposes
      */
-    int mByteCount = 0;
+    protected int mByteCount = 0;
 
     /*
     ////////////////////////////////////////
@@ -55,8 +55,7 @@ public final class UTF32Reader
     */
 
     public UTF32Reader(ReaderConfig cfg, InputStream in, byte[] buf, int ptr, int len,
-		       boolean recycleBuffer,
-                       boolean isBigEndian)
+            boolean recycleBuffer, boolean isBigEndian)
     {
         super(cfg, in, buf, ptr, len, recycleBuffer);
         mBigEndian = isBigEndian;
@@ -97,24 +96,32 @@ public final class UTF32Reader
             mSurrogate = NULL_CHAR;
             // No need to load more, already got one char
         } else {
-            /* Note: we'll try to avoid blocking as much as possible. As a
-             * result, we only need to get 4 bytes for a full char.
-             */
-            int left = (mByteBufferEnd - mBytePtr);
+            // Note: we'll try to avoid blocking as much as possible. As a
+            // result, we only need to get 4 bytes for a full char.
+            final int left = (mByteBufferEnd - mBytePtr);
             if (left < 4) {
                 if (!loadMore(left)) { // (legal) EOF?
-                    return -1;
+                    // Ok if (but only if!) was at boundary
+                    if (left == 0) {
+                        return -1;
+                    }
+                    reportUnexpectedEOF(mByteBufferEnd - mBytePtr, 4);
                 }
             }
         }
 
-        byte[] buf = mByteBuffer;
+        final byte[] buf = mByteBuffer;
+        // 06-Apr-2021, tatu: Must ensure we don't try to read past buffer end:
+        final int lastValidInputStart = (mByteBufferEnd - 4);
 
         main_loop:
         while (outPtr < len) {
             int ptr = mBytePtr;
             int ch;
 
+            if (mBytePtr > lastValidInputStart) {
+                break;
+            }
             if (mBigEndian) {
                 ch = (buf[ptr] << 24) | ((buf[ptr+1] & 0xFF) << 16)
                     | ((buf[ptr+2] & 0xFF) << 8) | (buf[ptr+3] & 0xFF);
@@ -162,9 +169,6 @@ public final class UTF32Reader
                 }
             }
             cbuf[outPtr++] = (char) ch;
-            if (mBytePtr >= mByteBufferEnd) {
-                break main_loop;
-            }
         }
 
         len = outPtr - start;
@@ -185,8 +189,8 @@ public final class UTF32Reader
         int charPos = mCharCount;
 
         throw new CharConversionException("Unexpected EOF in the middle of a 4-byte UTF-32 char: got "
-                                          +gotBytes+", needed "+needed
-                                          +", at char #"+charPos+", byte #"+bytePos+")");
+                +gotBytes+", needed "+needed
+                +", at char #"+charPos+", byte #"+bytePos+")");
     }
 
     private void reportInvalid(int value, int offset, String msg)
@@ -196,8 +200,8 @@ public final class UTF32Reader
         int charPos = mCharCount + offset;
 
         throw new CharConversionException("Invalid UTF-32 character 0x"
-                                          +Integer.toHexString(value)
-                                          +msg+" at char #"+charPos+", byte #"+bytePos+")");
+                +Integer.toHexString(value)
+                +msg+" at char #"+charPos+", byte #"+bytePos+")");
     }
 
     /**
@@ -213,20 +217,18 @@ public final class UTF32Reader
 
         // Bytes that need to be moved to the beginning of buffer?
         if (available > 0) {
-	    /* 11-Nov-2008, TSa: can only move if we own the buffer; otherwise
-	     *   we are stuck with the data.
-	     */
+            // 11-Nov-2008, TSa: can only move if we own the buffer; otherwise
+            //  we are stuck with the data.
             if (mBytePtr > 0 && canModifyBuffer()) {
                 for (int i = 0; i < available; ++i) {
                     mByteBuffer[i] = mByteBuffer[mBytePtr+i];
                 }
                 mBytePtr = 0;
-		mByteBufferEnd = available;
+                mByteBufferEnd = available;
             }
         } else {
-            /* Ok; here we can actually reasonably expect an EOF,
-             * so let's do a separate read right away:
-             */
+            // Ok; here we can actually reasonably expect an EOF,
+            // so let's do a separate read right away:
             int count = readBytes();
             if (count < 1) {
                 if (count < 0) { // -1
@@ -238,10 +240,8 @@ public final class UTF32Reader
             }
         }
 
-        /* Need at least 4 bytes; if we don't get that many, it's an
-         * error.
-         */
-        while (mByteBufferEnd < 4) {
+        // Need at least 4 bytes; if we don't get that many, it's an error.
+        while ((mByteBufferEnd - mBytePtr) < 4) {
             int count = readBytesAt(mByteBufferEnd);
             if (count < 1) {
                 if (count < 0) { // -1, EOF... no good!

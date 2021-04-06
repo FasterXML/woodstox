@@ -4,6 +4,10 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+6.2.6 (not yet released)
+
+#125: `ArrayIndexOutOfBoundsException` for UTF-32 encoded data
+
 6.2.5 (06-Apr-2021)
 
 #123: NPE for content that only has XML declaration and unknown encoding
