@@ -26,7 +26,7 @@ public class Fuzz125_32969_UTF32ReadTest extends BaseStreamTest
     }
 
     //[woodstox-core#125]: InputStream
-    public void testIssue124InputStream() throws Exception
+    public void testIssue125InputStream() throws Exception
     {
         XMLStreamReader sr = STAX_F.createXMLStreamReader(new ByteArrayInputStream(DOC));
         try {
@@ -39,7 +39,7 @@ public class Fuzz125_32969_UTF32ReadTest extends BaseStreamTest
     }
 
     //[woodstox-core#125]: byte[] input
-    public void testIssue465Stax2ByteArray() throws Exception
+    public void testIssue125Stax2ByteArray() throws Exception
     {
         // Then "native" Byte array
         Stax2ByteArraySource src = new Stax2ByteArraySource(DOC, 0, DOC.length);
