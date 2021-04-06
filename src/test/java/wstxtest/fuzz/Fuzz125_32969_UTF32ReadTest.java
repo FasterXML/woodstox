@@ -12,7 +12,7 @@ import com.ctc.wstx.exc.WstxIOException;
 import com.ctc.wstx.stax.WstxInputFactory;
 
 //[woodstox-core#125]: UTF-32 decoding issue
-public class FuzzXXX_32969_UTF32ReadTest extends BaseStreamTest
+public class Fuzz125_32969_UTF32ReadTest extends BaseStreamTest
 {
     private final byte[] DOC = readResource("/fuzz/fuzz-32969.xml");
 
