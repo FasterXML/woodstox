@@ -4,7 +4,7 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-6.2.6 (not yet released)
+6.2.6 (19-Apr-2021)
 
 #125: `ArrayIndexOutOfBoundsException` for UTF-32 encoded data
 #127: Invalid attributes producing extra null characters during DTD validation
