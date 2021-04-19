@@ -48,3 +48,9 @@ Daniel Kulp (dkulp@github)
 
 * Contributed fix for #103: Issue caused by MSV shading
  (6.2.0)
+
+Chris Trenkamp (ChrisTrenkamp@github)
+
+* Reported #127, suggested fix: Invalid attributes producing extra null characters
+  during DTD validation
+ (6.2.6)

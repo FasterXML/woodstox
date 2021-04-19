@@ -37,10 +37,10 @@ public class DTDValidator
     extends DTDValidatorBase
 {
     /*
-    ///////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Configuration
-    ///////////////////////////////////////
-    */
+    ///////////////////////////////////////////////////////////////////////
+     */
 
     /**
      * Determines if identical problems (definition of the same element,
@@ -51,10 +51,10 @@ public class DTDValidator
     protected boolean mReportDuplicateErrors = false;
 
     /*
-    ///////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Id/idref state
-    ///////////////////////////////////////
-    */
+    ///////////////////////////////////////////////////////////////////////
+     */
 
     /**
      * Information about declared and referenced element ids (unique
@@ -63,10 +63,10 @@ public class DTDValidator
     protected ElementIdMap mIdMap = null;
 
     /*
-    ///////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Element def/spec/validator stack, state
-    ///////////////////////////////////////////
-    */
+    ///////////////////////////////////////////////////////////////////////
+     */
 
     /**
      * Stack of validators for open elements
@@ -79,26 +79,26 @@ public class DTDValidator
      */
     protected BitSet mCurrSpecialAttrs = null;
 
-    boolean mCurrHasAnyFixed = false;
+    protected boolean mCurrHasAnyFixed = false;
 
     /*
-    ///////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Temporary helper objects
-    ///////////////////////////////////////
-    */
+    ///////////////////////////////////////////////////////////////////////
+     */
 
     /**
      * Reusable lazily instantiated BitSet; needed to keep track of
      * missing 'special' attributes (required ones, ones with default
      * values)
      */
-    BitSet mTmpSpecialAttrs;
+    protected BitSet mTmpSpecialAttrs;
 
     /*
-    ///////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Life-cycle
-    ///////////////////////////////////////
-    */
+    ///////////////////////////////////////////////////////////////////////
+     */
 
     public DTDValidator(DTDSubset schema, ValidationContext ctxt, boolean hasNsDefaults,
                         Map<PrefixedName,DTDElement> elemSpecs, Map<String,EntityDecl> genEntities)
@@ -111,10 +111,10 @@ public class DTDValidator
     public final boolean reallyValidating() { return true; }
 
     /*
-    ///////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // XMLValidator implementation
-    ///////////////////////////////////////
-    */
+    ///////////////////////////////////////////////////////////////////////
+     */
 
     //public XMLValidationSchema getSchema();
 
@@ -208,11 +208,10 @@ public class DTDValidator
             // Only report error if not already recovering from an error:
             if (mCurrElem != null) {
                 reportValidationProblem(ErrorConsts.ERR_VLD_UNKNOWN_ATTR,
-                                        mCurrElem.toString(), mTmpKey.toString());
+                        mCurrElem.toString(), mTmpKey.toString());
             }
-            /* [WSTX-190] NPE if we continued (after reported didn't
-             *   throw an exception); nothing more to do, let's leave
-             */
+            // [WSTX-190] NPE if we continued (after reported didn't
+            //   throw an exception); nothing more to do, let's leave
             return value;
         }
         int index = mAttrCount++;
@@ -239,9 +238,8 @@ public class DTDValidator
 
     @Override
     public String validateAttribute(String localName, String uri,
-                                    String prefix,
-                                    char[] valueChars, int valueStart,
-                                    int valueEnd)
+            String prefix,
+            char[] valueChars, int valueStart, int valueEnd)
         throws XMLStreamException
     {
         DTDAttribute attr = mCurrAttrDefs.get(mTmpKey.reset(prefix, localName));
@@ -249,11 +247,10 @@ public class DTDValidator
             // Only report error if not already covering from an error:
             if (mCurrElem != null) {
                 reportValidationProblem(ErrorConsts.ERR_VLD_UNKNOWN_ATTR,
-                                        mCurrElem.toString(), mTmpKey.toString());
+                        mCurrElem.toString(), mTmpKey.toString());
             }
-            /* [WSTX-190] NPE if we continued (after reported didn't
-             *   throw an exception); nothing more to do, let's leave
-             */
+            // [WSTX-190] NPE if we continued (after reported didn't
+            // throw an exception); nothing more to do, let's leave
             return new String(valueChars, valueStart, valueEnd-valueStart);
         }
         int index = mAttrCount++;
@@ -278,7 +275,7 @@ public class DTDValidator
             }
             if (!match) {
                 String act = (result == null) ? 
-                    new String(valueChars, valueStart, valueEnd) : result;
+                    new String(valueChars, valueStart, valueEnd-valueStart) : result;
                 reportValidationProblem("Value of #FIXED attribute \""+attr+"\" (element <"+mCurrElem+">) not \""+exp+"\" as expected, but \""+act+"\"");
             }
         }
@@ -381,9 +378,9 @@ public class DTDValidator
     }
 
     /*
-    ///////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Package methods, accessors
-    ///////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     */
 
     @Override
@@ -395,27 +392,25 @@ public class DTDValidator
     }
 
     /*
-    ///////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Internal methods
-    ///////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     */
 
     protected void checkIdRefs()
         throws XMLStreamException
     {
-        /* 02-Oct-2004, TSa: Now we can also check that all id references
-         *    pointed to ids that actually are defined
-         */
+        // 02-Oct-2004, TSa: Now we can also check that all id references
+        //    pointed to ids that actually are defined
         if (mIdMap != null) {
             ElementId ref = mIdMap.getFirstUndefined();
             if (ref != null) { // problem!
                 reportValidationProblem("Undefined id '"+ref.getId()
-                                        +"': referenced from element <"
-                                        +ref.getElemName()+">, attribute '"
-                                        +ref.getAttrName()+"'",
-                                        ref.getLocation());
+                +"': referenced from element <"
+                +ref.getElemName()+">, attribute '"
+                +ref.getAttrName()+"'",
+                ref.getLocation());
             }
         }
     }
-
 }

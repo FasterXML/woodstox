@@ -7,6 +7,8 @@ Project: woodstox
 6.2.6 (not yet released)
 
 #125: `ArrayIndexOutOfBoundsException` for UTF-32 encoded data
+#127: Invalid attributes producing extra null characters during DTD validation
+ (repported by Chris T)
 
 6.2.5 (06-Apr-2021)
 
