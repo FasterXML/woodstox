@@ -254,7 +254,7 @@ public class DTDValidator
             /* [WSTX-190] NPE if we continued (after reported didn't
              *   throw an exception); nothing more to do, let's leave
              */
-            return new String(valueChars, valueStart, valueEnd);
+            return new String(valueChars, valueStart, valueEnd-valueStart);
         }
         int index = mAttrCount++;
         if (index >= mAttrSpecs.length) {
