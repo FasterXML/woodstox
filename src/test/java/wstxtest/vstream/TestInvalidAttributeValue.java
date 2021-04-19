@@ -18,7 +18,7 @@ import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 public class TestInvalidAttributeValue 
     extends BaseStax2Test
 {
-    public void testValidationBeyondUnknownElement() throws Exception
+    public void testInvalidAttributeValue() throws Exception
     {
         final String DOC = "<root note='note' verbose='yes'/>\n";
 
