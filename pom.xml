@@ -9,7 +9,7 @@
 
     <groupId>com.fasterxml.woodstox</groupId>
     <artifactId>woodstox-core</artifactId>
-    <version>6.2.6-SNAPSHOT</version>
+    <version>6.2.6</version>
     <packaging>bundle</packaging>
     <name>Woodstox</name>
     <description>Woodstox is a high-performance XML processor that implements Stax (JSR-173),
@@ -34,7 +34,7 @@ SAX2 and Stax2 APIs
         <connection>scm:git:git@github.com:FasterXML/woodstox.git</connection>
         <developerConnection>scm:git:git@github.com:FasterXML/woodstox.git</developerConnection>
         <url>https://github.com/FasterXML/woodstox</url>
-        <tag>HEAD</tag>
+        <tag>woodstox-core-6.2.6</tag>
     </scm>
 
     <properties>
