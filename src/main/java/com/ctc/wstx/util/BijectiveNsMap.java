@@ -291,13 +291,13 @@ public final class BijectiveNsMap
             if (ctxt != null) {
                 String existing = ctxt.getNamespaceURI(prefix);
                 if (existing != null && !existing.isEmpty()) {
+                    // also... guard against infinite loops in general, just in case
+                    if (++attempts > MAX_LOOP_FOR_NEW_PREFIX) {
+                        throw new IllegalStateException("Internal error: failed to find a mapping prefix for URI '"+uri
+                                +" in "+MAX_LOOP_FOR_NEW_PREFIX+" attempts");
+                    }
                     continue;
                 }
-            }
-            // also... guard against infinite loops in general, just in case
-            if (++attempts > MAX_LOOP_FOR_NEW_PREFIX) {
-                throw new IllegalStateException("Internal error: failed to find a mapping prefix for URI '"+uri
-                        +" in "+MAX_LOOP_FOR_NEW_PREFIX+" attempts");
             }
             
             break;

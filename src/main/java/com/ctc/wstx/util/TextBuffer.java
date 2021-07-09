@@ -754,6 +754,13 @@ public final class TextBuffer
         return rlen;
     }
 
+    // 09-Jul-2021, tatu: Does not appear to be used at all?!?! Let's deprecate,
+    //    to remove in near future
+
+    /**
+     * @deprecated
+     */
+    @Deprecated // since 6.2.7
     public Reader rawContentsViaReader()
         throws IOException
     {
@@ -772,12 +779,12 @@ public final class TextBuffer
             }
             return new StringReader("");
         }
-	// or maybe it's all in the current segment
-	if (mSegments == null || mSegments.size() == 0) {
-	    return new CharArrayReader(mCurrentSegment, 0, mCurrentSize);
-	}
+        // or maybe it's all in the current segment
+        if (mSegments == null || mSegments.size() == 0) {
+            return new CharArrayReader(mCurrentSegment, 0, mCurrentSize);
+        }
         // Nope, need to do full segmented output
-	return new BufferReader(mSegments, mCurrentSegment, mCurrentSize);
+        return new BufferReader(mSegments, mCurrentSegment, mCurrentSize);
     }
 
     public boolean isAllWhitespace()
@@ -824,10 +831,9 @@ public final class TextBuffer
      */
     public boolean endsWith(String str)
     {
-        /* Let's just play this safe; should seldom if ever happen...
-         * and because of that, can be sub-optimal, performancewise, to
-         * alternatives.
-         */
+        // Let's just play this safe; should seldom if ever happen...
+        // and because of that, can be sub-optimal, performancewise, to
+        // alternatives.
         if (mInputStart >= 0) {
             unshare(16);
         }
@@ -1265,6 +1271,9 @@ public final class TextBuffer
         return result;
     }
 
+    // 09-Jul-2021, tatu: Limited use, only from method "rawContentsViaReader()"
+    //    which is now deprecated
+
     private final static class BufferReader
         extends Reader
     {
@@ -1308,7 +1317,7 @@ public final class TextBuffer
             if (len < 1) {
                 return 0;
             }
-            
+
             int origOffset = offset;
             // First need to copy stuff from previous segments
             while (_segments != null) {
@@ -1324,6 +1333,7 @@ public final class TextBuffer
                 if (max > 0) {
                     System.arraycopy(curr, _segmentOffset, cbuf, offset, max);
                     offset += max;
+                    len -= max;
                 }
                 if (++_segmentIndex >= _segments.size()) { // last one
                     _segments = null;
@@ -1365,9 +1375,8 @@ public final class TextBuffer
         @Override
         public long skip(long amount)
         {
-            /* Note: implementation is almost identical to that of read();
-             * difference being that no data is copied.
-             */
+            // Note: implementation is almost identical to that of read();
+            // difference being that no data is copied.
             if (amount < 0) {
                 return 0L;
             }
