@@ -162,15 +162,35 @@ SAX2 and Stax2 APIs
     </dependencies>
 
     <build>
-        <plugins>
+      <plugins>
+	<!-- 10-Jul-2021, tatu: Add code coverage again -->
+	<plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <executions>
+            <execution>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+            </execution>
+            <!-- attached to Maven test phase -->
+            <execution>
+              <id>report</id>
+              <phase>test</phase>
+                <goals>
+                  <goal>report</goal>
+                </goals>
+            </execution>
+          </executions>
+        </plugin>
 
-          <!-- 12-Oct-2019, tatu: Copied from
+        <!-- 12-Oct-2019, tatu: Copied from
 
            https://github.com/stephenc/git-timestamp-maven-plugin/blob/master/pom.xml#L327-L337
 
                to simplify releases. I hope.
-            -->
-	  <plugin>
+          -->
+	<plugin>
             <groupId>org.sonatype.plugins</groupId>
             <artifactId>nexus-staging-maven-plugin</artifactId>
             <version>1.6.6</version>
@@ -181,7 +201,7 @@ SAX2 and Stax2 APIs
               <!-- 12-Oct-2019, tatu: Found this from output of mvn:relase -->
               <stagingProfileId>b34f19b9cc6224</stagingProfileId>
             </configuration>
-          </plugin>
+        </plugin>
 
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
