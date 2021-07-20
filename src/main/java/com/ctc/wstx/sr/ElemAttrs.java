@@ -122,7 +122,7 @@ public final class ElemAttrs
             if (!ln.equals(raw[i])) {
                 continue;
             }
-            String thisUri = raw[i+OFFSET_NS_URI];
+            String thisUri = raw[i+OFFSET_NS_URI]; // lgtm [java/index-out-of-bounds]
             if (defaultNs) {
                 if (thisUri == null || thisUri.length() == 0) {
                         return i;

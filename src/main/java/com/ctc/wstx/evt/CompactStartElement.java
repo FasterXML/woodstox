@@ -119,14 +119,14 @@ public class CompactStartElement
         if (raw != null) {
             for (int i = 0, len = raw.length; i < len; i += 4) {
                 w.write(' ');
-                String prefix = raw[i + OFFSET_NS_PREFIX];
+                String prefix = raw[i + OFFSET_NS_PREFIX]; // lgtm [java/index-out-of-bounds]
                 if (prefix != null && prefix.length() > 0) {
                     w.write(prefix);
                     w.write(':');
                 }
                 w.write(raw[i]); // local name
                 w.write("=\"");
-                TextEscaper.writeEscapedAttrValue(w, raw[i + OFFSET_VALUE]);
+                TextEscaper.writeEscapedAttrValue(w, raw[i + OFFSET_VALUE]); // lgtm [java/index-out-of-bounds]
                 w.write('"');
             }
         }
@@ -142,9 +142,9 @@ public class CompactStartElement
         if (raw != null) {
             for (int i = 0, len = raw.length; i < len; i += 4) {
                 String ln = raw[i];
-                String prefix = raw[i + OFFSET_NS_PREFIX];
-                String nsURI = raw[i + OFFSET_NS_URI];
-                w.writeAttribute(prefix, nsURI, ln, raw[i + OFFSET_VALUE]);
+                String prefix = raw[i + OFFSET_NS_PREFIX]; // lgtm [java/index-out-of-bounds]
+                String nsURI = raw[i + OFFSET_NS_URI]; // lgtm [java/index-out-of-bounds]
+                w.writeAttribute(prefix, nsURI, ln, raw[i + OFFSET_VALUE]); // lgtm [java/index-out-of-bounds]
             }
         }
     }

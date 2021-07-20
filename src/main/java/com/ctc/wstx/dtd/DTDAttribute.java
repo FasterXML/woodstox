@@ -380,7 +380,7 @@ public abstract class DTDAttribute
         }
 
         if (count == 0) {
-            reportValidationProblem(rep, "Invalid default value '"+defValue
+            return reportValidationProblem(rep, "Invalid default value '"+defValue
                              +"'; empty String is not a valid name value");
         }
 

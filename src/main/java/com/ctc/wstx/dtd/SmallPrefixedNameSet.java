@@ -98,7 +98,7 @@ public final class SmallPrefixedNameSet
                     sb.append(':');
                 }
             }
-            sb.append(mStrings[i++]);
+            sb.append(mStrings[i++]); // lgtm [java/index-out-of-bounds]
         }
     }
 }
