@@ -6,6 +6,7 @@ Now at Github.
 For longer overview, check out:
 
 * [Java XML: Woodstox Introduction](https://www.studytrails.com/2016/09/12/java-xml-woodstox-introduction/) by StudyTrails
+    * also other [Woodstox documentation](https://www.studytrails.com/category/java/xml/woodstox/) by StudyTrails
 
 ## Status
 
