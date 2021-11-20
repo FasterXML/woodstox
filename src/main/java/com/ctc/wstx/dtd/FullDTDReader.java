@@ -1662,22 +1662,17 @@ public class FullDTDReader
                         // Ok, should have updated the input source by now
                         continue main_loop;
                     }
-                    
-                    if (c <= 0xFFFF) {
-                        
-                    } else{
-                        if (d <= 0xFFFF) {
-                            c = (char) d;
-                        } else {
-                            // Need more room?
-                            if (outPtr >= outBuf.length) {
-                                outBuf = tb.finishCurrentSegment();
-                                outPtr = 0;
-                            }
-                            d -= 0x10000;
-                            outBuf[outPtr++] = (char) ((d >> 10)  + 0xD800);;
-                            c = (char) ((d & 0x3FF)  + 0xDC00);
+                    if (d <= 0xFFFF) {
+                        c = (char) d;
+                    } else {
+                        // Need more room?
+                        if (outPtr >= outBuf.length) {
+                            outBuf = tb.finishCurrentSegment();
+                            outPtr = 0;
                         }
+                        d -= 0x10000;
+                        outBuf[outPtr++] = (char) ((d >> 10)  + 0xD800);;
+                        c = (char) ((d & 0x3FF)  + 0xDC00);
                     }
                 } else if (c == '<') {
                     throwDTDUnexpectedChar(c, SUFFIX_IN_DEF_ATTR_VALUE);
