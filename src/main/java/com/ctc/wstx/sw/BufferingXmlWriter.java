@@ -484,7 +484,7 @@ public final class BufferingXmlWriter
                 if (c < MAXQC) {
                     if (QC[c] != 0) {
                         if (c < 0x0020) {
-                            if (c != ' ' && c != '\n' && c != '\t') { // fine as is
+                            if (c != '\n' && c != '\t') { // fine as is
                                 if (c == '\r') {
                                     if (mEscapeCR) {
                                         break inner_loop;
