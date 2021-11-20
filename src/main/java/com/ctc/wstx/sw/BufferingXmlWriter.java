@@ -807,7 +807,7 @@ public final class BufferingXmlWriter
     @Override
     public void writeStartTagEnd() throws IOException {
         fastWriteRaw('>');
-    }    
+    }
 
     @Override
     public void writeStartTagEmptyEnd() throws IOException

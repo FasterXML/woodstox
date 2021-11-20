@@ -777,7 +777,7 @@ public abstract class BaseStreamWriter
                 writeEndDocument();
                 return;
                 
-                // Element start/end events:
+            // Element start/end events:
             case START_ELEMENT:
                 if (sr instanceof StreamReaderImpl) {
                     StreamReaderImpl impl = (StreamReaderImpl) sr;
@@ -875,7 +875,14 @@ public abstract class BaseStreamWriter
 
             case PROCESSING_INSTRUCTION:
                 {
+                    mAnyOutput = true;
+                    // Need to finish an open start element?
+                    if (mStartElementOpen) {
+                        closeStartElement(mEmptyElement);
+                    }
                     mWriter.writePIStart(sr.getPITarget(), true);
+                    // Similar to COMMENT, contents assumed to have been validated;
+                    // no escaping allowed, so:
                     sr.getText(wrapAsRawWriter(), preserveEventData);
                     mWriter.writePIEnd();
                 }

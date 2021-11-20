@@ -320,9 +320,8 @@ public class SimpleNsStreamWriter
             }
         }
 
-        /* And then let's just output attributes, if any (whether to copy
-         * implicit, aka "default" attributes, is configurable)
-         */
+        // And then let's just output attributes, if any (whether to copy
+        // implicit, aka "default" attributes, is configurable)
         int attrCount = mCfgCopyDefaultAttrs ?
             attrCollector.getCount() :
             attrCollector.getSpecifiedCount();

@@ -38,6 +38,8 @@ Daniel Lowe (dan2097@github)
 
 * Reported #97: `copyEventFromReader()` `ArrayIndexOutOfBoundsException`
  (6.0.3)
+* Reported #132: `copyEventFromReader()` Processing Instruction event bug
+ (6.0.7)
 
 Konrad Windszus (kwin@github)
 
