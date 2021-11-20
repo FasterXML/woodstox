@@ -2360,7 +2360,7 @@ public class FullDTDReader
                 char d = dtdNextIfAvailable();
                 if (d == CHAR_NULL || isSpaceChar(d)) { // ok, PE declaration
                     isParam = true;
-                    if (d == '\n' || c == '\r') {
+                    if (d == '\n' || d == '\r') {
                         skipCRLF(d);
                     }
                     break;
