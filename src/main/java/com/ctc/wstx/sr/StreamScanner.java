@@ -1738,8 +1738,9 @@ public abstract class StreamScanner
                 newInput = DefaultInputResolver.resolveEntityUsing
                     (oldInput, id, null, null, resolver, mConfig, xmlVersion);
                 if (mCfgTreatCharRefsAsEntities) {
-                    return new IntEntity(WstxInputLocation.getEmptyLocation(), newInput.getEntityId(),
-                            newInput.getSource(), new char[]{}, WstxInputLocation.getEmptyLocation());
+                    return new IntEntity(WstxInputLocation.getEmptyLocation(),
+                            newInput.getEntityId(), newInput.getSource(), // lgtm [java/dereferenced-value-may-be-null]
+                            new char[]{}, WstxInputLocation.getEmptyLocation());
                 }
             } catch (IOException ioe) {
                 throw constructFromIOE(ioe);

@@ -96,9 +96,8 @@ public final class DTDNmTokensAttr
             //trimmed = true;
         }
 
-        /* Ok, now, need to check we only have valid chars, and maybe
-         * also coalesce multiple spaces, if any.
-         */
+        // Ok, now, need to check we only have valid chars, and maybe
+        // also coalesce multiple spaces, if any.
         StringBuilder sb = null;
 
         while (start <= end) {
@@ -131,7 +130,7 @@ public final class DTDNmTokensAttr
          *   avoid using StringBuilder... but let's only do it if it turns
          *   out dealing with NMTOKENS normalization shows up on profiling...
          */
-        return sb.toString();
+        return (sb == null) ? null : sb.toString();
     }
 
     /**
@@ -201,7 +200,7 @@ public final class DTDNmTokensAttr
             return;
         }
 
-        if (normalize) {
+        if (sb != null) {
             mDefValue.setValue(sb.toString());
         }
     }

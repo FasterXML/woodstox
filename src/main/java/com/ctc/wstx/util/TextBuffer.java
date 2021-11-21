@@ -823,46 +823,6 @@ public final class TextBuffer
     }
 
     /**
-     * Method that can be used to check if the contents of the buffer end
-     * in specified String.
-     *
-     * @return True if the textual content buffer contains ends with the
-     *   specified String; false otherwise
-     */
-    public boolean endsWith(String str)
-    {
-        // Let's just play this safe; should seldom if ever happen...
-        // and because of that, can be sub-optimal, performancewise, to
-        // alternatives.
-        if (mInputStart >= 0) {
-            unshare(16);
-        }
-
-        int segIndex = (mSegments == null) ? 0 : mSegments.size();
-        int inIndex = str.length() - 1;
-        char[] buf = mCurrentSegment;
-        int bufIndex = mCurrentSize-1;
-
-        while (inIndex >= 0) {
-            if (str.charAt(inIndex) != buf[bufIndex]) {
-                return false;
-            }
-            if (--inIndex == 0) {
-                break;
-            }
-            if (--bufIndex < 0) {
-                if (--segIndex < 0) { // no more data?
-                    return false;
-                }
-                buf = mSegments.get(segIndex);
-                bufIndex = buf.length-1;
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * Note: it is assumed that this method is not used often enough to
      * be a bottleneck, or for long segments. Based on this, it is optimized
      * for common simple cases where there is only one single character

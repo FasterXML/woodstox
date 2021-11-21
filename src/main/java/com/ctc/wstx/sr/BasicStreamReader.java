@@ -2448,9 +2448,11 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                 break;
             }
             if (c < CHAR_SPACE || c == '<') {
-                throwUnexpectedChar(c, SUFFIX_IN_XML_DECL);
-            } else if (c == CHAR_NULL) {
-                throwNullChar();
+                if (c == CHAR_NULL) {
+                    throwNullChar();
+                } else {
+                    throwUnexpectedChar(c, SUFFIX_IN_XML_DECL);
+                }
             }
             if (outPtr >= outBuf.length) {
                 outBuf = tbuf.finishCurrentSegment();
@@ -5274,8 +5276,6 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                     } else {
                         ; // !!! TBI: how to check past boundary?
                     }
-                } else if (c == CHAR_NULL) {
-                    throwNullChar();
                 }
             }
         } // while (true)

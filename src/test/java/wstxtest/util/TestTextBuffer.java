@@ -27,8 +27,6 @@ public class TestTextBuffer
 
         assertEquals(INPUT, tb.toString());
         assertEquals(INPUT, tb.contentsAsString());
-        assertFalse(tb.endsWith("shor"));
-        assertTrue(tb.endsWith("so as not to be too short"));
         assertFalse(tb.isAllWhitespace());
 
         assertTrue(tb.equalsString(INPUT));

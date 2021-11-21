@@ -384,8 +384,9 @@ public abstract class DTDAttribute
                              +"'; empty String is not a valid name value");
         }
 
-        return normalize ? sb.toString() : defValue;
+        return (sb != null) ? sb.toString() : defValue;
     }
+
 
     protected String validateDefaultNmToken(InputProblemReporter rep, boolean normalize)
         throws XMLStreamException
