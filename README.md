@@ -1,7 +1,12 @@
 # Overview
 
-The gold standard Stax XML API (`javax.xml.stream`) implementation.
-Now at Github.
+The gold standard [Stax](https://en.wikipedia.org/wiki/StAX) XML "pull" API (`javax.xml.stream`) implementation.
+
+Since version 4.0, Woodstox also implements [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML) API for event-based XML processing.
+
+Most if not all popular Java XML web service frameworks use either Stax or
+SAX API for XML processing: this means that Woodstox can be used with the
+most popular Java frameworks.
 
 For longer overview, check out:
 
