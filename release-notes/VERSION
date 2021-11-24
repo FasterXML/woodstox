@@ -4,6 +4,10 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+Not yet released:
+
+#121: Fix issues outlined by "lgtm.com"'s static analysis
+
 6.2.7 (20-Nov-2021)
 
 #132: `copyEventFromReader()` Processing Instruction event bug

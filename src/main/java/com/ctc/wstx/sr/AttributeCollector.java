@@ -46,7 +46,7 @@ import com.ctc.wstx.util.*;
  */
 public final class AttributeCollector
 {
-    final static int INT_SPACE = 0x0020;
+    protected final static int INT_SPACE = 0x0020;
 
     /**
      * Threshold value that indicates minimum length for lists instances
@@ -798,7 +798,7 @@ public final class AttributeCollector
             mAttributes[0] = new Attribute(attrPrefix, attrLocalName, 0);
         } else {
             int valueStart = mValueBuilder.getCharSize();
-            if (mAttrCount >= mAttributes.length) {
+            if (mAttrCount >= mAttributes.length) { // lgtm [java/dereferenced-value-may-be-null]
                 if ((mAttrCount + mNsCount) >= mMaxAttributesPerElement) {
                     throw new XMLStreamException("Attribute limit ("+mMaxAttributesPerElement+") exceeded");
                 }
@@ -920,18 +920,17 @@ public final class AttributeCollector
             mNamespaces[0] = new Attribute(null, prefix, 0);
         } else {
             int len = mNsCount;
-            /* Ok: must ensure that there are no duplicate namespace
-             * declarations (ie. decls with same prefix being bound)
-             */
+            // Ok: must ensure that there are no duplicate namespace
+            // declarations (ie. decls with same prefix being bound)
             if (prefix != null) { // null == default ns
                 for (int i = 0; i < len; ++i) {
                     // note: for ns decls, bound prefix is in 'local name'
-                    if (prefix == mNamespaces[i].mLocalName) {
+                    if (prefix == mNamespaces[i].mLocalName) { // lgtm [java/dereferenced-value-may-be-null]
                         return null;
                     }
                 }
             }
-            if (len >= mNamespaces.length) {
+            if (len >= mNamespaces.length) { // lgtm [java/dereferenced-value-may-be-null]
                 if ((mAttrCount + mNsCount) >= mMaxAttributesPerElement) {
                     throw new XMLStreamException("Attribute limit ("+mMaxAttributesPerElement+") exceeded");
                 }
@@ -1000,15 +999,13 @@ public final class AttributeCollector
          */
         int[] map = mAttrMap;
 
-        /* What's minimum size to contain at most 80% full hash area,
-         * plus 1/8 spill area (12.5% spilled entries, two ints each)?
-         */
+        // What's minimum size to contain at most 80% full hash area,
+        // plus 1/8 spill area (12.5% spilled entries, two ints each)?
         int hashCount = 4;
         {
             int min = attrCount + (attrCount >> 2); // == 80% fill rate
-            /* Need to get 2^N size that can contain all elements, with
-             * 80% fill rate
-             */
+            // Need to get 2^N size that can contain all elements, with
+            // 80% fill rate
             while (hashCount < min) {
                 hashCount += hashCount; // 2x
             }
@@ -1018,10 +1015,9 @@ public final class AttributeCollector
             if (map == null || map.length < min) {
                 map = new int[min];
             } else {
-                /* Need to clear old hash entries (if any). But note that
-                 * spilled entries we can leave alone -- they are just ints,
-                 * and get overwritten if and as needed
-                 */
+                // Need to clear old hash entries (if any). But note that
+                // spilled entries we can leave alone -- they are just ints,
+                // and get overwritten if and as needed
                 Arrays.fill(map, 0, hashCount, 0);
             }
         }
@@ -1041,14 +1037,13 @@ public final class AttributeCollector
                 }
                 int index = hash & mask;
                 // Hash slot available?
-                if (map[index] == 0) {
+                if (map[index] == 0) { // lgtm [java/dereferenced-value-may-be-null]
                     map[index] = i+1; // since 0 is marker
                 } else {
                     int currIndex = map[index]-1;
-                    /* nope, need to spill; let's extract most of that code to
-                     * a separate method for clarity (and maybe it'll be
-                     * easier to inline by JVM too)
-                     */
+                    // nope, need to spill; let's extract most of that code to
+                    // a separate method for clarity (and maybe it'll be
+                    // easier to inline by JVM too)
                     map = spillAttr(uri, name, map, currIndex, spillIndex,
                                     hash, hashCount);
                     if (map == null) {

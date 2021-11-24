@@ -37,10 +37,10 @@ import com.ctc.wstx.util.PrefixedName;
 public class DTDTypingNonValidator
     extends DTDValidatorBase
 {
-	/*
-    ///////////////////////////////////////////
+    /*
+    ///////////////////////////////////////////////////////////////////////
     // Element def/spec/validator stack, state
-    ///////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     */
 
     /**
@@ -63,21 +63,21 @@ public class DTDTypingNonValidator
     protected boolean mHasNormalizableAttrs = false;
 
     /*
-    ///////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Temporary helper objects
-    ///////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     */
 
     /**
      * Reusable lazily instantiated BitSet; needed to keep track of
      * 'missing' attributes with default values (normal default, #FIXED).
      */
-    BitSet mTmpDefaultAttrs;
+    protected BitSet mTmpDefaultAttrs;
 
     /*
-    ///////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Life-cycle
-    ///////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     */
 
     public DTDTypingNonValidator(DTDSubset schema, ValidationContext ctxt, boolean hasNsDefaults,
@@ -93,9 +93,9 @@ public class DTDTypingNonValidator
     public final boolean reallyValidating() { return false; }
 
     /*
-    ///////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Configuration
-    ///////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     */
 
     /**
@@ -108,9 +108,9 @@ public class DTDTypingNonValidator
     }
 
     /*
-    ///////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // XMLValidator implementation
-    ///////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     */
 
     //public XMLValidationSchema getSchema()
@@ -253,7 +253,11 @@ public class DTDTypingNonValidator
          * attribute default values, and return "anything goes"
          * as the allowable content:
          */
-        DTDElement elem = mCurrElem;
+        final DTDElement elem = mCurrElem;
+        if (elem == null) { // can this ever occur really?
+            return XMLValidator.CONTENT_ALLOW_ANY_TEXT;
+        }
+        
         if (mHasAttrDefaults) {
             BitSet specBits = mCurrDefaultAttrs;
             int specCount = elem.getSpecialCount();
@@ -271,11 +275,9 @@ public class DTDTypingNonValidator
          * to occur -- although it won't be considered an error, when not
          * validating, info is needed to determine type of SPACE instead
          * of CHARACTERS. Other validation types are not to be returned,
-         * however, since caller doesn't know how to deal with such
-         * cases.
+         * however, since caller doesn't know how to deal with such cases.
          */
-        return (elem == null) ? XMLValidator.CONTENT_ALLOW_ANY_TEXT :
-            elem.getAllowedContentIfSpace();
+        return elem.getAllowedContentIfSpace();
     }
 
     @Override
@@ -307,9 +309,9 @@ public class DTDTypingNonValidator
     }
 
     /*
-    ///////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     // Package methods, accessors
-    ///////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
     */
 
     @Override
