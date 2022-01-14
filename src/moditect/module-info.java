@@ -15,6 +15,7 @@ module com.ctc.wstx {
     exports com.ctc.wstx.dom;
     exports com.ctc.wstx.dtd;
     exports com.ctc.wstx.ent;
+    exports com.ctc.wstx.evt;
     exports com.ctc.wstx.exc;
     exports com.ctc.wstx.io; // should this be exported?
     exports com.ctc.wstx.msv;
