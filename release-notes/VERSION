@@ -6,6 +6,8 @@ Project: woodstox
 
 Not yet released:
 
+6.2.8 (13-Jan-2022)
+
 #121: Fix issues outlined by "lgtm.com"'s static analysis
 #136: `com.ctc.wstx.evt` is not exported in `module-info.java`
  (reported by ChrisTrenkamp@github)
