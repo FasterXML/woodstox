@@ -82,9 +82,6 @@ public final class AsciiReader
             // Let's always try to read full buffers, actually...
             int count = readBytes();
             if (count <= 0) {
-                if (count == 0) {
-                    reportStrangeStream();
-                }
                 /* Let's actually then free the buffer right away; shouldn't
                  * yet close the underlying stream though?
                  */

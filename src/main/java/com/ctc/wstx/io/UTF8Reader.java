@@ -368,12 +368,8 @@ public final class UTF8Reader
             // so let's do a separate read right away:
             int count = readBytes();
             if (count < 1) {
-                if (count < 0) { // -1
-                    freeBuffers(); // to help GC?
-                    return false;
-                }
-                // 0 count is no good; let's err out
-                reportStrangeStream();
+                freeBuffers(); // to help GC?
+                return false;
             }
         }
 
