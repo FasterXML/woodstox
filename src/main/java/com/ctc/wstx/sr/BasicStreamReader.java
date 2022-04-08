@@ -434,10 +434,10 @@ public abstract class BasicStreamReader
             mShortestTextSegment = Integer.MAX_VALUE;
         } else {
             mStTextThreshold =  TOKEN_PARTIAL_SINGLE;
-            if (forER) {
+            if (forER && !cfg.isCoalescingExplicitlyDisabled()) {
                 /* 30-Sep-2005, TSa: No point in returning runt segments for event readers
                  *   (due to event object overhead, less convenient); let's just force
-                 *   returning of full length segments.
+                 *   returning of full length segments. (Unless explicitly requested.)
                  */
                 mShortestTextSegment = Integer.MAX_VALUE;
             } else {

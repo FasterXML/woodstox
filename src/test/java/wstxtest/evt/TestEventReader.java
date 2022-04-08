@@ -24,11 +24,11 @@ import com.ctc.wstx.exc.*;
  *   but it creates class of non-checked exceptions used to wrap real
  *   stream exceptions)
  *  </li>
- * <li>Event readers always read the full text segment, instead of returning
- *   fragments (ie. min. segment length will be replace with MAX_INT). This
- *   is done for more convenient access, as well as since the overhead of
- *   multiple Event objects may outweigh potential benefits from returning
- *   shorter segments.
+ * <li>Unless coalesce is explicitly set to false, event readers always read
+ *   the full text segment, instead of returning fragments (ie. min. segment
+ *   length will be replace with MAX_INT). This is done for more convenient
+ *   access, as well as since the overhead of multiple Event objects may
+ *   outweigh potential benefits from returning shorter segments.
  *  </li>
  *</ul>
  */
@@ -87,25 +87,20 @@ public class TestEventReader
             +" not sure If we\r\nreally need anything much more but"
             +" let's still make this longer"
             +"</root>";
-        ;
-	
-        // Need to disable coalescing though for test to work:
-        XMLEventReader er = getReader(XML, false);
-        XMLEvent evt = er.nextEvent(); // start document
-        assertTrue(evt.isStartDocument());
-        assertTrue(er.nextEvent().isStartElement());
-        assertTrue(er.nextEvent().isCharacters());
+        
+        // Single text event expected (default value, explicit coalescing=true):
 
-        evt = er.nextEvent();
-        if (evt.isEndElement()) {
-            ; // good
-        } else {
-            if (evt.isCharacters()) {
-                fail("Even in the absence of coalescing, event reader should not split CHARACTERS segments (Woodstox guarantee): did get 2 adjacent separate Characters events.");
-            } else { // hmmh. strange
-                fail("Unexpected event object type after CHARACTERS: "+evt.getClass());
-            }
-        }
+        String message = "Even in the absence of coalescing, event reader should not split CHARACTERS segments (Woodstox guarantee): did get 2 separate Characters events.";
+        // the default behaviour for event readers is to not break text segments into multiple events
+        assertEquals(message, 1, numTextEvents(getReader(XML, null)));
+        // if coalescing is set to true event readers do not break text segments into multiple events
+        assertEquals(message, 1, numTextEvents(getReader(XML, true)));
+
+        // Multiple text events expected (explicit coalescing=false):
+
+        // if coalescing is explicitly set to false, multiple text events may be returned for a text segment
+        String messageMultiple = "If coalescing is set to false, multiple text events are expected for this input xml.";
+        assertTrue(messageMultiple, numTextEvents(getReader(XML, false)) > 1);
     }
 
     /**
@@ -150,16 +145,27 @@ public class TestEventReader
     // Internal methods
     //////////////////////////////////////////////////////
     */
-
-    private XMLEventReader2 getReader(String contents, boolean coalescing)
+    private XMLEventReader2 getReader(String contents, Boolean coalescing)
         throws XMLStreamException
     {
         XMLInputFactory f = getInputFactory();
         setNamespaceAware(f, true);
-        setCoalescing(f, coalescing);
+        if (coalescing != null) {
+            setCoalescing(f, coalescing);
+        }
         setLazyParsing(f, true); // shouldn't have effect for event readers!
         setMinTextSegment(f, 8); // likewise
         return constructEventReader(f, contents);
+    }
+
+    private int numTextEvents(XMLEventReader er) throws XMLStreamException {
+        int numTextEvents = 0;
+        while (er.hasNext()) {
+            if (er.nextEvent().isCharacters()) {
+                numTextEvents++;
+            }
+        }
+        return numTextEvents;
     }
 }
 
