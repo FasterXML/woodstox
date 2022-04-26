@@ -395,7 +395,7 @@ public abstract class ReaderBinaryTestBase
                     /*int count = */ sr.readElementAsBinary(resultBuffer, 0, resultBuffer.length, b64variant);
                     fail("Should have received an exception for invalid padding");
                 } catch (TypedXMLStreamException ex) {
-                    // any way to check that it's the excepted message? not right now
+                    // any way to check that it's the expected message? not right now
                 }
                 sr.close();
             }
@@ -425,7 +425,7 @@ public abstract class ReaderBinaryTestBase
                     /*int count = */ sr.readElementAsBinary(resultBuffer, 0, resultBuffer.length, b64variant);
                     fail("Should have received an exception for white space used 'inside' 4-char base64 unit");
                 } catch (TypedXMLStreamException ex) {
-                    // any way to check that it's the excepted message? not right now
+                    // any way to check that it's the expected message? not right now
                 }
                 sr.close();
             }
@@ -446,7 +446,7 @@ public abstract class ReaderBinaryTestBase
                     /*int count = */ sr.readElementAsBinary(resultBuffer, 0, resultBuffer.length, b64variant);
                     fail("Should have received an exception for invalid base64 character");
                 } catch (TypedXMLStreamException ex) {
-                    // any way to check that it's the excepted message? not right now
+                    // any way to check that it's the expected message? not right now
                 }
                 sr.close();
             }
@@ -482,7 +482,7 @@ public abstract class ReaderBinaryTestBase
                         /*int count = */ sr.readElementAsBinary(resultBuffer, 0, resultBuffer.length, b64variant);
                         fail("Should have received an exception for incomplete base64 unit");
                     } catch (TypedXMLStreamException ex) {
-                        // any way to check that it's the excepted message? not right now
+                        // any way to check that it's the expected message? not right now
                     }
                     sr.close();
                 }
@@ -556,7 +556,7 @@ public abstract class ReaderBinaryTestBase
                     /*byte[] data = */ sr.getAttributeAsBinary(0, b64variant);
                     fail("Should have received an exception for invalid padding");
                 } catch (TypedXMLStreamException ex) {
-                    // any way to check that it's the excepted message? not right now
+                    // any way to check that it's the expected message? not right now
                 }
                 sr.close();
             }
@@ -575,7 +575,7 @@ public abstract class ReaderBinaryTestBase
                     /*byte[] data = */ sr.getAttributeAsBinary(0, b64variant);
                     fail("Should have received an exception for white space used 'inside' 4-char base64 unit");
                 } catch (TypedXMLStreamException ex) {
-                    // any way to check that it's the excepted message? not right now
+                    // any way to check that it's the expected message? not right now
                 }
                 sr.close();
             }
@@ -594,7 +594,7 @@ public abstract class ReaderBinaryTestBase
                     /*byte[] data = */ sr.getAttributeAsBinary(0, b64variant);
                     fail("Should have received an exception for invalid base64 character");
                 } catch (TypedXMLStreamException ex) {
-                    // any way to check that it's the excepted message? not right now
+                    // any way to check that it's the expected message? not right now
                 }
                 sr.close();
             }
@@ -627,7 +627,7 @@ public abstract class ReaderBinaryTestBase
                         /*byte[] data = */ sr.getAttributeAsBinary(0, b64variant);
                         fail("Should have received an exception for incomplete base64 unit");
                     } catch (TypedXMLStreamException ex) {
-                        // any way to check that it's the excepted message? not right now
+                        // any way to check that it's the expected message? not right now
                     }
                     sr.close();
                 }

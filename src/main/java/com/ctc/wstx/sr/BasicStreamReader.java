@@ -1945,7 +1945,7 @@ public abstract class BasicStreamReader
         // Plus, need the bracket too:
         char c = getNextCharFromCurrent(SUFFIX_IN_CDATA);
         if (c != '[') {
-            throwUnexpectedChar(c, "excepted '[' after '<![CDATA'");
+            throwUnexpectedChar(c, "expected '[' after '<![CDATA'");
         }
         // Cool, that's it!
     }
@@ -3080,7 +3080,7 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
             if (c <= CHAR_SPACE) {
                 c = getNextInCurrAfterWS(SUFFIX_IN_ELEMENT, c);
             } else if (c != '/' && c != '>') {
-                throwUnexpectedChar(c, " excepted space, or '>' or \"/>\"");
+                throwUnexpectedChar(c, " expected space, or '>' or \"/>\"");
             }
 
             if (c == '/') {
@@ -3188,7 +3188,7 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
             if (c <= CHAR_SPACE) {
                 c = getNextInCurrAfterWS(SUFFIX_IN_ELEMENT, c);
             } else if (c != '/' && c != '>') {
-                throwUnexpectedChar(c, " excepted space, or '>' or \"/>\"");
+                throwUnexpectedChar(c, " expected space, or '>' or \"/>\"");
             }
             if (c == '/') {
                 c = getNextCharFromCurrent(SUFFIX_IN_ELEMENT);
@@ -4027,7 +4027,7 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
             // Ok, let's just verify we get space then
             char c = getNextCharFromCurrent(SUFFIX_IN_XML_DECL);
             if (!isSpaceChar(c)) {
-                throwUnexpectedChar(c, "excepted a space in xml declaration after 'xml'");
+                throwUnexpectedChar(c, "expected a space in xml declaration after 'xml'");
             }
             return handleMultiDocStart(START_DOCUMENT);
         }

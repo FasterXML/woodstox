@@ -2227,7 +2227,7 @@ public class FullDTDReader
                  */
                 /*
             } else if (c != '>') {
-                throwDTDUnexpectedChar(c, "; excepted either '>' closing ATTLIST declaration, or a white space character separating individual attribute declarations");
+                throwDTDUnexpectedChar(c, "; expected either '>' closing ATTLIST declaration, or a white space character separating individual attribute declarations");
                 */
             }
             if (c == '>') {
@@ -2299,7 +2299,7 @@ public class FullDTDReader
                                 +keyw+"' (for element <"+elemName+">); expected ANY or EMPTY");
              } while (false);
         } else {
-            throwDTDUnexpectedChar(c, ": excepted '(' to start content specification for element <"+elemName+">");
+            throwDTDUnexpectedChar(c, ": expected '(' to start content specification for element <"+elemName+">");
         }
 
         // Ok, still need the trailing gt-char to close the declaration:

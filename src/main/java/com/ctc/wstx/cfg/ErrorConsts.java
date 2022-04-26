@@ -70,7 +70,7 @@ public class ErrorConsts
 
     public static String ERR_WF_PI_MISSING_TARGET = "Missing processing instruction target";
     public static String ERR_WF_PI_XML_TARGET = "Illegal processing instruction target (\"{0}\"); 'xml' (case insensitive) is reserved by the specs.";
-    public static String ERR_WF_PI_XML_MISSING_SPACE = "excepted either space or \"?>\" after PI target";
+    public static String ERR_WF_PI_XML_MISSING_SPACE = "expected either space or \"?>\" after PI target";
 
     // // // Entity problems:
 
