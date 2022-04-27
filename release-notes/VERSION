@@ -6,6 +6,9 @@ Project: woodstox
 
 Not yet released:
 
+#147: Typo: "expected" misspelled as "excepted"
+ (contributed by pdo-axelor@github)
+
 6.2.8 (13-Jan-2022)
 
 #121: Fix issues outlined by "lgtm.com"'s static analysis
