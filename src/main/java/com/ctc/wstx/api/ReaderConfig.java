@@ -818,6 +818,18 @@ public final class ReaderConfig
         return _hasExplicitConfigFlag(CFG_INTERN_NS_URIS);
     }
 
+    /**
+     * Checks if the user explicitly set coalescing to false. (That is if
+     * coalescing is disabled only because that is the default value, this method
+     * will return false.)
+     *
+     * @return true, if the user explicitly disabled coalescing, else false
+     */
+    public boolean isCoalescingExplicitlyDisabled() {
+        // coalescing is disabled and was explicitly set by user
+        return !_hasConfigFlag(CFG_COALESCE_TEXT) && (mConfigFlagMods & CFG_COALESCE_TEXT) != 0;
+    }
+
     /*
     ///////////////////////////////////////////////////////////////////////
     // Simple mutators
