@@ -56,3 +56,9 @@ Chris Trenkamp (ChrisTrenkamp@github)
 * Reported #127, suggested fix: Invalid attributes producing extra null characters
   during DTD validation
  (6.2.6)
+
+Johannes Herr (johannesherr@github)
+
+* Contributed #142: `XMLEventReader` always returns the full content in text events,
+  even if coalescing disabled
+ (6.3.0)

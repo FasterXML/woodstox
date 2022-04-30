@@ -4,8 +4,12 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-Not yet released:
 
+6.3.0 (not yet released)
+
+#142: `XMLEventReader` always returns the full content in text events,
+  even if coalescing disabled
+ (contributed by Johannes H)
 #147: Typo: "expected" misspelled as "excepted"
  (contributed by pdo-axelor@github)
 
