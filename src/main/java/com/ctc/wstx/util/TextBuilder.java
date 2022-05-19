@@ -38,7 +38,7 @@ public final class TextBuilder
             charSize = MAX_LEN;
         }
         mBuffer = new char[charSize];
-        mLocations = new ArrayList<>(initialSize << 1);
+        mLocations = new ArrayList<XMLStreamLocation2>(initialSize << 1);
     }
 
     /**
