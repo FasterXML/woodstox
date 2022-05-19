@@ -1,5 +1,9 @@
 package com.ctc.wstx.util;
 
+import org.codehaus.stax2.XMLStreamLocation2;
+
+import java.util.ArrayList;
+
 /**
  * Class similar to {@link StringBuilder}, except that it can be used to
  * construct multiple Strings, that will share same underlying character
@@ -17,6 +21,8 @@ public final class TextBuilder
 
     private String mResultString;
 
+    private ArrayList<XMLStreamLocation2> mLocations;
+
     /*
     ///////////////////////////////////////////////////////////////////////
     // Life-cycle:
@@ -32,6 +38,7 @@ public final class TextBuilder
             charSize = MAX_LEN;
         }
         mBuffer = new char[charSize];
+        mLocations = new ArrayList<>(initialSize << 1);
     }
 
     /**
@@ -40,6 +47,7 @@ public final class TextBuilder
      */
     public void reset() {
         mBufferLen = 0;
+        mLocations.clear();
         mResultString = null;
     }
 
@@ -61,6 +69,9 @@ public final class TextBuilder
         return mResultString;
     }
 
+    public void pushLocation(XMLStreamLocation2 location) {
+        mLocations.add(location);
+    }
     /**
      * Method that gives access to underlying character buffer
      */
@@ -130,5 +141,9 @@ public final class TextBuilder
         }
         mBuffer = new char[oldLen+addition];
         System.arraycopy(old, 0, mBuffer, 0, mBufferLen);
+    }
+
+    public XMLStreamLocation2 getLocation(int index) {
+        return mLocations.get(index);
     }
 }
