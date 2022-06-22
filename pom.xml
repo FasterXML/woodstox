@@ -50,6 +50,9 @@ SAX2 and Stax2 APIs
         -->
       <osgi.export>com.ctc.wstx.*;version=${project.version}</osgi.export>
 
+      <!-- Bnd annotations for generating extra OSGi metadata. -->
+      <version.bnd.annotation>6.3.1</version.bnd.annotation>
+
       <!-- 5.1 added "Automatic-Module-Name" for JDK 9 but 6.0 adds full module-info -->
 <!--
       <jdk.module.name>com.ctc.wstx</jdk.module.name>
@@ -144,11 +147,19 @@ SAX2 and Stax2 APIs
 
         <!-- Then OSGi, needed if using OSGi discovery -->
         <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>1.4.0</version>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.core</artifactId>
+            <version>5.0.0</version>
             <optional>true</optional>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+          <groupId>biz.aQute.bnd</groupId>
+          <artifactId>biz.aQute.bnd.annotation</artifactId>
+          <version>${version.bnd.annotation}</version>
+          <optional>true</optional>
+          <scope>provided</scope>
         </dependency>
 
         <!-- Then test deps -->

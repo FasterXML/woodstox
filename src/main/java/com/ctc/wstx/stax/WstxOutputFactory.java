@@ -29,6 +29,7 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 
+import aQute.bnd.annotation.spi.ServiceProvider;
 import org.codehaus.stax2.XMLOutputFactory2;
 import org.codehaus.stax2.XMLStreamWriter2;
 import org.codehaus.stax2.io.Stax2Result;
@@ -61,6 +62,7 @@ import com.ctc.wstx.util.URLUtil;
  *  </li>
  *</ul>
  */
+@ServiceProvider(XMLOutputFactory.class)
 public class WstxOutputFactory
     extends XMLOutputFactory2
     implements OutputConfigFlags

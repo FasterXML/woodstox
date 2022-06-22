@@ -22,6 +22,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.*;
 import javax.xml.stream.events.*;
 
+import aQute.bnd.annotation.spi.ServiceProvider;
 import org.codehaus.stax2.ri.Stax2EventFactoryImpl;
 
 import com.ctc.wstx.compat.QNameCreator;
@@ -31,6 +32,7 @@ import com.ctc.wstx.evt.*;
  * Implementation of {@link XMLEventFactory} to be used with
  * Woodstox. Contains minimal additions on top of Stax2 RI.
  */
+@ServiceProvider(XMLEventFactory.class)
 public final class WstxEventFactory
     extends Stax2EventFactoryImpl
 {

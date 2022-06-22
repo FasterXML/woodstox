@@ -24,6 +24,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 
+import aQute.bnd.annotation.spi.ServiceProvider;
 import org.xml.sax.InputSource;
 import org.codehaus.stax2.XMLEventReader2;
 import org.codehaus.stax2.XMLInputFactory2;
@@ -68,6 +69,7 @@ import com.ctc.wstx.util.URLUtil;
  *
  * @author Tatu Saloranta
  */
+@ServiceProvider(XMLInputFactory.class)
 public class WstxInputFactory
     extends XMLInputFactory2
     implements ReaderCreator,

@@ -18,6 +18,7 @@ package com.ctc.wstx.msv;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.*;
 
+import aQute.bnd.annotation.spi.ServiceProvider;
 import org.xml.sax.InputSource;
 
 import org.codehaus.stax2.validation.*;
@@ -35,6 +36,7 @@ import com.sun.msv.reader.trex.ng.RELAXNGReader;
  * to work, and acts as a quite thin wrapper layer (although not a completely
  * trivial one, since MSV only exports SAX API, some adapting is needed)
  */
+@ServiceProvider(XMLValidationSchemaFactory.class)
 public class RelaxNGSchemaFactory
     extends BaseSchemaFactory
 {
