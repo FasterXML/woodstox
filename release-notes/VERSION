@@ -4,7 +4,7 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-6.3.0 (not yet released)
+6.3.0 (27-Jun-2022)
 
 #142: `XMLEventReader` always returns the full content in text events,
   even if coalescing disabled
