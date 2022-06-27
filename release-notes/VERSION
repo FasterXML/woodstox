@@ -4,7 +4,6 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-
 6.3.0 (not yet released)
 
 #142: `XMLEventReader` always returns the full content in text events,
@@ -12,6 +11,8 @@ Project: woodstox
  (contributed by Johannes H)
 #147: Typo: "expected" misspelled as "excepted"
  (contributed by pdo-axelor@github)
+#151: Add standard osgi.serviceloader OSGi metadata for provided services
+ (contributed by Chris R)
 
 6.2.8 (13-Jan-2022)
 

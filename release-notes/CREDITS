@@ -62,3 +62,8 @@ Johannes Herr (johannesherr@github)
 * Contributed #142: `XMLEventReader` always returns the full content in text events,
   even if coalescing disabled
  (6.3.0)
+
+Chris Rankin (chrisr3@github)
+* Contributed #151: Add standard osgi.serviceloader OSGi metadata for provided services
+ (6.3.0)
+
