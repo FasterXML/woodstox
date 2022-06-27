@@ -18,6 +18,7 @@ package com.ctc.wstx.msv;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.*;
 
+import aQute.bnd.annotation.spi.ServiceProvider;
 import org.xml.sax.InputSource;
 
 import org.codehaus.stax2.validation.*;
@@ -35,6 +36,7 @@ import com.sun.msv.reader.xmlschema.XMLSchemaReader;
  * to work, and acts as a quite thin wrapper layer, similar to
  * how matching RelaxNG validator works
  */
+@ServiceProvider(XMLValidationSchemaFactory.class)
 public class W3CSchemaFactory
     extends BaseSchemaFactory
 {

@@ -20,6 +20,7 @@ import java.net.URL;
 
 import javax.xml.stream.*;
 
+import aQute.bnd.annotation.spi.ServiceProvider;
 import org.codehaus.stax2.validation.*;
 
 import com.ctc.wstx.api.ReaderConfig;
@@ -40,6 +41,7 @@ import com.ctc.wstx.util.URLUtil;
  * documents) is only accessible by core Woodstox. The externally
  * accessible
  */
+@ServiceProvider(XMLValidationSchemaFactory.class)
 public class DTDSchemaFactory
     extends XMLValidationSchemaFactory
 {
