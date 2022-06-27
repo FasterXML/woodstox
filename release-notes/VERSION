@@ -6,6 +6,8 @@ Project: woodstox
 
 6.3.0 (27-Jun-2022)
 
+#133: Update "org.osgi.core" dependency from one published in 2009 to
+  something newer
 #142: `XMLEventReader` always returns the full content in text events,
   even if coalescing disabled
  (contributed by Johannes H)
