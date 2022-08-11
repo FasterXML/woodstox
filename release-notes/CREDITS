@@ -66,4 +66,6 @@ Johannes Herr (johannesherr@github)
 Chris Rankin (chrisr3@github)
 * Contributed #151: Add standard osgi.serviceloader OSGi metadata for provided services
  (6.3.0)
+* Contributed #155: Declare `osgi.serviceloader.registrar` requirement as optional
+ (6.3.1)
 

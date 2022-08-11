@@ -4,6 +4,11 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+6.3.1 (not yet released)
+
+#155: Declare `osgi.serviceloader.registrar` requirement as optional
+ (contributed by Chris R)
+
 6.3.0 (27-Jun-2022)
 
 #133: Update "org.osgi.core" dependency from one published in 2009 to
