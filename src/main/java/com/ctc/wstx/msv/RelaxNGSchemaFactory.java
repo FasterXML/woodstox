@@ -27,6 +27,8 @@ import com.sun.msv.grammar.trex.TREXGrammar;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.trex.ng.RELAXNGReader;
 
+import static aQute.bnd.annotation.Resolution.OPTIONAL;
+
 /**
  * This is a StAX2 schema factory that can parse and create schema instances
  * for creating validators that validate documents to check their validity
@@ -36,7 +38,7 @@ import com.sun.msv.reader.trex.ng.RELAXNGReader;
  * to work, and acts as a quite thin wrapper layer (although not a completely
  * trivial one, since MSV only exports SAX API, some adapting is needed)
  */
-@ServiceProvider(XMLValidationSchemaFactory.class)
+@ServiceProvider(value = XMLValidationSchemaFactory.class, resolution = OPTIONAL)
 public class RelaxNGSchemaFactory
     extends BaseSchemaFactory
 {

@@ -52,6 +52,8 @@ import com.ctc.wstx.sw.SimpleNsStreamWriter;
 import com.ctc.wstx.sw.XmlWriter;
 import com.ctc.wstx.util.URLUtil;
 
+import static aQute.bnd.annotation.Resolution.OPTIONAL;
+
 /**
  * Implementation of {@link XMLOutputFactory} for Wstx.
  *<p>
@@ -62,7 +64,7 @@ import com.ctc.wstx.util.URLUtil;
  *  </li>
  *</ul>
  */
-@ServiceProvider(XMLOutputFactory.class)
+@ServiceProvider(value = XMLOutputFactory.class, resolution = OPTIONAL)
 public class WstxOutputFactory
     extends XMLOutputFactory2
     implements OutputConfigFlags
