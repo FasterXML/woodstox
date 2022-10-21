@@ -74,6 +74,8 @@ public class FullDTDReader
 
     final static Boolean ENTITY_EXP_PE = Boolean.TRUE;
 
+    final static int DTD_RECURSION_DEPTH_LIMIT = 500;
+
     /*
     ///////////////////////////////////////////////////////////
     // Configuration
@@ -2271,7 +2273,7 @@ public class FullDTDReader
                 vldContent = XMLValidator.CONTENT_ALLOW_ANY_TEXT; // checked against DTD
             } else {
                 --mInputPtr; // let's push it back...
-                ContentSpec spec = readContentSpec(elemName, true, mCfgFullyValidating);
+                ContentSpec spec = readContentSpec(elemName, mCfgFullyValidating, 0);
                 val = spec.getSimpleValidator();
                 if (val == null) {
                     val = new DFAValidator(DFAState.constructDFA(spec));
@@ -3049,13 +3051,13 @@ public class FullDTDReader
         return val;
     }
 
-    /**
-	 * @param mainLevel Whether this is the main-level content specification or nested 
-	 */
-    private ContentSpec readContentSpec(PrefixedName elemName, boolean mainLevel,
-                                        boolean construct)
+    private ContentSpec readContentSpec(final PrefixedName elemName, final boolean construct, final int recursionDepth)
         throws XMLStreamException
     {
+        if (recursionDepth > DTD_RECURSION_DEPTH_LIMIT) {
+            throw new XMLStreamException("FullDTDReader has reached recursion depth limit of " + DTD_RECURSION_DEPTH_LIMIT);
+        }
+
         ArrayList<ContentSpec> subSpecs = new ArrayList<ContentSpec>();
         boolean isChoice = false; // default to sequence
         boolean choiceSet = false;
@@ -3087,7 +3089,7 @@ public class FullDTDReader
                 }
             }
             if (c == '(') {
-                ContentSpec cs = readContentSpec(elemName, false, construct);
+                ContentSpec cs = readContentSpec(elemName, construct, recursionDepth + 1);
                 subSpecs.add(cs);
                 continue;
             }
