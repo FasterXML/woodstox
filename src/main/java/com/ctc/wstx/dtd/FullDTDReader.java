@@ -74,7 +74,8 @@ public class FullDTDReader
 
     final static Boolean ENTITY_EXP_PE = Boolean.TRUE;
 
-    final static int DTD_RECURSION_DEPTH_LIMIT = 500;
+    final static int DEFAULT_DTD_RECURSION_DEPTH_LIMIT = 500;
+    static int DTD_RECURSION_DEPTH_LIMIT = DEFAULT_DTD_RECURSION_DEPTH_LIMIT;
 
     /*
     ///////////////////////////////////////////////////////////
@@ -328,6 +329,24 @@ public class FullDTDReader
     final DTDEventListener mEventListener;
 
     transient TextBuffer mTextBuffer = null;
+
+    /**
+     * Sets the limit on how many times the code will recurse through DTD data.
+     * The default is 500.
+     * @param limit new limit on how many times the code will recurse through DTD data
+     */
+    public static void setDtdRecursionDepthLimit(final int limit) {
+        DTD_RECURSION_DEPTH_LIMIT = limit;
+    }
+
+    /**
+     * Gets the limit on how many times the code will recurse through DTD data.
+     * The default is 500.
+     * @return limit on how many times the code will recurse through DTD data
+     */
+    public static int getDtdRecursionDepthLimit() {
+        return DTD_RECURSION_DEPTH_LIMIT;
+    }
 
     /*
     ///////////////////////////////////////////////////////////

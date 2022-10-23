@@ -1,5 +1,6 @@
 package wstxtest.fuzz;
 
+import com.ctc.wstx.dtd.FullDTDReader;
 import com.ctc.wstx.exc.WstxLazyException;
 import com.ctc.wstx.stax.WstxInputFactory;
 import org.codehaus.stax2.io.Stax2ByteArraySource;
@@ -24,6 +25,22 @@ public class Fuzz_DTDReadTest extends BaseStreamTest
             fail("Should not pass");
         } catch (WstxLazyException e) {
             verifyException(e, "FullDTDReader has reached recursion depth limit of 500");
+        }
+        sr.close();
+    }
+
+    public void testIssueInputStreamHigherRecursionLimit() throws Exception
+    {
+        final int defaultLimit = FullDTDReader.getDtdRecursionDepthLimit();
+        XMLStreamReader sr = STAX_F.createXMLStreamReader(new ByteArrayInputStream(DOC));
+        try {
+            FullDTDReader.setDtdRecursionDepthLimit(1000);
+            streamThrough(sr);
+            fail("Should not pass");
+        } catch (WstxLazyException e) {
+            verifyException(e, "FullDTDReader has reached recursion depth limit of 1000");
+        } finally {
+            FullDTDReader.setDtdRecursionDepthLimit(defaultLimit);
         }
         sr.close();
     }
