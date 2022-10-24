@@ -4,11 +4,7 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-6.0.0 (not yet released)
-
-#78: Shade MSV dependency
-
-5.4.0 (not yet released)
+5.4.0 (24-Oct-2022)
 
 #104: `NullPointerException` in `DTDValidator.validateElementEnd()`
   for element undefined in DTD
