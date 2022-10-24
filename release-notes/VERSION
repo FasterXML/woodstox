@@ -4,6 +4,11 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+6.4.0 (not yet released)
+
+#160: Add limit and configuration setting for maximum nesting for DTD subsets
+ (contributed by @pjfanning)
+
 6.3.1 (13-Aug-2022)
 
 #155: Declare `osgi.serviceloader.registrar` requirement as optional
