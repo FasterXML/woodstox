@@ -115,7 +115,7 @@ Project: woodstox
 #78: Shade MSV dependency
 - Add `module-info.class` for Java 9+ module system
 
-5.4.0 (not yet released)
+5.4.0 (24-Oct-2022)
 
 #104: `NullPointerException` in `DTDValidator.validateElementEnd()`
   for element undefined in DTD
