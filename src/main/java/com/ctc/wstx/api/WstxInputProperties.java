@@ -184,7 +184,6 @@ public final class WstxInputProperties
 
     // // // Constraints on sizes of text segments parsed:
 
-
     /**
      * Property to specify shortest non-complete text segment (part of
      * CDATA section or text content) that parser is allowed to return,
@@ -252,6 +251,15 @@ public final class WstxInputProperties
      */
     public final static String P_MAX_ENTITY_DEPTH = "com.ctc.wstx.maxEntityDepth";
 
+    // and yet more size constraints (4.3+)
+
+    /**
+     * Maximum level of nesting of XML elements, starting with root element.
+     *
+     * @since 5.4 / 6.4
+     */
+    public final static String P_MAX_DTD_DEPTH = "com.ctc.wstx.maxDtdDepth";
+    
     // // // Entity handling
 
     /**

@@ -1,15 +1,16 @@
 package wstxtest.fuzz;
 
-import com.ctc.wstx.dtd.FullDTDReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+
+import javax.xml.stream.XMLStreamReader;
+
+import com.ctc.wstx.api.WstxInputProperties;
 import com.ctc.wstx.exc.WstxLazyException;
 import com.ctc.wstx.stax.WstxInputFactory;
 import org.codehaus.stax2.io.Stax2ByteArraySource;
 import wstxtest.stream.BaseStreamTest;
-
-import javax.xml.stream.XMLStreamReader;
-import java.io.ByteArrayInputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 
 public class Fuzz_DTDReadTest extends BaseStreamTest
 {
@@ -24,23 +25,24 @@ public class Fuzz_DTDReadTest extends BaseStreamTest
             streamThrough(sr);
             fail("Should not pass");
         } catch (WstxLazyException e) {
-            verifyException(e, "FullDTDReader has reached recursion depth limit of 500");
+            verifyException(e, "Maximum DTD nesting depth");
+            verifyException(e, "500");
         }
         sr.close();
     }
 
     public void testIssueInputStreamHigherRecursionLimit() throws Exception
     {
-        final int defaultLimit = FullDTDReader.getDtdRecursionDepthLimit();
-        XMLStreamReader sr = STAX_F.createXMLStreamReader(new ByteArrayInputStream(DOC));
+        final WstxInputFactory staxF = getWstxInputFactory();
+        staxF.setProperty(WstxInputProperties.P_MAX_DTD_DEPTH, 1100);
+
+        XMLStreamReader sr = staxF.createXMLStreamReader(new ByteArrayInputStream(DOC));
         try {
-            FullDTDReader.setDtdRecursionDepthLimit(1000);
             streamThrough(sr);
             fail("Should not pass");
         } catch (WstxLazyException e) {
-            verifyException(e, "FullDTDReader has reached recursion depth limit of 1000");
-        } finally {
-            FullDTDReader.setDtdRecursionDepthLimit(defaultLimit);
+            verifyException(e, "Maximum DTD nesting depth");
+            verifyException(e, "1100");
         }
         sr.close();
     }
@@ -54,7 +56,8 @@ public class Fuzz_DTDReadTest extends BaseStreamTest
             streamThrough(sr);
             fail("Should not pass");
         } catch (WstxLazyException e) {
-            verifyException(e, "FullDTDReader has reached recursion depth limit of 500");
+            verifyException(e, "Maximum DTD nesting depth");
+            verifyException(e, "500");
         }
         sr.close();
     }
@@ -68,7 +71,8 @@ public class Fuzz_DTDReadTest extends BaseStreamTest
             streamThrough(sr);
             fail("Should not pass");
         } catch (WstxLazyException e) {
-            verifyException(e, "FullDTDReader has reached recursion depth limit of 500");
+            verifyException(e, "Maximum DTD nesting depth");
+            verifyException(e, "500");
         }
         sr.close();
     }
