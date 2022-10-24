@@ -4,7 +4,7 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-6.4.0 (not yet released)
+6.4.0 (24-Oct-2022)
 
 #160: Add limit and configuration setting for maximum nesting for DTD subsets
  (contributed by @pjfanning)
