@@ -10,7 +10,7 @@ Project: woodstox
   for element undefined in DTD
  (reported by ChrisTrenkamp@github)
 #105: W3CSchemaFactory constructor incorrectly references relaxng
-#160: Add limit and configuration setting for maximum nesting for DTD subsets
+#160: Add limit and configuration setting for maximum nesting for DTD subsets [CVE-2022-xxxxx]
  (contributed by @pjfanning)
 
 5.3.0 (15-Jul-2019)
