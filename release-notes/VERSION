@@ -7,7 +7,7 @@ Project: woodstox
 6.4.0 (24-Oct-2022)
 
 #160: Add limit and configuration setting for maximum nesting for DTD subsets
- [CVE-2022-xxxxx]
+ [CVE-2022-40152]
  (contributed by @pjfanning)
 
 6.3.1 (13-Aug-2022)
