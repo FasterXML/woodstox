@@ -32,8 +32,6 @@ import com.ctc.wstx.util.DefaultXmlSymbolTable;
 import com.ctc.wstx.util.SymbolTable;
 import com.ctc.wstx.util.URLUtil;
 
-import static aQute.bnd.annotation.Resolution.OPTIONAL;
-
 /**
  * Factory for creating DTD validator schema objects (shareable stateless
  * "blueprints" for creating actual validators).
@@ -43,7 +41,7 @@ import static aQute.bnd.annotation.Resolution.OPTIONAL;
  * documents) is only accessible by core Woodstox. The externally
  * accessible
  */
-@ServiceProvider(value = XMLValidationSchemaFactory.class, resolution = OPTIONAL)
+@ServiceProvider(XMLValidationSchemaFactory.class)
 public class DTDSchemaFactory
     extends XMLValidationSchemaFactory
 {

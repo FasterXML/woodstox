@@ -54,8 +54,6 @@ import com.ctc.wstx.util.SimpleCache;
 import com.ctc.wstx.util.SymbolTable;
 import com.ctc.wstx.util.URLUtil;
 
-import static aQute.bnd.annotation.Resolution.OPTIONAL;
-
 /**
  * Factory for creating various Stax objects (stream/event reader,
  * writer).
@@ -71,7 +69,7 @@ import static aQute.bnd.annotation.Resolution.OPTIONAL;
  *
  * @author Tatu Saloranta
  */
-@ServiceProvider(value = XMLInputFactory.class, resolution = OPTIONAL)
+@ServiceProvider(XMLInputFactory.class)
 public class WstxInputFactory
     extends XMLInputFactory2
     implements ReaderCreator,
