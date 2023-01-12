@@ -27,8 +27,6 @@ import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.xmlschema.XMLSchemaReader;
 
-import static aQute.bnd.annotation.Resolution.OPTIONAL;
-
 /**
  * This is a StAX2 schema factory that can parse and create schema instances
  * for creating validators that validate documents to check their validity
@@ -38,7 +36,7 @@ import static aQute.bnd.annotation.Resolution.OPTIONAL;
  * to work, and acts as a quite thin wrapper layer, similar to
  * how matching RelaxNG validator works
  */
-@ServiceProvider(value = XMLValidationSchemaFactory.class, resolution = OPTIONAL)
+@ServiceProvider(XMLValidationSchemaFactory.class)
 public class W3CSchemaFactory
     extends BaseSchemaFactory
 {
