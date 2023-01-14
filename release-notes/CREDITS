@@ -64,8 +64,16 @@ Johannes Herr (johannesherr@github)
  (6.3.0)
 
 Chris Rankin (chrisr3@github)
+
 * Contributed #151: Add standard osgi.serviceloader OSGi metadata for provided services
  (6.3.0)
 * Contributed #155: Declare `osgi.serviceloader.registrar` requirement as optional
  (6.3.1)
+
+Ben Spiller (ben-spiller@github)
+
+* Reported #163: `woodstox-core` 6.3/6.4 javac warning due to unexpected new dependency
+  on `aQute.bnd.annotation.Resolution`
+ (6.5.0)
+
 

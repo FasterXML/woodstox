@@ -4,9 +4,11 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-6.5.0 (not yet released)
+6.5.0 (14-Jan-2023)
 
--
+#163: `woodstox-core` 6.3/6.4 javac warning due to unexpected new dependency
+  on `aQute.bnd.annotation.Resolution`
+ (reported by Ben S)
 
 6.4.0 (24-Oct-2022)
 
