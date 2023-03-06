@@ -4,14 +4,14 @@ The gold standard [Stax](https://en.wikipedia.org/wiki/StAX) XML "pull" API (`ja
 
 Since version 4.0, Woodstox also implements [SAX](https://en.wikipedia.org/wiki/Simple_API_for_XML) API for event-based XML processing.
 
-Most if not all popular Java XML web service frameworks use either Stax or
-SAX API for XML processing: this means that Woodstox can be used with the
-most popular Java frameworks.
+Most if not all popular Java XML web service frameworks use either Stax or SAX API for XML processing: this means that Woodstox can be used with the most popular Java frameworks.
 
-For longer overview, check out:
+For longer overview, here are some options for more reading:
 
-* [Java XML: Woodstox Introduction](https://www.studytrails.com/2016/09/12/java-xml-woodstox-introduction/) by StudyTrails
-    * also other [Woodstox documentation](https://www.studytrails.com/category/java/xml/woodstox/) by StudyTrails
+* [Parsing large XML files with Woodstox](http://www.softwarepassion.com/parsing-large-xml-files-with-woodstox-library/)
+* [Parsing an XML File Using StAX](https://www.baeldung.com/java-stax)
+
+But in general usage follows standard Stax or SAX API usage.
 
 ## Status
 
@@ -22,7 +22,6 @@ For longer overview, check out:
 | OSS Sponsorship | [![Tidelift](https://tidelift.com/badges/package/maven/com.fasterxml.woodstox:woodstox-core)](https://tidelift.com/subscription/pkg/maven-com-fasterxml-woodstox-woodstox-core?utm_source=maven-com-fasterxml-woodstox-woodstox-core&utm_medium=referral&utm_campaign=readme) |
 | Javadocs | [![Javadoc](https://javadoc.io/badge/com.fasterxml.woodstox/woodstox-core.svg)](http://www.javadoc.io/doc/com.fasterxml.woodstox/woodstox-core)
 | Code coverage (6.x) | [![codecov.io](https://codecov.io/github/FasterXML/woodstox/coverage.svg?branch=master)](https://codecov.io/github/FasterXML/woodstox?branch=master) |
-| CodeQ (LGTM.com) | [![LGTM alerts](https://img.shields.io/lgtm/alerts/g/FasterXML/woodstox.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/FasterXML/woodstox/alerts/) [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/FasterXML/woodstox.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/FasterXML/woodstox/context:java) |
 
 # Get it!
 
