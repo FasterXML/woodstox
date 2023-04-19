@@ -9,7 +9,7 @@
 
     <groupId>com.fasterxml.woodstox</groupId>
     <artifactId>woodstox-core</artifactId>
-    <version>6.5.1-SNAPSHOT</version>
+    <version>6.5.1</version>
     <packaging>bundle</packaging>
     <name>Woodstox</name>
     <description>Woodstox is a high-performance XML processor that implements Stax (JSR-173),
@@ -34,7 +34,7 @@ SAX2 and Stax2 APIs
         <connection>scm:git:git@github.com:FasterXML/woodstox.git</connection>
         <developerConnection>scm:git:git@github.com:FasterXML/woodstox.git</developerConnection>
         <url>https://github.com/FasterXML/woodstox</url>
-        <tag>HEAD</tag>
+        <tag>woodstox-core-6.5.1</tag>
     </scm>
 
     <properties>
@@ -339,7 +339,7 @@ SAX2 and Stax2 APIs
                       <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                         <manifestEntries>
                           <Require-Capability>
-                            osgi.extender;filter:="(&amp;(osgi.extender=osgi.serviceloader.registrar)(version>=1.0.0)(!(version>=2.0.0)))";resolution:=optional,osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.6))"
+                            osgi.extender;filter:="(&amp;(osgi.extender=osgi.serviceloader.registrar)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))";resolution:=optional,osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.6))"
                           </Require-Capability>
                         </manifestEntries>
                       </transformer>
