@@ -4,6 +4,13 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+6.5.1 (19-Apr-2023)
+
+#170: After update to 6.5.0, in osgi/felix runtime the bundle is not started
+  due to missing dependency
+ (reported by @oana-dc)
+ (fix contributed by Chris R)
+
 6.5.0 (14-Jan-2023)
 
 #163: `woodstox-core` 6.3/6.4 javac warning due to unexpected new dependency
