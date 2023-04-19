@@ -51,7 +51,7 @@ SAX2 and Stax2 APIs
       <osgi.export>com.ctc.wstx.*;version=${project.version}</osgi.export>
 
       <!-- Bnd annotations for generating extra OSGi metadata. -->
-      <version.bnd.annotation>6.3.1</version.bnd.annotation>
+      <version.bnd.annotation>6.4.0</version.bnd.annotation>
 
       <!-- 5.1 added "Automatic-Module-Name" for JDK 9 but 6.0 adds full module-info -->
 <!--
@@ -245,6 +245,16 @@ SAX2 and Stax2 APIs
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <!-- Bnd currently generates a mandatory requirement for osgi.serviceloader.registrar,
+                             and we cannot make it optional until Resolution.OPTIONAL is a String and not an
+                             Enum. So we must remove these capabilities and configure maven-shade-plugin to
+                             add corrected ones back.
+                          -->
+                        <_removeheaders>Require-Capability</_removeheaders>
+                    </instructions>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -322,10 +332,18 @@ SAX2 and Stax2 APIs
 	                   <shadedPattern>com.ctc.wstx.shaded.msv_core</shadedPattern>
 	                 </relocation>
 	               </relocations>
-	               <!--  Need to ensure class names for services get translated as well... -->
                     <transformers>
+                      <!--  Need to ensure class names for services get translated as well... -->
                       <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-                    </transformers>	               
+                      <!--  Also need to add corrected OSGi Require-Capability header. -->
+                      <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                        <manifestEntries>
+                          <Require-Capability>
+                            osgi.extender;filter:="(&amp;(osgi.extender=osgi.serviceloader.registrar)(version>=1.0.0)(!(version>=2.0.0)))";resolution:=optional,osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.6))"
+                          </Require-Capability>
+                        </manifestEntries>
+                      </transformer>
+                    </transformers>
 	             </configuration>
 	           </execution>
 	         </executions>
