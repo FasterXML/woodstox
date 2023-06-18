@@ -1188,55 +1188,121 @@ public abstract class StreamScanner
         if (c == '#') {
             c = buf[ptr++];
             int value = 0;
+            // Turns to 0 when first entity is read (must be a high surrogate char)
+            int pairValue = -1;
             int inputLen = mInputEnd;
-            if (c == 'x') { // hex
-                while (ptr < inputLen) {
-                    c = buf[ptr++];
-                    if (c == ';') {
-                        break;
-                    }
-                    value = value << 4;
-                    if (c <= '9' && c >= '0') {
-                        value += (c - '0');
-                    } else if (c >= 'a' && c <= 'f') {
-                        value += (10 + (c - 'a'));
-                    } else if (c >= 'A' && c <= 'F') {
-                        value += (10 + (c - 'A'));
-                    } else {
-                        mInputPtr = ptr; // so error points to correct char
-                        throwUnexpectedChar(c, "; expected a hex digit (0-9a-fA-F).");
-                    }
-                    /* Need to check for overflow; easiest to do right as
-                     * it happens...
-                     */
-                    if (value > MAX_UNICODE_CHAR) {
-                        reportUnicodeOverflow();
-                    }
-                }
-            } else { // numeric (decimal)
-                while (c != ';') {
-                    if (c <= '9' && c >= '0') {
-                        value = (value * 10) + (c - '0');
-                        // Overflow?
-                        if (value > MAX_UNICODE_CHAR) {
+            boolean isValueHighSurrogate = false;
+            
+            /*
+             * Loop used only to continue iteration to search surrogate pair.
+             * If simple entity, it does only one iteration
+             */
+            while (value == 0 
+                    || (mConfig.isResolvingEntitySurrogatePairs() 
+                            && value >= 0xD800 && value <= 0xDBFF && pairValue <= 0)) {
+                
+                int tmpValue = pairValue >= 0 ? pairValue : value;
+                
+                if (c == 'x') { // hex
+                    while (ptr < inputLen) {
+                        c = buf[ptr++];
+                        if (c == ';') {
+                            break;
+                        }
+                        
+                        tmpValue = tmpValue << 4;
+                        if (c <= '9' && c >= '0') {
+                            tmpValue += (c - '0');
+                        } else if (c >= 'a' && c <= 'f') {
+                            tmpValue += (10 + (c - 'a'));
+                        } else if (c >= 'A' && c <= 'F') {
+                            tmpValue += (10 + (c - 'A'));
+                        } else {
+                            mInputPtr = ptr; // so error points to correct char
+                            throwUnexpectedChar(c, "; expected a hex digit (0-9a-fA-F).");
+                        }
+                        /* Need to check for overflow; easiest to do right as
+                         * it happens...
+                         */
+                        if (tmpValue > MAX_UNICODE_CHAR) {
                             reportUnicodeOverflow();
                         }
-                    } else {
-                        mInputPtr = ptr; // so error points to correct char
-                        throwUnexpectedChar(c, "; expected a decimal number.");
                     }
-                    if (ptr >= inputLen) {
-                        break;
+                } else { // numeric (decimal)
+                    while (c != ';') {
+                        if (c <= '9' && c >= '0') {
+                            tmpValue = (tmpValue * 10) + (c - '0');
+                            // Overflow?
+                            if (tmpValue > MAX_UNICODE_CHAR) {
+                                reportUnicodeOverflow();
+                            }
+                            
+                        } else {
+                            mInputPtr = ptr; // so error points to correct char
+                            throwUnexpectedChar(c, "; expected a decimal number.");
+                        }
+                        if (ptr >= inputLen) {
+                            break;
+                        }
+                        c = buf[ptr++];
                     }
+                }
+                
+                if (pairValue >= 0) {
+                    pairValue = tmpValue;
+                } else {
+                    value = tmpValue;
+                }
+                
+                isValueHighSurrogate = value >= 0xD800 && value <= 0xDBFF;
+                
+                /*
+                 * If resolving entity surrogate pairs enabled and if current entity
+                 * is in range of high surrogate value, try to find surrogate pair 
+                 */
+                if (isValueHighSurrogate && mConfig.isResolvingEntitySurrogatePairs() 
+                        && c == ';' && pairValue < 0 && ptr + 1 < inputLen) {
                     c = buf[ptr++];
+                    
+                    if (c == '&' && ptr + 1 < inputLen) {
+                        c = buf[ptr++];
+                        
+                        if (c == '#' && ptr + 1 < inputLen) {
+                            c = buf[ptr++];
+                            pairValue = 0;
+                            continue;
+                        } else {
+                            reportNoSurrogatePair(value);
+                        }
+                    } else {
+                        reportNoSurrogatePair(value);
+                    }
+                } else if (isValueHighSurrogate 
+                        && mConfig.isResolvingEntitySurrogatePairs() 
+                        && ptr + 1 >= inputLen) {
+                    reportNoSurrogatePair(value);
                 }
             }
+            
             /* We get here either if we got it all, OR if we ran out of
              * input in current buffer.
              */
             if (c == ';') { // got the full thing
                 mInputPtr = ptr;
-                validateChar(value);
+                
+                if (mConfig.isResolvingEntitySurrogatePairs() && pairValue > 0) {
+                    /*
+                     * If pair value is not in range of low surrogate values, then throw an error
+                     */
+                    if (pairValue < 0xDC00 || pairValue > 0xDFFF) {
+                        reportNoSurrogatePair(value);
+                    }
+                    
+                    value = 0x10000 + (value - 0xD800) * 0x400 + (pairValue - 0xDC00);
+                } else {
+                    validateChar(value);
+                }
+                
                 return value;
             }
 
@@ -2463,6 +2529,12 @@ public abstract class StreamScanner
         throws XMLStreamException
     {
         throwParseError("Illegal character entity: expansion character (code 0x{0}", Integer.toHexString(value), null);
+    }
+    
+    private void reportNoSurrogatePair(int highSurrogate)
+        throws XMLStreamException
+    {
+        throwParseError("Cannot find surrogate pair: high surrogate character (code 0x{0})", Integer.toHexString(highSurrogate), null);
     }
 
     protected void verifyLimit(String type, long maxValue, long currentValue)

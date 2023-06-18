@@ -300,6 +300,13 @@ public final class WstxInputProperties
      * DTD subset).
      */
     public final static String P_BASE_URL = "com.ctc.wstx.baseURL";
+    
+    /**
+     * Property of type {@link java.lang.Boolean}, that will allow parsing
+     * high unicode characters written by surrogate pairs (2 code points)
+     * Default set as Boolean.FALSE, because it is not a standard behavior
+     */
+    public final static String P_RESOLVE_ENTITY_SURROGATE_PAIRS = "com.ctc.wstx.resolveEntitySurrogatePairs";
 
     // // // Alternate parsing modes
 
