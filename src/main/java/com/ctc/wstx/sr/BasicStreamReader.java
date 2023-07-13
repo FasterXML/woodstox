@@ -2834,7 +2834,7 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
             /* Need to call different methods based on whether we can do
              * automatic entity expansion or not:
              */
-            int ch = mCfgReplaceEntities ?
+            int ch = mCfgReplaceEntities || mCfgTreatCharRefsAsEntities ?
                 fullyResolveEntity(true) : resolveCharOnlyEntity(true);
 
             if (ch != 0) {

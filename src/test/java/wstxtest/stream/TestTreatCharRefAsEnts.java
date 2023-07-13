@@ -80,7 +80,7 @@ public class TestTreatCharRefAsEnts
         assertEquals("& more", sr.getText());
     }
 
-    public void testReturnCharsReferenceWithHighMinTextSegment() throws Exception
+    public void testReturnEntityForCharReferenceWithHighMinTextSegment() throws Exception
     {
         String XML = "<root>text &amp; more</root>";
         
@@ -95,6 +95,98 @@ public class TestTreatCharRefAsEnts
         assertEquals("text & more", sr.getText());
     }
     
+    public void testReturnCharsReferenceWithHighMinTextSegment() throws Exception
+    {
+        String XML = "<root>text &amp; more</root>";
+
+        // 64 is the default
+        BasicStreamReader sr = getReader(XML, true, false, 64);
+
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals("root", sr.getLocalName());
+
+        assertTokenType(CHARACTERS, sr.next());
+
+        assertEquals("text & more", sr.getText());
+    }
+
+    public void testNoReplEntitiesAndReturnEntityForCharReference() throws Exception
+    {
+
+        String XML = "<root>text &amp; more</root>";
+
+        BasicStreamReader sr = getReader(XML, false, true, 1);
+
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals("root", sr.getLocalName());
+
+        assertTokenType(CHARACTERS, sr.next());
+
+        assertEquals("text ", sr.getText());
+
+        assertTokenType(ENTITY_REFERENCE, sr.next());
+        assertEquals("amp", sr.getLocalName());
+        EntityDecl ed = sr.getCurrentEntityDecl();
+        assertNotNull(ed);
+        assertEquals("amp", ed.getName());
+        assertEquals("&", ed.getReplacementText());
+
+        // The pure stax way:
+        assertEquals("&", sr.getText());
+
+        // Finally, let's see that location info is about right?
+        Location loc = sr.getCurrentLocation();
+        assertNotNull(loc);
+        assertEquals(16, loc.getCharacterOffset());
+    }
+
+    public void testNoReplEntitiesAndReturnCharsReference() throws Exception
+    {
+        String XML = "<root>text &amp; more</root>";
+
+        // 64 is the default
+        BasicStreamReader sr = getReader(XML, false, false, 1);
+
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals("root", sr.getLocalName());
+
+        assertTokenType(CHARACTERS, sr.next());
+        assertEquals("text ", sr.getText());
+
+        assertTokenType(CHARACTERS, sr.next());
+        assertEquals("& more", sr.getText());
+    }
+
+    public void testNoReplEntitiesAndReturnEntityForCharReferenceWithHighMinTextSegment() throws Exception
+    {
+        String XML = "<root>text &amp; more</root>";
+
+        // 64 is the default
+        BasicStreamReader sr = getReader(XML, false, true, 64);
+
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals("root", sr.getLocalName());
+
+        assertTokenType(CHARACTERS, sr.next());
+
+        assertEquals("text & more", sr.getText());
+    }
+
+    public void testNoReplEntitiesAndReturnCharsReferenceWithHighMinTextSegment() throws Exception
+    {
+        String XML = "<root>text &amp; more</root>";
+
+        // 64 is the default
+        BasicStreamReader sr = getReader(XML, false, false, 64);
+
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals("root", sr.getLocalName());
+
+        assertTokenType(CHARACTERS, sr.next());
+
+        assertEquals("text & more", sr.getText());
+    }
+
     private BasicStreamReader getReader(String contents, boolean replEntities,
                                         boolean treatCharRefsAsEnts, int minTextSegment)
         throws XMLStreamException
