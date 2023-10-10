@@ -4,6 +4,11 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+6.5.2 (not yet released)
+
+- Update `stax2-api` dependency to 4.2.2
+- Update `oss-parent` dependency to 55 (from 50)
+
 6.5.1 (19-Apr-2023)
 
 #170: After update to 6.5.0, in osgi/felix runtime the bundle is not started
