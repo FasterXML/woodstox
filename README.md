@@ -22,6 +22,7 @@ But in general usage follows standard Stax or SAX API usage.
 | OSS Sponsorship | [![Tidelift](https://tidelift.com/badges/package/maven/com.fasterxml.woodstox:woodstox-core)](https://tidelift.com/subscription/pkg/maven-com-fasterxml-woodstox-woodstox-core?utm_source=maven-com-fasterxml-woodstox-woodstox-core&utm_medium=referral&utm_campaign=readme) |
 | Javadocs | [![Javadoc](https://javadoc.io/badge/com.fasterxml.woodstox/woodstox-core.svg)](http://www.javadoc.io/doc/com.fasterxml.woodstox/woodstox-core)
 | Code coverage (6.x) | [![codecov.io](https://codecov.io/github/FasterXML/woodstox/coverage.svg?branch=master)](https://codecov.io/github/FasterXML/woodstox?branch=master) |
+| OpenSSF Score | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/FasterXML/woodstox/badge)](https://securityscorecards.dev/viewer/?uri=github.com/FasterXML/woodstox) |
 
 # Get it!
 
