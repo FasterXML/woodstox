@@ -1,0 +1,14 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="http://server.hw.demo/nillable"
+           targetNamespace="http://server.hw.demo/nillable"
+           elementFormDefault="qualified" attributeFormDefault="qualified">
+  <xs:element name="nillableParent">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="nillableDateTime" type="xs:dateTime" nillable="true" minOccurs="0"/>
+        <xs:element name="nillableInt" type="xs:int" nillable="true" minOccurs="0"/>
+        <xs:element name="nillableString" type="xs:string" nillable="true"  minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
