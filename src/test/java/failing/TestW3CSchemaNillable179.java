@@ -25,7 +25,7 @@ import wstxtest.vstream.BaseValidationTest;
 public class TestW3CSchemaNillable179
     extends BaseValidationTest
 {
-    // for [woodstox-core#179
+    // for [woodstox-core#179]
     public void testNillableDateTime() throws Exception
     {
         /*
@@ -36,7 +36,7 @@ public class TestW3CSchemaNillable179
         testNillable("wstxtest/msv/nillableDateTime.xml");
     }
 
-    // for [woodstox-core#179
+    // for [woodstox-core#179]
     public void testNillableInt() throws Exception
     {
         /*
@@ -47,7 +47,7 @@ public class TestW3CSchemaNillable179
         testNillable("wstxtest/msv/nillableInt.xml");
     }
 
-    // for [woodstox-core#179
+    // for [woodstox-core#179]
     public void testNillableString() throws Exception
     {
         /*
