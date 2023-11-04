@@ -1,4 +1,5 @@
 package wstxtest.msv;
+// ^^^ Move under "wstxtest/msv" once passing
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,26 +23,46 @@ import wstxtest.vstream.BaseValidationTest;
  * Test whether MSV validator behaves the same w.r.t. nillable elements as javax.xml.validation validator.
  * A reproducer for <a href="https://github.com/FasterXML/woodstox/issues/179">https://github.com/FasterXML/woodstox/issues/179</a>.
  */
-public class TestW3CSchemaNillable
+public class TestW3CSchemaNillable179
     extends BaseValidationTest
 {
-
-    public void testNillableDateTime() throws XMLStreamException, IOException, SAXException
+    // for [woodstox-core#179
+    public void testNillableDateTime() throws Exception
     {
+        /*
+<nl:nillableParent xmlns:nl="http://server.hw.demo/nillable">
+    <nl:nillableDateTime xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>
+</nl:nillableParent>
+         */
         testNillable("wstxtest/msv/nillableDateTime.xml");
     }
-    public void testNillableInt() throws XMLStreamException, IOException, SAXException
+
+    // for [woodstox-core#179
+    public void testNillableInt() throws Exception
     {
+        /*
+<nl:nillableParent xmlns:nl="http://server.hw.demo/nillable">
+    <nl:nillableInt xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>
+</nl:nillableParent>
+         */
         testNillable("wstxtest/msv/nillableInt.xml");
     }
-    public void testNillableString() throws XMLStreamException, IOException, SAXException
+
+    // for [woodstox-core#179
+    public void testNillableString() throws Exception
     {
+        /*
+<nl:nillableParent xmlns:nl="http://server.hw.demo/nillable">
+    <nl:nillableString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>
+</nl:nillableParent>
+         */
         testNillable("wstxtest/msv/nillableString.xml");
     }
 
-    void testNillable(String xmlResource) throws XMLStreamException, IOException, SAXException
+    void testNillable(String xmlResource) throws Exception
     {
         boolean woodstoxPassed = true;
+        Exception woodstoxE = null;
         // Woodstox
         final String xsdResource = "wstxtest/msv/nillable.xsd";
         {
@@ -84,8 +105,8 @@ public class TestW3CSchemaNillable
                         xmlWriter.copyEventFromReader(xmlReader, false);
                     }
                 } catch (LocalValidationError e) {
-                    e.printStackTrace();
                     woodstoxPassed = false;
+                    woodstoxE = e;
                 }
             } finally {
                 if (xmlInput != null) {
@@ -111,7 +132,6 @@ public class TestW3CSchemaNillable
                     validator.validate(new StreamSource(xmlInput));
                 } catch (SAXException e) {
                     javaxXmlValidationPassed = false;
-                    e.printStackTrace();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -126,11 +146,18 @@ public class TestW3CSchemaNillable
         }
 
         if (woodstoxPassed != javaxXmlValidationPassed) {
-            fail("Woodstox MSV validator " + (woodstoxPassed ? "passed" : "did not pass")
-                    + " but javax.xml.validation validator "+ (javaxXmlValidationPassed ? "passed" : "did not pass")
-                    + " for " + xsdResource + " and "+ xmlResource);
+            if (woodstoxPassed) {
+                fail("Woodstox MSV validator passed"
+                        + " but javax.xml.validation validator did not pass"
+                        + " for " + xsdResource + " and "+ xmlResource);
+                
+            } else {
+                fail("Woodstox MSV validator did not pass"
+                        + " but javax.xml.validation validator passed"
+                        + " for " + xsdResource + " and "+ xmlResource
+                        +".\nFailure: "+woodstoxE);
+            }
         }
-
     }
 
     /*
@@ -151,6 +178,11 @@ public class TestW3CSchemaNillable
 
         public XMLValidationProblem getProblem() {
             return problem;
+        }
+
+        @Override
+        public String toString() {
+            return problem.getMessage();
         }
     }
 }
