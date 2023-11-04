@@ -1,4 +1,4 @@
-package wstxtest.msv;
+package failing;
 // ^^^ Move under "wstxtest/msv" once passing
 
 import java.io.IOException;
@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.StringWriter;
 
 import javax.xml.XMLConstants;
-import javax.xml.stream.*;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
