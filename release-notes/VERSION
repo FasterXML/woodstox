@@ -7,7 +7,7 @@ Project: woodstox
 6.6.0 (not yet released)
 
 - Update `stax2-api` dependency to 4.2.2
-- Update `oss-parent` dependency to 55 (from 50)
+- Update `oss-parent` dependency to 56 (from 50)
 
 6.5.1 (19-Apr-2023)
 
