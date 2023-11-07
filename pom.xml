@@ -27,6 +27,7 @@ SAX2 and Stax2 APIs
         <url>http://fasterxml.com</url>
     </organization>
     <url>https://github.com/FasterXML/woodstox</url>
+    <!--
     <issueManagement>
         <url>https://github.com/FasterXML/woodstox/issues</url>
     </issueManagement>
@@ -36,15 +37,23 @@ SAX2 and Stax2 APIs
         <url>https://github.com/FasterXML/woodstox</url>
         <tag>HEAD</tag>
     </scm>
-
+	-->
+	
     <properties>
-      <version.msv>2013.6.1</version.msv>
+      <version.msv>2022.8-SNAPSHOT</version.msv>
       <version.plugin.javadoc>3.1.1</version.plugin.javadoc>
 
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>        
+      <skipTests>false</skipTests>
+        
       <!-- Woodstox 5.0 is 1.6+ -->
-      <javac.src.version>1.6</javac.src.version>
-      <javac.target.version>1.6</javac.target.version>
+      <jdk.version>1.8</jdk.version>
+      <javac.src.version>1.8</javac.src.version>
+      <javac.target.version>1.8</javac.target.version>
 
+	  <maven.compiler.source>1.8</maven.compiler.source>
+	  <maven.compiler.target>1.8</maven.compiler.target>
+	  
       <!-- Since our groupId is NOT the same as Java package id, need to explicitly define.
            And due to number of packages, let's just include all.
         -->
@@ -103,7 +112,7 @@ SAX2 and Stax2 APIs
         <dependency>
             <groupId>net.java.dev.msv</groupId>
             <artifactId>msv-core</artifactId>
-            <version>${version.msv}</version>
+            <version>2022.8-SNAPSHOT</version>
 <!--
             <scope>provided</scope>
        -->
@@ -201,7 +210,8 @@ SAX2 and Stax2 APIs
 
                to simplify releases. I hope.
           -->
-	<plugin>
+          <!-- 
+		<plugin>		
             <groupId>org.sonatype.plugins</groupId>
             <artifactId>nexus-staging-maven-plugin</artifactId>
             <version>1.6.6</version>
@@ -209,21 +219,21 @@ SAX2 and Stax2 APIs
             <configuration>
               <serverId>sonatype-nexus-staging</serverId>
               <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-              <!-- 12-Oct-2019, tatu: Found this from output of mvn:relase -->
               <stagingProfileId>b34f19b9cc6224</stagingProfileId>
             </configuration>
         </plugin>
-
+		-->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
+                 <version>3.11.0</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
 <!--
                     <excludes>
                         <exclude>test/**</exclude>
                     </excludes>
--->
+--> 
                 </configuration>
             </plugin>
             <plugin>
