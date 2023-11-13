@@ -138,8 +138,11 @@ public final class ReaderConfig
     final static int PROP_MAX_ENTITY_DEPTH = 68;
 
     final static int PROP_MAX_DTD_DEPTH = 69;
-    
-    final static int PROP_RESOLVE_ENTITY_SURROGATE_PAIRS = 70;
+
+    /**
+     * @since 6.6
+     */
+    final static int PROP_ALLOW_SURROGATE_PAIR_ENTITIES = 70;
 
     /*
     ////////////////////////////////////////////////
@@ -363,8 +366,8 @@ public final class ReaderConfig
                         PROP_UNDECLARED_ENTITY_RESOLVER);
         sProperties.put(WstxInputProperties.P_BASE_URL,
                         PROP_BASE_URL);
-        sProperties.put(WstxInputProperties.P_RESOLVE_ENTITY_SURROGATE_PAIRS,
-                        PROP_RESOLVE_ENTITY_SURROGATE_PAIRS);
+        sProperties.put(WstxInputProperties.P_ALLOW_SURROGATE_PAIR_ENTITIES,
+                        PROP_ALLOW_SURROGATE_PAIR_ENTITIES);
         sProperties.put(WstxInputProperties.P_INPUT_PARSING_MODE,
                         PROP_INPUT_PARSING_MODE);
     }
@@ -424,9 +427,11 @@ public final class ReaderConfig
     protected URL mBaseURL;
     
     /**
-     * Resolve surrogate pairs of entities (2 code-points as one target character)
+     * Whether to allow surrogate pairs as entities (2 code-points as one target character).
+     *
+     * @since 66
      */
-    protected boolean mResolveEntitySurrogatePairs = Boolean.FALSE;
+    protected boolean mAllowSurrogatePairEntities = false;
 
     /**
      * Parsing mode can be changed from the default xml compliant
@@ -592,7 +597,7 @@ public final class ReaderConfig
         rc.mMaxEntityDepth = mMaxEntityDepth;
         rc.mMaxEntityCount = mMaxEntityCount;
         rc.mMaxDtdDepth = mMaxDtdDepth;
-        rc.mResolveEntitySurrogatePairs = mResolveEntitySurrogatePairs;
+        rc.mAllowSurrogatePairEntities = mAllowSurrogatePairEntities;
         if (mSpecialProperties != null) {
             int len = mSpecialProperties.length;
             Object[] specProps = new Object[len];
@@ -801,9 +806,9 @@ public final class ReaderConfig
     }
 
     public URL getBaseURL() { return mBaseURL; }
-    
-    public boolean isResolvingEntitySurrogatePairs() {
-        return mResolveEntitySurrogatePairs;
+
+    public boolean allowsSurrogatePairEntities() {
+        return mAllowSurrogatePairEntities;
     }
 
     public WstxInputProperties.ParsingMode getInputParsingMode() {
@@ -1089,8 +1094,8 @@ public final class ReaderConfig
 
     public void setBaseURL(URL baseURL) { mBaseURL = baseURL; }
     
-    public void setResolveEntitySurrogatePairs(boolean resolveEntitySurrogatePairs) {
-        mResolveEntitySurrogatePairs = resolveEntitySurrogatePairs;
+    public void doAllowSurrogatePairEntities(boolean state) {
+        mAllowSurrogatePairEntities = state;
     }
 
     public void setInputParsingMode(WstxInputProperties.ParsingMode mode) {
@@ -1551,8 +1556,8 @@ public final class ReaderConfig
             return getUndeclaredEntityResolver();
         case PROP_BASE_URL:
             return getBaseURL();
-        case PROP_RESOLVE_ENTITY_SURROGATE_PAIRS:
-            return isResolvingEntitySurrogatePairs();
+        case PROP_ALLOW_SURROGATE_PAIR_ENTITIES:
+            return allowsSurrogatePairEntities();
         case PROP_INPUT_PARSING_MODE:
             return getInputParsingMode();
 
@@ -1778,8 +1783,8 @@ public final class ReaderConfig
             }
             break;
             
-        case PROP_RESOLVE_ENTITY_SURROGATE_PAIRS:
-            setResolveEntitySurrogatePairs(ArgUtil.convertToBoolean(propName, value));
+        case PROP_ALLOW_SURROGATE_PAIR_ENTITIES:
+            doAllowSurrogatePairEntities(ArgUtil.convertToBoolean(propName, value));
             break;
 
         case PROP_INPUT_PARSING_MODE:

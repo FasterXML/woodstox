@@ -282,8 +282,8 @@ public abstract class BaseStaxTest
             throws XMLStreamException
     {   
         Boolean b = state ? Boolean.TRUE : Boolean.FALSE;
-        f.setProperty(WstxInputProperties.P_RESOLVE_ENTITY_SURROGATE_PAIRS, b);
-        assertEquals(b, f.getProperty(WstxInputProperties.P_RESOLVE_ENTITY_SURROGATE_PAIRS));
+        f.setProperty(WstxInputProperties.P_ALLOW_SURROGATE_PAIR_ENTITIES, b);
+        assertEquals(b, f.getProperty(WstxInputProperties.P_ALLOW_SURROGATE_PAIR_ENTITIES));
     }
 
     protected static void setResolver(XMLInputFactory f, XMLResolver resolver)

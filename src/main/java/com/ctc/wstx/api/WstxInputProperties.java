@@ -305,8 +305,10 @@ public final class WstxInputProperties
      * Property of type {@link java.lang.Boolean}, that will allow parsing
      * high unicode characters written by surrogate pairs (2 code points)
      * Default set as Boolean.FALSE, because it is not a standard behavior
+     *
+     * @since 6.6
      */
-    public final static String P_RESOLVE_ENTITY_SURROGATE_PAIRS = "com.ctc.wstx.resolveEntitySurrogatePairs";
+    public final static String P_ALLOW_SURROGATE_PAIR_ENTITIES = "com.ctc.wstx.allowSurrogatePairEntities";
 
     // // // Alternate parsing modes
 

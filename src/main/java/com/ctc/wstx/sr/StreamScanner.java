@@ -1198,7 +1198,7 @@ public abstract class StreamScanner
              * If simple entity, it does only one iteration
              */
             while (value == 0 
-                    || (mConfig.isResolvingEntitySurrogatePairs() 
+                    || (mConfig.allowsSurrogatePairEntities() 
                             && value >= 0xD800 && value <= 0xDBFF && pairValue <= 0)) {
                 
                 int tmpValue = pairValue >= 0 ? pairValue : value;
@@ -1260,7 +1260,7 @@ public abstract class StreamScanner
                  * If resolving entity surrogate pairs enabled and if current entity
                  * is in range of high surrogate value, try to find surrogate pair 
                  */
-                if (isValueHighSurrogate && mConfig.isResolvingEntitySurrogatePairs() 
+                if (isValueHighSurrogate && mConfig.allowsSurrogatePairEntities() 
                         && c == ';' && pairValue < 0 && ptr + 1 < inputLen) {
                     c = buf[ptr++];
                     
@@ -1278,7 +1278,7 @@ public abstract class StreamScanner
                         reportNoSurrogatePair(value);
                     }
                 } else if (isValueHighSurrogate 
-                        && mConfig.isResolvingEntitySurrogatePairs() 
+                        && mConfig.allowsSurrogatePairEntities() 
                         && ptr + 1 >= inputLen) {
                     reportNoSurrogatePair(value);
                 }
@@ -1290,7 +1290,7 @@ public abstract class StreamScanner
             if (c == ';') { // got the full thing
                 mInputPtr = ptr;
                 
-                if (mConfig.isResolvingEntitySurrogatePairs() && pairValue > 0) {
+                if (mConfig.allowsSurrogatePairEntities() && pairValue > 0) {
                     /*
                      * If pair value is not in range of low surrogate values, then throw an error
                      */
