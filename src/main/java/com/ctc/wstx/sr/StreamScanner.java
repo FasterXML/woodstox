@@ -1705,7 +1705,7 @@ public abstract class StreamScanner
             return null;
         }
         
-        if (!mCfgTreatCharRefsAsEntities || this instanceof MinimalDTDReader) {
+        if (mCfgReplaceEntities || !mCfgTreatCharRefsAsEntities || this instanceof MinimalDTDReader) {
             expandEntity(ed, allowExt);
         }
         

@@ -4,6 +4,15 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+6.6.0 (not yet released)
+
+#176: Fix parser when not replacing entities and treating char references
+  as entities
+ (contributed by Guillaume N)
+#182: Update `msv-core` dependency to `2022.7`
+- Update `stax2-api` dependency to 4.2.2
+- Update `oss-parent` dependency to 56 (from 50)
+
 6.5.1 (19-Apr-2023)
 
 #170: After update to 6.5.0, in osgi/felix runtime the bundle is not started
