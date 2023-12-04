@@ -1186,102 +1186,48 @@ public abstract class StreamScanner
 
         // Numeric reference?
         if (c == '#') {
-            c = buf[ptr++];
             int value = 0;
-            // Turns to 0 when first entity is read (must be a high surrogate char)
-            int pairValue = -1;
+            int pairValue = 0;
             int inputLen = mInputEnd;
-            boolean isValueHighSurrogate = false;
+            final StringBuffer buffer = new StringBuffer(new String(buf));
+            
+            mInputPtr = ptr;
+            value = resolveCharEnt(buffer, false);
+            ptr = mInputPtr;
+            c = buf[ptr - 1];
+            
+            final boolean isValueHighSurrogate = value >= 0xD800 && value <= 0xDBFF;
             
             /*
-             * Loop used only to continue iteration to search surrogate pair.
-             * If simple entity, it does only one iteration
+             * If resolving entity surrogate pairs enabled and if current entity
+             * is in range of high surrogate value, try to find surrogate pair 
              */
-            while (value == 0 
-                    || (mConfig.allowsSurrogatePairEntities() 
-                            && value >= 0xD800 && value <= 0xDBFF && pairValue <= 0)) {
+            if (isValueHighSurrogate && mConfig.allowsSurrogatePairEntities() 
+                    && c == ';' && ptr + 1 < inputLen) {
+                c = buf[ptr++];
                 
-                int tmpValue = pairValue >= 0 ? pairValue : value;
-                
-                if (c == 'x') { // hex
-                    while (ptr < inputLen) {
-                        c = buf[ptr++];
-                        if (c == ';') {
-                            break;
-                        }
-                        
-                        tmpValue = tmpValue << 4;
-                        if (c <= '9' && c >= '0') {
-                            tmpValue += (c - '0');
-                        } else if (c >= 'a' && c <= 'f') {
-                            tmpValue += (10 + (c - 'a'));
-                        } else if (c >= 'A' && c <= 'F') {
-                            tmpValue += (10 + (c - 'A'));
-                        } else {
-                            mInputPtr = ptr; // so error points to correct char
-                            throwUnexpectedChar(c, "; expected a hex digit (0-9a-fA-F).");
-                        }
-                        /* Need to check for overflow; easiest to do right as
-                         * it happens...
-                         */
-                        if (tmpValue > MAX_UNICODE_CHAR) {
-                            reportUnicodeOverflow();
-                        }
-                    }
-                } else { // numeric (decimal)
-                    while (c != ';') {
-                        if (c <= '9' && c >= '0') {
-                            tmpValue = (tmpValue * 10) + (c - '0');
-                            // Overflow?
-                            if (tmpValue > MAX_UNICODE_CHAR) {
-                                reportUnicodeOverflow();
-                            }
-                            
-                        } else {
-                            mInputPtr = ptr; // so error points to correct char
-                            throwUnexpectedChar(c, "; expected a decimal number.");
-                        }
-                        if (ptr >= inputLen) {
-                            break;
-                        }
-                        c = buf[ptr++];
-                    }
-                }
-                
-                if (pairValue >= 0) {
-                    pairValue = tmpValue;
-                } else {
-                    value = tmpValue;
-                }
-                
-                isValueHighSurrogate = value >= 0xD800 && value <= 0xDBFF;
-                
-                /*
-                 * If resolving entity surrogate pairs enabled and if current entity
-                 * is in range of high surrogate value, try to find surrogate pair 
-                 */
-                if (isValueHighSurrogate && mConfig.allowsSurrogatePairEntities() 
-                        && c == ';' && pairValue < 0 && ptr + 1 < inputLen) {
+                if (c == '&' && ptr + 1 < inputLen) {
                     c = buf[ptr++];
                     
-                    if (c == '&' && ptr + 1 < inputLen) {
-                        c = buf[ptr++];
-                        
-                        if (c == '#' && ptr + 1 < inputLen) {
-                            c = buf[ptr++];
-                            pairValue = 0;
-                            continue;
-                        } else {
+                    if (c == '#' && ptr + 1 < inputLen) {
+                        try {
+                            mInputPtr = ptr;
+                            pairValue = resolveCharEnt(buffer, false);
+                            ptr = mInputPtr;
+                            c = buf[ptr -1];
+                        } catch(WstxUnexpectedCharException wuce) {
                             reportNoSurrogatePair(value);
                         }
                     } else {
                         reportNoSurrogatePair(value);
                     }
-                } else if (isValueHighSurrogate 
-                        && mConfig.allowsSurrogatePairEntities() 
-                        && ptr + 1 >= inputLen) {
+                } else {
                     reportNoSurrogatePair(value);
                 }
+            } else if (isValueHighSurrogate 
+                    && mConfig.allowsSurrogatePairEntities() 
+                    && ptr + 1 >= inputLen) {
+                reportNoSurrogatePair(value);
             }
             
             /* We get here either if we got it all, OR if we ran out of
@@ -1292,10 +1238,11 @@ public abstract class StreamScanner
                 
                 if (mConfig.allowsSurrogatePairEntities() && pairValue > 0) {
                     /*
+                     * [woodstox-core#165]
                      * If pair value is not in range of low surrogate values, then throw an error
                      */
                     if (pairValue < 0xDC00 || pairValue > 0xDFFF) {
-                        reportNoSurrogatePair(value);
+                        reportInvalidSurrogatePair(value, pairValue);
                     }
                     
                     value = 0x10000 + (value - 0xD800) * 0x400 + (pairValue - 0xDC00);
@@ -2385,8 +2332,14 @@ public abstract class StreamScanner
     // Internal methods
     ///////////////////////////////////////////////////////////////////////
      */
-
+    
     private int resolveCharEnt(StringBuffer originalCharacters)
+            throws XMLStreamException
+    {
+        return resolveCharEnt(originalCharacters, true);
+    }
+
+    private int resolveCharEnt(StringBuffer originalCharacters, boolean validateChar)
         throws XMLStreamException
     {
         int value = 0;
@@ -2441,7 +2394,11 @@ public abstract class StreamScanner
                 }
             }
         }
-        validateChar(value);
+        
+        if (validateChar) {
+            validateChar(value);
+        }
+        
         return value;
     }
 
@@ -2528,13 +2485,19 @@ public abstract class StreamScanner
     private void reportIllegalChar(int value)
         throws XMLStreamException
     {
-        throwParseError("Illegal character entity: expansion character (code 0x{0}", Integer.toHexString(value), null);
+        throwParseError("Illegal character entity: expansion character (code 0x{0})", Integer.toHexString(value), null);
     }
     
     private void reportNoSurrogatePair(int highSurrogate)
         throws XMLStreamException
     {
         throwParseError("Cannot find surrogate pair: high surrogate character (code 0x{0})", Integer.toHexString(highSurrogate), null);
+    }
+    
+    private void reportInvalidSurrogatePair(int firstSurrogate, int secondSurrogate)
+            throws XMLStreamException
+    {
+        throwParseError("Invalid surrogate pair: first surrogate character (code 0x{0}), second surrogate character (code 0x{1})", Integer.toHexString(firstSurrogate), Integer.toHexString(secondSurrogate));
     }
 
     protected void verifyLimit(String type, long maxValue, long currentValue)

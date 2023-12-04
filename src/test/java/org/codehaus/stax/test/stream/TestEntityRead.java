@@ -466,24 +466,36 @@ public class TestEntityRead
     public void testInvalidSurrogatePairEntities()
             throws XMLStreamException
     {
-        final String[] invalidSurrogatePairs = {
+        final String[][] invalidSurrogatePairsAndExpectedErrors = {
             // Invalid pair
-            "<root>surrogate pair: &#55356;&#5722;.</root>",
+            {"<root>surrogate pair: &#55356;&#5722;.</root>", "Invalid surrogate pair"},
             // No pair
-            "<root>surrogate pair: &#55356;.</root>",
+            {"<root>surrogate pair: &#55356;.</root>", "Cannot find surrogate pair"},
             // Low surrogate as first
-            "<root>surrogate pair: &#57221;&#55356;.</root>",
+            {"<root>surrogate pair: &#57221;&#55356;.</root>", "Illegal character entity"},
             // Unclosed second entity
-            "<root>surrogate pair: &#55356;&#553</root>"
+            {"<root>surrogate pair: &#55356;&#553</root>", "Cannot find surrogate pair"}
         };
         
-        for (String invalidSurrogatePair: invalidSurrogatePairs) {
+        for (String[] surrogateAndError: invalidSurrogatePairsAndExpectedErrors) {
+            final String invalidSurrogatePair = surrogateAndError[0];
+            final String expectedErrorPhrase = surrogateAndError[1];
+            
             XMLStreamReader sr = getReader(invalidSurrogatePair,
                     true, false, true, true);
             try {
                 streamThrough(sr);
                 fail("Expected an exception for invalid surrogate pair");
-            } catch (Exception e) { }
+            } catch (XMLStreamException e) {
+                if (!e.getMessage().startsWith(expectedErrorPhrase)) {
+                    fail(String.format(
+                            "Expected an exception starting from phrase: '%s' for invalid surrogate test case: '%s', but the message was: '%s'",
+                            expectedErrorPhrase,
+                            invalidSurrogatePair,
+                            e.getMessage()
+                        ));
+                }
+            }
         }
     }
 
