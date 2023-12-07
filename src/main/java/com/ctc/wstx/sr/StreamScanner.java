@@ -1198,8 +1198,7 @@ public abstract class StreamScanner
             
             final boolean isValueHighSurrogate = value >= 0xD800 && value <= 0xDBFF;
             
-            /*
-             * If resolving entity surrogate pairs enabled and if current entity
+            /* If resolving entity surrogate pairs enabled and if current entity
              * is in range of high surrogate value, try to find surrogate pair 
              */
             if (isValueHighSurrogate && mConfig.allowsSurrogatePairEntities() 
@@ -1368,7 +1367,7 @@ public abstract class StreamScanner
         // A char reference?
         if (c == '#') { // yup
             ++mInputPtr;
-            return resolveCharEnt(null);
+            return resolveCharEnt(null, true);
         }
 
         // nope... except may be a pre-def?
@@ -1536,7 +1535,7 @@ public abstract class StreamScanner
         // Do we have a (numeric) character entity reference?
         if (c == '#') { // numeric
             final StringBuffer originalSurface = new StringBuffer("#");
-            int ch = resolveCharEnt(originalSurface);
+            int ch = resolveCharEnt(originalSurface, true);
             if (mCfgTreatCharRefsAsEntities) {
                 final char[] originalChars = new char[originalSurface.length()];
                 originalSurface.getChars(0, originalSurface.length(), originalChars, 0);
@@ -2332,12 +2331,6 @@ public abstract class StreamScanner
     // Internal methods
     ///////////////////////////////////////////////////////////////////////
      */
-    
-    private int resolveCharEnt(StringBuffer originalCharacters)
-            throws XMLStreamException
-    {
-        return resolveCharEnt(originalCharacters, true);
-    }
 
     private int resolveCharEnt(StringBuffer originalCharacters, boolean validateChar)
         throws XMLStreamException
