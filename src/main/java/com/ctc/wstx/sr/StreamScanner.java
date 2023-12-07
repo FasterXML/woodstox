@@ -2337,11 +2337,11 @@ public abstract class StreamScanner
     {
         int value = 0;
         char c = getNextChar(SUFFIX_IN_ENTITY_REF);
-        
+
         if (originalCharacters != null) {
             originalCharacters.append(c);
         }
-        
+
         if (c == 'x') { // hex
             while (true) {
                 c = (mInputPtr < mInputEnd) ? mInputBuffer[mInputPtr++]
@@ -2387,11 +2387,9 @@ public abstract class StreamScanner
                 }
             }
         }
-        
         if (validateChar) {
             validateChar(value);
         }
-        
         return value;
     }
 
@@ -2402,9 +2400,8 @@ public abstract class StreamScanner
     private final void validateChar(int value)
         throws XMLStreamException
     {
-        /* 24-Jan-2006, TSa: Ok, "high" Unicode chars are problematic,
-         *   need to be reported by a surrogate pair..
-         */
+        // 24-Jan-2006, TSa: Ok, "high" Unicode chars are problematic,
+        //   need to be reported by a surrogate pair..
         if (value >= 0xD800) {
             if (value < 0xE000) { // no surrogates via entity expansion
                 reportIllegalChar(value);

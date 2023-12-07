@@ -419,17 +419,17 @@ public final class ReaderConfig
 
     // since 5.4/6.4
     protected int mMaxDtdDepth = DEFAULT_MAX_DTD_DEPTH;
-    
+
     /**
      * Base URL to use as the resolution context for relative entity
      * references
      */
     protected URL mBaseURL;
-    
+
     /**
      * Whether to allow surrogate pairs as entities (2 code-points as one target character).
      *
-     * @since 66
+     * @since 6.6
      */
     protected boolean mAllowSurrogatePairEntities = false;
 
