@@ -1189,32 +1189,33 @@ public abstract class StreamScanner
             int value = 0;
             int pairValue = 0;
             int inputLen = mInputEnd;
-            final StringBuffer buffer = new StringBuffer(new String(buf));
-            
+
             mInputPtr = ptr;
-            value = resolveCharEnt(buffer, false);
+            value = resolveCharEnt(null, false);
             ptr = mInputPtr;
             c = buf[ptr - 1];
             
             final boolean isValueHighSurrogate = value >= 0xD800 && value <= 0xDBFF;
-            
-            /* If resolving entity surrogate pairs enabled and if current entity
-             * is in range of high surrogate value, try to find surrogate pair 
-             */
-            if (isValueHighSurrogate && mConfig.allowsSurrogatePairEntities() 
-                    && c == ';' && ptr + 1 < inputLen) {
-                c = buf[ptr++];
-                
-                if (c == '&' && ptr + 1 < inputLen) {
+
+            // If resolving entity surrogate pairs enabled and if current entity
+            // is in range of high surrogate value, try to find surrogate pair 
+            if (isValueHighSurrogate && mConfig.allowsSurrogatePairEntities()) {
+                if (c == ';' && ptr + 1 < inputLen) {
                     c = buf[ptr++];
                     
-                    if (c == '#' && ptr + 1 < inputLen) {
-                        try {
-                            mInputPtr = ptr;
-                            pairValue = resolveCharEnt(buffer, false);
-                            ptr = mInputPtr;
-                            c = buf[ptr -1];
-                        } catch(WstxUnexpectedCharException wuce) {
+                    if (c == '&' && ptr + 1 < inputLen) {
+                        c = buf[ptr++];
+                        
+                        if (c == '#' && ptr + 1 < inputLen) {
+                            try {
+                                mInputPtr = ptr;
+                                pairValue = resolveCharEnt(null, false);
+                                ptr = mInputPtr;
+                                c = buf[ptr -1];
+                            } catch(WstxUnexpectedCharException wuce) {
+                                reportNoSurrogatePair(value);
+                            }
+                        } else {
                             reportNoSurrogatePair(value);
                         }
                     } else {
@@ -1223,27 +1224,19 @@ public abstract class StreamScanner
                 } else {
                     reportNoSurrogatePair(value);
                 }
-            } else if (isValueHighSurrogate 
-                    && mConfig.allowsSurrogatePairEntities() 
-                    && ptr + 1 >= inputLen) {
-                reportNoSurrogatePair(value);
             }
-            
-            /* We get here either if we got it all, OR if we ran out of
-             * input in current buffer.
-             */
+
+            // We get here either if we got it all, OR if we ran out of
+            // input in current buffer.
             if (c == ';') { // got the full thing
                 mInputPtr = ptr;
                 
                 if (mConfig.allowsSurrogatePairEntities() && pairValue > 0) {
-                    /*
-                     * [woodstox-core#165]
-                     * If pair value is not in range of low surrogate values, then throw an error
-                     */
+                    // [woodstox-core#165]
+                    // If pair value is not in range of low surrogate values, then throw an error
                     if (pairValue < 0xDC00 || pairValue > 0xDFFF) {
                         reportInvalidSurrogatePair(value, pairValue);
                     }
-                    
                     value = 0x10000 + (value - 0xD800) * 0x400 + (pairValue - 0xDC00);
                 } else {
                     validateChar(value);
@@ -1252,13 +1245,11 @@ public abstract class StreamScanner
                 return value;
             }
 
-            /* If we ran out of input, need to just fall back, gets
-             * resolved via 'full' resolution mechanism.
-             */
+            // If we ran out of input, need to just fall back, gets
+            // resolved via 'full' resolution mechanism.
         } else if (checkStd) {
-            /* Caller may not want to resolve these quite yet...
-             * (when it wants separate events for non-char entities)
-             */
+            // Caller may not want to resolve these quite yet...
+            // (when it wants separate events for non-char entities)
             if (c == 'a') { // amp or apos?
                 c = buf[ptr++];
                 
@@ -1549,10 +1540,9 @@ public abstract class StreamScanner
  
         // Perhaps we have a pre-defined char reference?
         c = id.charAt(0);
-        /*
-         * 16-May-2004, TSa: Should custom entities (or ones defined in int/ext subset) override
-         * pre-defined settings for these?
-         */
+
+        // 16-May-2004, TSa: Should custom entities (or ones defined in int/ext subset) override
+        // pre-defined settings for these?
         char d = CHAR_NULL;
         if (c == 'a') { // amp or apos?
             if (id.equals("amp")) {
