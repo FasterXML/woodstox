@@ -1183,6 +1183,7 @@ public abstract class StreamScanner
         char[] buf = mInputBuffer;
         int ptr = mInputPtr;
         char c = buf[ptr++];
+        final boolean allowSurrogatePairs = mConfig.allowsSurrogatePairEntities();
 
         // Numeric reference?
         if (c == '#') {
@@ -1194,25 +1195,21 @@ public abstract class StreamScanner
             value = resolveCharEnt(null, false);
             ptr = mInputPtr;
             c = buf[ptr - 1];
-            
-            final boolean isValueHighSurrogate = value >= 0xD800 && value <= 0xDBFF;
 
             // If resolving entity surrogate pairs enabled and if current entity
             // is in range of high surrogate value, try to find surrogate pair 
-            if (isValueHighSurrogate && mConfig.allowsSurrogatePairEntities()) {
+            if (allowSurrogatePairs && value >= 0xD800 && value <= 0xDBFF) {
                 if (c == ';' && ptr + 1 < inputLen) {
                     c = buf[ptr++];
-                    
                     if (c == '&' && ptr + 1 < inputLen) {
                         c = buf[ptr++];
-                        
                         if (c == '#' && ptr + 1 < inputLen) {
                             try {
                                 mInputPtr = ptr;
                                 pairValue = resolveCharEnt(null, false);
                                 ptr = mInputPtr;
                                 c = buf[ptr -1];
-                            } catch(WstxUnexpectedCharException wuce) {
+                            } catch (WstxUnexpectedCharException wuce) {
                                 reportNoSurrogatePair(value);
                             }
                         } else {
@@ -1230,8 +1227,8 @@ public abstract class StreamScanner
             // input in current buffer.
             if (c == ';') { // got the full thing
                 mInputPtr = ptr;
-                
-                if (mConfig.allowsSurrogatePairEntities() && pairValue > 0) {
+
+                if (allowSurrogatePairs && pairValue > 0) {
                     // [woodstox-core#165]
                     // If pair value is not in range of low surrogate values, then throw an error
                     if (pairValue < 0xDC00 || pairValue > 0xDFFF) {
