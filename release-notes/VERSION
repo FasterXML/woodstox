@@ -6,6 +6,9 @@ Project: woodstox
 
 6.6.0 (not yet released)
 
+#67: Wrong line for XML event location in elements following DTD
+ (reported by @m-g-sonar)
+ (fix contributed by Tim M)
 #176: Fix parser when not replacing entities and treating char references
   as entities
  (contributed by Guillaume N)

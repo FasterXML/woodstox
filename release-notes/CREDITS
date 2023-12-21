@@ -84,3 +84,8 @@ Guillaume Nodet (@gnodet)
 * Contributed #176: Fix parser when not replacing entities and treating char references
   as entities
  (6.6.0)
+
+Tim Martin (@Orbisman)
+
+* Contributed fix for #67: Wrong line for XML event location in elements following DTD
+ (6.6.0)
