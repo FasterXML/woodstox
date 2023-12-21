@@ -320,7 +320,8 @@ public class MinimalDTDReader
                 if (c == '-') {
                     return;
                 }
-            } else if (c == '\n' || c == '\r') {
+            }
+            if (c == '\n' || c == '\r') {
                 skipCRLF(c);
             }
         }
