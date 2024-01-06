@@ -1420,14 +1420,12 @@ public abstract class StreamScanner
         int avail = mInputEnd - mInputPtr;
         if (avail < 6) {
             // split entity, or buffer boundary
-            /* Don't want to lose leading '&' (in case we can not expand
-             * the entity), so let's push it back first
-             */
+            // Don't want to lose leading '&' (in case we can not expand
+            // the entity), so let's push it back first
             --mInputPtr;
 
-            /* Shortest valid reference would be 3 chars ('&a;'); which
-             * would only be legal from an expanded entity...
-             */
+            // Shortest valid reference would be 3 chars ('&a;'); which
+            // would only be legal from an expanded entity...
             if (!ensureInput(6)) {
                 avail = inputInBuffer();
                 if (avail < 3) {
