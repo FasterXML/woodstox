@@ -3695,9 +3695,8 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                     // Can only skip character entities; others need to
                     // be returned separately.
                     if (resolveCharOnlyEntity(true) == 0) {
-                        /* Now points to the char after ampersand, and we need
-                         * to return the ampersand itself
-                         */
+                        // Now points to the char after ampersand, and we need
+                        // to return the ampersand itself
                         return i;
                     }
                 }

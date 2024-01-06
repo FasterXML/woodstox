@@ -1231,9 +1231,8 @@ public abstract class StreamScanner
                     c = buf[ptr++];
                 }
             }
-            /* We get here either if we got it all, OR if we ran out of
-             * input in current buffer.
-             */
+            // We get here either if we got it all, OR if we ran out of
+            // input in current buffer.
             if (c == ';') { // got the full thing
                 mInputPtr = ptr;
                 validateChar(value);
