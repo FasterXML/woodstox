@@ -31,6 +31,7 @@ public class TestComments
     /**
      * Method called via input config iterator, with all possible
      * configurations
+     *  - Added additional comment formats for issue [ WSTX-67 ]
      */
     @Override
     public void runTest(XMLInputFactory f, InputConfigIterator it)
@@ -42,6 +43,12 @@ public class TestComments
             +"<!-- Longer comment that contains quite a bit of content\n"
             +" so that we can check boundary - conditions too... -->"
             +"<!----><!-- and entities: &amp; &#12;&#x1d; -->\n"
+            +"<!--\n"
+            +"Comment spanning mulitple lines with no spaces\n"
+            +"-->\n"
+            +"<!-- \n"
+            +"  Comment spanning mulitple lines with spaces \n"
+            +" -->\n"            
             +"</root>";
         XMLStreamReader sr = constructStreamReader(f, XML);
         streamAndCheck(sr, it, XML, XML, false);
@@ -49,6 +56,6 @@ public class TestComments
         sr = constructStreamReader(f, XML);
         streamAndCheck(sr, it, XML, XML, true);
     }
-
+    
 }
 

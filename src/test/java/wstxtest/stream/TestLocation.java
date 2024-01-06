@@ -1,10 +1,19 @@
 package wstxtest.stream;
 
-import java.io.*;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
-import javax.xml.stream.*;
 
-import org.codehaus.stax2.*;
+import javax.xml.stream.Location;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import org.codehaus.stax2.XMLStreamReader2;
+
 import com.ctc.wstx.stax.WstxInputFactory;
 
 /**
@@ -153,7 +162,7 @@ public class TestLocation
         doTestOffset(true, false); // coalesce
         doTestOffset(true, true); // coalesce
     }
-
+   
     /*
     /////////////////////////////////////////////////////////
     // Helper methods:
@@ -199,4 +208,123 @@ public class TestLocation
             }
         }
     }
+    
+    /**
+     * This test was added due to bug [WSTX-67]: Wrong line number for XML event 
+     * location in elements following comment with no spaces, split across 
+     * multiple lines.
+     */
+    public void testLocationAfterComment()
+    	throws XMLStreamException
+    {
+       String input1 = "<?xml version=\"1.0\"?>\n" +
+    	        "<!DOCTYPE menu [\n" +
+    	        "<!--\n" +
+    	        "Some comment with no spaces\n" +
+    	        "-->\n" +
+    	        "<!ELEMENT menu (modulo)* >\n" +
+    	        "]>\n" +
+    	        "<menu value=\"foo\"></menu>";
+       
+       String input2 = "<?xml version=\"1.0\"?>\n" +
+   	        "<!DOCTYPE menu [\n" +
+   	        "<!-- \n" +
+   	        "  Some comment with spaces\n" +
+   	        " -->\n" +
+   	        "<!ELEMENT menu (modulo)* >\n" +
+   	        "]>\n" +
+   	        "<menu value=\"foo\"></menu>";
+       
+       List<String> lstLineData = doTestCommentLocation(input1, false);
+       
+       assertEquals(5, lstLineData.size());
+       assertEquals("[7 - START_DOCUMENT] {L=1;C=1;O=0;}", lstLineData.get(0));
+       assertEquals("[11 - DTD] {L=2;C=1;O=22;}", lstLineData.get(1));
+       assertEquals("[1 - START_ELEMENT] {L=8;C=1;O=106;}", lstLineData.get(2));
+       assertEquals("[2 - END_ELEMENT] {L=8;C=19;O=124;}", lstLineData.get(3));
+       assertEquals("[8 - END_DOCUMENT] {L=8;C=26;O=131;}", lstLineData.get(4));
+
+       lstLineData = doTestCommentLocation(input1, true);
+       
+       assertEquals(5, lstLineData.size());
+       assertEquals("[7 - START_DOCUMENT] {L=1;C=1;O=0;}", lstLineData.get(0));
+       assertEquals("[11 - DTD] {L=2;C=1;O=22;}", lstLineData.get(1));
+       assertEquals("[1 - START_ELEMENT] {L=8;C=1;O=106;}", lstLineData.get(2));
+       assertEquals("[2 - END_ELEMENT] {L=8;C=19;O=124;}", lstLineData.get(3));
+       assertEquals("[8 - END_DOCUMENT] {L=8;C=26;O=131;}", lstLineData.get(4));
+       
+       lstLineData = doTestCommentLocation(input2, false);
+       
+       assertEquals(5, lstLineData.size());
+       assertEquals("[7 - START_DOCUMENT] {L=1;C=1;O=0;}", lstLineData.get(0));
+       assertEquals("[11 - DTD] {L=2;C=1;O=22;}", lstLineData.get(1));
+       assertEquals("[1 - START_ELEMENT] {L=8;C=1;O=107;}", lstLineData.get(2));
+       assertEquals("[2 - END_ELEMENT] {L=8;C=19;O=125;}", lstLineData.get(3));
+       assertEquals("[8 - END_DOCUMENT] {L=8;C=26;O=132;}", lstLineData.get(4));
+       
+       lstLineData = doTestCommentLocation(input2, true);
+       
+       assertEquals(5, lstLineData.size());
+       assertEquals("[7 - START_DOCUMENT] {L=1;C=1;O=0;}", lstLineData.get(0));
+       assertEquals("[11 - DTD] {L=2;C=1;O=22;}", lstLineData.get(1));
+       assertEquals("[1 - START_ELEMENT] {L=8;C=1;O=107;}", lstLineData.get(2));
+       assertEquals("[2 - END_ELEMENT] {L=8;C=19;O=125;}", lstLineData.get(3));
+       assertEquals("[8 - END_DOCUMENT] {L=8;C=26;O=132;}", lstLineData.get(4));
+    }
+    
+    public List<String> doTestCommentLocation(String input, boolean supportDtd)
+            throws XMLStreamException
+    {
+    	List<String> lstLineData = new ArrayList<String>();
+    	Reader reader = new StringReader(input);
+
+        // Force woodstox factory instance
+        XMLInputFactory f = new com.ctc.wstx.stax.WstxInputFactory();
+
+        f.setProperty(XMLInputFactory.SUPPORT_DTD, supportDtd);
+        f.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false);
+        f.setProperty(XMLInputFactory.IS_VALIDATING, false);
+        // Should shrink it to get faster convergence
+        XMLStreamReader rdr = f.createXMLStreamReader(reader);
+        
+        lstLineData.add(getLocation(rdr));
+        while (rdr.hasNext()) {
+          rdr.next();
+          lstLineData.add(getLocation(rdr));
+        }
+     
+        return lstLineData;
+    }
+    
+    private String getLocation(XMLStreamReader xmlReader)
+    {    	
+    	int eventType = xmlReader.getEventType();
+    	StringBuilder sb = new StringBuilder();
+    	sb.append("[").append(eventType).append(" - ");
+    	
+        switch (eventType) {
+        case XMLStreamReader.ENTITY_REFERENCE: sb.append("ENTITY_REFERENCE"); break;
+        case XMLStreamReader.COMMENT: sb.append("COMMENT"); break;
+        case XMLStreamReader.PROCESSING_INSTRUCTION: sb.append("PROCESSING_INSTRUCTION"); break;
+        case XMLStreamReader.CHARACTERS: sb.append("CHARACTERS"); break;
+        case XMLStreamReader.START_ELEMENT: sb.append("START_ELEMENT"); break;
+        case XMLStreamConstants.END_ELEMENT: sb.append("END_ELEMENT"); break;
+        case XMLStreamConstants.CDATA: sb.append("CDATA"); break;
+        case XMLStreamConstants.DTD: sb.append("DTD"); break;
+        case XMLStreamReader.END_DOCUMENT: sb.append("END_DOCUMENT"); break;
+        case XMLStreamReader.START_DOCUMENT: sb.append("START_DOCUMENT"); break;
+        default: sb.append("unknown (" + eventType + ")"); break;
+        }
+        sb.append("] {");
+        
+        Location loc = xmlReader.getLocation();
+        sb.append("L=").append(loc.getLineNumber()).append(";");
+        sb.append("C=").append(loc.getColumnNumber()).append(";");
+        sb.append("O=").append(loc.getCharacterOffset()).append(";");
+        sb.append("}");
+        
+        //System.out.println(sb.toString());
+        
+        return sb.toString();
+      }
 }
