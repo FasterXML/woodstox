@@ -412,7 +412,7 @@ public final class ReaderConfig
 
     // since 5.4/6.4
     protected int mMaxDtdDepth = DEFAULT_MAX_DTD_DEPTH;
-    
+
     /**
      * Base URL to use as the resolution context for relative entity
      * references

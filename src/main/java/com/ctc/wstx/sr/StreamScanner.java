@@ -1240,13 +1240,11 @@ public abstract class StreamScanner
                 return value;
             }
 
-            /* If we ran out of input, need to just fall back, gets
-             * resolved via 'full' resolution mechanism.
-             */
+            // If we ran out of input, need to just fall back, gets
+            // resolved via 'full' resolution mechanism.
         } else if (checkStd) {
-            /* Caller may not want to resolve these quite yet...
-             * (when it wants separate events for non-char entities)
-             */
+            // Caller may not want to resolve these quite yet...
+            // (when it wants separate events for non-char entities)
             if (c == 'a') { // amp or apos?
                 c = buf[ptr++];
                 
@@ -1420,14 +1418,12 @@ public abstract class StreamScanner
         int avail = mInputEnd - mInputPtr;
         if (avail < 6) {
             // split entity, or buffer boundary
-            /* Don't want to lose leading '&' (in case we can not expand
-             * the entity), so let's push it back first
-             */
+            // Don't want to lose leading '&' (in case we can not expand
+            // the entity), so let's push it back first
             --mInputPtr;
 
-            /* Shortest valid reference would be 3 chars ('&a;'); which
-             * would only be legal from an expanded entity...
-             */
+            // Shortest valid reference would be 3 chars ('&a;'); which
+            // would only be legal from an expanded entity...
             if (!ensureInput(6)) {
                 avail = inputInBuffer();
                 if (avail < 3) {
@@ -1537,10 +1533,9 @@ public abstract class StreamScanner
  
         // Perhaps we have a pre-defined char reference?
         c = id.charAt(0);
-        /*
-         * 16-May-2004, TSa: Should custom entities (or ones defined in int/ext subset) override
-         * pre-defined settings for these?
-         */
+
+        // 16-May-2004, TSa: Should custom entities (or ones defined in int/ext subset) override
+        // pre-defined settings for these?
         char d = CHAR_NULL;
         if (c == 'a') { // amp or apos?
             if (id.equals("amp")) {
@@ -2325,11 +2320,11 @@ public abstract class StreamScanner
     {
         int value = 0;
         char c = getNextChar(SUFFIX_IN_ENTITY_REF);
-        
+
         if (originalCharacters != null) {
             originalCharacters.append(c);
         }
-        
+
         if (c == 'x') { // hex
             while (true) {
                 c = (mInputPtr < mInputEnd) ? mInputBuffer[mInputPtr++]
@@ -2386,9 +2381,8 @@ public abstract class StreamScanner
     private final void validateChar(int value)
         throws XMLStreamException
     {
-        /* 24-Jan-2006, TSa: Ok, "high" Unicode chars are problematic,
-         *   need to be reported by a surrogate pair..
-         */
+        // 24-Jan-2006, TSa: Ok, "high" Unicode chars are problematic,
+        //   need to be reported by a surrogate pair..
         if (value >= 0xD800) {
             if (value < 0xE000) { // no surrogates via entity expansion
                 reportIllegalChar(value);
