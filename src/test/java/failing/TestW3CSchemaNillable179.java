@@ -1,81 +1,115 @@
 package failing;
 // ^^^ Move under "wstxtest/msv" once passing
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.StringReader;
 import java.io.StringWriter;
-
-import javax.xml.XMLConstants;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
 
 import org.codehaus.stax2.*;
 import org.codehaus.stax2.validation.*;
-import org.xml.sax.SAXException;
 
 import wstxtest.vstream.BaseValidationTest;
 
 /**
- * Test whether MSV validator behaves the same w.r.t. nillable elements as javax.xml.validation validator.
+ * Test whether nillable elements are handled correctly by both reader and writer.
  * A reproducer for <a href="https://github.com/FasterXML/woodstox/issues/179">https://github.com/FasterXML/woodstox/issues/179</a>.
  */
 public class TestW3CSchemaNillable179
     extends BaseValidationTest
 {
+    private static final String SCHEMA = 
+            "<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"\n"
+            + "           xmlns=\"http://server.hw.demo/nillable\"\n"
+            + "           targetNamespace=\"http://server.hw.demo/nillable\"\n"
+            + "           elementFormDefault=\"qualified\" attributeFormDefault=\"qualified\">\n"
+            + "  <xs:element name=\"nillableParent\">\n"
+            + "    <xs:complexType>\n"
+            + "      <xs:sequence>\n"
+            + "        <xs:element name=\"nillableDateTime\" type=\"xs:dateTime\" nillable=\"true\" minOccurs=\"0\"/>\n"
+            + "        <xs:element name=\"nillableInt\" type=\"xs:int\" nillable=\"true\" minOccurs=\"0\"/>\n"
+            + "        <xs:element name=\"nillableString\" type=\"xs:string\" nillable=\"true\"  minOccurs=\"0\"/>\n"
+            + "      </xs:sequence>\n"
+            + "    </xs:complexType>\n"
+            + "  </xs:element>\n"
+            + "</xs:schema>";
     // for [woodstox-core#179]
     public void testNillableDateTime() throws Exception
     {
-        /*
-<nl:nillableParent xmlns:nl="http://server.hw.demo/nillable">
-    <nl:nillableDateTime xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>
-</nl:nillableParent>
-         */
-        testNillable("wstxtest/msv/nillableDateTime.xml");
+        final String xmlDocument = 
+                "<nl:nillableParent xmlns:nl=\"http://server.hw.demo/nillable\">\n"
+                + "    <nl:nillableDateTime xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\"/>\n"
+                + "</nl:nillableParent>";
+        testNillable(xmlDocument, true, true);
+        
+        // The same document without xsi:nil="true" must fail for both reader and writer validation
+        try {
+            testNillable(xmlDocument.replace(" xsi:nil=\"true\"", ""), true, false);
+            fail("Expected a LocalValidationError");
+        } catch (LocalValidationError expected) {
+            assertEquals("Unknown reason (at end element </nl:nillableDateTime>)", expected.problem.getMessage());
+        }
+        try{
+            testNillable(xmlDocument.replace(" xsi:nil=\"true\"", ""), false, true);
+            fail("Expected a LocalValidationError");
+        } catch (LocalValidationError expected) {
+            assertEquals("Unknown reason (at end element </nl:nillableDateTime>)", expected.problem.getMessage());
+        }
+
     }
 
     // for [woodstox-core#179]
     public void testNillableInt() throws Exception
     {
-        /*
-<nl:nillableParent xmlns:nl="http://server.hw.demo/nillable">
-    <nl:nillableInt xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>
-</nl:nillableParent>
-         */
-        testNillable("wstxtest/msv/nillableInt.xml");
+        final String xmlDocument = 
+                "<nl:nillableParent xmlns:nl=\"http://server.hw.demo/nillable\">\n"
+                + "    <nl:nillableInt xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\"/>\n"
+                + "</nl:nillableParent>";
+        testNillable(xmlDocument, true, true);
+        
+        // The same document without xsi:nil="true" must fail for both reader and writer validation
+        try {
+            testNillable(xmlDocument.replace(" xsi:nil=\"true\"", ""), true, false);
+            fail("Expected a LocalValidationError");
+        } catch (LocalValidationError expected) {
+            assertEquals("Unknown reason (at end element </nl:nillableInt>)", expected.problem.getMessage());
+        }
+        try{
+            testNillable(xmlDocument.replace(" xsi:nil=\"true\"", ""), false, true);
+            fail("Expected a LocalValidationError");
+        } catch (LocalValidationError expected) {
+            assertEquals("Unknown reason (at end element </nl:nillableInt>)", expected.problem.getMessage());
+        }
+
     }
 
     // for [woodstox-core#179]
     public void testNillableString() throws Exception
     {
-        /*
-<nl:nillableParent xmlns:nl="http://server.hw.demo/nillable">
-    <nl:nillableString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>
-</nl:nillableParent>
-         */
-        testNillable("wstxtest/msv/nillableString.xml");
+        final String xmlDocument = 
+                "<nl:nillableParent xmlns:nl=\"http://server.hw.demo/nillable\">\n"
+                + "    <nl:nillableString xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\"/>\n"
+                + "</nl:nillableParent>";
+        testNillable(xmlDocument, true, true);
+
+        // Empty strings are legal
+        testNillable(xmlDocument.replace(" xsi:nil=\"true\"", ""), true, false);
+        testNillable(xmlDocument.replace(" xsi:nil=\"true\"", ""), false, true);
+
     }
 
-    void testNillable(String xmlResource) throws Exception
+    void testNillable(String xmlDocument, boolean validateReader, boolean validateWriter) throws Exception
     {
-        boolean woodstoxPassed = true;
-        Exception woodstoxE = null;
-        // Woodstox
-        final String xsdResource = "wstxtest/msv/nillable.xsd";
-        {
+        StringWriter writer = new StringWriter();
+        XMLStreamReader2 xmlReader = null;
+        XMLStreamWriter2 xmlWriter = null;
+        try {
             XMLValidationSchemaFactory schF = XMLValidationSchemaFactory.newInstance(XMLValidationSchema.SCHEMA_ID_W3C_SCHEMA);
-            InputStream schemaInput = getClass().getClassLoader().getResourceAsStream(xsdResource);
-            InputStream xmlInput = getClass().getClassLoader().getResourceAsStream(xmlResource);
-            try {
-                XMLValidationSchema schema = schF.createSchema(schemaInput);
-                XMLInputFactory2 f = getInputFactory();
-                setValidating(f, false);
+            XMLValidationSchema schema = schF.createSchema(new StringReader(SCHEMA));
+            XMLInputFactory2 f = getInputFactory();
+            setValidating(f, validateReader);
 
-                XMLStreamReader2 xmlReader = (XMLStreamReader2) f.createXMLStreamReader(xmlInput);
+            xmlReader = (XMLStreamReader2) f.createXMLStreamReader(new StringReader(xmlDocument));
 
-                /* the validation exception is only thrown from the writer
+            if (validateReader) {
                 xmlReader.setValidationProblemHandler(new ValidationProblemHandler() {
                     @Override
                     public void reportProblem(XMLValidationProblem problem)
@@ -84,10 +118,11 @@ public class TestW3CSchemaNillable179
                     }
                 });
                 xmlReader.validateAgainst(schema);
-                */
+            }
 
-                StringWriter writer = new StringWriter();
-                XMLStreamWriter2 xmlWriter = (XMLStreamWriter2) getOutputFactory().createXMLStreamWriter(writer);
+            xmlWriter = (XMLStreamWriter2) getOutputFactory().createXMLStreamWriter(writer);
+            
+            if (validateWriter) {
                 xmlWriter.setValidationProblemHandler(new ValidationProblemHandler() {
                     @Override
                     public void reportProblem(XMLValidationProblem problem)
@@ -96,67 +131,22 @@ public class TestW3CSchemaNillable179
                     }
                 });
                 xmlWriter.validateAgainst(schema);
+            }
 
-                try {
-                    xmlWriter.copyEventFromReader(xmlReader, false);
-                    while (xmlReader.hasNext()) {
-                        xmlReader.next();
-                        xmlWriter.copyEventFromReader(xmlReader, false);
-                    }
-                } catch (LocalValidationError e) {
-                    woodstoxPassed = false;
-                    woodstoxE = e;
-                }
-            } finally {
-                if (xmlInput != null) {
-                    xmlInput.close();
-                }
-                if (schemaInput != null) {
-                    schemaInput.close();
-                }
+            xmlWriter.copyEventFromReader(xmlReader, false);
+            while (xmlReader.hasNext()) {
+                xmlReader.next();
+                xmlWriter.copyEventFromReader(xmlReader, false);
+            }
+        } finally {
+            if (xmlReader != null) {
+                xmlReader.close();
+            }
+            if (xmlWriter != null) {
+                xmlWriter.close();
             }
         }
-
-        // javax.xml.validation
-        boolean javaxXmlValidationPassed = true;
-        {
-            InputStream schemaInput = getClass().getClassLoader().getResourceAsStream(xsdResource);
-            InputStream xmlInput = getClass().getClassLoader().getResourceAsStream(xmlResource);
-            SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            try {
-                Source schemaFile = new StreamSource(schemaInput);
-                Schema schema = factory.newSchema(schemaFile);
-                Validator validator = schema.newValidator();
-                try {
-                    validator.validate(new StreamSource(xmlInput));
-                } catch (SAXException e) {
-                    javaxXmlValidationPassed = false;
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            } finally {
-                if (xmlInput != null) {
-                    xmlInput.close();
-                }
-                if (schemaInput != null) {
-                    schemaInput.close();
-                }
-            }
-        }
-
-        if (woodstoxPassed != javaxXmlValidationPassed) {
-            if (woodstoxPassed) {
-                fail("Woodstox MSV validator passed"
-                        + " but javax.xml.validation validator did not pass"
-                        + " for " + xsdResource + " and "+ xmlResource);
-                
-            } else {
-                fail("Woodstox MSV validator did not pass"
-                        + " but javax.xml.validation validator passed"
-                        + " for " + xsdResource + " and "+ xmlResource
-                        +".\nFailure: "+woodstoxE);
-            }
-        }
+        assertEquals(xmlDocument, writer.toString());
     }
 
     /*

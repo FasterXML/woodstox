@@ -513,6 +513,13 @@ public abstract class BaseStax2Test
         }
     }
 
+    protected static void assertMessageContains(Throwable e, String substring) {
+        final String actual = e.getMessage();
+        if (!actual.contains(substring)) {
+            fail("Message '"+ actual +"' should contain '"+ substring +"'");
+        }
+    }
+
     protected static void failStrings(String msg, String exp, String act)
     {
         // !!! TODO: Indicate position where Strings differ

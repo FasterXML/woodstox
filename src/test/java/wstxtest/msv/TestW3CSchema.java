@@ -318,15 +318,14 @@ public class TestW3CSchema
             }
         });
         sr.validateAgainst(schema);
-        boolean threw = false;
         try {
             while (sr.hasNext()) {
                 /* int type = */sr.next();
             }
+            fail("Expected LocalValidationError");
         } catch (LocalValidationError lve) {
-            threw = true;
+            assertEquals("tag name \"foobar\" is not allowed. Possible tag names are: <root>", lve.problem.getMessage());
         }
-        assertTrue(threw);
     }
 
     /*

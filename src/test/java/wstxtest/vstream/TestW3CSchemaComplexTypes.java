@@ -50,17 +50,14 @@ public class TestW3CSchemaComplexTypes
             +"</ns11:Root>");
         sr.validateAgainst(schema);
         
-        try {
-            assertTokenType(START_ELEMENT, sr.next());
-            assertEquals("Root", sr.getLocalName());
-            assertTokenType(START_ELEMENT, sr.next());
-            assertEquals("Child", sr.getLocalName());
-            assertTokenType(END_ELEMENT, sr.next());
-            assertTokenType(END_ELEMENT, sr.next());
-            assertTokenType(END_DOCUMENT, sr.next());
-        } catch (XMLValidationException vex) {
-            fail("Did not expect validation exception, got: " + vex);
-        }
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals("Root", sr.getLocalName());
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals("Child", sr.getLocalName());
+        assertTokenType(END_ELEMENT, sr.next());
+        assertTokenType(END_ELEMENT, sr.next());
+        assertTokenType(END_DOCUMENT, sr.next());
+        
         assertTokenType(END_DOCUMENT, sr.getEventType());        
     }
 

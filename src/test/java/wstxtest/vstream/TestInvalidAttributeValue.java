@@ -53,5 +53,9 @@ public class TestInvalidAttributeValue
         final String verboseValue = sr.getAttributeValue(null, "verbose");
 
         assertEquals("yes", verboseValue);
+        
+        assertEquals(1, probs.size());
+        assertEquals("Element <root> has no attribute \"verbose\"", probs.get(0).getMessage());
+
     }
 }
