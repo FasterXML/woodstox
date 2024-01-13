@@ -24,7 +24,7 @@ public class TestW3CSchema
     /**
      * Sample schema, using sample 'personal.xsd' found from the web
      */
-    final static String SIMPLE_NON_NS_SCHEMA = "<?xml version='1.0' encoding='UTF-8'?>\n"
+    protected final static String SIMPLE_NON_NS_SCHEMA = "<?xml version='1.0' encoding='UTF-8'?>\n"
             + "<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'>\n"
             + "<xs:element name='personnel'>\n"
             + "<xs:complexType>\n"
@@ -173,7 +173,7 @@ public class TestW3CSchema
             + "<name><family>F</family><given>G</given>"
             + "</name><link manager='m3' /></person></personnel>";
         verifyFailure(XML, schema, "undefined referenced id ('m3')",
-                      "Undefined ID 'm3'");
+                      "Undefined ID 'm3'", true, true, false);
     }
 
     public void testSimpleDataTypes() throws XMLStreamException
