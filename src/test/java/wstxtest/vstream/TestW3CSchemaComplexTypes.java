@@ -1,11 +1,17 @@
 package wstxtest.vstream;
 
+import java.io.StringWriter;
+
 import javax.xml.stream.XMLStreamException;
 
 import org.codehaus.stax2.XMLInputFactory2;
 import org.codehaus.stax2.XMLStreamReader2;
-import org.codehaus.stax2.validation.XMLValidationException;
+import org.codehaus.stax2.XMLStreamWriter2;
 import org.codehaus.stax2.validation.XMLValidationSchema;
+
+import com.ctc.wstx.sw.NonNsStreamWriter;
+import com.ctc.wstx.sw.RepairingNsStreamWriter;
+import com.ctc.wstx.sw.SimpleNsStreamWriter;
 
 public class TestW3CSchemaComplexTypes 
     extends BaseValidationTest
@@ -44,21 +50,54 @@ public class TestW3CSchemaComplexTypes
 +"</xs:complexContent>"
 +"</xs:complexType>"
 +"</xs:schema>");
-        XMLStreamReader2 sr = getReader("<ns11:Root xmlns:ns11='http://MySchema'>"
-            +"<ns11:Child xsi:type='ns11:ChildInst' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>"
+        String XML = "<ns11:Root xmlns:ns11=\"http://MySchema\">"
+            +"<ns11:Child xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns11:ChildInst\">"
             +"</ns11:Child>"
-            +"</ns11:Root>");
+            +"</ns11:Root>";
+        
+        {
+            StringWriter writer = new StringWriter();
+            SimpleNsStreamWriter sw = (SimpleNsStreamWriter) constructStreamWriter(writer, true, false);
+            _testMSVGithubIssue2(schema, XML, sw, writer);
+        }
+        {
+            StringWriter writer = new StringWriter();
+            RepairingNsStreamWriter sw = (RepairingNsStreamWriter) constructStreamWriter(writer, true, true);
+            _testMSVGithubIssue2(schema, XML, sw, writer);
+        }
+    }
+
+    private void _testMSVGithubIssue2(XMLValidationSchema schema, String XML, XMLStreamWriter2 sw, StringWriter writer) throws XMLStreamException {
+        XMLStreamReader2 sr = getReader(XML);
         sr.validateAgainst(schema);
+        sw.validateAgainst(schema);
+        
         
         assertTokenType(START_ELEMENT, sr.next());
         assertEquals("Root", sr.getLocalName());
+        sw.copyEventFromReader(sr, false);
+
         assertTokenType(START_ELEMENT, sr.next());
         assertEquals("Child", sr.getLocalName());
+        sw.copyEventFromReader(sr, false);
+
         assertTokenType(END_ELEMENT, sr.next());
+        sw.copyEventFromReader(sr, false);
+
         assertTokenType(END_ELEMENT, sr.next());
+        sw.copyEventFromReader(sr, false);
+
         assertTokenType(END_DOCUMENT, sr.next());
+        sw.copyEventFromReader(sr, false);
         
-        assertTokenType(END_DOCUMENT, sr.getEventType());        
+        assertTokenType(END_DOCUMENT, sr.getEventType());
+        
+        sr.close();
+        sw.close();
+        
+        // the writers collapse empty elements
+        String expectedXML = XML.replace("></ns11:Child>", "/>");
+        assertEquals(expectedXML, writer.toString());
     }
 
     /*

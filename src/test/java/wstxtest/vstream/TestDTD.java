@@ -57,10 +57,9 @@ public class TestDTD
     {
         String XML = "<root attr='123'><leaf /></root>";
         XMLValidationSchema schema = parseDTDSchema(SIMPLE_DTD);
-        XMLStreamReader2 sr = getReader(XML);
-        sr.validateAgainst(schema);
-        while (sr.next() != END_DOCUMENT) { }
-        sr.close();
+        for (ValidationMode mode : ValidationMode.values()) {
+            mode.validate(schema, XML, "<root attr=\"123\"><leaf/></root>");
+        }
     }
 
     // [woodstox#23]
@@ -70,7 +69,6 @@ public class TestDTD
                 +"<!ATTLIST FreeFormText  xml:lang CDATA #IMPLIED >\n"
                 ;
         String XML = "<FreeFormText xml:lang='en-US'>foobar</FreeFormText>";
-        XMLInputFactory f = getInputFactory();
 
         /*
         Resolver resolver = new XMLResolver() {
@@ -85,19 +83,9 @@ public class TestDTD
         XMLValidationSchemaFactory schemaFactory =
                 XMLValidationSchemaFactory.newInstance(XMLValidationSchema.SCHEMA_ID_DTD);
         XMLValidationSchema schema = schemaFactory.createSchema(new StringReader(INPUT_DTD));
-        XMLStreamReader2 sr = (XMLStreamReader2)f.createXMLStreamReader(
-                new StringReader(XML));
-
-        sr.validateAgainst(schema);
-        while (sr.next() != END_DOCUMENT) {
-            /*
-            System.err.println("Curr == "+sr.getEventType());
-            if (sr.getEventType() == CHARACTERS) {
-                System.err.println(" text: "+sr.getText());
-            }
-            */
+        for (ValidationMode mode : ValidationMode.values()) {
+            mode.validate(schema, XML, "<FreeFormText xml:lang=\"en-US\">foobar</FreeFormText>");
         }
-        sr.close();
     }
 
     /**
@@ -107,13 +95,11 @@ public class TestDTD
     public void testPartialValidationOk()
         throws XMLStreamException
     {
-        String XML = "<root attr='123'><leaf /></root>";
+        String XML = "<root attr=\"123\"><leaf/></root>";
         XMLValidationSchema schema = parseDTDSchema(SIMPLE_DTD);
-        XMLStreamReader2 sr = getReader(XML);
-        assertTokenType(START_ELEMENT, sr.next());
-        sr.validateAgainst(schema);
-        while (sr.next() != END_DOCUMENT) { }
-        sr.close();
+        for (ValidationMode mode : ValidationMode.values()) {
+            mode.validate(schema, XML);
+        }
     }
 
     /*
@@ -167,14 +153,6 @@ public class TestDTD
     // Helper methods
     //////////////////////////////////////////////////////
      */
-
-    private XMLStreamReader2 getReader(String contents)
-        throws XMLStreamException
-    {
-        XMLInputFactory f = getInputFactory();
-        setValidating(f, false);
-        return constructStreamReader(f, contents);
-    }
 
     private XMLStreamReader getValidatingReader(String contents, XMLReporter rep)
         throws XMLStreamException

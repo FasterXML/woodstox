@@ -246,7 +246,11 @@ public final class SimpleOutputElement
     }
 
     public QName getName() {
-        return QNameCreator.create(mURI, mLocalName, mPrefix);
+        if (mPrefix != null) {
+            return QNameCreator.create(mURI, mLocalName, mPrefix);
+        } else {
+            return new QName(mURI, mLocalName);
+        }
     }
 
     /*

@@ -1,7 +1,9 @@
 package stax2;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -12,6 +14,12 @@ import org.codehaus.stax2.*;
 import org.codehaus.stax2.evt.*;
 
 import org.codehaus.stax2.ri.Stax2ReaderAdapter;
+import org.codehaus.stax2.validation.ValidationProblemHandler;
+import org.codehaus.stax2.validation.XMLValidationException;
+import org.codehaus.stax2.validation.XMLValidationProblem;
+import org.codehaus.stax2.validation.XMLValidationSchema;
+
+import com.ctc.wstx.stax.WstxOutputFactory;
 
 /**
  * Base unit test class to be inherited by all unit tests that test
@@ -186,6 +194,14 @@ public abstract class BaseStax2Test
         return (XMLStreamReader2) f.createXMLStreamReader(new StringReader(content));
     }
 
+    protected static XMLStreamWriter2 constructStreamWriter(Writer writer, boolean nsSupported, boolean repairing) throws XMLStreamException {
+        WstxOutputFactory f = new WstxOutputFactory();
+        f.getConfig().doSupportNamespaces(nsSupported);
+        f.getConfig().enableAutomaticNamespaces(repairing);
+        return (XMLStreamWriter2) f.createXMLStreamWriter(writer);
+    }
+
+    
     /**
      * Method to force constructing a wrapper for given stream reader.
      * Have to use this method to work around natural resistance by
@@ -328,7 +344,7 @@ public abstract class BaseStax2Test
      * @return Dummy value calculated on contents; used to make sure
      *   no dead code is eliminated
      */
-    protected int streamThrough(XMLStreamReader sr)
+    protected static int streamThrough(XMLStreamReader sr)
         throws XMLStreamException
     {
         int result = 0;
@@ -577,6 +593,40 @@ public abstract class BaseStax2Test
             fail("Expected an exception with sub-string \""+match+"\": got one with message \""+msg+"\"");
         }
     }
+
+    protected static void validateWriter(final String DOC, final List<XMLValidationProblem> probs, XMLInputFactory f,
+            XMLValidationSchema schema, StringWriter writer, XMLStreamWriter2 sw) throws XMLStreamException {
+        sw.validateAgainst(schema);
+        final List<XMLValidationProblem> writerProbs = new ArrayList<XMLValidationProblem>();
+        sw.setValidationProblemHandler(new ValidationProblemHandler() {
+            
+            @Override
+            public void reportProblem(XMLValidationProblem problem) throws XMLValidationException {
+                writerProbs.add(problem);
+            }
+        });
+        
+        XMLStreamReader2 sr = (XMLStreamReader2)f.createXMLStreamReader(
+                new StringReader(DOC));
+
+        sw.copyEventFromReader(sr, false);
+        while (sr.hasNext()) {
+            /* int type = */sr.next();
+            sw.copyEventFromReader(sr, false);
+        }
+        sr.close();
+        sw.close();
+        assertEquals(DOC, writer.toString());
+        
+        assertEquals(probs.size(), writerProbs.size());
+        for (int i = 0; i < probs.size(); i++) {
+            XMLValidationProblem expected = probs.get(i);
+            XMLValidationProblem actual = writerProbs.get(i);
+            assertEquals(expected.getMessage(), actual.getMessage());
+            assertEquals(expected.getSeverity(), actual.getSeverity());
+        }
+    }
+
 
     /*
     ///////////////////////////////////////////////////////////
