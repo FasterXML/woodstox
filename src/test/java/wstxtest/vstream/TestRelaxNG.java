@@ -18,7 +18,7 @@ import com.ctc.wstx.sw.SimpleNsStreamWriter;
 public class TestRelaxNG
     extends BaseValidationTest
 {
-    final static String SIMPLE_RNG_SCHEMA =
+    protected final static String SIMPLE_RNG_SCHEMA =
         "<element name='dict' xmlns='http://relaxng.org/ns/structure/1.0'>\n"
         +" <oneOrMore>\n"
         +"  <element name='term'>\n"
@@ -500,7 +500,7 @@ public class TestRelaxNG
         }
     }
 
-    private void _testPartialValidationOk(String XML, XMLValidationSchema schema, XMLStreamWriter2 sw, StringWriter writer) throws XMLStreamException {
+    protected void _testPartialValidationOk(String XML, XMLValidationSchema schema, XMLStreamWriter2 sw, StringWriter writer) throws XMLStreamException {
         XMLStreamReader2 sr = getReader(XML);
         assertTokenType(START_ELEMENT, sr.next());
         sw.copyEventFromReader(sr, false);

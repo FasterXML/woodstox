@@ -1,4 +1,4 @@
-package wstxtest.vstream;
+package failing;
 
 import stax2.BaseStax2Test;
 
@@ -16,11 +16,12 @@ import org.codehaus.stax2.validation.XMLValidationProblem;
 import org.codehaus.stax2.validation.XMLValidationSchema;
 import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 
-import com.ctc.wstx.sw.SimpleNsStreamWriter;
+import com.ctc.wstx.sw.RepairingNsStreamWriter;
 
-public class TestInvalidAttributeValue 
+public class TestInvalidAttributeValue190 
     extends BaseStax2Test
 {
+    /* A reproducer for https://github.com/FasterXML/woodstox/issues/190 */
     public void testInvalidAttributeValue() throws Exception
     {
         final String DOC = "<root note=\"note\" verbose=\"yes\"/>";
@@ -63,10 +64,11 @@ public class TestInvalidAttributeValue
         // now do the same on the writer side 
         // and make sure that the reported problems are the same
         {
-            // SimpleNsStreamWriter
+            // RepairingNsStreamWriter
             StringWriter writer = new StringWriter();
-            SimpleNsStreamWriter sw = (SimpleNsStreamWriter) stax2.BaseStax2Test.constructStreamWriter(writer, true, false);
+            RepairingNsStreamWriter sw = (RepairingNsStreamWriter) stax2.BaseStax2Test.constructStreamWriter(writer, true, true);
             validateWriter(DOC, probs, f, schema, writer, sw);
         }
+
     }
 }
