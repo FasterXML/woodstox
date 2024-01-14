@@ -11,7 +11,7 @@ import wstxtest.vstream.BaseValidationTest;
  * Test for XML Schema value constraints (default, required) for
  * elements and attributes.
  */
-public class TestW3CDefaultValues
+public class W3CDefaultValuesTest
     extends BaseValidationTest
 {
     final static String SCHEMA_WITH_DEFAULTS =

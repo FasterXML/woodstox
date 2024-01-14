@@ -10,7 +10,7 @@ import wstxtest.vstream.BaseValidationTest;
  *
  * @author Tatu Saloranta
  */
-public class TestW3CSchemaTypes
+public class W3CSchemaTypesTest
     extends BaseValidationTest
 {
 	private final static String SCHEMA_INT =

@@ -12,7 +12,7 @@ import java.io.StringReader;
  * Set of unit tests that checks that the {@link LocationInfo} implementation
  * works as expected, provides proper values or -1 to indicate "don't know".
  */
-public class TestExtLocationInfo91
+public class ExtLocationInfo91Test
     extends BaseStax2Test
 {
     final static String URI = "main.xml";

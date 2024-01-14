@@ -11,7 +11,7 @@ import wstxtest.vstream.BaseValidationTest;
  * This is a simple base-line "smoke test" that checks that RelaxNG
  * validation works at least minimally.
  */
-public class TestRelaxNG
+public class RelaxNGTest
     extends BaseValidationTest
 {
     final static String SIMPLE_RNG_SCHEMA =

@@ -22,7 +22,7 @@ import wstxtest.vstream.BaseValidationTest;
  * Test whether MSV validator behaves the same w.r.t. nillable elements as javax.xml.validation validator.
  * A reproducer for <a href="https://github.com/FasterXML/woodstox/issues/179">https://github.com/FasterXML/woodstox/issues/179</a>.
  */
-public class TestW3CSchemaNillable179
+public class W3CSchemaNillable179Test
     extends BaseValidationTest
 {
     // for [woodstox-core#179]

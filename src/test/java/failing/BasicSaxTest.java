@@ -15,7 +15,7 @@ import wstxtest.BaseWstxTest;
  * Simple unit tests to verify that most fundamental parsing functionality
  * works via Woodstox SAX implementation.
  */
-public class TestBasicSax
+public class BasicSaxTest
     extends BaseWstxTest
 {
     /**
