@@ -1,8 +1,9 @@
-package org.codehaus.stax.test.vstream;
+package failing;
 
 import javax.xml.stream.*;
 
 import org.codehaus.stax.test.SimpleResolver;
+import org.codehaus.stax.test.vstream.BaseVStreamTest;
 
 /**
  * Currently failing case(s) of {@code ExternalSubsetTest}

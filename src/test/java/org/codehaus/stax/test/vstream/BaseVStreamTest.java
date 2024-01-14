@@ -12,7 +12,7 @@ import org.codehaus.stax.test.stream.BaseStreamTest;
  *
  * @author Tatu Saloranta
  */
-abstract class BaseVStreamTest
+public abstract class BaseVStreamTest
     extends BaseStreamTest
 {
     protected XMLStreamReader getValidatingReader(String contents)
