@@ -62,14 +62,16 @@ public class TestAttributeValidation
 
     public void testInvalidFixedAttr() throws XMLStreamException
     {
-        if (HAS_NON_NS_MODE) { // only test non-ns mode if supported
-            _testInvalidFixedAttr(true, false);
+        for (WriterValidationTrigger trigger : WriterValidationTrigger.values()) {
+            if (HAS_NON_NS_MODE) { // only test non-ns mode if supported
+                _testInvalidFixedAttr(true, false, trigger);
+            }
+            _testInvalidFixedAttr(true, false, trigger);
+            _testInvalidFixedAttr(true, true, trigger);
         }
-        _testInvalidFixedAttr(true, false);
-        _testInvalidFixedAttr(true, true);
     }
 
-    private void _testInvalidFixedAttr(boolean nsAware, boolean repairing)
+    private void _testInvalidFixedAttr(boolean nsAware, boolean repairing, WriterValidationTrigger trigger)
             throws XMLStreamException
     {
         String modeDesc = String.format("[ns-aware? %s, repairing? %s]", nsAware, repairing);
@@ -80,8 +82,9 @@ public class TestAttributeValidation
         StringWriter strw = new StringWriter();
         XMLStreamWriter2 sw = getDTDValidatingWriter(strw, FIXED_DTD_STR, nsAware, repairing);
         sw.writeStartElement("root");
+        sw.writeAttribute("fixAttr", "otherValue");
         try {
-            sw.writeAttribute("fixAttr", "otherValue");
+            trigger.run(sw);
             fail(modeDesc+" Expected a validation exception when trying to add a #FIXED attribute with 'wrong' value");
         } catch (XMLValidationException vex) {
             assertMessageContains(vex, "Value of attribute \"fixAttr\" (element <root>) not \"fixedValue\" as expected, but \"otherValue\"");
@@ -92,8 +95,9 @@ public class TestAttributeValidation
         strw = new StringWriter();
         sw = getDTDValidatingWriter(strw, FIXED_DTD_STR, nsAware, repairing);
         sw.writeStartElement("root");
+        sw.writeAttribute("fixAttr", "");
         try {
-            sw.writeAttribute("fixAttr", "");
+            trigger.run(sw);
             fail(modeDesc+" Expected a validation exception when trying to add a #FIXED attribute with an empty value");
         } catch (XMLValidationException vex) {
             assertMessageContains(vex, "Value of attribute \"fixAttr\" (element <root>) not \"fixedValue\" as expected, but \"\"");
@@ -103,8 +107,9 @@ public class TestAttributeValidation
         strw = new StringWriter();
         sw = getDTDValidatingWriter(strw, FIXED_DTD_STR, nsAware, repairing);
         sw.writeEmptyElement("root");
+        sw.writeAttribute("fixAttr", "foobar");
         try {
-            sw.writeAttribute("fixAttr", "foobar");
+            trigger.run(sw);
             fail(modeDesc+" Expected a validation exception when trying to add a #FIXED attribute with an empty value");
         } catch (XMLValidationException vex) {
             assertMessageContains(vex, "Value of attribute \"fixAttr\" (element <root>) not \"fixedValue\" as expected, but \"foobar\"");
@@ -153,14 +158,16 @@ public class TestAttributeValidation
 
     public void testInvalidRequiredAttr() throws XMLStreamException
     {
-        if (HAS_NON_NS_MODE) { // only test non-ns mode if supported
-            _testInvalidRequiredAttr(true, false);
+        for (WriterValidationTrigger trigger : WriterValidationTrigger.values()) {
+            if (HAS_NON_NS_MODE) { // only test non-ns mode if supported
+                _testInvalidRequiredAttr(true, false, trigger);
+            }
+            _testInvalidRequiredAttr(true, false, trigger);
+            _testInvalidRequiredAttr(true, true, trigger);
         }
-        _testInvalidRequiredAttr(true, false);
-        _testInvalidRequiredAttr(true, true);
     }
 
-    public void _testInvalidRequiredAttr(boolean nsAware, boolean repairing)
+    public void _testInvalidRequiredAttr(boolean nsAware, boolean repairing, WriterValidationTrigger trigger)
         throws XMLStreamException
     {
         String modeDesc = String.format("[ns-aware? %s, repairing? %s]", nsAware, repairing);
@@ -170,7 +177,7 @@ public class TestAttributeValidation
         XMLStreamWriter2 sw = getDTDValidatingWriter(strw, REQUIRED_DTD_STR, nsAware, repairing);
         sw.writeStartElement("root");
         try {
-            sw.writeEndElement();
+            trigger.run(sw);
             fail(modeDesc+" Expected a validation exception when omitting a #REQUIRED attribute");
         } catch (XMLValidationException vex) {
             assertMessageContains(vex, "Required attribute \"reqAttr\" missing from element <root>");
@@ -208,11 +215,13 @@ public class TestAttributeValidation
 
     public void testInvalidNsAttr() throws XMLStreamException
     {
-        _testInvalidNsAttr(false);
-        _testInvalidNsAttr(true);
+        for (WriterValidationTrigger trigger : WriterValidationTrigger.values()) {
+            _testInvalidNsAttr(false, trigger);
+            _testInvalidNsAttr(true, trigger);
+        }
     }
 
-    private void _testInvalidNsAttr(boolean repairing) throws XMLStreamException
+    private void _testInvalidNsAttr(boolean repairing, WriterValidationTrigger trigger) throws XMLStreamException
     {
         String modeDesc = "[namespace-aware, repairing? "+repairing+"]";
 
@@ -225,12 +234,27 @@ public class TestAttributeValidation
             sw.writeNamespace(NS_PREFIX, NS_URI);
         }
         // prefix, uri, localname (for attrs!)
+        sw.writeAttribute(NS_PREFIX2, NS_URI, "attr", "value");
         try {
-            sw.writeAttribute(NS_PREFIX2, NS_URI, "attr", "value");
+            trigger.run(sw);
             fail(modeDesc+" Expected a validation exception when trying to add an attribute with wrong ns prefix");
         } catch (XMLValidationException vex) {
             assertMessageContains(vex, "Element <root> has no attribute \"ns2:attr\"");
         }
         // Should not close, since stream is invalid now...
+    }
+    
+    enum WriterValidationTrigger {
+        writeEndElement() {
+            void run(XMLStreamWriter2 sw) throws XMLStreamException {
+                sw.writeEndElement();
+            }
+        }, 
+        close() {
+            void run(XMLStreamWriter2 sw) throws XMLStreamException {
+                sw.close();
+            }
+        };
+        abstract void run(XMLStreamWriter2 sw) throws XMLStreamException;
     }
 }

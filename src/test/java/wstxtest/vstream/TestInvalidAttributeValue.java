@@ -16,6 +16,7 @@ import org.codehaus.stax2.validation.XMLValidationProblem;
 import org.codehaus.stax2.validation.XMLValidationSchema;
 import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 
+import com.ctc.wstx.sw.RepairingNsStreamWriter;
 import com.ctc.wstx.sw.SimpleNsStreamWriter;
 
 public class TestInvalidAttributeValue 
@@ -66,6 +67,12 @@ public class TestInvalidAttributeValue
             // SimpleNsStreamWriter
             StringWriter writer = new StringWriter();
             SimpleNsStreamWriter sw = (SimpleNsStreamWriter) stax2.BaseStax2Test.constructStreamWriter(writer, true, false);
+            validateWriter(DOC, probs, f, schema, writer, sw);
+        }
+        {
+            // RepairingNsStreamWriter
+            StringWriter writer = new StringWriter();
+            RepairingNsStreamWriter sw = (RepairingNsStreamWriter) stax2.BaseStax2Test.constructStreamWriter(writer, true, true);
             validateWriter(DOC, probs, f, schema, writer, sw);
         }
     }

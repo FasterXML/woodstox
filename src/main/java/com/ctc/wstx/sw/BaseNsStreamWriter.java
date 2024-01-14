@@ -24,11 +24,14 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 
 import org.codehaus.stax2.ri.typed.AsciiValueEncoder;
+import org.codehaus.stax2.validation.XMLValidationException;
+import org.codehaus.stax2.validation.XMLValidationSchema;
+import org.codehaus.stax2.validation.XMLValidator;
 
 import com.ctc.wstx.api.EmptyElementHandler;
 import com.ctc.wstx.api.WriterConfig;
+import com.ctc.wstx.api.WstxInputProperties;
 import com.ctc.wstx.cfg.ErrorConsts;
-import com.ctc.wstx.cfg.XmlConsts;
 import com.ctc.wstx.exc.WstxIOException;
 import com.ctc.wstx.util.DefaultXmlSymbolTable;
 
@@ -246,9 +249,6 @@ public abstract class BaseNsStreamWriter
         throws XMLStreamException
     {
         checkStartElement(localName, null);
-        if (mValidator != null) {
-            mValidator.validateElementStart(localName, XmlConsts.ELEM_NO_NS_URI, XmlConsts.ELEM_NO_PREFIX);
-        }
         mEmptyElement = true;
         if (mOutputElemPool != null) {
             SimpleOutputElement newCurr = mOutputElemPool;
@@ -294,9 +294,6 @@ public abstract class BaseNsStreamWriter
         throws XMLStreamException
     {
         checkStartElement(localName, null);
-        if (mValidator != null) {
-            mValidator.validateElementStart(localName, XmlConsts.ELEM_NO_NS_URI, XmlConsts.ELEM_NO_PREFIX);
-        }
         mEmptyElement = false;
         if (mOutputElemPool != null) {
             SimpleOutputElement newCurr = mOutputElemPool;
@@ -334,11 +331,11 @@ public abstract class BaseNsStreamWriter
         if (!mStartElementOpen) {
             throwOutputError(ErrorConsts.WERR_ATTR_NO_ELEM);
         }
-        if (mCheckAttrs) { // still need to ensure no duplicate attrs?
-            mCurrElem.checkAttrWrite(nsURI, localName);
-        }
         try {
             if (mValidator == null) {
+                 if (mCheckAttrs) { // still need to ensure no duplicate attrs?
+                     mCurrElem.addAttribute(nsURI, localName, null, null);
+                 }
                  if (prefix == null || prefix.length() == 0) {
                      mWriter.writeTypedAttribute(localName, enc);
                  } else {
@@ -346,7 +343,7 @@ public abstract class BaseNsStreamWriter
                  }
             } else {
                 mWriter.writeTypedAttribute
-                    (prefix, localName, nsURI, enc, mValidator, getCopyBuffer());
+                    (prefix, localName, nsURI, enc, mCurrElem.getAttributeCollector(), getCopyBuffer());
             }
         } catch (IOException ioe) {
             throw new WstxIOException(ioe);
@@ -430,7 +427,16 @@ public abstract class BaseNsStreamWriter
         }
 
         if (mValidator != null) {
-            mVldContent = mValidator.validateElementAndAttributes();
+            try {
+                mVldContent = mCurrElem.validateElementStartAndAttributes();
+                if (emptyElem) {
+                    mVldContent = mValidator.validateElementEnd
+                            (mCurrElem.getLocalName(), mCurrElem.getNamespaceURI(), mCurrElem.getPrefix());
+                }
+            } catch (XMLValidationException e) {
+                mVldException = e;
+                throw e;
+            }
         }
 
         // Need bit more special handling for empty elements...
@@ -439,10 +445,6 @@ public abstract class BaseNsStreamWriter
             mCurrElem = curr.getParent();
             if (mCurrElem.isRoot()) { // Did we close the root? (isRoot() returns true for the virtual "document node")
                 mState = STATE_EPILOG;
-            }
-            if (mValidator != null) {
-                mVldContent = mValidator.validateElementEnd
-                    (curr.getLocalName(), curr.getNamespaceURI(), curr.getPrefix());
             }
             if (mPoolSize < MAX_POOL_SIZE) {
                 curr.addToPool(mOutputElemPool);
@@ -471,6 +473,9 @@ public abstract class BaseNsStreamWriter
     protected void checkStartElement(String localName, String prefix)
         throws XMLStreamException
     {
+        if (mVldException != null) {
+            throw new XMLStreamException("Cannot start an element after a validation error", mVldException);
+        }
         // Need to finish an open start element?
         if (mStartElementOpen) {
             closeStartElement(mEmptyElement);
@@ -493,13 +498,14 @@ public abstract class BaseNsStreamWriter
             String value)
         throws XMLStreamException
     {
-        if (mCheckAttrs) { // still need to ensure no duplicate attrs?
-            mCurrElem.checkAttrWrite(nsURI, localName);
-        }
-        if (mValidator != null) {
-            // No need to get it normalized... even if validator does normalize
-            // it, we don't use that for anything
-            mValidator.validateAttribute(localName, nsURI, prefix, value);
+        if (mCheckAttrs) {
+            // ensure no duplicate attrs and possibly pass them to validator when closing the start element
+            try {
+                mCurrElem.addAttribute(nsURI, localName, prefix, value);
+            } catch (XMLValidationException e) {
+                mVldException = e;
+                throw e;
+            }
         }
         try {
             int vlen = value.length();
@@ -526,29 +532,6 @@ public abstract class BaseNsStreamWriter
                 mWriter.writeAttribute(prefix, localName, value);
             } else {
                 mWriter.writeAttribute(localName, value);
-            }
-        } catch (IOException ioe) {
-            throw new WstxIOException(ioe);
-        }
-    }
-
-    protected final void doWriteAttr(String localName, String nsURI, String prefix,
-                                     char[] buf, int start, int len)
-        throws XMLStreamException
-    {
-        if (mCheckAttrs) { // still need to ensure no duplicate attrs?
-            mCurrElem.checkAttrWrite(nsURI, localName);
-        }
-        if (mValidator != null) {
-            // No need to get it normalized... even if validator does normalize
-            // it, we don't use that for anything
-            mValidator.validateAttribute(localName, nsURI, prefix, buf, start, len);
-        }
-        try {
-            if (prefix != null && prefix.length() > 0) {
-                mWriter.writeAttribute(prefix, localName, buf, start, len);
-            } else {
-                mWriter.writeAttribute(localName, buf, start, len);
             }
         } catch (IOException ioe) {
             throw new WstxIOException(ioe);
@@ -653,9 +636,26 @@ public abstract class BaseNsStreamWriter
         }
 
         // Better have something to close... (to figure out what to close)
-        if (mState != STATE_TREE) {
+        if (mVldException != null) {
+            throw new XMLStreamException("Cannot start an element after a validation error", mVldException);
+        } else if (mState != STATE_TREE) {
             // Have to always throw exception... don't necessarily know the name
             reportNwfStructure("No open start element, when trying to write end element");
+        }
+
+        if (mStartElementOpen) {
+            if (mValidator != null) {
+                // We need to validate here, before we move the mCurrElem 
+                try {
+                    /* Note: return value is not of much use, since the
+                     * element will be closed right away...
+                     */
+                    mVldContent = mCurrElem.validateElementStartAndAttributes();
+                } catch (XMLValidationException e) {
+                    mVldException = e;
+                    throw e;
+                }
+            }
         }
 
         SimpleOutputElement thisElem = mCurrElem;
@@ -691,12 +691,6 @@ public abstract class BaseNsStreamWriter
             /* Can't/shouldn't call closeStartElement, but need to do same
              * processing. Thus, this is almost identical to closeStartElement:
              */
-            if (mValidator != null) {
-                /* Note: return value is not of much use, since the
-                 * element will be closed right away...
-                 */
-                mVldContent = mValidator.validateElementAndAttributes();
-            }
             mStartElementOpen = false;
             try {
                 //If an EmptyElementHandler is provided use it to determine if allowEmpty is set
@@ -710,7 +704,12 @@ public abstract class BaseNsStreamWriter
                         mState = STATE_EPILOG;
                     }
                     if (mValidator != null) {
-                        mVldContent = mValidator.validateElementEnd(localName, nsURI, prefix);
+                        try {
+                            mVldContent = mValidator.validateElementEnd(localName, nsURI, prefix);
+                        } catch (XMLValidationException e) {
+                            mVldException = e;
+                            throw e;
+                        }
                     }
                     return;
                 }
@@ -733,7 +732,12 @@ public abstract class BaseNsStreamWriter
 
         // Ok, time to validate...
         if (mValidator != null) {
-            mVldContent = mValidator.validateElementEnd(localName, nsURI, prefix);
+            try {
+                mVldContent = mValidator.validateElementEnd(localName, nsURI, prefix);
+            } catch (XMLValidationException e) {
+                mVldException = e;
+                throw e;
+            }
         }
     }
 
@@ -763,4 +767,96 @@ public abstract class BaseNsStreamWriter
 
     protected abstract void writeStartOrEmpty(String prefix, String localName, String nsURI)
         throws XMLStreamException;
+
+    /*
+    ///////////////////////////////////////////////////////////////////////
+    // Attribute access
+    ///////////////////////////////////////////////////////////////////////
+     */
+
+    @Override
+    public int getAttributeCount()
+    {
+        return mCurrElem.getAttributeCount();
+    }
+
+    @Override
+    public String getAttributeLocalName(int index)
+    {
+        return mCurrElem.getAttributeLocalName(index);
+    }
+
+    @Override
+    public String getAttributeNamespace(int index)
+    {
+        return mCurrElem.getAttributeNamespace(index);
+    }
+
+    @Override
+    public String getAttributePrefix(int index)
+    {
+        return mCurrElem.getAttributePrefix(index);
+    }
+
+    @Override
+    public String getAttributeValue(int index)
+    {
+        return mCurrElem.getAttributeValue(index);
+    }
+
+    @Override
+    public String getAttributeValue(String nsURI, String localName)
+    {
+        return mCurrElem.getAttributeValue(nsURI, localName);
+    }
+
+    @Override
+    public String getAttributeType(int index) {
+        return (mValidator == null) ? WstxInputProperties.UNKNOWN_ATTR_TYPE :
+            mValidator.getAttributeType(index);
+    }
+
+    @Override
+    public int findAttributeIndex(String nsURI, String localName)
+    {
+        return mCurrElem.findAttributeIndex(nsURI, localName);
+    }
+
+    /*
+    ///////////////////////////////////////////////////////////////////////
+    // Overrides to keep the validator up to date in SimpleOutputElement instances
+    ///////////////////////////////////////////////////////////////////////
+     */
+
+    @Override
+    public XMLValidator validateAgainst(XMLValidationSchema schema) throws XMLStreamException {
+        final XMLValidator validateAgainst = super.validateAgainst(schema);
+        mCurrElem.setValidator(mValidator);
+        if (mOutputElemPool != null) {
+            mOutputElemPool.setValidator(mValidator);
+        }
+        return validateAgainst;
+    }
+
+    @Override
+    public XMLValidator stopValidatingAgainst(XMLValidationSchema schema) throws XMLStreamException {
+        final XMLValidator result = super.stopValidatingAgainst(schema);
+        mCurrElem.setValidator(mValidator);
+        if (mOutputElemPool != null) {
+            mOutputElemPool.setValidator(mValidator);
+        }
+        return result;
+    }
+
+    @Override
+    public XMLValidator stopValidatingAgainst(XMLValidator validator) throws XMLStreamException {
+        final XMLValidator result = super.stopValidatingAgainst(validator);
+        mCurrElem.setValidator(mValidator);
+        if (mOutputElemPool != null) {
+            mOutputElemPool.setValidator(mValidator);
+        }
+        return result;
+    }
+
+
 }

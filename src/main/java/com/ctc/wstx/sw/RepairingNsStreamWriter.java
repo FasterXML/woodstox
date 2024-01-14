@@ -27,6 +27,7 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 
 import org.codehaus.stax2.ri.typed.AsciiValueEncoder;
+import org.codehaus.stax2.validation.XMLValidator;
 
 import com.ctc.wstx.api.WriterConfig;
 import com.ctc.wstx.cfg.ErrorConsts;
@@ -279,15 +280,9 @@ public final class RepairingNsStreamWriter
         }
         
         if (prefix != null) { // prefix ok, easy, no need to overwrite
-            if (mValidator != null) {
-                mValidator.validateElementStart(localName, nsURI, prefix);
-            }
             doWriteStartTag(prefix, localName);
         } else { // no prefix, more work
             prefix = generateElemPrefix(null, nsURI, mCurrElem);
-            if (mValidator != null) {
-                mValidator.validateElementStart(localName, nsURI, prefix);
-            }
             mCurrElem.setPrefix(prefix);
             doWriteStartTag(prefix, localName);
             if (prefix == null || prefix.length() == 0) { // def NS
@@ -309,9 +304,6 @@ public final class RepairingNsStreamWriter
         // In repairing mode, better ensure validity:
         String actPrefix = validateElemPrefix(suggPrefix, nsURI, mCurrElem);
         if (actPrefix != null) { // fine, an existing binding we can use:
-            if (mValidator != null) {
-                mValidator.validateElementStart(localName, nsURI, actPrefix);
-            }
             if (mOutputElemPool != null) {
                 SimpleOutputElement newCurr = mOutputElemPool;
                 mOutputElemPool = newCurr.reuseAsChild(mCurrElem, actPrefix, localName, nsURI);
@@ -330,9 +322,6 @@ public final class RepairingNsStreamWriter
                 suggPrefix = "";
             }
             actPrefix = generateElemPrefix(suggPrefix, nsURI, mCurrElem);
-            if (mValidator != null) {
-                mValidator.validateElementStart(localName, nsURI, actPrefix);
-            }
             if (mOutputElemPool != null) {
                 SimpleOutputElement newCurr = mOutputElemPool;
                 mOutputElemPool = newCurr.reuseAsChild(mCurrElem, actPrefix, localName, nsURI);
@@ -399,6 +388,7 @@ public final class RepairingNsStreamWriter
          * prefixes have been remapped... so need to be bit more careful.
          */
         if (attrCount > 0) {
+            XMLValidator vld = mCheckAttrs ? mCurrElem.getAttributeCollector() : null;
             for (int i = 0; i < attrCount; ++i) {
                 // First; need to make sure that the prefix-to-ns mapping
                 // attribute has is valid... and can not output anything
@@ -420,10 +410,15 @@ public final class RepairingNsStreamWriter
                  * collector has, we can not use pass-through method of
                  * the collector, but need to call XmlWriter directly:
                  */
+                String localName = ac.getLocalName(i);
+                String value = ac.getValue(i);
                 if (prefix == null || prefix.length() == 0) {
-                    mWriter.writeAttribute(ac.getLocalName(i), ac.getValue(i));
+                    mWriter.writeAttribute(localName, value);
                 } else {
-                    mWriter.writeAttribute(prefix, ac.getLocalName(i), ac.getValue(i));
+                    mWriter.writeAttribute(prefix, localName, value);
+                }
+                if (vld != null) {
+                    vld.validateAttribute(localName, uri, prefix, value);
                 }
             }
         }
