@@ -11,7 +11,7 @@ import org.codehaus.stax.test.SimpleResolver;
  *
  * @author Tatu Saloranta 
  */
-public class TestExternalSubset
+public class ExternalSubsetTest
     extends BaseVStreamTest
 {
     public void testSimpleValidExternalSubset()
@@ -52,6 +52,29 @@ public class TestExternalSubset
         assertEquals("root", sr.getLocalName());
         assertTokenType(CHARACTERS, sr.next());
         assertEquals(EXT_ENTITY_VALUE, getAndVerifyText(sr));
+        assertTokenType(END_ELEMENT, sr.next());
+        sr.close();
+    }
+
+    public void testParameterEntityOverrideInInternalSubset()
+            throws XMLStreamException
+    {
+        String XML = "<!DOCTYPE root SYSTEM 'myurl' [ <!ENTITY  % PATRR  \"image CDATA #IMPLIED\"> " +
+                " ]>" +
+                "<root id=\"id1\" image=\"img1\">Some text</root>";
+
+        String EXT_SUBSET =
+                "<!ENTITY % PATRR  \"photo CDATA #IMPLIED\">\n" +
+                "<!ELEMENT root (#PCDATA)>\n" +
+                        "<!ATTLIST root id CDATA #REQUIRED\n" +
+                        "          %PATRR; >";
+
+        XMLStreamReader sr = getReader(XML, true,
+                new SimpleResolver(EXT_SUBSET));
+        assertTokenType(DTD, sr.next());
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals("root", sr.getLocalName());
+        assertTokenType(CHARACTERS, sr.next());
         assertTokenType(END_ELEMENT, sr.next());
         sr.close();
     }
