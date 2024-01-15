@@ -500,6 +500,38 @@ public class TestEntityRead
     }
 
     /**
+     * Test that ensures that an exception is thrown when
+     * allow surrogate pair entities option is disabled.
+     * Expected default behavior should be an exception
+     * with message starting with: Illegal character entity
+     */
+    public void testAllowSurrogatePairEntitiesDisabled()
+            throws XMLStreamException
+    {
+        final String expectedErrorPhrase = "Illegal character entity";
+        final String surrogatePairEntitiesXML = "<root>surrogate pair: &#55356;&#57221;.</root>";
+        
+        final XMLStreamReader sr = getReader(surrogatePairEntitiesXML, true, true, true, false);
+        assertTokenType(START_ELEMENT, sr.next());
+        assertTokenType(CHARACTERS, sr.next());
+        
+        try {
+            streamThrough(sr);
+            fail("Expected an exception for illegal character entity when surrogate pair entities allowation is disabled");
+        } catch (XMLStreamException e) {
+            if (!e.getMessage().startsWith(expectedErrorPhrase)) {
+                fail(String.format(
+                        "Expected an exception starting from phrase: '%s' when surrogate pair entities allowation is disabled, but the message was: '%s'",
+                        expectedErrorPhrase,
+                        e.getMessage()
+                    ));
+            }
+        } finally {
+            sr.close();
+        }
+    }
+
+    /**
      * This unit test checks that external entities can be resolved; and
      * to do that without requiring external files, will use a simple
      * helper resolver
