@@ -8,6 +8,8 @@ import junit.framework.TestCase;
 import javax.xml.stream.*;
 import javax.xml.stream.events.XMLEvent;
 
+import com.ctc.wstx.api.WstxInputProperties;
+
 /* Latest updates:
  *
  * - 07-Sep-2007, TSa: Updating based on latest understanding of
@@ -274,6 +276,14 @@ public abstract class BaseStaxTest
              */
             return false;
         }
+    }
+    
+    protected static void setResolveEntitySurrogatePairs(XMLInputFactory f, boolean state)
+            throws XMLStreamException
+    {   
+        Boolean b = state ? Boolean.TRUE : Boolean.FALSE;
+        f.setProperty(WstxInputProperties.P_ALLOW_SURROGATE_PAIR_ENTITIES, b);
+        assertEquals(b, f.getProperty(WstxInputProperties.P_ALLOW_SURROGATE_PAIR_ENTITIES));
     }
 
     protected static void setResolver(XMLInputFactory f, XMLResolver resolver)
