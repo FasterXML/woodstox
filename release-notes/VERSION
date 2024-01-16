@@ -4,7 +4,7 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-6.6.0 (not yet released)
+6.6.0 (15-Jan-2024)
 
 #67: Wrong line for XML event location in elements following DTD
  (reported by @m-g-sonar)
