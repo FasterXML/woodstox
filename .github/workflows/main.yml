@@ -19,8 +19,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Alas, JDK14 can't be yet used as Woodstox builds for Java 6
-        java_version: ['8', '11']
+        # With Woodstox 7.0 can finally test versions past 11
+        java_version: ['8', '11', '17', '21']
         os: ['ubuntu-20.04']
     env:
       JAVA_OPTS: "-XX:+TieredCompilation -XX:TieredStopAtLevel=1"
