@@ -4,6 +4,10 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+7.0.0 (not yet released)
+
+#134: Increase JDK baseline to Java 8
+
 6.6.0 (15-Jan-2024)
 
 #67: Wrong line for XML event location in elements following DTD
