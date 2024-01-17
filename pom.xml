@@ -41,9 +41,9 @@ SAX2 and Stax2 APIs
       <version.msv>2022.7</version.msv>
       <version.plugin.javadoc>3.1.1</version.plugin.javadoc>
 
-      <!-- Woodstox 5.0 is 1.6+ -->
-      <javac.src.version>1.6</javac.src.version>
-      <javac.target.version>1.6</javac.target.version>
+      <!-- Woodstox 7.0 is Java 8+ -->
+      <javac.src.version>1.8</javac.src.version>
+      <javac.target.version>1.8</javac.target.version>
 
       <!-- Since our groupId is NOT the same as Java package id, need to explicitly define.
            And due to number of packages, let's just include all.
@@ -204,7 +204,7 @@ SAX2 and Stax2 APIs
 	<plugin>
             <groupId>org.sonatype.plugins</groupId>
             <artifactId>nexus-staging-maven-plugin</artifactId>
-            <version>1.6.6</version>
+            <version>1.6.13</version>
             <extensions>true</extensions>
             <configuration>
               <serverId>sonatype-nexus-staging</serverId>
@@ -217,8 +217,8 @@ SAX2 and Stax2 APIs
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
 <!--
                     <excludes>
                         <exclude>test/**</exclude>
@@ -339,7 +339,7 @@ SAX2 and Stax2 APIs
                       <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                         <manifestEntries>
                           <Require-Capability>
-                            osgi.extender;filter:="(&amp;(osgi.extender=osgi.serviceloader.registrar)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))";resolution:=optional,osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.6))"
+                            osgi.extender;filter:="(&amp;(osgi.extender=osgi.serviceloader.registrar)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))";resolution:=optional,osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.8))"
                           </Require-Capability>
                         </manifestEntries>
                       </transformer>
