@@ -3,6 +3,7 @@ package wstxtest.vstream;
 import stax2.BaseStax2Test;
 
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,12 +16,15 @@ import org.codehaus.stax2.validation.XMLValidationProblem;
 import org.codehaus.stax2.validation.XMLValidationSchema;
 import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 
+import com.ctc.wstx.sw.RepairingNsStreamWriter;
+import com.ctc.wstx.sw.SimpleNsStreamWriter;
+
 public class TestInvalidAttributeValue 
     extends BaseStax2Test
 {
     public void testInvalidAttributeValue() throws Exception
     {
-        final String DOC = "<root note='note' verbose='yes'/>\n";
+        final String DOC = "<root note=\"note\" verbose=\"yes\"/>";
 
         final String INPUT_DTD =
 "<!ELEMENT root ANY>\n"
@@ -53,5 +57,23 @@ public class TestInvalidAttributeValue
         final String verboseValue = sr.getAttributeValue(null, "verbose");
 
         assertEquals("yes", verboseValue);
+        
+        assertEquals(1, probs.size());
+        assertEquals("Element <root> has no attribute \"verbose\"", probs.get(0).getMessage());
+
+        // now do the same on the writer side 
+        // and make sure that the reported problems are the same
+        {
+            // SimpleNsStreamWriter
+            StringWriter writer = new StringWriter();
+            SimpleNsStreamWriter sw = (SimpleNsStreamWriter) stax2.BaseStax2Test.constructStreamWriter(writer, true, false);
+            validateWriter(DOC, probs, f, schema, writer, sw);
+        }
+        {
+            // RepairingNsStreamWriter
+            StringWriter writer = new StringWriter();
+            RepairingNsStreamWriter sw = (RepairingNsStreamWriter) stax2.BaseStax2Test.constructStreamWriter(writer, true, true);
+            validateWriter(DOC, probs, f, schema, writer, sw);
+        }
     }
 }

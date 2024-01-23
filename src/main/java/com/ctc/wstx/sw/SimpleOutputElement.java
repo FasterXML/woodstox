@@ -21,6 +21,11 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
+import org.codehaus.stax2.validation.ValidationContext;
+import org.codehaus.stax2.validation.XMLValidationSchema;
+import org.codehaus.stax2.validation.XMLValidator;
+
+import com.ctc.wstx.api.WstxInputProperties;
 import com.ctc.wstx.compat.QNameCreator;
 import com.ctc.wstx.util.BijectiveNsMap;
 
@@ -83,7 +88,14 @@ public final class SimpleOutputElement
      * Map used to check for duplicate attribute declarations, if
      * feature is enabled.
      */
-    protected HashSet<AttrName> mAttrSet = null;
+    /* 13-Dec-2005, TSa: Should use a more efficient Set/Map value
+     *   for this in future -- specifically one that could use
+     *   ns/local-name pairs without intermediate objects
+     */
+    private HashMap<Attribute, Attribute> mAttrMap;
+    private ArrayList<Attribute> mAttrList;
+    private AttributeCollector mAttributeCollector;
+    private XMLValidator mValidator;
 
     /*
     ///////////////////////////////////////////////////////////////////////
@@ -112,6 +124,7 @@ public final class SimpleOutputElement
         mPrefix = prefix;
         mLocalName = localName;
         mURI = uri;
+        mValidator = parent.mValidator;
     }
 
     /**
@@ -132,6 +145,7 @@ public final class SimpleOutputElement
         mNsMapShared = (mNsMapping != null);
         mDefaultNsURI = parent.mDefaultNsURI;
         mRootNsContext = parent.mRootNsContext;
+        mValidator = parent.mValidator;
     }
 
     public static SimpleOutputElement createRoot()
@@ -150,7 +164,8 @@ public final class SimpleOutputElement
          * that when a child element has been opened, no more attributes
          * can be output.
          */
-        mAttrSet = null;
+        mAttrList = null;
+        mAttrMap = null;
         return new SimpleOutputElement(this, null, localName,
                                        mDefaultNsURI, mNsMapping);
     }
@@ -161,7 +176,8 @@ public final class SimpleOutputElement
     protected SimpleOutputElement reuseAsChild(SimpleOutputElement parent,
                                                String localName)
     {
-        mAttrSet = null;
+        mAttrList = null;
+        mAttrMap = null;
         SimpleOutputElement poolHead = mParent;
         relink(parent, null, localName, mDefaultNsURI);
         return poolHead;
@@ -171,7 +187,8 @@ public final class SimpleOutputElement
                                                String prefix, String localName,
                                                String uri)
     {
-        mAttrSet = null;
+        mAttrList = null;
+        mAttrMap = null;
         SimpleOutputElement poolHead = mParent;
         relink(parent, prefix, localName, uri);
         return poolHead;
@@ -188,7 +205,8 @@ public final class SimpleOutputElement
          * that when a child element has been opened, no more attributes
          * can be output.
          */
-        mAttrSet = null;
+        mAttrList = null;
+        mAttrMap = null;
         return new SimpleOutputElement(this, prefix, localName, uri, mNsMapping);
     }
 
@@ -199,6 +217,8 @@ public final class SimpleOutputElement
     protected void addToPool(SimpleOutputElement poolHead)
     {
         mParent = poolHead;
+        mAttrList = null;
+        mAttrMap = null;
     }
 
     /*
@@ -246,7 +266,11 @@ public final class SimpleOutputElement
     }
 
     public QName getName() {
-        return QNameCreator.create(mURI, mLocalName, mPrefix);
+        if (mPrefix != null) {
+            return QNameCreator.create(mURI, mLocalName, mPrefix);
+        } else {
+            return new QName(mURI, mLocalName);
+        }
     }
 
     /*
@@ -255,20 +279,18 @@ public final class SimpleOutputElement
     ///////////////////////////////////////////////////////////////////////
      */
 
-    public void checkAttrWrite(String nsURI, String localName)
+    public void addAttribute(String nsURI, String localName, String prefix, String value)
         throws XMLStreamException
     {
-        AttrName an = new AttrName(nsURI, localName);
-        if (mAttrSet == null) {
-            /* 13-Dec-2005, TSa: Should use a more efficient Set/Map value
-             *   for this in future -- specifically one that could use
-             *   ns/local-name pairs without intermediate objects
-             */
-            mAttrSet = new HashSet<AttrName>();
+        if (mAttrList == null) {
+            mAttrList = new ArrayList<Attribute>();
+            mAttrMap = new HashMap<Attribute, Attribute>();
         }
-        if (!mAttrSet.add(an)) {
+        Attribute an = new Attribute(nsURI, localName, prefix, value, mAttrList.size());
+        if (mAttrMap.put(an, an) != null) {
             throw new XMLStreamException("Duplicate attribute write for attribute '"+an+"'");
         }
+        mAttrList.add(an);
     }
 
     /*
@@ -286,6 +308,13 @@ public final class SimpleOutputElement
         mDefaultNsURI = uri;
     }
 
+    void setValidator(XMLValidator validator) {
+        mValidator = validator;
+        if (mParent != null) {
+            mParent.setValidator(validator);
+        }
+    }
+
     /**
      * Note: this method can and will only be called before outputting
      * the root element.
@@ -300,6 +329,74 @@ public final class SimpleOutputElement
             mDefaultNsURI = defURI;
         }
     }
+    
+    public int getAttributeCount() {
+        return mAttrList == null ? 0 : mAttrList.size();
+    }
+
+    public String getAttributeLocalName(int index) {
+        return mAttrList == null ? null : mAttrList.get(index).mLocalName;
+    }
+
+    public String getAttributeNamespace(int index) {
+        return mAttrList == null ? null : mAttrList.get(index).mNsURI;
+    }
+
+    public String getAttributePrefix(int index) {
+        return mAttrList == null ? null : mAttrList.get(index).mPrefix;
+    }
+
+    public String getAttributeValue(int index) {
+        return mAttrList == null ? null : mAttrList.get(index).mValue;
+    }
+
+    public String getAttributeValue(String nsURI, String localName) {
+        if (mAttrMap == null) {
+            return null;
+        }
+        final Attribute attr = mAttrMap.get(new Attribute(nsURI, localName, null, null, -1));
+        return attr == null ? null : attr.mValue;
+    }
+
+    public String getAttributeType(int index) {
+         return (mValidator == null) ? WstxInputProperties.UNKNOWN_ATTR_TYPE :
+             mValidator.getAttributeType(index);
+    }
+
+    public int findAttributeIndex(String nsURI, String localName) {
+        if (mAttrMap == null) {
+            return -1;
+        }
+        final Attribute attr = mAttrMap.get(new Attribute(nsURI, localName, null, null, -1));
+        return attr == null ? -1 : attr.mIndex;
+    }
+
+    /**
+     * Returns the {@link XMLValidator} set via {@link #setValidator(XMLValidator)} wrapped in a
+     * {@link AttributeCollector} to be able to record the attribute values received through
+     * {@link XMLValidator#validateAttribute(String, String, String, char[], int, int)}
+     * and {@link XMLValidator#validateAttribute(String, String, String, String)}.
+     *
+     * @return an instance of {@link AttributeCollector}
+     */
+    XMLValidator getAttributeCollector() {
+        AttributeCollector coll = mAttributeCollector;
+        if (coll == null) {
+            coll = mAttributeCollector = new AttributeCollector();
+        }
+        return coll;
+    }
+
+    public int validateElementStartAndAttributes() throws XMLStreamException {
+        XMLValidator vld = mValidator;
+        vld.validateElementStart(mLocalName, mURI, mPrefix);
+        if (mAttrList != null && mAttrList.size() > 0) {
+            for (Attribute attr : mAttrList) {
+                vld.validateAttribute(attr.mLocalName, attr.mNsURI, attr.mPrefix, attr.mValue);
+            }
+        }
+        return vld.validateElementAndAttributes();
+    }
 
     /*
     ///////////////////////////////////////////////////////////////////////
@@ -307,15 +404,97 @@ public final class SimpleOutputElement
     ///////////////////////////////////////////////////////////////////////
      */
 
+
+    final class AttributeCollector extends XMLValidator {
+
+        public AttributeCollector() {
+            super();
+        }
+
+        @Override
+        public String getSchemaType() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public XMLValidationSchema getSchema() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void validateElementStart(String localName, String uri, String prefix) throws XMLStreamException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String validateAttribute(String localName, String uri, String prefix, String value) throws XMLStreamException {
+            addAttribute(uri, localName, prefix, value);
+            return value;
+        }
+
+        @Override
+        public String validateAttribute(String localName, String uri, String prefix, char[] valueChars, int valueStart,
+                int valueEnd) throws XMLStreamException {
+            final String value = new String(valueChars, valueStart, valueEnd - valueStart);
+            addAttribute(uri, localName, prefix, value);
+            return value;
+        }
+
+        @Override
+        public int validateElementAndAttributes() throws XMLStreamException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int validateElementEnd(String localName, String uri, String prefix) throws XMLStreamException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void validateText(String text, boolean lastTextSegment) throws XMLStreamException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void validateText(char[] cbuf, int textStart, int textEnd, boolean lastTextSegment) throws XMLStreamException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void validationCompleted(boolean eod) throws XMLStreamException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getAttributeType(int index) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int getIdAttrIndex() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int getNotationAttrIndex() {
+            throw new UnsupportedOperationException();
+        }
+
+    }
+
     /**
      * Simple key class used to represent two-piece (attribute) names;
      * first part being optional (URI), and second non-optional (local name).
      */
-    final static class AttrName
-        implements Comparable<AttrName>
+    final static class Attribute
+        implements Comparable<Attribute>
     {
         final String mNsURI;
         final String mLocalName;
+        // mPrefix, mValue and mIndex are intentionally not a part of {@link #equals(Object)} and {@link #hashCode()}
+        final String mPrefix;
+        final String mValue;
+        final int mIndex;
 
         /**
          * Let's cache the hash code, since although hash calculation is
@@ -324,10 +503,13 @@ public final class SimpleOutputElement
          */
         final int mHashCode;
 
-        public AttrName(String nsURI, String localName) {
+        public Attribute(String nsURI, String localName, String prefix, String value, int index) {
             mNsURI = (nsURI == null) ? "" : nsURI;
             mLocalName = localName;
             mHashCode = mNsURI.hashCode() * 31 ^ mLocalName.hashCode();
+            mPrefix = prefix;
+            mValue = value;
+            mIndex = index;
         }
 
         @Override
@@ -335,10 +517,10 @@ public final class SimpleOutputElement
             if (o == this) {
                 return true;
             }
-            if (!(o instanceof AttrName)) {
+            if (!(o instanceof Attribute)) {
                 return false;
             }
-            AttrName other = (AttrName) o;
+            Attribute other = (Attribute) o;
             String otherLN = other.mLocalName;
             // Local names are shorter, more varying:
             if (otherLN != mLocalName && !otherLN.equals(mLocalName)) {
@@ -362,7 +544,7 @@ public final class SimpleOutputElement
         }
 
         @Override
-        public int compareTo(AttrName other) {
+        public int compareTo(Attribute other) {
             // Let's first order by namespace:
             int result = mNsURI.compareTo(other.mNsURI);
             if (result == 0) {

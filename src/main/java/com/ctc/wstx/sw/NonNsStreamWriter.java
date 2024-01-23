@@ -27,8 +27,12 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 
 import org.codehaus.stax2.ri.typed.AsciiValueEncoder;
+import org.codehaus.stax2.validation.XMLValidationException;
+import org.codehaus.stax2.validation.XMLValidationSchema;
+import org.codehaus.stax2.validation.XMLValidator;
 
 import com.ctc.wstx.api.WriterConfig;
+import com.ctc.wstx.api.WstxInputProperties;
 import com.ctc.wstx.cfg.ErrorConsts;
 import com.ctc.wstx.cfg.XmlConsts;
 import com.ctc.wstx.sr.AttributeCollector;
@@ -58,14 +62,13 @@ public class NonNsStreamWriter
     final StringVector mElements;
 
     /**
-     * Container for attribute names for current element; used only
-     * if uniqueness of attribute names is to be enforced.
-     *<p>
-     * TreeSet is used mostly because clearing it up is faster than
-     * clearing up HashSet, and the only access is done by
-     * adding entries and see if an value was already set.
+     * Attributes of the current element; used
+     * if uniqueness of attribute names is to be enforced
+     * or if a validator is set.
      */
-    TreeSet<String> mAttrNames;
+    private HashMap<String, Attribute> mAttrMap;
+    private ArrayList<Attribute> mAttrList;
+    private AttrCollector mAttrCollector;
 
     /*
     ////////////////////////////////////////////////////
@@ -125,20 +128,9 @@ public class NonNsStreamWriter
             /* 11-Dec-2005, TSa: Should use a more efficient Set/Map value
              *   for this in future.
              */
-            if (mAttrNames == null) {
-                mAttrNames = new TreeSet<String>();
-            }
-            if (!mAttrNames.add(localName)) {
-                reportNwfAttr("Trying to write attribute '"+localName+"' twice");
-            }
+            addAttribute(localName, value);
         }
-        if (mValidator != null) {
-            /* No need to get it normalized... even if validator does normalize
-             * it, we don't use that for anything
-             */
-            mValidator.validateAttribute(localName, XmlConsts.ATTR_NO_NS_URI, XmlConsts.ATTR_NO_PREFIX, value);
-        }
-        
+
         try {
             mWriter.writeAttribute(localName, value);
         } catch (IOException ioe) {
@@ -263,9 +255,9 @@ public class NonNsStreamWriter
         QName name = elem.getName();
         writeStartElement(name.getLocalPart());
         @SuppressWarnings("unchecked")
-        Iterator<Attribute> it = elem.getAttributes();
+        Iterator<javax.xml.stream.events.Attribute> it = elem.getAttributes();
         while (it.hasNext()) {
-            Attribute attr = it.next();
+            javax.xml.stream.events.Attribute attr = it.next();
             name = attr.getName();
             writeAttribute(name.getLocalPart(), attr.getValue());
         }
@@ -293,20 +285,17 @@ public class NonNsStreamWriter
         if (!mStartElementOpen && mCheckStructure) {
             reportNwfStructure(ErrorConsts.WERR_ATTR_NO_ELEM);
         }
-        if (mCheckAttrs) { // doh. Not good, need to construct non-transient value...
-            if (mAttrNames == null) {
-                mAttrNames = new TreeSet<String>();
-            }
-            if (!mAttrNames.add(localName)) {
-                reportNwfAttr("Trying to write attribute '"+localName+"' twice");
-            }
-        }
 
         try {
-            if (mValidator == null) {
+            if (!mCheckAttrs) {
                 mWriter.writeTypedAttribute(localName, enc);
             } else {
-                mWriter.writeTypedAttribute(null, localName, null, enc, mValidator, getCopyBuffer());
+                if (mAttrCollector == null) {
+                    mAttrCollector = new AttrCollector();
+                }
+                // mAttributes just checks the uniqueness of the attribute name and stores the name and value.
+                // We will pass it to the real validator later
+                mWriter.writeTypedAttribute(null, localName, null, enc, mAttrCollector, getCopyBuffer());
             }
         } catch (IOException ioe) {
             throwFromIOE(ioe);
@@ -324,9 +313,6 @@ public class NonNsStreamWriter
         throws XMLStreamException
     {
         mStartElementOpen = false;
-        if (mAttrNames != null) {
-            mAttrNames.clear();
-        }
 
         try {
             if (emptyElem) {
@@ -339,17 +325,26 @@ public class NonNsStreamWriter
         }
 
         if (mValidator != null) {
-            mVldContent = mValidator.validateElementAndAttributes();
+            String localName = mElements.getLastString();
+            try {
+                mVldContent = validateElementStartAndAttributes(localName);
+                if (emptyElem) {
+                    mVldContent = mValidator.validateElementEnd(localName, XmlConsts.ELEM_NO_NS_URI, XmlConsts.ELEM_NO_PREFIX);
+                }
+            } catch (XMLValidationException e) {
+                mVldException = e;
+                throw e;
+            }
+        } else if (mCheckAttrs) {
+            mAttrMap = null;
+            mAttrList = null;
         }
 
         // Need bit more special handling for empty elements...
         if (emptyElem) {
-            String localName = mElements.removeLast();
+            mElements.removeLast();
             if (mElements.isEmpty()) {
                 mState = STATE_EPILOG;
-            }
-            if (mValidator != null) {
-                mVldContent = mValidator.validateElementEnd(localName, XmlConsts.ELEM_NO_NS_URI, XmlConsts.ELEM_NO_PREFIX);
             }
         }
     }
@@ -406,7 +401,14 @@ public class NonNsStreamWriter
 
         if (attrCount > 0) {
             for (int i = 0; i < attrCount; ++i) {
-                attrCollector.writeAttribute(i, mWriter, mValidator);
+                if (mCheckAttrs) {
+                    if (mAttrCollector == null) {
+                        mAttrCollector = new AttrCollector();
+                    }
+                    attrCollector.writeAttribute(i, mWriter, mAttrCollector);
+                } else {
+                    attrCollector.writeAttribute(i, mWriter, null);
+                }
             }
         }
     }
@@ -422,6 +424,51 @@ public class NonNsStreamWriter
         return name.getPrefix();
     }
 
+    // // // Attribute access
+
+    @Override
+    public int getAttributeCount() {
+        return mAttrList == null ? 0 : mAttrList.size();
+    }
+
+    @Override
+    public String getAttributeLocalName(int index) {
+        return mAttrList == null ? null : mAttrList.get(index).mLocalName;
+    }
+
+    @Override
+    public String getAttributeNamespace(int index)
+    {
+        return XmlConsts.ATTR_NO_NS_URI;
+    }
+
+    @Override
+    public String getAttributePrefix(int index)
+    {
+        return XmlConsts.ATTR_NO_PREFIX;
+    }
+
+    @Override
+    public String getAttributeValue(int index) {
+        return mAttrList == null ? null : mAttrList.get(index).mValue;
+    }
+
+    @Override
+    public String getAttributeValue(String nsURI, String localName) {
+        return mAttrMap == null ? null : mAttrMap.get(localName).mValue;
+    }
+
+    @Override
+    public int findAttributeIndex(String nsURI, String localName) {
+        return mAttrMap == null ? null : mAttrMap.get(localName).mIndex;
+    }
+
+    @Override
+    public String getAttributeType(int index) {
+        return (mValidator == null) ? WstxInputProperties.UNKNOWN_ATTR_TYPE :
+            mValidator.getAttributeType(index);
+    }
+
     /*
     ////////////////////////////////////////////////////
     // Internal methods
@@ -431,6 +478,9 @@ public class NonNsStreamWriter
     private void doWriteStartElement(String localName)
         throws XMLStreamException
     {
+        if (mVldException != null) {
+            throw new XMLStreamException("Cannot start an element after a validation error", mVldException);
+        }
         mAnyOutput = true;
         // Need to finish an open start element?
         if (mStartElementOpen) {
@@ -452,9 +502,6 @@ public class NonNsStreamWriter
         /*if (mVldContent == XMLValidator.CONTENT_ALLOW_NONE) { // EMPTY content
             reportInvalidContent(START_ELEMENT);
             }*/
-        if (mValidator != null) {
-            mValidator.validateElementStart(localName, XmlConsts.ELEM_NO_NS_URI, XmlConsts.ELEM_NO_PREFIX);
-        }       
 
         mStartElementOpen = true;
         mElements.addString(localName);
@@ -479,6 +526,9 @@ public class NonNsStreamWriter
     private void doWriteEndTag(String expName, boolean allowEmpty)
         throws XMLStreamException
     {
+        if (mVldException != null) {
+            throw new XMLStreamException("Cannot start an element after a validation error", mVldException);
+        }
         /* First of all, do we need to close up an earlier empty element?
          * (open start element that was not created via call to
          * writeEmptyElement gets handled later on)
@@ -517,16 +567,7 @@ public class NonNsStreamWriter
             /* Can't/shouldn't call closeStartElement, but need to do same
              * processing. Thus, this is almost identical to closeStartElement:
              */
-            if (mValidator != null) {
-                /* Note: return value is not of much use, since the
-                 * element will be closed right away...
-                 */
-                mVldContent = mValidator.validateElementAndAttributes();
-            }
             mStartElementOpen = false;
-            if (mAttrNames != null) {
-                mAttrNames.clear();
-            }
             try {
                 // We could write an empty element, implicitly?
                 if (allowEmpty) {
@@ -535,9 +576,32 @@ public class NonNsStreamWriter
                         mState = STATE_EPILOG;
                     }
                     if (mValidator != null) {
-                        mVldContent = mValidator.validateElementEnd(localName, XmlConsts.ELEM_NO_NS_URI, XmlConsts.ELEM_NO_PREFIX);
+                        try {
+                            /* Note: return value is not of much use, since the
+                             * element will be closed right away...
+                             */
+                            mVldContent = validateElementStartAndAttributes(localName);
+                            mVldContent = mValidator.validateElementEnd(localName, XmlConsts.ELEM_NO_NS_URI, XmlConsts.ELEM_NO_PREFIX);
+                        } catch (XMLValidationException e) {
+                            mVldException = e;
+                            throw e;
+                        }
                     }
                     return;
+                }
+                if (mValidator != null) {
+                    try {
+                        /* Note: return value is not of much use, since the
+                         * element will be closed right away...
+                         */
+                        mVldContent = validateElementStartAndAttributes(localName);
+                    } catch (XMLValidationException e) {
+                        mVldException = e;
+                        throw e;
+                    }
+                } else if (mCheckAttrs) {
+                    mAttrMap = null;
+                    mAttrList = null;
                 }
                 // Nah, need to close open elem, and then output close elem
                 mWriter.writeStartTagEnd();
@@ -558,7 +622,131 @@ public class NonNsStreamWriter
 
         // Ok, time to validate...
         if (mValidator != null) {
-            mVldContent = mValidator.validateElementEnd(localName, XmlConsts.ELEM_NO_NS_URI, XmlConsts.ELEM_NO_PREFIX);
+            try {
+                mVldContent = mValidator.validateElementEnd(localName, XmlConsts.ELEM_NO_NS_URI, XmlConsts.ELEM_NO_PREFIX);
+            } catch (XMLValidationException e) {
+                mVldException = e;
+                throw e;
+            }
         }
     }
+
+    private int validateElementStartAndAttributes(String localName) throws XMLStreamException {
+        final XMLValidator vld = mValidator;
+        vld.validateElementStart(localName, XmlConsts.ELEM_NO_NS_URI, XmlConsts.ELEM_NO_PREFIX);
+        ArrayList<Attribute> attrList = mAttrList;
+        if (attrList != null)  {
+            mAttrMap = null;
+            mAttrList = null;
+            if (!attrList.isEmpty()) {
+                for (Attribute attr : attrList) {
+                    vld.validateAttribute(attr.mLocalName, XmlConsts.ATTR_NO_NS_URI, XmlConsts.ATTR_NO_PREFIX, attr.mValue);
+                }
+            }
+        }
+        return vld.validateElementAndAttributes();
+    }
+
+    private void addAttribute(String localName, String value) throws XMLStreamException {
+        if (mAttrMap == null) {
+            mAttrMap = new HashMap<String, Attribute>();
+            mAttrList = new ArrayList<Attribute>();
+        }
+        Attribute attr = new Attribute(mAttrMap.size(), localName, value);
+        if (mAttrMap.put(localName, attr) != null) {
+            reportNwfAttr("Trying to write attribute '"+localName+"' twice");
+        } else {
+            mAttrList.add(attr);
+        }
+    }
+
+    final class AttrCollector extends XMLValidator {
+
+        AttrCollector() {
+            super();
+        }
+        
+        @Override
+        public String getSchemaType() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public XMLValidationSchema getSchema() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void validateElementStart(String localName, String uri, String prefix) throws XMLStreamException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String validateAttribute(String localName, String uri, String prefix, String value) throws XMLStreamException {
+            addAttribute(localName, value);
+            return value;
+        }
+
+        @Override
+        public String validateAttribute(String localName, String uri, String prefix, char[] valueChars, int valueStart,
+                int valueEnd) throws XMLStreamException {
+            final String value = new String(valueChars, valueStart, valueEnd - valueStart);
+            addAttribute(localName, value);
+            return value;
+        }
+
+        @Override
+        public int validateElementAndAttributes() throws XMLStreamException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int validateElementEnd(String localName, String uri, String prefix) throws XMLStreamException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void validateText(String text, boolean lastTextSegment) throws XMLStreamException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void validateText(char[] cbuf, int textStart, int textEnd, boolean lastTextSegment) throws XMLStreamException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void validationCompleted(boolean eod) throws XMLStreamException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getAttributeType(int index) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int getIdAttrIndex() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int getNotationAttrIndex() {
+            throw new UnsupportedOperationException();
+        }
+
+    }
+
+    static final class Attribute {
+        private final int mIndex;
+        private final String mLocalName;
+        private final String mValue;
+        public Attribute(int mIndex, String mLocalName, String mValue) {
+            super();
+            this.mIndex = mIndex;
+            this.mLocalName = mLocalName;
+            this.mValue = mValue;
+        }
+    }
+
 }

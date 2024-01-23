@@ -59,7 +59,7 @@ public class TestOutputValidation
                 sw.writeCharacters("Illegal text!");
                 fail("Expected a validation exception for non-whitespace text output on non-mixed element content");
             } catch (XMLValidationException vex) {
-                // expected...
+                assertMessageContains(vex, "Element <root> has non-mixed content specification; can not contain non-white space text, or any CDATA sections");
             }
         }
     }
@@ -145,22 +145,24 @@ public class TestOutputValidation
 
             XMLStreamWriter2 sw = getDTDValidatingWriter(strw, dtdStr, nsAware, repairing);
             sw.writeStartElement("root");
+            sw.writeStartElement("leaf");
             try {
-                sw.writeStartElement("leaf");
+                sw.writeEndElement();
                 fail(modeDesc+" Expected a validation exception when trying to add an element into EMPTY content model");
             } catch (XMLValidationException vex) {
-                // expected...
+                assertMessageContains(vex, "Validation error, encountered element <leaf> as a child of <root>: No elements allowed in pure #PCDATA content model");
             }
             sw.close();
 
             // Then with an empty child
             sw = getDTDValidatingWriter(strw, dtdStr, nsAware, repairing);
             sw.writeStartElement("root");
+            sw.writeEmptyElement("leaf");
             try {
-                sw.writeEmptyElement("leaf");
+                sw.writeEndElement();
                 fail(modeDesc+" Expected a validation exception when trying to add an element into EMPTY content model");
             } catch (XMLValidationException vex) {
-                // expected...
+                assertMessageContains(vex, "Validation error, encountered element <leaf> as a child of <root>: No elements allowed in pure #PCDATA content model");
             }
             sw.close();
 
@@ -170,7 +172,9 @@ public class TestOutputValidation
             try {
                 sw.writeCharacters(" ");
                 fail(modeDesc+" Expected a validation exception when trying to any text into EMPTY content model");
-            } catch (XMLValidationException vex) { }
+            } catch (XMLValidationException vex) {
+                assertMessageContains(vex, "Element <root> has EMPTY content specification; can not contain CHARACTERS");
+            }
             sw.close();
 
             // Then CDATA
@@ -179,7 +183,9 @@ public class TestOutputValidation
             try {
                 sw.writeCData("foo");
                 fail(modeDesc+" Expected a validation exception when trying to add CDATA into EMPTY content model");
-            } catch (XMLValidationException vex) { }
+            } catch (XMLValidationException vex) {
+                assertMessageContains(vex, "Element <root> has EMPTY content specification; can not contain CDATA");
+            }
             sw.close();
 
             // Then ENTITY
@@ -188,7 +194,9 @@ public class TestOutputValidation
             try {
                 sw.writeEntityRef("amp");
                 fail(modeDesc+" Expected a validation exception when trying to add CDATA into EMPTY content model");
-            } catch (XMLValidationException vex) { }
+            } catch (XMLValidationException vex) {
+                assertMessageContains(vex, "Element <root> has EMPTY content specification; can not contain ENTITY_REFERENCE");
+            }
             sw.close();
 
             // Then comment
@@ -197,7 +205,9 @@ public class TestOutputValidation
             try {
                 sw.writeComment("comment");
                 fail(modeDesc+" Expected a validation exception when trying to add comment into EMPTY content model");
-            } catch (XMLValidationException vex) { }
+            } catch (XMLValidationException vex) {
+                assertMessageContains(vex, "Element <root> has EMPTY content specification; can not contain COMMENT");
+            }
             sw.close();
 
             // Then proc. instr.
@@ -206,7 +216,9 @@ public class TestOutputValidation
             try {
                 sw.writeProcessingInstruction("target", "data");
                 fail(modeDesc+" Expected a validation exception when trying to add processing instruction into EMPTY content model");
-            } catch (XMLValidationException vex) { }
+            } catch (XMLValidationException vex) {
+                assertMessageContains(vex, "Element <root> has EMPTY content specification; can not contain PROCESSING_INSTRUCTION");
+            }
             sw.close();
         }
     }
@@ -297,22 +309,24 @@ public class TestOutputValidation
              * may be redundant to some degree)
              */
             sw.writeStartElement("root");
+            sw.writeStartElement("unknown");
             try {
-                sw.writeStartElement("unknown");
+                sw.writeEndElement();
                 fail(modeDesc+" Expected a validation exception when trying to add an undeclared element");
             } catch (XMLValidationException vex) {
-                // expected...
+                assertMessageContains(vex, "Undefined element <unknown> encountered");
             }
             sw.close();
 
             // undecl attr:
             sw = getDTDValidatingWriter(strw, dtdStr, nsAware, repairing);
             sw.writeStartElement("root");
+            sw.writeAttribute("unknown", "value");
             try {
-                sw.writeAttribute("unknown", "value");
+                sw.writeEndElement();
                 fail(modeDesc+" Expected a validation exception when trying to add an undeclared attribute");
             } catch (XMLValidationException vex) {
-                // expected...
+                assertMessageContains(vex, "Element <root> has no attribute \"unknown\"");
             }
             sw.close();
         }

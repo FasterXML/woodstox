@@ -26,6 +26,8 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.StartElement;
 
+import org.codehaus.stax2.validation.XMLValidator;
+
 import com.ctc.wstx.api.WriterConfig;
 import com.ctc.wstx.cfg.ErrorConsts;
 import com.ctc.wstx.sr.AttributeCollector;
@@ -235,9 +237,6 @@ public class SimpleNsStreamWriter
             throw new XMLStreamException("Unbound namespace URI '"+nsURI+"'");
         }
         checkStartElement(localName, prefix);
-        if (mValidator != null) {
-            mValidator.validateElementStart(localName, nsURI, prefix);
-        }
 
         if (mOutputElemPool != null) {
             SimpleOutputElement newCurr = mOutputElemPool;
@@ -255,9 +254,6 @@ public class SimpleNsStreamWriter
         throws XMLStreamException
     {
         checkStartElement(localName, prefix);
-        if (mValidator != null) {
-            mValidator.validateElementStart(localName, nsURI, prefix);
-        }
 
         if (mOutputElemPool != null) {
             SimpleOutputElement newCurr = mOutputElemPool;
@@ -327,8 +323,9 @@ public class SimpleNsStreamWriter
             attrCollector.getSpecifiedCount();
 
         if (attrCount > 0) {
+            XMLValidator vld = mCheckAttrs ? mCurrElem.getAttributeCollector() : null;
             for (int i = 0; i < attrCount; ++i) {
-                attrCollector.writeAttribute(i, mWriter, mValidator);
+                attrCollector.writeAttribute(i, mWriter, vld);
             }
         }
     }

@@ -64,17 +64,18 @@ public class TestStructuralValidation
                 sw.writeStartElement("branch");
                 fail(modeDesc+" Expected a validation exception when trying to write wrong root element");
             } catch (XMLValidationException vex) {
-                // expected...
+                assertMessageContains(vex, "Unexpected root element <branch>; expected <branch> as per DOCTYPE declaration");
             }
             // should not continue after exception; state may not be valid
             
             // And then undeclared root:
             sw = getDTDValidatingWriter(strw, SIMPLE_DTD, nsAware, repairing);
+            sw.writeStartElement("undefined");
             try {
-                sw.writeStartElement("undefined");
+                sw.writeEndElement();
                 fail(modeDesc+" Expected a validation exception when trying to write an undefined root element");
             } catch (XMLValidationException vex) {
-                // expected...
+                assertMessageContains(vex, "Undefined element <undefined> encountered");
             }
             
             // and same for explicitly empty element; wrong root
@@ -84,7 +85,7 @@ public class TestStructuralValidation
                 sw.writeEmptyElement("branch");
                 fail(modeDesc+" Expected a validation exception when trying to write wrong root element");
             } catch (XMLValidationException vex) {
-                // expected...
+                assertMessageContains(vex, "Unexpected root element <branch>; expected <branch> as per DOCTYPE declaration");
             }
         }
     }
@@ -156,7 +157,7 @@ public class TestStructuralValidation
                 sw.writeEndElement(); // for root
                 fail(modeDesc+" Expected a validation exception when omitting non-optional <end> element");
             } catch (XMLValidationException vex) {
-                // expected...
+                assertMessageContains(vex, "Validation error, element </root>: Expected <branch> or <end>");
             }
             // should not continue after exception; state may not be valid
 
@@ -165,11 +166,12 @@ public class TestStructuralValidation
             sw.writeStartElement("root");
             sw.writeCharacters("  "); // imitating indentation
             sw.writeComment("comment");
+            sw.writeEmptyElement("end");
             try {
-                sw.writeEmptyElement("end");
+                sw.writeEndElement();
                 fail(modeDesc+" Expected a validation exception when omitting non-optional <branch> element");
             } catch (XMLValidationException vex) {
-                // expected...
+                assertMessageContains(vex, "Validation error, encountered element <end> as a child of <root>: Expected <branch>");
             }
         }
     }
@@ -230,32 +232,35 @@ public class TestStructuralValidation
 
             XMLStreamWriter2 sw = getDTDValidatingWriter(strw, SIMPLE_NS_DTD, true, repairing);
             // prefix, local name, uri (for elems)
+            sw.writeStartElement(NS_PREFIX2, "root", NS_URI);
             try {
-                sw.writeStartElement(NS_PREFIX2, "root", NS_URI);
+                sw.writeEndElement();
                 fail(modeDesc+" Expected a validation exception when passing wrong (unexpected) ns for element");
             } catch (XMLValidationException vex) {
-                // expected...
+                assertMessageContains(vex, "Undefined element <ns2:root> encountered");
             }
             // should not continue after exception; state may not be valid
 
             // and then the same for empty elem
             sw = getDTDValidatingWriter(strw, SIMPLE_NS_DTD, true, repairing);
             // prefix, local name, uri (for elems)
+            sw.writeEmptyElement(NS_PREFIX2, NS_URI, "root");
             try {
-                sw.writeEmptyElement(NS_PREFIX2, NS_URI, "root");
+                sw.writeEndElement();
                 fail(modeDesc+" Expected a validation exception when passing wrong (unexpected) ns for element");
             } catch (XMLValidationException vex) {
-                // expected...
+                assertMessageContains(vex, "Undefined element <ns2:http://ns> encountered");
             }
 
             // Oh, and finally, using non-ns DTD:
             sw = getDTDValidatingWriter(strw, SIMPLE_DTD, true, repairing);
             // prefix, local name, uri (for elems)
+            sw.writeEmptyElement(NS_PREFIX, NS_URI, "root");
             try {
-                sw.writeEmptyElement(NS_PREFIX, NS_URI, "root");
+                sw.writeEndElement();
                 fail(modeDesc+" Expected a validation exception when passing wrong (unexpected) ns for element");
             } catch (XMLValidationException vex) {
-                // expected...
+                assertMessageContains(vex, "Undefined element <ns:http://ns> encountered");
             }
         }
     }
