@@ -17,8 +17,6 @@ package com.ctc.wstx.sr;
 
 import javax.xml.namespace.QName;
 
-import com.ctc.wstx.compat.QNameCreator;
-
 /**
  * Container for information collected regarding a single element
  * attribute instance. Used for both regular explicit attributes
@@ -133,8 +131,7 @@ final class Attribute
         if (uri == null) { // Some QName impls (older JDKs) don't like nulls
             uri = "";
         }
-        // For [WSTX-174] need to use indirection:
-        return QNameCreator.create(uri, mLocalName, mPrefix);
+        return new QName(uri, mLocalName, mPrefix);
     }
 
     /**
