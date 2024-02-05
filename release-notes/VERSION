@@ -7,6 +7,7 @@ Project: woodstox
 7.0.0 (not yet released)
 
 #134: Increase JDK baseline to Java 8
+#194: Remove `QNameCreator` compatibility class
 
 6.6.0 (15-Jan-2024)
 
