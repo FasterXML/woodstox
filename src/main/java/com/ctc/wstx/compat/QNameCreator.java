@@ -48,7 +48,7 @@ public final class QNameCreator
 
     public static QName create(String uri, String localName, String prefix)
     {
-        if (_helper == null) { // can't use 3-arg constructor; but 2-arg will be there
+        if (_helper == null || prefix == null) { // can't use 3-arg constructor; but 2-arg will be there
             return new QName(uri, localName);
         }
         return _helper.create(uri, localName, prefix);
