@@ -55,7 +55,7 @@ public class TestXmlSpace
 		assertTokenType(START_ELEMENT, type);
 		fail("Expected a validity exception for invalid xml:space declaration (ns-aware: "+nsAware+")");
 	    } catch (XMLValidationException vex) {
-		; // good
+            assertMessageContains(vex, "Attribute xml:space has to be defined of type enumerated, and have 1 or 2 values, 'default' and/or 'preserve'");
 	    }
 	    sr.close();
 
@@ -71,7 +71,7 @@ public class TestXmlSpace
 		assertTokenType(START_ELEMENT, type);
 		fail("Expected a validity exception for invalid xml:space declaration (ns-aware: "+nsAware+")");
 	    } catch (XMLValidationException vex) {
-		; // good
+            assertMessageContains(vex, "Attribute xml:space has to be defined of type enumerated, and have 1 or 2 values, 'default' and/or 'preserve'");
 	    }
 	    sr.close();
 	}
