@@ -89,3 +89,8 @@ Tim Martin (@Orbisman)
 
 * Contributed fix for #67: Wrong line for XML event location in elements following DTD
  (6.6.0)
+
+Kamil Gołębiewski (@Magmaruss)
+
+* Contributed #165: Add support to optionally allow surrogate pair entities
+ (6.6.0)

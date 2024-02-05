@@ -1,5 +1,9 @@
 package org.codehaus.stax.test.stream;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import javax.xml.stream.*;
 
 import org.codehaus.stax.test.SimpleResolver;
@@ -27,7 +31,7 @@ public class TestEntityRead
         String EXP = "Testing \"this\" & 'that' !? !";
         String XML = "<root>Testing &quot;this&quot; &amp; &apos;that&apos; &#x21;&#63; &#33;</root>";
 
-        XMLStreamReader sr = getReader(XML, false, true, true);
+        XMLStreamReader sr = getReader(XML, false, true, true, false);
 
         assertTokenType(START_ELEMENT, sr.next());
         assertTokenType(CHARACTERS, sr.next());
@@ -52,7 +56,7 @@ public class TestEntityRead
         throws XMLStreamException
     {
         String XML = "<root>surrogates: &#x50000;.</root>";
-        XMLStreamReader sr = getReader(XML, true, true, true);
+        XMLStreamReader sr = getReader(XML, true, true, true, false);
 
         assertTokenType(START_ELEMENT, sr.next());
         assertTokenType(CHARACTERS, sr.next());
@@ -73,6 +77,52 @@ public class TestEntityRead
         assertTokenType(END_ELEMENT, type);
         sr.close();
     }
+    
+    /**
+     * This unit test checks that resolving of surrogate pairs works
+     * as expected, including different ways of writing entities
+     */
+    public void testValidSurrogatePairEntities()
+            throws XMLStreamException
+    {
+        final Map<String, String> xmlWithExp = new HashMap<String, String>();
+        // Numeric surrogate pairs
+        xmlWithExp.put("<root>surrogate pair: &#55356;&#57221;.</root>",
+                "surrogate pair: \uD83C\uDF85.");
+        // Hex and numeric surrogate pairs
+        xmlWithExp.put("<root>surrogate pair: &#xD83C;&#57221;.</root>",
+                "surrogate pair: \uD83C\uDF85.");
+        // Numeric and hex surrogate pairs
+        xmlWithExp.put("<root>surrogate pair: &#55356;&#xDF85;.</root>",
+                "surrogate pair: \uD83C\uDF85.");
+        // Hex surrogate pairs
+        xmlWithExp.put("<root>surrogate pair: &#xD83C;&#xDF85;.</root>",
+                "surrogate pair: \uD83C\uDF85.");
+        // Two surrogate pairs
+        xmlWithExp.put("<root>surrogate pair: &#55356;&#57221;&#55356;&#57220;.</root>",
+                "surrogate pair: \uD83C\uDF85\uD83C\uDF84.");
+        // Surrogate pair and simple entity
+        xmlWithExp.put("<root>surrogate pair: &#55356;&#57221;&#8482;.</root>",
+                "surrogate pair: \uD83C\uDF85\u2122.");
+        
+        for (Entry<String, String> xmlExp: xmlWithExp.entrySet()) {
+            XMLStreamReader sr = getReader(xmlExp.getKey(), true, true, true, true);
+            assertTokenType(START_ELEMENT, sr.next());
+            assertTokenType(CHARACTERS, sr.next());
+            
+            StringBuffer sb = new StringBuffer(getAndVerifyText(sr));
+            int type;
+
+            while ((type = sr.next()) == CHARACTERS) {
+                sb.append(getAndVerifyText(sr));
+            }
+            
+            String result = sb.toString();
+            assertEquals(xmlExp.getValue(), result);
+            assertTokenType(END_ELEMENT, type);
+            sr.close();
+        }
+    }
 
     public void testValidGeneralEntities()
         throws XMLStreamException
@@ -85,7 +135,7 @@ public class TestEntityRead
             +"]>\n"
             +"<root>&x; &both; &aa;&myAmp;</root>";
 
-        XMLStreamReader sr = getReader(XML, false, true, true);
+        XMLStreamReader sr = getReader(XML, false, true, true, false);
 
         assertTokenType(DTD, sr.next());
         int type = sr.next();
@@ -126,7 +176,7 @@ public class TestEntityRead
             +" <!ENTITY myent 'data'>]>\n"
             +"<root>&amp;Start&quot;&myent;End&#33;</root>";
 
-        XMLStreamReader sr = getReader(XML, false, true, false);
+        XMLStreamReader sr = getReader(XML, false, true, false, false);
 
         assertTokenType(DTD, sr.next());
         int type = sr.next();
@@ -163,11 +213,11 @@ public class TestEntityRead
             +"</root>";
 
         // First, no coalescing
-        sr = getReader(XML, false, false, false);
+        sr = getReader(XML, false, false, false, false);
         streamThrough(sr);
 
         // then with coalescing
-        sr = getReader(XML, false, true, false);
+        sr = getReader(XML, false, true, false, false);
         streamThrough(sr);
     }
 
@@ -184,7 +234,7 @@ public class TestEntityRead
             +" <!ENTITY myent '"+ENTITY_VALUE+"'>]>"
             +"<root>&myent;</root>";
 
-        XMLStreamReader sr = getReader(XML, false, true, false);
+        XMLStreamReader sr = getReader(XML, false, true, false, false);
 
         assertTokenType(DTD, sr.next());
         assertTokenType(START_ELEMENT, sr.next());
@@ -225,7 +275,7 @@ public class TestEntityRead
             +"]>\n"
             +"<root>&ent1;&ent2;&ent3;&ent4a;</root>";
 
-        XMLStreamReader sr = getReader(XML, true, true, true);
+        XMLStreamReader sr = getReader(XML, true, true, true, false);
 
         assertTokenType(DTD, sr.next());
         // May or may not get whitespace
@@ -289,7 +339,7 @@ public class TestEntityRead
                 +" and then alternatives: &#93;]>"
                 +", &#93;&#93;&gt;"
                 +"</root>";
-            XMLStreamReader sr = getReader(XML, true, false, true);
+            XMLStreamReader sr = getReader(XML, true, false, true, false);
             streamThrough(sr);
         } catch (Exception e) {
             fail("Didn't except problems with pre-def/char entity quoted ']]>'; got: "+e);
@@ -303,7 +353,7 @@ public class TestEntityRead
                 +"<root>"
                 +" &doubleBracket;> and &doubleBracket;&gt;"
                 +"</root>";
-            XMLStreamReader sr = getReader(XML, true, false, true);
+            XMLStreamReader sr = getReader(XML, true, false, true, false);
             streamThrough(sr);
         } catch (Exception e) {
             fail("Didn't except problems with general entity quoted ']]>'; got: "+e);
@@ -326,7 +376,7 @@ public class TestEntityRead
         throws XMLStreamException
     {
         XMLStreamReader sr = getReader("<root>&myent;</root>",
-                                       true, false, true);
+                                       true, false, true, false);
         try {
             streamThrough(sr);
             fail("Expected an exception for invalid comment content");
@@ -341,7 +391,7 @@ public class TestEntityRead
              +"<!ENTITY ent1 '&ent2;'>\n"
              +"<!ENTITY ent2 '&ent2;'>\n"
              +"]> <root>&ent1;</root>",
-             false, true, true);
+             false, true, true, false);
 
         streamThroughFailing(sr, "recursive general entity/ies");
 
@@ -363,7 +413,7 @@ public class TestEntityRead
              +"<!ENTITY % pe 'xxx'>\n"
              +"<!ENTITY foobar '%pe;'>\n"
              +"]> <root />",
-             false, true, true);
+             false, true, true, false);
 
         streamThroughFailing(sr, "declaring a parameter entity in the internal DTD subset");
     }
@@ -382,7 +432,7 @@ public class TestEntityRead
             ("<!DOCTYPE root [\n"
              +"<!ENTITY partial '&amp'>\n"
              +"]><root>&partial;;</root>",
-             false, false, true);
+             false, false, true, false);
 
         /* Hmmh. Actually, fully conforming implementations should throw
          * an exception when parsing internal DTD subset. But better
@@ -407,6 +457,79 @@ public class TestEntityRead
         assertTokenType(START_ELEMENT, type2);
         fail("Expected an exception for partial entity reference: current token after text: "+tokenTypeDesc(lastType));
     }
+    
+    /**
+     * Test that ensures that an invalid surrogate pair entities is caught.
+     * It could be pair of high surrogate and simple entity, high surrogate
+     * with no pair, low surrogate as first or unclosed entity
+     */
+    public void testInvalidSurrogatePairEntities()
+            throws XMLStreamException
+    {
+        final String[][] invalidSurrogatePairsAndExpectedErrors = {
+            // Invalid pair
+            {"<root>surrogate pair: &#55356;&#5722;.</root>", "Invalid surrogate pair"},
+            // No pair
+            {"<root>surrogate pair: &#55356;.</root>", "Cannot find surrogate pair"},
+            // Low surrogate as first
+            {"<root>surrogate pair: &#57221;&#55356;.</root>", "Illegal character entity"},
+            // Unclosed second entity
+            {"<root>surrogate pair: &#55356;&#553</root>", "Cannot find surrogate pair"}
+        };
+        
+        for (String[] surrogateAndError: invalidSurrogatePairsAndExpectedErrors) {
+            final String invalidSurrogatePair = surrogateAndError[0];
+            final String expectedErrorPhrase = surrogateAndError[1];
+            
+            XMLStreamReader sr = getReader(invalidSurrogatePair,
+                    true, false, true, true);
+            try {
+                streamThrough(sr);
+                fail("Expected an exception for invalid surrogate pair");
+            } catch (XMLStreamException e) {
+                if (!e.getMessage().startsWith(expectedErrorPhrase)) {
+                    fail(String.format(
+                            "Expected an exception starting from phrase: '%s' for invalid surrogate test case: '%s', but the message was: '%s'",
+                            expectedErrorPhrase,
+                            invalidSurrogatePair,
+                            e.getMessage()
+                        ));
+                }
+            }
+        }
+    }
+
+    /**
+     * Test that ensures that an exception is thrown when
+     * allow surrogate pair entities option is disabled.
+     * Expected default behavior should be an exception
+     * with message starting with: Illegal character entity
+     */
+    public void testAllowSurrogatePairEntitiesDisabled()
+            throws XMLStreamException
+    {
+        final String expectedErrorPhrase = "Illegal character entity";
+        final String surrogatePairEntitiesXML = "<root>surrogate pair: &#55356;&#57221;.</root>";
+        
+        final XMLStreamReader sr = getReader(surrogatePairEntitiesXML, true, true, true, false);
+        assertTokenType(START_ELEMENT, sr.next());
+        assertTokenType(CHARACTERS, sr.next());
+        
+        try {
+            streamThrough(sr);
+            fail("Expected an exception for illegal character entity when surrogate pair entities allowation is disabled");
+        } catch (XMLStreamException e) {
+            if (!e.getMessage().startsWith(expectedErrorPhrase)) {
+                fail(String.format(
+                        "Expected an exception starting from phrase: '%s' when surrogate pair entities allowation is disabled, but the message was: '%s'",
+                        expectedErrorPhrase,
+                        e.getMessage()
+                    ));
+            }
+        } finally {
+            sr.close();
+        }
+    }
 
     /**
      * This unit test checks that external entities can be resolved; and
@@ -424,7 +547,7 @@ public class TestEntityRead
             +"]><root>ent='&extEnt;'</root>";
 
         // ns-aware, coalescing (to simplify verifying), entity expanding
-        XMLInputFactory f = doGetFactory(true, true, true);
+        XMLInputFactory f = doGetFactory(true, true, true, false);
 
         if (!setSupportExternalEntities(f, true)) {
             reportNADueToExtEnt("testExternalEntityWithResolver");
@@ -482,7 +605,7 @@ public class TestEntityRead
              +"<!ENTITY myent 'value'>\n"
              +"<!ENTITY ent2 PUBLIC 'myurl' 'whatever.xml'>\n"
              +"]><root>&myent;&ent2;</root>",
-             nsAware, false, false);
+             nsAware, false, false, false);
 
         assertTokenType(DTD, sr.next());
         assertTokenType(START_ELEMENT, sr.next());
@@ -611,15 +734,19 @@ public class TestEntityRead
      * need to be enabled just for that purpose.
      */
     private XMLStreamReader getReader(String contents, boolean nsAware,
-                                      boolean coalescing, boolean replEntities)
+                                      boolean coalescing, boolean replEntities,
+                                      boolean resolveSurrogatePairs)
         throws XMLStreamException
     {
-        XMLInputFactory f = doGetFactory(nsAware, coalescing, replEntities);
+        XMLInputFactory f = doGetFactory(nsAware, coalescing, 
+                                         replEntities, resolveSurrogatePairs);
         return constructStreamReader(f, contents);
     }
 
     private XMLInputFactory doGetFactory(boolean nsAware,
-                                         boolean coalescing, boolean replEntities)
+                                         boolean coalescing,
+                                         boolean replEntities,
+                                         boolean resolveSurrogatePairs)
         throws XMLStreamException
     {
         XMLInputFactory f = getInputFactory();
@@ -629,6 +756,7 @@ public class TestEntityRead
         setSupportExternalEntities(f, true);
         setReplaceEntities(f, replEntities);
         setValidating(f, false);
+        setResolveEntitySurrogatePairs(f, resolveSurrogatePairs);
         return f;
     }
 }
