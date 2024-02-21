@@ -584,9 +584,8 @@ public class WstxSAXParser
             mContentHandler.startDocument();
         }
 
-        /* Note: since we are reusing the same config instance, need to
-         * make sure state is not carried forward. Thus:
-         */
+        // Note: since we are reusing the same config instance, need to
+        // make sure state is not carried forward. Thus:
         cfg.resetState();
 
         try {
@@ -626,9 +625,6 @@ public class WstxSAXParser
         } catch (XMLStreamException strex) {
             throwSaxException(strex);
         } finally {
-            if (mContentHandler != null) {
-                mContentHandler.endDocument();
-            }
             // Could try holding onto the buffers, too... but
             // maybe it's better to allow them to be reclaimed, if
             // needed by GC
@@ -649,6 +645,12 @@ public class WstxSAXParser
                     is.close();
                 } catch (IOException ioe) { }
             }
+        }
+        // 20-Feb-2024, tatu: Was formerly done in finally-block for some
+        //    reason; but makes more sense to only be done on happy path
+        //    (as per [woodstox-core#196]
+        if (mContentHandler != null) {
+            mContentHandler.endDocument();
         }
     }
 
