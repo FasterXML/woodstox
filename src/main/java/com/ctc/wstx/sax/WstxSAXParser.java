@@ -620,10 +620,8 @@ public class WstxSAXParser
             mAttrCollector = mScanner.getAttributeCollector();
             mElemStack = mScanner.getInputElementStack();
             fireEvents();
-        } catch (IOException io) {
-            throwSaxException(io);
-        } catch (XMLStreamException strex) {
-            throwSaxException(strex);
+        } catch (Exception e) {
+            throwSaxException(e);
         } finally {
             // Could try holding onto the buffers, too... but
             // maybe it's better to allow them to be reclaimed, if
@@ -1283,8 +1281,13 @@ public class WstxSAXParser
     private void throwSaxException(Exception src)
         throws SAXException
     {
-        SAXParseException se = new SAXParseException(src.getMessage(), /*(Locator)*/ this, src);
-        ExceptionUtil.setInitCause(se, src);
+        SAXParseException se;
+        if (src instanceof SAXParseException) {
+            se = (SAXParseException) src;
+        } else {
+            se = new SAXParseException(src.getMessage(), /*(Locator)*/ this, src);
+            ExceptionUtil.setInitCause(se, src);
+        }
         if (mErrorHandler != null) {
             mErrorHandler.fatalError(se);
         }
