@@ -33,7 +33,7 @@ Coordinates for this are:
 
 * Group id: `com.fasterxml.woodstox`
 * Artifact id: `woodstox-core`
-* Latest published version: 6.5.1 (2023-18-04)
+* Latest published version: 6.6.1 (2024-02-26)
 
 Note that Maven id has changed since Woodstox 4.x but API is still compatible (despite nominal major version upgrade -- major version upgrades in this case were only due to package coordinate changes)
 
