@@ -108,12 +108,42 @@ SAX2 and Stax2 APIs
             <scope>provided</scope>
        -->
             <optional>true</optional>
+            <exclusions>
+                <!-- don't use isorelax version that lacks source code on Maven Central -->
+                <exclusion>
+                    <groupId>isorelax</groupId>
+                    <artifactId>isorelax</artifactId>
+                </exclusion>
+                <!-- xml-apis is unneeded since it repackages XML APIs that are built into the JDK -->
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>net.java.dev.msv</groupId>
             <artifactId>xsdlib</artifactId>
             <version>${version.msv}</version>
+<!--
+            <scope>provided</scope>
+ -->
+            <optional>true</optional>
+            <!-- xercesImpl is unneeded since all modern JDKs already include it -->
+            <exclusions>
+                <exclusion>
+                    <groupId>xerces</groupId>
+                    <artifactId>xercesImpl</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- use an isorelax version that has source code on Maven Central -->
+        <dependency>
+            <groupId>com.sun.xml.bind.jaxb</groupId>
+            <artifactId>isorelax</artifactId>
+            <version>20090621</version>
 <!--
             <scope>provided</scope>
  -->
