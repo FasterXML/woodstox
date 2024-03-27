@@ -11,6 +11,11 @@ Project: woodstox
 #196: WstxSAXParser error handling when used with JAXB validation
  (reported by @winfriedgerlach)
 
+6.6.2 (26-Mar-2024)
+
+#200: Fix shading of `isorelax` dependency (and other msv-core components)
+ (reported, fix contribtued by Jeremy N)
+
 6.6.1 (26-Feb-2024)
 
 #193: Module `com.ctc.wstx` does not read a module that exports

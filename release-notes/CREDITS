@@ -100,3 +100,7 @@ Alexey Gavrilov (@agavrilov76)
 * Reported #193: Module `com.ctc.wstx` does not read a module that exports
   `com.ctc.wstx.shaded.msv.org_isorelax.verifier`
  (6.6.1)
+
+Jeremy Norris (@norrisjeremy)
+* Reported #200: Fix shading of `isorelax` dependency (and other msv-core components)
+ (6.6.2)
