@@ -23,6 +23,7 @@ import javax.xml.stream.*;
 import javax.xml.stream.events.*;
 
 import aQute.bnd.annotation.spi.ServiceProvider;
+import org.codehaus.stax2.XMLStreamLocation2;
 import org.codehaus.stax2.ri.Stax2EventFactoryImpl;
 
 import com.ctc.wstx.evt.*;
@@ -50,9 +51,23 @@ public final class WstxEventFactory
     @Override
     public void setLocation(Location location) {
         super.setLocation(location == null ? WstxInputLocation.getEmptyLocation()
-                                           // XXX: Unless it is a WstxInputLocation
-                                           // (immutable), should create a copy
-                                           : location);
+                                           : immutableLocation(location));
+    }
+
+    private static WstxInputLocation immutableLocation(Location location) {
+        if (location == null) {
+            return null;
+        } else if (location.getClass() == WstxInputLocation.class) {
+            return (WstxInputLocation) location;
+        }
+
+        WstxInputLocation context =
+                (location instanceof XMLStreamLocation2)
+                ? immutableLocation(((XMLStreamLocation2) location).getContext())
+                : null;
+        return new WstxInputLocation(context, location.getPublicId(),
+                location.getSystemId(), location.getCharacterOffset(),
+                location.getLineNumber(), location.getColumnNumber());
     }
 
     //public Attribute createAttribute(QName name, String value)

@@ -42,6 +42,19 @@ public class TestEventFactoryLocation {
         assertThat("event.location", event.getLocation(), unknownLocation());
     }
 
+    @Test
+    public void testNonVolatileLocation() {
+        VolatileLocation volatileLocation = new VolatileLocation(2, 3);
+        eventFactory.setLocation(volatileLocation);
+
+        XMLEvent event = eventFactory.createEndElement("foo", "bar", "baz");
+        volatileLocation.line = 4;
+        volatileLocation.col = 5;
+
+        assertThat("event.location", event.getLocation(),
+                locationWithProperties(null, null, -1, 2, 3));
+    }
+
     private static Matcher<Location> unknownLocation() {
         // XXX: Not sure if the empty-string publicId/systemId are conformant
         //return locationWithProperties(null, null, -1, -1, -1);
@@ -68,6 +81,22 @@ public class TestEventFactoryLocation {
             }
         };
     }
+
+
+    static class VolatileLocation implements Location {
+        int line;
+        int col;
+        VolatileLocation(int line, int col) {
+            this.line = line;
+            this.col = col;
+        }
+        @Override public String getPublicId() { return null; }
+        @Override public String getSystemId() { return null; }
+        @Override public int getLineNumber() { return line; }
+        @Override public int getColumnNumber() { return col; }
+        @Override public int getCharacterOffset() { return -1; }
+    }
+
 
 }
 
