@@ -26,6 +26,7 @@ import aQute.bnd.annotation.spi.ServiceProvider;
 import org.codehaus.stax2.ri.Stax2EventFactoryImpl;
 
 import com.ctc.wstx.evt.*;
+import com.ctc.wstx.io.WstxInputLocation;
 
 /**
  * Implementation of {@link XMLEventFactory} to be used with
@@ -37,6 +38,7 @@ public final class WstxEventFactory
 {
     public WstxEventFactory() {
         super();
+        super.setLocation(WstxInputLocation.getEmptyLocation());
     }
 
     /*
@@ -44,6 +46,14 @@ public final class WstxEventFactory
     // XMLEventFactory API
     /////////////////////////////////////////////////////////////
      */
+
+    @Override
+    public void setLocation(Location location) {
+        super.setLocation(location == null ? WstxInputLocation.getEmptyLocation()
+                                           // XXX: Unless it is a WstxInputLocation
+                                           // (immutable), should create a copy
+                                           : location);
+    }
 
     //public Attribute createAttribute(QName name, String value)
     //public Attribute createAttribute(String localName, String value)
