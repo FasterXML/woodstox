@@ -6,6 +6,7 @@ import org.codehaus.stax2.*;
 import org.codehaus.stax2.validation.*;
 
 import wstxtest.vstream.BaseValidationTest;
+import wstxtest.vstream.BaseValidationTest.ValidationMode;
 
 import java.io.StringWriter;
 
@@ -45,9 +46,9 @@ public class TestW3CSchemaTypes
     public void testSimpleValidInt() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(SCHEMA_INT);
-        XMLStreamReader2 sr = getReader("<price>129</price>");
-        sr.validateAgainst(schema);
-        streamThrough(sr);
+        for (ValidationMode mode : ValidationMode.values()) {
+            mode.validate(schema, "<price>129</price>");
+        }
     }
 
     public void testSimpleInvalidInt() throws Exception
@@ -62,9 +63,9 @@ public class TestW3CSchemaTypes
     public void testSimpleValidFloat() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(SCHEMA_FLOAT);
-        XMLStreamReader2 sr = getReader("<price>1.00</price>");
-        sr.validateAgainst(schema);
-        streamThrough(sr);
+        for (ValidationMode mode : ValidationMode.values()) {
+            mode.validate(schema, "<price>1.00</price>");
+        }
     }
 
     public void testSimpleInvalidFloat() throws Exception

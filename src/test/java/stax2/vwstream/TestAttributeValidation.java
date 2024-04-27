@@ -84,7 +84,7 @@ public class TestAttributeValidation
             sw.writeAttribute("fixAttr", "otherValue");
             fail(modeDesc+" Expected a validation exception when trying to add a #FIXED attribute with 'wrong' value");
         } catch (XMLValidationException vex) {
-            // expected...
+            assertMessageContains(vex, "Value of attribute \"fixAttr\" (element <root>) not \"fixedValue\" as expected, but \"otherValue\"");
         }
         // Should not close, since stream is invalid now...
 
@@ -96,7 +96,7 @@ public class TestAttributeValidation
             sw.writeAttribute("fixAttr", "");
             fail(modeDesc+" Expected a validation exception when trying to add a #FIXED attribute with an empty value");
         } catch (XMLValidationException vex) {
-            // expected...
+            assertMessageContains(vex, "Value of attribute \"fixAttr\" (element <root>) not \"fixedValue\" as expected, but \"\"");
         }
 
         // And finally, same for empty elem in case impl. is different
@@ -107,7 +107,7 @@ public class TestAttributeValidation
             sw.writeAttribute("fixAttr", "foobar");
             fail(modeDesc+" Expected a validation exception when trying to add a #FIXED attribute with an empty value");
         } catch (XMLValidationException vex) {
-            // expected...
+            assertMessageContains(vex, "Value of attribute \"fixAttr\" (element <root>) not \"fixedValue\" as expected, but \"foobar\"");
         }
     }
 
@@ -173,7 +173,7 @@ public class TestAttributeValidation
             sw.writeEndElement();
             fail(modeDesc+" Expected a validation exception when omitting a #REQUIRED attribute");
         } catch (XMLValidationException vex) {
-            // expected...
+            assertMessageContains(vex, "Required attribute \"reqAttr\" missing from element <root>");
         }
         // Should not close, since stream is invalid now...
     }
@@ -229,7 +229,7 @@ public class TestAttributeValidation
             sw.writeAttribute(NS_PREFIX2, NS_URI, "attr", "value");
             fail(modeDesc+" Expected a validation exception when trying to add an attribute with wrong ns prefix");
         } catch (XMLValidationException vex) {
-            // expected...
+            assertMessageContains(vex, "Element <root> has no attribute \"ns2:attr\"");
         }
         // Should not close, since stream is invalid now...
     }

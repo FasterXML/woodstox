@@ -4,6 +4,38 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+7.0.0 (not yet released)
+
+#134: Increase JDK baseline to Java 8
+#194: Remove `QNameCreator` compatibility class
+#196: WstxSAXParser error handling when used with JAXB validation
+ (reported by @winfriedgerlach)
+
+6.6.2 (26-Mar-2024)
+
+#200: Fix shading of `isorelax` dependency (and other msv-core components)
+ (reported, fix contributed by Jeremy N)
+
+6.6.1 (26-Feb-2024)
+
+#193: Module `com.ctc.wstx` does not read a module that exports
+  `com.ctc.wstx.shaded.msv.org_isorelax.verifier`
+ (reported by Alexey G)
+
+6.6.0 (15-Jan-2024)
+
+#67: Wrong line for XML event location in elements following DTD
+ (reported by @m-g-sonar)
+ (fix contributed by Tim M)
+#165: Add support to optionally allow surrogate pair entities
+ (contributed by Kamil G)
+#176: Fix parser when not replacing entities and treating char references
+  as entities
+ (contributed by Guillaume N)
+#182: Update `msv-core` dependency to `2022.7`
+- Update `stax2-api` dependency to 4.2.2
+- Update `oss-parent` dependency to 56 (from 50)
+
 6.5.1 (19-Apr-2023)
 
 #170: After update to 6.5.0, in osgi/felix runtime the bundle is not started

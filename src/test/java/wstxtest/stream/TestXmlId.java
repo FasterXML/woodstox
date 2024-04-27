@@ -159,7 +159,7 @@ public class TestXmlId
             assertTokenType(START_ELEMENT, sr.next());
             fail("Expected a validation exception for invalid Xml:id attribute declaration");
         } catch (XMLValidationException vex) {
-            //System.err.println("VLD exc -> "+vex);
+            assertMessageContains(vex, "Attribute xml:id has to have attribute type of ID, as per Xml:id specification");
         }
     }
 

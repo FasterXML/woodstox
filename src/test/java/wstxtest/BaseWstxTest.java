@@ -234,38 +234,6 @@ public abstract class BaseWstxTest
     //////////////////////////////////////////////////
      */
 
-    /**
-     * Method that will iterate through contents of an XML document
-     * using specified stream reader; will also access some of data
-     * to make sure reader reads most of lazy-loadable data.
-     * Method is usually called to try to get an exception for invalid
-     * content.
-     *
-     * @return Dummy value calculated on contents; used to make sure
-     *   no dead code is eliminated
-     */
-    @Override
-    protected int streamThrough(XMLStreamReader sr)
-        throws XMLStreamException
-    {
-        int result = 0;
-
-        while (sr.hasNext()) {
-            int type = sr.next();
-            result += type;
-            if (sr.hasText()) {
-                // will also do basic verification for text content, to 
-                // see that all text accessor methods return same content
-                result += getAndVerifyText(sr).hashCode();
-            }
-            if (sr.hasName()) {
-                result += sr.getName().hashCode();
-            }
-        }
-
-        return result;
-    }
-
     @Override
     protected int streamThroughFailing(XMLInputFactory f, String contents,
                                        String msg)

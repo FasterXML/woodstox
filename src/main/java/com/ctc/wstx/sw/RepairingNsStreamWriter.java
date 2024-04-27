@@ -236,7 +236,8 @@ public final class RepairingNsStreamWriter
         QName name = elem.getName();
         writeStartElement(name.getPrefix(), name.getLocalPart(),
                           name.getNamespaceURI());
-        Iterator<Attribute> it = elem.getAttributes();
+        @SuppressWarnings("unchecked")
+        Iterator<Attribute> it = (Iterator<Attribute>) elem.getAttributes();
         while (it.hasNext()) {
             Attribute attr = it.next();
             name = attr.getName();

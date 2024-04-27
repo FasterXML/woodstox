@@ -2834,7 +2834,7 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
             /* Need to call different methods based on whether we can do
              * automatic entity expansion or not:
              */
-            int ch = mCfgReplaceEntities ?
+            int ch = mCfgReplaceEntities || mCfgTreatCharRefsAsEntities ?
                 fullyResolveEntity(true) : resolveCharOnlyEntity(true);
 
             if (ch != 0) {
@@ -3671,9 +3671,7 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
     private int skipTokenText(int i)
         throws XMLStreamException
     {
-        /* Fairly easy; except for potential to have entities
-         * expand to some crap?
-         */
+        // Fairly easy; except for potential to have entities expand to some crap?
         int count = 0;
         
         main_loop:
@@ -3690,18 +3688,15 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                         ;
                     } else {
                         i = fullyResolveEntity(true);
-                        /* Either way, it's just fine; we don't care about
-                         * returned single-char value.
-                         */
+                        // Either way, it's just fine; we don't care about
+                        // returned single-char value.
                     }
                 } else {
-                    /* Can only skip character entities; others need to
-                     * be returned separately.
-                     */
+                    // Can only skip character entities; others need to
+                    // be returned separately.
                     if (resolveCharOnlyEntity(true) == 0) {
-                        /* Now points to the char after ampersand, and we need
-                         * to return the ampersand itself
-                         */
+                        // Now points to the char after ampersand, and we need
+                        // to return the ampersand itself
                         return i;
                     }
                 }

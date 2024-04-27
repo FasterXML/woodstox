@@ -1,12 +1,17 @@
 package wstxtest.vstream;
 
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.URL;
 
 import javax.xml.stream.XMLStreamException;
 
 import org.codehaus.stax2.XMLStreamReader2;
+import org.codehaus.stax2.XMLStreamWriter2;
 import org.codehaus.stax2.validation.*;
+
+import com.ctc.wstx.stax.WstxInputFactory;
+import com.ctc.wstx.stax.WstxOutputFactory;
 
 public abstract class BaseValidationTest
     extends wstxtest.stream.BaseStreamTest
@@ -51,13 +56,32 @@ public abstract class BaseValidationTest
     }
     
     protected void verifyFailure(String xml, XMLValidationSchema schema, String failMsg,
-                                 String failPhrase, boolean strict) throws XMLStreamException
+            String failPhrase, boolean strict) throws XMLStreamException
+    {
+        verifyFailure(xml, schema, failMsg, failPhrase, strict, true, false);
+        verifyFailure(xml, schema, failMsg, failPhrase, strict, false, true);
+    }
+    
+    protected void verifyFailure(String xml, XMLValidationSchema schema, String failMsg,
+                                 String failPhrase, boolean strict, 
+                                 boolean validateReader, boolean validateWriter) throws XMLStreamException
     {
         XMLStreamReader2 sr = constructStreamReader(getInputFactory(), xml);
-        sr.validateAgainst(schema);
+        if (validateReader) {
+            sr.validateAgainst(schema);
+        }
+        XMLStreamWriter2 sw = null;
+        if (validateWriter) {
+            sw = (XMLStreamWriter2) getOutputFactory().createXMLStreamWriter(new StringWriter());
+            sw.validateAgainst(schema);
+            sw.copyEventFromReader(sr, false);
+        }
         try {
             while (sr.hasNext()) {
                 /* int type = */sr.next();
+                if (validateWriter) {
+                    sw.copyEventFromReader(sr, false);
+                }
             }
             fail("Expected validity exception for " + failMsg);
         } catch (XMLValidationException vex) {
@@ -78,5 +102,47 @@ public abstract class BaseValidationTest
             fail("Expected XMLValidationException for " + failMsg
                  + "; instead got " + sex.getMessage());
         }
+    }
+    
+    public enum ValidationMode {
+        reader() {
+            @Override
+            public void validate(XMLValidationSchema schema, String XML, String expectedXML) throws XMLStreamException {
+                XMLStreamReader2 sr = (XMLStreamReader2) new WstxInputFactory().createXMLStreamReader(new StringReader(XML));
+                sr.validateAgainst(schema);
+                streamThrough(sr);
+                assertTokenType(END_DOCUMENT, sr.getEventType());
+                sr.close();
+            }
+
+        }, 
+        writerNsSimple() {
+
+            @Override
+            public void validate(XMLValidationSchema schema, String XML, String expectedXML)
+                    throws XMLStreamException {
+                XMLStreamReader2 sr = (XMLStreamReader2) new WstxInputFactory().createXMLStreamReader(new StringReader(XML));
+                
+                StringWriter writer = new StringWriter();
+                WstxOutputFactory f = new WstxOutputFactory();
+                f.getConfig().doSupportNamespaces(true);
+                f.getConfig().enableAutomaticNamespaces(false);
+                XMLStreamWriter2 sw =  (XMLStreamWriter2) f.createXMLStreamWriter(writer);
+                sw.validateAgainst(schema);
+                sw.copyEventFromReader(sr, false);
+                while (sr.hasNext()) {
+                    /* int type = */sr.next();
+                    sw.copyEventFromReader(sr, false);
+                }
+                assertTokenType(END_DOCUMENT, sr.getEventType());
+                sr.close();
+                sw.close();
+                assertEquals(expectedXML, writer.toString());
+            }
+        };
+        public void validate(XMLValidationSchema schema, String XML) throws XMLStreamException {
+            validate(schema, XML, XML);
+        }
+        public abstract void validate(XMLValidationSchema schema, String XML, String expectedXML) throws XMLStreamException;
     }
 }

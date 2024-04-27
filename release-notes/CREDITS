@@ -79,4 +79,28 @@ Ben Spiller (ben-spiller@github)
   on `aQute.bnd.annotation.Resolution`
  (6.5.0)
 
+Guillaume Nodet (@gnodet)
 
+* Contributed #176: Fix parser when not replacing entities and treating char references
+  as entities
+ (6.6.0)
+
+Tim Martin (@Orbisman)
+
+* Contributed fix for #67: Wrong line for XML event location in elements following DTD
+ (6.6.0)
+
+Kamil Gołębiewski (@Magmaruss)
+
+* Contributed #165: Add support to optionally allow surrogate pair entities
+ (6.6.0)
+
+Alexey Gavrilov (@agavrilov76)
+
+* Reported #193: Module `com.ctc.wstx` does not read a module that exports
+  `com.ctc.wstx.shaded.msv.org_isorelax.verifier`
+ (6.6.1)
+
+Jeremy Norris (@norrisjeremy)
+* Reported #200: Fix shading of `isorelax` dependency (and other msv-core components)
+ (6.6.2)

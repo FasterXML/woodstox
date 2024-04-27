@@ -1,9 +1,16 @@
 package wstxtest.msv;
 
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
+
 import javax.xml.stream.*;
 
 import org.codehaus.stax2.*;
 import org.codehaus.stax2.validation.*;
+
+import com.ctc.wstx.stax.WstxInputFactory;
+import com.ctc.wstx.stax.WstxOutputFactory;
 
 import wstxtest.vstream.BaseValidationTest;
 
@@ -17,7 +24,7 @@ public class TestW3CSchema
     /**
      * Sample schema, using sample 'personal.xsd' found from the web
      */
-    final static String SIMPLE_NON_NS_SCHEMA = "<?xml version='1.0' encoding='UTF-8'?>\n"
+    protected final static String SIMPLE_NON_NS_SCHEMA = "<?xml version='1.0' encoding='UTF-8'?>\n"
             + "<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'>\n"
             + "<xs:element name='personnel'>\n"
             + "<xs:complexType>\n"
@@ -78,10 +85,10 @@ public class TestW3CSchema
 	final static String SIMPLE_XML = "<personnel>"
             + "<person id='a123' contr='true'>" + "    <name>"
             + "<family>Family</family><given>Fred</given>" + "    </name>"
-            + "    <url href='urn:something' />" + "  </person>"
+            + "    <url href='urn:something'/>" + "  </person>"
             + "  <person id='b12'>"
             + "    <name><family>Blow</family><given>Joe</given>"
-            + "    </name>" + "    <url />" + "  </person>" + "</personnel>";
+            + "    </name>" + "    <url/>" + "  </person>" + "</personnel>";
 
     /**
      * Test validation against a simple document valid according to a very
@@ -90,40 +97,59 @@ public class TestW3CSchema
     public void testSimpleNonNs() throws XMLStreamException
     {
         XMLValidationSchema schema = parseW3CSchema(SIMPLE_NON_NS_SCHEMA);
-        XMLStreamReader2 sr = getReader(SIMPLE_XML);
+        String XML = SIMPLE_XML;
+        XMLStreamReader2 sr = getReader(XML);
         sr.validateAgainst(schema);
         
+        StringWriter writer = new StringWriter();
+        XMLStreamWriter2 sw = (XMLStreamWriter2) getOutputFactory().createXMLStreamWriter(writer);
+        sw.validateAgainst(schema);
+        sw.copyEventFromReader(sr, false);
+
         try {
             assertTokenType(START_ELEMENT, sr.next());
             assertEquals("personnel", sr.getLocalName());
+            sw.copyEventFromReader(sr, false);
             
             while (sr.hasNext()) {
                 /* int type = */sr.next();
+                sw.copyEventFromReader(sr, false);
             }
         } catch (XMLValidationException vex) {
             fail("Did not expect validation exception, got: " + vex);
         }
         assertTokenType(END_DOCUMENT, sr.getEventType());
+        assertEquals(XML.replace("'", "\""), writer.toString());
     }
     
     public void testSimplePartialNonNs() throws XMLStreamException
     {
         XMLValidationSchema schema = parseW3CSchema(SIMPLE_NON_NS_SCHEMA);
-        XMLStreamReader2 sr = getReader(SIMPLE_XML);
+        String XML = SIMPLE_XML;
+        XMLStreamReader2 sr = getReader(XML);
         
+        StringWriter writer = new StringWriter();
+        XMLStreamWriter2 sw = (XMLStreamWriter2) getOutputFactory().createXMLStreamWriter(writer);
+        sw.copyEventFromReader(sr, false);
+
         assertTokenType(START_ELEMENT, sr.next());
         assertEquals("personnel", sr.getLocalName());
+        sw.copyEventFromReader(sr, false);
         sr.validateAgainst(schema);
+        sw.validateAgainst(schema);
         try {
             assertTokenType(START_ELEMENT, sr.next());
             assertEquals("person", sr.getLocalName());
+            sw.copyEventFromReader(sr, false);
             while (sr.hasNext()) {
                 /* int type = */sr.next();
+                sw.copyEventFromReader(sr, false);
             }
         } catch (XMLValidationException vex) {
             fail("Did not expect validation exception, got: " + vex);
         }
         assertTokenType(END_DOCUMENT, sr.getEventType());
+        assertEquals(XML.replace("'", "\""), writer.toString());
     }
     
     /**
@@ -147,7 +173,7 @@ public class TestW3CSchema
             + "<name><family>F</family><given>G</given>"
             + "</name><link manager='m3' /></person></personnel>";
         verifyFailure(XML, schema, "undefined referenced id ('m3')",
-                      "Undefined ID 'm3'");
+                      "Undefined ID 'm3'", true, true, false);
     }
 
     public void testSimpleDataTypes() throws XMLStreamException
@@ -192,6 +218,18 @@ public class TestW3CSchema
         }
         sr.close();
         
+        // validate the same document on the writer side
+        sr = getReader(XML);
+        StringWriter writer = new StringWriter();
+        XMLStreamWriter2 sw = (XMLStreamWriter2) getOutputFactory().createXMLStreamWriter(writer);
+        sw.validateAgainst(schema);
+        sw.copyEventFromReader(sr, true);
+        while (sr.hasNext()) {
+            /* int type = */sr.next();
+            sw.copyEventFromReader(sr, true);
+        }
+        assertEquals(XML.replace("\r", ""), writer.toString());
+
         // Then invalid (wrong type for value)
         XML = "<item><quantity>34b</quantity><price>1.00</price></item>";
         sr.validateAgainst(schema);
@@ -224,33 +262,28 @@ public class TestW3CSchema
             + "</xs:schema>";
         XMLValidationSchema schema = parseW3CSchema(SCHEMA);
         
-        // First, 3 valid docs:
-        String XML = "<root>xyz</root>";
-        XMLStreamReader2 sr = getReader(XML);
-        sr.validateAgainst(schema);
-        streamThrough(sr);
-        sr.close();
+        String XML = null;
+        for (ValidationMode mode : ValidationMode.values()) {
+            // First, 3 valid docs:
+            XML = "<root>xyz</root>";
+            mode.validate(schema, XML);
+            
+            XML = "<root />";
+            mode.validate(schema, XML, "<root/>");
+            
+            XML = "<root></root>";
+            mode.validate(schema, XML, "<root/>");
+        }
         
-        XML = "<root />";
-        sr = getReader(XML);
-        sr.validateAgainst(schema);
-        streamThrough(sr);
-        sr.close();
-        
-        XML = "<root></root>";
-        sr = getReader(XML);
-        sr.validateAgainst(schema);
-        streamThrough(sr);
-        sr.close();
         
         // Then invalid?
         XML = "<foobar />";
-        sr = getReader(XML);
+        XMLStreamReader2 sr = getReader(XML);
         sr.validateAgainst(schema);
         verifyFailure(XML, schema, "should warn about wrong root element",
                       "tag name \"foobar\" is not allowed", false);
     }
-    
+
     /**
      * Test for reproducing [WSTX-191]
      */
@@ -283,20 +316,24 @@ public class TestW3CSchema
                        "<description><![CDATA[Du Texte]]></description>");
         _testValidDesc(schema,
                        "<description>??</description><description><![CDATA[...]]></description>");
-        _testValidDesc(schema, "<description></description>");
-        _testValidDesc(schema, "<description />");
+        _testValidDesc(schema, "<description></description>", "<description/>");
+        _testValidDesc(schema, "<description />", "<description/>");
         _testValidDesc(schema, "<description><![CDATA[]]></description>");
     }
     
-    private void _testValidDesc(XMLValidationSchema schema, String descSnippet) throws XMLStreamException
+    private void _testValidDesc(XMLValidationSchema schema, String descSnippet) throws XMLStreamException {
+        _testValidDesc(schema, descSnippet, descSnippet);
+    }
+    private void _testValidDesc(XMLValidationSchema schema, String descSnippet, String expectedSnippet) throws XMLStreamException
     {
-        // These should all be valid according to the schema
-        String XML = "<catalog xmlns='http://www.mondomaine.fr/framework'>"
-            + descSnippet + "</catalog>";
-        XMLStreamReader2 sr = getReader(XML);
-        sr.validateAgainst(schema);
-        streamThrough(sr);
-        sr.close();
+        for (ValidationMode mode : ValidationMode.values()) {
+            // These should all be valid according to the schema
+            String XML = "<catalog xmlns='http://www.mondomaine.fr/framework'>"
+                + descSnippet + "</catalog>";
+            String expectedXML = "<catalog xmlns='http://www.mondomaine.fr/framework'>"
+                    + expectedSnippet + "</catalog>";
+            mode.validate(schema, XML, expectedXML.replace("'", "\""));
+        }
     }
 
     public void testValidationHandler() throws XMLStreamException
@@ -318,15 +355,14 @@ public class TestW3CSchema
             }
         });
         sr.validateAgainst(schema);
-        boolean threw = false;
         try {
             while (sr.hasNext()) {
                 /* int type = */sr.next();
             }
+            fail("Expected LocalValidationError");
         } catch (LocalValidationError lve) {
-            threw = true;
+            assertEquals("tag name \"foobar\" is not allowed. Possible tag names are: <root>", lve.problem.getMessage());
         }
-        assertTrue(threw);
     }
 
     /*
@@ -362,4 +398,5 @@ public class TestW3CSchema
             return problem;
         }
     }
+
 }

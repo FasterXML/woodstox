@@ -584,9 +584,8 @@ public class WstxSAXParser
             mContentHandler.startDocument();
         }
 
-        /* Note: since we are reusing the same config instance, need to
-         * make sure state is not carried forward. Thus:
-         */
+        // Note: since we are reusing the same config instance, need to
+        // make sure state is not carried forward. Thus:
         cfg.resetState();
 
         try {
@@ -621,14 +620,9 @@ public class WstxSAXParser
             mAttrCollector = mScanner.getAttributeCollector();
             mElemStack = mScanner.getInputElementStack();
             fireEvents();
-        } catch (IOException io) {
-            throwSaxException(io);
-        } catch (XMLStreamException strex) {
-            throwSaxException(strex);
+        } catch (Exception e) {
+            throwSaxException(e);
         } finally {
-            if (mContentHandler != null) {
-                mContentHandler.endDocument();
-            }
             // Could try holding onto the buffers, too... but
             // maybe it's better to allow them to be reclaimed, if
             // needed by GC
@@ -649,6 +643,12 @@ public class WstxSAXParser
                     is.close();
                 } catch (IOException ioe) { }
             }
+        }
+        // 20-Feb-2024, tatu: Was formerly done in finally-block for some
+        //    reason; but makes more sense to only be done on happy path
+        //    (as per [woodstox-core#196]
+        if (mContentHandler != null) {
+            mContentHandler.endDocument();
         }
     }
 
@@ -1281,8 +1281,13 @@ public class WstxSAXParser
     private void throwSaxException(Exception src)
         throws SAXException
     {
-        SAXParseException se = new SAXParseException(src.getMessage(), /*(Locator)*/ this, src);
-        ExceptionUtil.setInitCause(se, src);
+        SAXParseException se;
+        if (src instanceof SAXParseException) {
+            se = (SAXParseException) src;
+        } else {
+            se = new SAXParseException(src.getMessage(), /*(Locator)*/ this, src);
+            ExceptionUtil.setInitCause(se, src);
+        }
         if (mErrorHandler != null) {
             mErrorHandler.fatalError(se);
         }

@@ -1,9 +1,15 @@
 package wstxtest.vstream;
 
+import java.io.StringWriter;
+
 import javax.xml.stream.*;
 
 import org.codehaus.stax2.*;
 import org.codehaus.stax2.validation.*;
+
+import com.ctc.wstx.sw.NonNsStreamWriter;
+import com.ctc.wstx.sw.RepairingNsStreamWriter;
+import com.ctc.wstx.sw.SimpleNsStreamWriter;
 
 /**
  * This is a simple base-line "smoke test" that checks that RelaxNG
@@ -12,7 +18,7 @@ import org.codehaus.stax2.validation.*;
 public class TestRelaxNG
     extends BaseValidationTest
 {
-    final static String SIMPLE_RNG_SCHEMA =
+    protected final static String SIMPLE_RNG_SCHEMA =
         "<element name='dict' xmlns='http://relaxng.org/ns/structure/1.0'>\n"
         +" <oneOrMore>\n"
         +"  <element name='term'>\n"
@@ -58,11 +64,11 @@ public class TestRelaxNG
         String XML =
             "<?xml version='1.0'?>"
             +"<dict>\n"
-            +" <term type='name'>\n"
+            +" <term type=\"name\">\n"
             +"  <word>foobar</word>\n"
             +"  <description>Foo Bar</description>\n"
             +" </term>"
-            +" <term type='word' extra='123'>\n"
+            +" <term type=\"word\" extra=\"123\">\n"
             +"  <word>fuzzy</word>\n"
             +"  <description>adjective</description>\n"
             +" </term>"
@@ -70,21 +76,9 @@ public class TestRelaxNG
             ;
 
         XMLValidationSchema schema = parseRngSchema(SIMPLE_RNG_SCHEMA);
-        XMLStreamReader2 sr = getReader(XML);
-        sr.validateAgainst(schema);
-
-        try {
-            assertTokenType(START_ELEMENT, sr.next());
-            assertEquals("dict", sr.getLocalName());
-            
-            while (sr.hasNext()) {
-                sr.next();
-            }
-        } catch (XMLValidationException vex) {
-            fail("Did not expect validation exception, got: "+vex);
+        for (ValidationMode mode : ValidationMode.values()) {
+            mode.validate(schema, XML);
         }
-
-        assertTokenType(END_DOCUMENT, sr.getEventType());
     }
 
     /**
@@ -102,7 +96,7 @@ public class TestRelaxNG
             +"  <word>foobar</word>\n"
             +"  <description>Foo Bar</description>\n"
             +"</term>";
-        verifyRngFailure(XML, schema, "wrong root element",
+        verifyFailure(XML, schema, "wrong root element",
                          "is not allowed. Possible tag names are");
 
         // Then, wrong child ordering:
@@ -111,21 +105,21 @@ public class TestRelaxNG
             +"  <description>Foo Bar</description>\n"
             +"  <word>foobar</word>\n"
             +"</term></dict>";
-        verifyRngFailure(XML, schema, "illegal child element ordering",
+        verifyFailure(XML, schema, "illegal child element ordering",
                          "tag name \"description\" is not allowed. Possible tag names are");
 
         // Then, missing children:
         XML = "<dict>\n"
             +"<term type='x'>\n"
             +"</term></dict>";
-        verifyRngFailure(XML, schema, "missing children",
+        verifyFailure(XML, schema, "missing children",
                          "uncompleted content model. expecting: <word>");
 
         XML = "<dict>\n"
             +"<term type='x'>\n"
             +"<word>word</word>"
             +"</term></dict>";
-        verifyRngFailure(XML, schema, "incomplete children",
+        verifyFailure(XML, schema, "incomplete children",
                          "uncompleted content model. expecting: <description>");
 
         // Then illegal text in non-mixed element
@@ -134,7 +128,7 @@ public class TestRelaxNG
             +"  <word>foobar</word>\n"
             +"  <description>Foo Bar</description>\n"
             +"</term></dict>";
-        verifyRngFailure(XML, schema, "invalid non-whitespace text",
+        verifyFailure(XML, schema, "invalid non-whitespace text",
                          "Element <term> has non-mixed content specification; can not contain non-white space text");
 
         // missing attribute
@@ -149,14 +143,14 @@ public class TestRelaxNG
             +"  <word>foobar</word>\n"
             +"  <description>Foo Bar</description>\n"
             +"</term></dict>";
-        verifyRngFailure(XML, schema, "undeclared attribute",
+        verifyFailure(XML, schema, "undeclared attribute",
                          "unexpected attribute \"attr\"");
         XML = "<dict>\n"
             +"<term type='x'>"
             +"  <word type='noun'>foobar</word>\n"
             +"  <description>Foo Bar</description>\n"
             +"</term></dict>";
-        verifyRngFailure(XML, schema, "undeclared attribute",
+        verifyFailure(XML, schema, "undeclared attribute",
                          "unexpected attribute \"type\"");
     }
 
@@ -164,27 +158,15 @@ public class TestRelaxNG
         throws XMLStreamException
     {
         String XML = "<root>\n"
-            +" <myns:leaf xmlns:myns='http://test' attr1='123' />\n"
-            +" <ns2:leaf xmlns:ns2='http://test' ns2:attr2='123' />\n"
+            +" <myns:leaf xmlns:myns=\"http://test\" attr1=\"123\"/>\n"
+            +" <ns2:leaf xmlns:ns2=\"http://test\" ns2:attr2=\"123\"/>\n"
             +"</root>"
             ;
 
         XMLValidationSchema schema = parseRngSchema(SIMPLE_RNG_NS_SCHEMA);
-        XMLStreamReader2 sr = getReader(XML);
-        sr.validateAgainst(schema);
-
-        try {
-            assertTokenType(START_ELEMENT, sr.next());
-            assertEquals("root", sr.getLocalName());
-            
-            while (sr.hasNext()) {
-                sr.next();
-            }
-        } catch (XMLValidationException vex) {
-            fail("Did not expect validation exception, got: "+vex);
+        for (ValidationMode mode : ValidationMode.values()) {
+            mode.validate(schema, XML);
         }
-
-        assertTokenType(END_DOCUMENT, sr.getEventType());
     }
 
     /**
@@ -200,21 +182,21 @@ public class TestRelaxNG
         String XML = "<root xmlns='http://test'>\n"
             +"<leaf />\n"
             +"</root>";
-        verifyRngFailure(XML, schema, "wrong root element",
+        verifyFailure(XML, schema, "wrong root element",
                          "namespace URI of tag \"root\" is wrong");
 
         // Wrong child namespace
         XML = "<root>\n"
             +"<leaf xmlns='http://other' />\n"
             +"</root>";
-        verifyRngFailure(XML, schema, "wrong child element namespace",
+        verifyFailure(XML, schema, "wrong child element namespace",
                          "namespace URI of tag \"leaf\" is wrong.");
 
         // Wrong attribute namespace
         XML = "<root>\n"
             +"<ns:leaf xmlns:ns='http://test' ns:attr1='123' />\n"
             +"</root>";
-        verifyRngFailure(XML, schema, "wrong attribute namespace",
+        verifyFailure(XML, schema, "wrong attribute namespace",
                          "unexpected attribute \"attr1\"");
     }
 
@@ -232,66 +214,87 @@ public class TestRelaxNG
         String XML =
             "<?xml version='1.0'?>"
             +"<dict>"
-            +"<term type='name'><invalid />"
+            +"<term type=\"name\"><invalid/>"
             +"</term>"
             +"</dict>"
             ;
 
         XMLValidationSchema schema = parseRngSchema(SIMPLE_RNG_SCHEMA);
 
+        for (StopValidatingMethod method : StopValidatingMethod.values()) {
+            {
+                StringWriter writer = new StringWriter();
+                SimpleNsStreamWriter sw = (SimpleNsStreamWriter) constructStreamWriter(writer, true, false);
+                _testSimplePartialNonNS(XML, schema, sw, writer, method);
+            }
+            {
+                StringWriter writer = new StringWriter();
+                RepairingNsStreamWriter sw = (RepairingNsStreamWriter) constructStreamWriter(writer, true, true);
+                _testSimplePartialNonNS(XML, schema, sw, writer, method);
+            }
+            {
+                StringWriter writer = new StringWriter();
+                NonNsStreamWriter sw = (NonNsStreamWriter) constructStreamWriter(writer, false, false);
+                _testSimplePartialNonNS(XML, schema, sw, writer, method);
+            }
+        }
+    }
+    
+    private enum StopValidatingMethod {schema, validator}
+
+    private void _testSimplePartialNonNS(String XML, XMLValidationSchema schema, XMLStreamWriter2 sw, 
+            StringWriter writer, StopValidatingMethod method) throws XMLStreamException {
         XMLStreamReader2 sr = getReader(XML);
         XMLValidator vtor = sr.validateAgainst(schema);
+        
+        XMLValidator wVtor = sw.validateAgainst(schema);
 
+        sw.copyEventFromReader(sr, false);
         assertTokenType(START_ELEMENT, sr.next());
         assertEquals("dict", sr.getLocalName());
+        sw.copyEventFromReader(sr, false);
         assertTokenType(START_ELEMENT, sr.next());
         assertEquals("term", sr.getLocalName());
+        sw.copyEventFromReader(sr, false);
 
         /* So far so good; but here we'd get an exception... so
          * let's stop validating
          */
-        assertSame(vtor, sr.stopValidatingAgainst(schema));
+        switch (method) {
+        case schema:
+            assertSame(vtor, sr.stopValidatingAgainst(schema));
+            assertSame(wVtor, sw.stopValidatingAgainst(schema));
+            break;
+        case validator:
+            assertSame(vtor, sr.stopValidatingAgainst(vtor));
+            assertSame(wVtor, sw.stopValidatingAgainst(wVtor));
+            break;
+        default:
+            throw new IllegalStateException(); 
+        }
         try {
             // And should be good to go
             assertTokenType(START_ELEMENT, sr.next());
             assertEquals("invalid", sr.getLocalName());
+            sw.copyEventFromReader(sr, false);
             assertTokenType(END_ELEMENT, sr.next());
             assertEquals("invalid", sr.getLocalName());
+            sw.copyEventFromReader(sr, false);
             assertTokenType(END_ELEMENT, sr.next());
             assertEquals("term", sr.getLocalName());
+            sw.copyEventFromReader(sr, false);
             assertTokenType(END_ELEMENT, sr.next());
             assertEquals("dict", sr.getLocalName());
+            sw.copyEventFromReader(sr, false);
             assertTokenType(END_DOCUMENT, sr.next());
+            sw.copyEventFromReader(sr, false);
         } catch (XMLValidationException vex) {
             fail("Did not expect validation exception after stopping validation, got: "+vex);
         }
         sr.close();
-
-        // And let's do the same, just using the other stopValidatingAgainst method
-        sr = getReader(XML);
-        vtor = sr.validateAgainst(schema);
-
-        assertTokenType(START_ELEMENT, sr.next());
-        assertEquals("dict", sr.getLocalName());
-        assertTokenType(START_ELEMENT, sr.next());
-        assertEquals("term", sr.getLocalName());
-
-        assertSame(vtor, sr.stopValidatingAgainst(vtor));
-        try {
-            // And should be good to go
-            assertTokenType(START_ELEMENT, sr.next());
-            assertEquals("invalid", sr.getLocalName());
-            assertTokenType(END_ELEMENT, sr.next());
-            assertEquals("invalid", sr.getLocalName());
-            assertTokenType(END_ELEMENT, sr.next());
-            assertEquals("term", sr.getLocalName());
-            assertTokenType(END_ELEMENT, sr.next());
-            assertEquals("dict", sr.getLocalName());
-            assertTokenType(END_DOCUMENT, sr.next());
-        } catch (XMLValidationException vex) {
-            fail("Did not expect validation exception after stopping validation, got: "+vex);
-        }
-        sr.close();
+        sw.close();
+        
+        assertEquals(XML, writer.toString());
     }
 
     public void testSimpleEnumAttr()
@@ -311,15 +314,14 @@ public class TestRelaxNG
         XMLValidationSchema schema = parseRngSchema(schemaDef);
 
         // First, simple valid document
-        String XML = "<root enumAttr='another' />";
-        XMLStreamReader2 sr = getReader(XML);
-        sr.validateAgainst(schema);
-        while (sr.next() != END_DOCUMENT) { }
-        sr.close();
+        String XML = "<root enumAttr=\"another\"/>";
+        for (ValidationMode mode : ValidationMode.values()) {
+            mode.validate(schema, XML);
+        }
 
         // And then invalid one, with unrecognized value
         XML = "<root enumAttr='421' />";
-        verifyRngFailure(XML, schema, "enum attribute with unknown value",
+        verifyFailure(XML, schema, "enum attribute with unknown value",
                          "attribute \"enumAttr\" has a bad value");
     }
 
@@ -351,19 +353,18 @@ public class TestRelaxNG
 
         // First, a simple valid document
         String XML = "<root>"
-            +" <leaf id='first' ref='second' />\n"
-            +" <leaf id='second' ref='third' />\n"
-            +" <leaf id='third' refs='first second third' />\n"
+            +" <leaf id=\"first\" ref=\"second\"/>\n"
+            +" <leaf id=\"second\" ref=\"third\"/>\n"
+            +" <leaf id=\"third\" refs=\"first second third\"/>\n"
             +"</root>"
             ;
-        XMLStreamReader2 sr = getReader(XML);
-        sr.validateAgainst(schema);
-        while (sr.next() != END_DOCUMENT) { }
-        sr.close();
+        for (ValidationMode mode : ValidationMode.values()) {
+            mode.validate(schema, XML);
+        }
 
         // Then one with malformed id
         XML = "<root><leaf id='123invalidid' /></root>";
-        verifyRngFailure(XML, schema, "malformed id",
+        verifyFailure(XML, schema, "malformed id",
                          "attribute \"id\" has a bad value");
 
         // Then with malformed IDREF value (would be valid IDREFS)
@@ -372,7 +373,7 @@ public class TestRelaxNG
             +" <leaf id='c' />\n"
             +"</root>"
             ;
-        verifyRngFailure(XML, schema, "malformed id",
+        verifyFailure(XML, schema, "malformed id",
                          "attribute \"ref\" has a bad value");
 
         // And then invalid one, with dangling ref
@@ -380,16 +381,16 @@ public class TestRelaxNG
             +" <leaf id='a' ref='second' />\n"
             +"</root>"
             ;
-        verifyRngFailure(XML, schema, "reference to undefined id",
-                         "Undefined ID");
+        verifyFailure(XML, schema, "reference to undefined id",
+                         "Undefined ID", true, true, false);
 
         // and another one with some of refs undefined
         XML = "<root>"
             +" <leaf refs='this other' id='this' />\n"
             +"</root>"
             ;
-        verifyRngFailure(XML, schema, "reference to undefined id",
-                         "Undefined ID");
+        verifyFailure(XML, schema, "reference to undefined id",
+                         "Undefined ID", true, true, false);
     }
 
     public void testSimpleIntAttr()
@@ -407,25 +408,25 @@ public class TestRelaxNG
         XMLValidationSchema schema = parseRngSchema(schemaDef);
 
         // First, a simple valid document
-        XMLStreamReader2 sr = getReader("<root><leaf nr='  123  ' /></root>");
-        sr.validateAgainst(schema);
-        while (sr.next() != END_DOCUMENT) { }
-        sr.close();
+        String XML = "<root><leaf nr=\"  123  \"/></root>";
+        for (ValidationMode mode : ValidationMode.values()) {
+            mode.validate(schema, XML);
+        }
 
         // Then one with invalid element value
-        verifyRngFailure("<root><leaf nr='12.03' /></root>",
+        verifyFailure("<root><leaf nr='12.03' /></root>",
                          schema, "invalid integer attribute value",
                          "does not satisfy the \"integer\" type");
         // And missing attribute
-        verifyRngFailure("<root><leaf /></root>",
+        verifyFailure("<root><leaf /></root>",
                          schema, "missing integer attribute value",
                          "is missing \"nr\" attribute");
 
         // And then two variations of having empty value
-        verifyRngFailure("<root><leaf nr=\"\"/></root>",
+        verifyFailure("<root><leaf nr=\"\"/></root>",
                          schema, "missing integer attribute value",
                          "does not satisfy the \"integer\" type");
-        verifyRngFailure("<root><leaf nr='\r\n'/></root>",
+        verifyFailure("<root><leaf nr='\r\n'/></root>",
                          schema, "missing integer attribute value",
                          "does not satisfy the \"integer\" type");
     }
@@ -450,19 +451,19 @@ public class TestRelaxNG
         XMLValidationSchema schema = parseRngSchema(schemaDef);
 
         // First, a simple valid document
-        XMLStreamReader2 sr = getReader("<root><leaf1>abc</leaf1><leaf2>true</leaf2></root>");
-        sr.validateAgainst(schema);
-        while (sr.next() != END_DOCUMENT) { }
-        sr.close();
+        String XML = "<root><leaf1>abc</leaf1><leaf2>true</leaf2></root>";
+        for (ValidationMode mode : ValidationMode.values()) {
+            mode.validate(schema, XML);
+        }
 
         // Then another valid, but with empty tag for leaf1
-        sr = getReader("<root><leaf1 /><leaf2>false</leaf2></root>");
-        sr.validateAgainst(schema);
-        while (sr.next() != END_DOCUMENT) { }
-        sr.close();
+        XML = "<root><leaf1/><leaf2>false</leaf2></root>";
+        for (ValidationMode mode : ValidationMode.values()) {
+            mode.validate(schema, XML);
+        }
 
         // And then one more invalid case
-        verifyRngFailure("<root><leaf1 /><leaf2>true false</leaf2></root>",
+        verifyFailure("<root><leaf1 /><leaf2>true false</leaf2></root>",
                          schema, "missing boolean element value",
                          "does not satisfy the \"boolean\" type");
     }
@@ -478,20 +479,42 @@ public class TestRelaxNG
          * wrap the doc...
          */
         String XML =
-            "<dummy>\n"
-            +"<dict>\n"
-            +"<term type='name'>\n"
-            +"  <word>foobar</word>\n"
-            +"  <description>Foo Bar</description>\n"
-            +"</term></dict>\n"
-            +"</dummy>"
-            ;
+                "<dummy>\n"
+                +"<dict>\n"
+                +"<term type=\"name\">\n"
+                +"  <word>foobar</word>\n"
+                +"  <description>Foo Bar</description>\n"
+                +"</term></dict>\n"
+                +"</dummy>"
+                ;
         XMLValidationSchema schema = parseRngSchema(SIMPLE_RNG_SCHEMA);
+        {
+            StringWriter writer = new StringWriter();
+            SimpleNsStreamWriter sw = (SimpleNsStreamWriter) constructStreamWriter(writer, true, false);
+            _testPartialValidationOk(XML, schema, sw, writer);
+        }
+        {
+            StringWriter writer = new StringWriter();
+            NonNsStreamWriter sw = (NonNsStreamWriter) constructStreamWriter(writer, false, false);
+            _testPartialValidationOk(XML, schema, sw, writer);
+        }
+    }
+
+    protected void _testPartialValidationOk(String XML, XMLValidationSchema schema, XMLStreamWriter2 sw, StringWriter writer) throws XMLStreamException {
         XMLStreamReader2 sr = getReader(XML);
         assertTokenType(START_ELEMENT, sr.next());
+        sw.copyEventFromReader(sr, false);
+
         sr.validateAgainst(schema);
-        while (sr.next() != END_DOCUMENT) { }
+        sw.validateAgainst(schema);
+        while (sr.hasNext()) {
+            sr.next();
+            sw.copyEventFromReader(sr, false);
+        }
         sr.close();
+        sw.close();
+        
+        assertEquals(XML, writer.toString());
     }
 
 
@@ -508,37 +531,4 @@ public class TestRelaxNG
         return constructStreamReader(f, contents);
     }
 
-    private void verifyRngFailure(String xml, XMLValidationSchema schema, String failMsg, String failPhrase)
-        throws XMLStreamException
-    {
-        // By default, yes we are strict...
-        verifyRngFailure(xml, schema, failMsg, failPhrase, true);
-    }
-
-    private void verifyRngFailure(String xml, XMLValidationSchema schema, String failMsg, String failPhrase,
-			  boolean strict)
-        throws XMLStreamException
-    {
-        XMLStreamReader2 sr = getReader(xml);
-        sr.validateAgainst(schema);
-        try {
-            while (sr.hasNext()) {
-                /*int type =*/ sr.next();
-            }
-            fail("Expected validity exception for "+failMsg);
-        } catch (XMLValidationException vex) {
-            String origMsg = vex.getMessage();
-            String msg = (origMsg == null) ? "" : origMsg.toLowerCase();
-            if (msg.indexOf(failPhrase.toLowerCase()) < 0) {
-		String actualMsg = "Expected validation exception for "+failMsg+", containing phrase '"+failPhrase+"': got '"+origMsg+"'";
-		if (strict) {
-		    fail(actualMsg);
-		}
-		warn("suppressing failure due to MSV bug, failure: '"+actualMsg+"'");
-            }
-            // should get this specific type; not basic stream exception
-        } catch (XMLStreamException sex) {
-            fail("Expected XMLValidationException for "+failMsg);
-        }
-    }
 }

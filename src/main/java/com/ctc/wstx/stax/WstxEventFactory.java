@@ -25,7 +25,6 @@ import javax.xml.stream.events.*;
 import aQute.bnd.annotation.spi.ServiceProvider;
 import org.codehaus.stax2.ri.Stax2EventFactoryImpl;
 
-import com.ctc.wstx.compat.QNameCreator;
 import com.ctc.wstx.evt.*;
 
 /**
@@ -106,8 +105,7 @@ public final class WstxEventFactory
 
     @Override
     protected QName createQName(String nsURI, String localName, String prefix) {
-        // [WSTX-174]: some old app servers missing 3-arg QName ctor
-        return QNameCreator.create(nsURI, localName, prefix);
+        return new QName(nsURI, localName, prefix);
     }
 
     /**
