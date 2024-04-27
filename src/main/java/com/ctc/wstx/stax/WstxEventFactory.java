@@ -51,18 +51,18 @@ public final class WstxEventFactory
     @Override
     public void setLocation(Location location) {
         super.setLocation(location == null ? WstxInputLocation.getEmptyLocation()
-                                           : immutableLocation(location));
+                : immutableLocation(location));
     }
 
     private static WstxInputLocation immutableLocation(Location location) {
         if (location == null) {
             return null;
-        } else if (location.getClass() == WstxInputLocation.class) {
+        }
+        if (location.getClass() == WstxInputLocation.class) {
             return (WstxInputLocation) location;
         }
 
-        WstxInputLocation context =
-                (location instanceof XMLStreamLocation2)
+        WstxInputLocation context = (location instanceof XMLStreamLocation2)
                 ? immutableLocation(((XMLStreamLocation2) location).getContext())
                 : null;
         return new WstxInputLocation(context, location.getPublicId(),
