@@ -104,3 +104,8 @@ Alexey Gavrilov (@agavrilov76)
 Jeremy Norris (@norrisjeremy)
 * Reported #200: Fix shading of `isorelax` dependency (and other msv-core components)
  (6.6.2)
+
+Stanimir Stamenkov (@stanio)
+
+* Reported, provided fix for #204: Non-conformant `XMLEventFactory.setLocation(null)`
+ (7.0.0)
