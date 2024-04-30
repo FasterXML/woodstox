@@ -61,8 +61,8 @@ public class TestEventFactoryLocation {
         return locationWithProperties("", "", -1, -1, -1);
     }
 
-    private static Matcher<Location> locationWithProperties(String pubId,
-            String sysId, int charOffset, int row, int col) {
+    private static Matcher<Location> locationWithProperties(final String pubId,
+            final String sysId, final int charOffset, final int row, final int col) {
         return new TypeSafeMatcher<Location>() {
             @Override public void describeTo(Description description) {
                 description.appendText("Location(publicId: ").appendValue(pubId)
@@ -82,7 +82,6 @@ public class TestEventFactoryLocation {
         };
     }
 
-
     static class VolatileLocation implements Location {
         int line;
         int col;
@@ -96,7 +95,4 @@ public class TestEventFactoryLocation {
         @Override public int getColumnNumber() { return col; }
         @Override public int getCharacterOffset() { return -1; }
     }
-
-
 }
-
