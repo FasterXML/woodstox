@@ -6,7 +6,8 @@ Project: woodstox
 
 6.7.0 (not yet released)
 
--
+#204: Non-conformant `XMLEventFactory.setLocation(null)`
+ (fix provided by Stanimir S)
 
 6.6.2 (26-Mar-2024)
 

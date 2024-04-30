@@ -23,10 +23,12 @@ import javax.xml.stream.*;
 import javax.xml.stream.events.*;
 
 import aQute.bnd.annotation.spi.ServiceProvider;
+import org.codehaus.stax2.XMLStreamLocation2;
 import org.codehaus.stax2.ri.Stax2EventFactoryImpl;
 
 import com.ctc.wstx.compat.QNameCreator;
 import com.ctc.wstx.evt.*;
+import com.ctc.wstx.io.WstxInputLocation;
 
 /**
  * Implementation of {@link XMLEventFactory} to be used with
@@ -38,6 +40,7 @@ public final class WstxEventFactory
 {
     public WstxEventFactory() {
         super();
+        super.setLocation(WstxInputLocation.getEmptyLocation());
     }
 
     /*
@@ -45,6 +48,28 @@ public final class WstxEventFactory
     // XMLEventFactory API
     /////////////////////////////////////////////////////////////
      */
+
+    @Override
+    public void setLocation(Location location) {
+        super.setLocation(location == null ? WstxInputLocation.getEmptyLocation()
+                : immutableLocation(location));
+    }
+
+    private static WstxInputLocation immutableLocation(Location location) {
+        if (location == null) {
+            return null;
+        }
+        if (location.getClass() == WstxInputLocation.class) {
+            return (WstxInputLocation) location;
+        }
+
+        WstxInputLocation context = (location instanceof XMLStreamLocation2)
+                ? immutableLocation(((XMLStreamLocation2) location).getContext())
+                : null;
+        return new WstxInputLocation(context, location.getPublicId(),
+                location.getSystemId(), location.getCharacterOffset(),
+                location.getLineNumber(), location.getColumnNumber());
+    }
 
     //public Attribute createAttribute(QName name, String value)
     //public Attribute createAttribute(String localName, String value)
