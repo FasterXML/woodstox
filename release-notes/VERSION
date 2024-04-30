@@ -4,6 +4,10 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+6.7.0 (not yet released)
+
+-
+
 6.6.2 (26-Mar-2024)
 
 #200: Fix shading of `isorelax` dependency (and other msv-core components)
