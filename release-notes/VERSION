@@ -4,12 +4,17 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-7.0.0 (not yet released)
+7.0.0 (21-Jun-2024)
 
 #134: Increase JDK baseline to Java 8
 #194: Remove `QNameCreator` compatibility class
 #196: WstxSAXParser error handling when used with JAXB validation
  (reported by @winfriedgerlach)
+
+6.7.0 (21-Jun-2024)
+
+#204: Non-conformant `XMLEventFactory.setLocation(null)`
+ (fix provided by Stanimir S)
 
 6.6.2 (26-Mar-2024)
 
