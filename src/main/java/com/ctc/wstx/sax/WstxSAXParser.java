@@ -774,7 +774,12 @@ public class WstxSAXParser
             /* Only occurs in non-entity-expanding mode; so effectively
              * we are skipping the entity?
              */
-            if (mContentHandler != null) {
+            if (mLexicalHandler != null) {
+                String text = mScanner.getText();
+                mLexicalHandler.startEntity(mScanner.getLocalName());
+                mContentHandler.characters(text.toCharArray(), 0, text.length());
+                mLexicalHandler.endEntity(mScanner.getLocalName());
+            } else if (mContentHandler != null) {
                 mContentHandler.skippedEntity(mScanner.getLocalName());
             }
             break;
