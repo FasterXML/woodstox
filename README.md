@@ -21,7 +21,7 @@ But in general usage follows standard Stax or SAX API usage.
 | Artifact |  [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.woodstox/woodstox-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.woodstox/woodstox-core/) |
 | OSS Sponsorship | [![Tidelift](https://tidelift.com/badges/package/maven/com.fasterxml.woodstox:woodstox-core)](https://tidelift.com/subscription/pkg/maven-com-fasterxml-woodstox-woodstox-core?utm_source=maven-com-fasterxml-woodstox-woodstox-core&utm_medium=referral&utm_campaign=readme) |
 | Javadocs | [![Javadoc](https://javadoc.io/badge/com.fasterxml.woodstox/woodstox-core.svg)](http://www.javadoc.io/doc/com.fasterxml.woodstox/woodstox-core)
-| Code coverage (6.x) | [![codecov.io](https://codecov.io/github/FasterXML/woodstox/coverage.svg?branch=master)](https://codecov.io/github/FasterXML/woodstox?branch=master) |
+| Code coverage (7.x) | [![codecov.io](https://codecov.io/github/FasterXML/woodstox/coverage.svg?branch=master)](https://codecov.io/github/FasterXML/woodstox?branch=master) |
 | OpenSSF Score | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/FasterXML/woodstox/badge)](https://securityscorecards.dev/viewer/?uri=github.com/FasterXML/woodstox) |
 
 # Get it!
@@ -33,13 +33,14 @@ Coordinates for this are:
 
 * Group id: `com.fasterxml.woodstox`
 * Artifact id: `woodstox-core`
-* Latest published version: 6.6.1 (2024-02-26)
+* Latest published version: 7.0.0 (2024-06-21)
 
 Note that Maven id has changed since Woodstox 4.x but API is still compatible (despite nominal major version upgrade -- major version upgrades in this case were only due to package coordinate changes)
 
 ## Requirements
 
-Woodstox 5 and above require Java 6 (JDK 1.6); as well as Stax API that is included in JDK.
+Woodstox 7 and above require Java 8; Woodstox 5 and above require Java 6 (JDK 1.6).
+All versions also require Stax API that is included in JDK (since Java 6).
 The only other mandatory dependency is [Stax2 API](../../../stax2-api), extended API implemented
 by Woodstox and some other Stax implementations (like [Aalto](../../../aalto-xml).
 

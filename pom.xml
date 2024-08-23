@@ -4,12 +4,12 @@
     <parent>
       <groupId>com.fasterxml</groupId>
       <artifactId>oss-parent</artifactId>
-      <version>59</version>
+      <version>60</version>
     </parent>
 
     <groupId>com.fasterxml.woodstox</groupId>
     <artifactId>woodstox-core</artifactId>
-    <version>7.0.1-SNAPSHOT</version>
+    <version>7.1.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Woodstox</name>
     <description>Woodstox is a high-performance XML processor that implements Stax (JSR-173),
