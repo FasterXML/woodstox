@@ -109,3 +109,8 @@ Stanimir Stamenkov (@stanio)
 
 * Reported, provided fix for #204: Non-conformant `XMLEventFactory.setLocation(null)`
  (7.0.0)
+
+Philipp Nanz (@philippn)
+
+* Contributed #209: SAXParser: Add support for `LexicalHandler.startEntity()` and `.endEntity()`
+ (7.1.0)

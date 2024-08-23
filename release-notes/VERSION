@@ -4,6 +4,11 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+Not yet released:
+
+#209: SAXParser: Add support for `LexicalHandler.startEntity()` and `.endEntity()`
+ (contributed by Philipp N)
+
 7.0.0 (21-Jun-2024)
 
 #134: Increase JDK baseline to Java 8
