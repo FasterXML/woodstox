@@ -8,6 +8,8 @@ Project: woodstox
 
 #209: SAXParser: Add support for `LexicalHandler.startEntity()` and `.endEntity()`
  (contributed by Philipp N)
+#211: Disable `resolveEntityReferences` by default for newly created SAX parsers
+ (contributed by Philipp N)
 
 7.0.0 (21-Jun-2024)
 

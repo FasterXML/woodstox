@@ -11,6 +11,7 @@ import org.xml.sax.ext.DefaultHandler2;
 import wstxtest.BaseWstxTest;
 
 import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import java.net.URL;
 
 /**
@@ -19,7 +20,8 @@ import java.net.URL;
 public class TestLexicalHandler extends BaseWstxTest {
 
     public void testReplaceEntityRefs() throws Exception {
-        WstxSAXParserFactory spf = new WstxSAXParserFactory();
+        WstxInputFactory staxFactory = new WstxInputFactory();
+        SAXParserFactory spf = new WstxSAXParserFactory(staxFactory);
         SAXParser sp = spf.newSAXParser();
         EventListener listener = Mockito.mock(EventListener.class);
         sp.parse(getInputSource("eyephone.xml"), new EventListenerHandler(listener));
@@ -31,9 +33,7 @@ public class TestLexicalHandler extends BaseWstxTest {
     }
 
     public void testWithoutReplaceEntityRefs() throws Exception {
-        WstxInputFactory staxFactory = new WstxInputFactory();
-        staxFactory.getConfig().doReplaceEntityRefs(false);
-        WstxSAXParserFactory spf = new WstxSAXParserFactory(staxFactory);
+        SAXParserFactory spf = new WstxSAXParserFactory();
         SAXParser sp = spf.newSAXParser();
         EventListener listener = Mockito.mock(EventListener.class);
         sp.parse(getInputSource("eyephone.xml"), new EventListenerHandler(listener));
@@ -47,9 +47,7 @@ public class TestLexicalHandler extends BaseWstxTest {
     }
 
     public void testWithoutReplaceEntityRefsAndWithLexicalHandler() throws Exception {
-        WstxInputFactory staxFactory = new WstxInputFactory();
-        staxFactory.getConfig().doReplaceEntityRefs(false);
-        WstxSAXParserFactory spf = new WstxSAXParserFactory(staxFactory);
+        SAXParserFactory spf = new WstxSAXParserFactory();
         SAXParser sp = spf.newSAXParser();
         EventListener listener = Mockito.mock(EventListener.class);
         sp.setProperty("http://xml.org/sax/properties/lexical-handler", new EventListenerHandler(listener));
