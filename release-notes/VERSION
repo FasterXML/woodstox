@@ -4,7 +4,7 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-7.1.0 (not yet released)
+7.1.0 (22-Oct-2024)
 
 #209: SAXParser: Add support for `LexicalHandler.startEntity()` and `.endEntity()`
  (contributed by Philipp N)
