@@ -579,14 +579,8 @@ public class WstxSAXParser
             }
         }
 
-        if (mContentHandler != null) {
-            mContentHandler.setDocumentLocator(this);
-            mContentHandler.startDocument();
-        }
-
-        /* Note: since we are reusing the same config instance, need to
-         * make sure state is not carried forward. Thus:
-         */
+        // Note: since we are reusing the same config instance, need to
+        // make sure state is not carried forward. Thus:
         cfg.resetState();
 
         try {
@@ -620,6 +614,12 @@ public class WstxSAXParser
             mStandalone = mScanner.standaloneSet();
             mAttrCollector = mScanner.getAttributeCollector();
             mElemStack = mScanner.getInputElementStack();
+
+            if (mContentHandler != null) {
+                mContentHandler.setDocumentLocator(this);
+                mContentHandler.startDocument();
+            }
+
             fireEvents();
         } catch (IOException io) {
             throwSaxException(io);

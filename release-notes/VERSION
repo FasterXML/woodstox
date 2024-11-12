@@ -4,6 +4,12 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+6.7.1 (not yet released)
+
+#213: SAX: `Locator#getSystemId` and `Locator#getPublicId` are not
+  available during `startDocument` event
+ (fix contributed by Philipp N)
+
 6.7.0 (21-Jun-2024)
 
 #204: Non-conformant `XMLEventFactory.setLocation(null)`
