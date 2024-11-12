@@ -4,6 +4,12 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+7.1.1 (not yet released)
+
+#213: SAX: `Locator#getSystemId` and `Locator#getPublicId` are not
+  available during `startDocument` event
+ (fix contributed by Philipp N)
+
 7.1.0 (22-Oct-2024)
 
 #209: SAXParser: Add support for `LexicalHandler.startEntity()` and `.endEntity()`
