@@ -55,8 +55,7 @@ public abstract class ReaderArrayTestBase
     private void _testSimpleIntArrayElem(boolean withNoise)
         throws XMLStreamException
     {
-        for (int i = 0; i < COUNTS_ELEM.length; ++i) {
-            int len = COUNTS_ELEM[i];
+        for (int len : COUNTS_ELEM) {
             int[] data = intArray(len);
             String XML = buildDoc(data, withNoise);
 
@@ -83,8 +82,7 @@ public abstract class ReaderArrayTestBase
     private void _testSimpleLongArrayElem(boolean withNoise)
         throws XMLStreamException
     {
-        for (int i = 0; i < COUNTS_ELEM.length; ++i) {
-            int len = COUNTS_ELEM[i];
+        for (int len : COUNTS_ELEM) {
             long[] data = longArray(len);
             String XML = buildDoc(data, withNoise);
 
@@ -111,8 +109,7 @@ public abstract class ReaderArrayTestBase
     private void _testSimpleFloatArrayElem(boolean withNoise)
         throws XMLStreamException
     {
-        for (int i = 0; i < COUNTS_ELEM.length; ++i) {
-            int len = COUNTS_ELEM[i];
+        for (int len : COUNTS_ELEM) {
             float[] data = floatArray(len);
             String XML = buildDoc(data, withNoise);
 
@@ -139,8 +136,7 @@ public abstract class ReaderArrayTestBase
     private void _testSimpleDoubleArrayElem(boolean withNoise)
         throws XMLStreamException
     {
-        for (int i = 0; i < COUNTS_ELEM.length; ++i) {
-            int len = COUNTS_ELEM[i];
+        for (int len : COUNTS_ELEM) {
             double[] data = doubleArray(len);
             String XML = buildDoc(data, withNoise);
 
@@ -249,8 +245,7 @@ public abstract class ReaderArrayTestBase
     public void testSimpleIntArrayAttr()
         throws XMLStreamException
     {
-        for (int i = 0; i < COUNTS_ATTR.length; ++i) {
-            int len = COUNTS_ATTR[i];
+        for (int len : COUNTS_ATTR) {
             int[] data = intArray(len);
             String XML = buildAttrDoc(data);
             verifyIntsAttr(XML, data);
@@ -260,8 +255,7 @@ public abstract class ReaderArrayTestBase
     public void testSimpleLongArrayAttr()
         throws XMLStreamException
     {
-        for (int i = 0; i < COUNTS_ATTR.length; ++i) {
-            int len = COUNTS_ATTR[i];
+        for (int len : COUNTS_ATTR) {
             long[] data = longArray(len);
             String XML = buildAttrDoc(data);
             verifyLongsAttr(XML, data);
@@ -271,8 +265,7 @@ public abstract class ReaderArrayTestBase
     public void testSimpleFloatArrayAttr()
         throws XMLStreamException
     {
-        for (int i = 0; i < COUNTS_ATTR.length; ++i) {
-            int len = COUNTS_ATTR[i];
+        for (int len : COUNTS_ATTR) {
             float[] data = floatArray(len);
             String XML = buildAttrDoc(data);
             verifyFloatsAttr(XML, data);
@@ -282,8 +275,7 @@ public abstract class ReaderArrayTestBase
     public void testSimpleDoubleArrayAttr()
         throws XMLStreamException
     {
-        for (int i = 0; i < COUNTS_ATTR.length; ++i) {
-            int len = COUNTS_ATTR[i];
+        for (int len : COUNTS_ATTR) {
             double[] data = doubleArray(len);
             String XML = buildAttrDoc(data);
             verifyDoublesAttr(XML, data);

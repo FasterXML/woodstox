@@ -34,22 +34,22 @@ public abstract class BaseStaxTest
      */
     final static String PROP_REPORT_CDATA = "http://java.sun.com/xml/stream/properties/report-cdata-event";
 
-    final static HashMap<Integer,String> mTokenTypes = new HashMap<Integer,String>();
+    final static HashMap<Integer,String> mTokenTypes = new HashMap<>();
     static {
-        mTokenTypes.put(Integer.valueOf(START_ELEMENT), "START_ELEMENT");
-        mTokenTypes.put(Integer.valueOf(END_ELEMENT), "END_ELEMENT");
-        mTokenTypes.put(Integer.valueOf(START_DOCUMENT), "START_DOCUMENT");
-        mTokenTypes.put(Integer.valueOf(END_DOCUMENT), "END_DOCUMENT");
-        mTokenTypes.put(Integer.valueOf(CHARACTERS), "CHARACTERS");
-        mTokenTypes.put(Integer.valueOf(CDATA), "CDATA");
-        mTokenTypes.put(Integer.valueOf(COMMENT), "COMMENT");
-        mTokenTypes.put(Integer.valueOf(PROCESSING_INSTRUCTION), "PROCESSING_INSTRUCTION");
-        mTokenTypes.put(Integer.valueOf(DTD), "DTD");
-        mTokenTypes.put(Integer.valueOf(SPACE), "SPACE");
-        mTokenTypes.put(Integer.valueOf(ENTITY_REFERENCE), "ENTITY_REFERENCE");
-        mTokenTypes.put(Integer.valueOf(NAMESPACE), "NAMESPACE_DECLARATION");
-        mTokenTypes.put(Integer.valueOf(NOTATION_DECLARATION), "NOTATION_DECLARATION");
-        mTokenTypes.put(Integer.valueOf(ENTITY_DECLARATION), "ENTITY_DECLARATION");
+        mTokenTypes.put(START_ELEMENT, "START_ELEMENT");
+        mTokenTypes.put(END_ELEMENT, "END_ELEMENT");
+        mTokenTypes.put(START_DOCUMENT, "START_DOCUMENT");
+        mTokenTypes.put(END_DOCUMENT, "END_DOCUMENT");
+        mTokenTypes.put(CHARACTERS, "CHARACTERS");
+        mTokenTypes.put(CDATA, "CDATA");
+        mTokenTypes.put(COMMENT, "COMMENT");
+        mTokenTypes.put(PROCESSING_INSTRUCTION, "PROCESSING_INSTRUCTION");
+        mTokenTypes.put(DTD, "DTD");
+        mTokenTypes.put(SPACE, "SPACE");
+        mTokenTypes.put(ENTITY_REFERENCE, "ENTITY_REFERENCE");
+        mTokenTypes.put(NAMESPACE, "NAMESPACE_DECLARATION");
+        mTokenTypes.put(NOTATION_DECLARATION, "NOTATION_DECLARATION");
+        mTokenTypes.put(ENTITY_DECLARATION, "ENTITY_DECLARATION");
     }
 
     /*
@@ -185,7 +185,7 @@ public abstract class BaseStaxTest
     protected static boolean isCoalescing(XMLInputFactory f)
         throws XMLStreamException
     {
-        return ((Boolean) f.getProperty(XMLInputFactory.IS_COALESCING)).booleanValue();
+        return (Boolean) f.getProperty(XMLInputFactory.IS_COALESCING);
     }
 
     protected static void setCoalescing(XMLInputFactory f, boolean state)
@@ -200,7 +200,7 @@ public abstract class BaseStaxTest
     protected static boolean isValidating(XMLInputFactory f)
         throws XMLStreamException
     {
-        return ((Boolean) f.getProperty(XMLInputFactory.IS_VALIDATING)).booleanValue();
+        return (Boolean) f.getProperty(XMLInputFactory.IS_VALIDATING);
     }
 
     protected static void setValidating(XMLInputFactory f, boolean state)
@@ -219,7 +219,7 @@ public abstract class BaseStaxTest
     protected static boolean isNamespaceAware(XMLInputFactory f)
         throws XMLStreamException
     {
-        return ((Boolean) f.getProperty(XMLInputFactory.IS_NAMESPACE_AWARE)).booleanValue();
+        return (Boolean) f.getProperty(XMLInputFactory.IS_NAMESPACE_AWARE);
     }
 
     /**
@@ -269,7 +269,7 @@ public abstract class BaseStaxTest
         try {
             f.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, b);
             Object act = f.getProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES);
-            return (act instanceof Boolean) && ((Boolean) act).booleanValue() == state;
+            return (act instanceof Boolean) && (Boolean) act == state;
         } catch (IllegalArgumentException e) {
             /* Let's assume, then, that the property (or specific value for it)
              * is NOT supported...
@@ -360,7 +360,7 @@ public abstract class BaseStaxTest
     protected static String getAllText(XMLStreamReader sr)
         throws XMLStreamException
     {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         while (true) {
             int tt = sr.getEventType();
             if (tt != CHARACTERS && tt != SPACE && tt != CDATA) {
@@ -375,7 +375,7 @@ public abstract class BaseStaxTest
     protected static String getAllCData(XMLStreamReader sr)
         throws XMLStreamException
     {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         while (true) {
             /* Note: CDATA sections CAN be reported as CHARACTERS, but
              * not as SPACE
@@ -524,7 +524,7 @@ public abstract class BaseStaxTest
         String msg = e.getMessage();
         String lmsg = msg.toLowerCase();
         String lmatch = match.toLowerCase();
-        if (lmsg.indexOf(lmatch) < 0) {
+        if (!lmsg.contains(lmatch)) {
             fail("Expected an exception with sub-string \""+match+"\": got one with message \""+msg+"\"");
         }
     }
@@ -550,7 +550,7 @@ public abstract class BaseStaxTest
 
     protected static String tokenTypeDesc(int tt)
     {
-        String desc = (String) mTokenTypes.get(Integer.valueOf(tt));
+        String desc = (String) mTokenTypes.get(tt);
         if (desc == null) {
             return "["+tt+"]";
         }
@@ -603,7 +603,7 @@ public abstract class BaseStaxTest
             return "_";
         }
         if (ch > 127 || ch < 32) {
-            StringBuffer sb = new StringBuffer(6);
+            StringBuilder sb = new StringBuilder(6);
             sb.append("\\u");
             String hex = Integer.toHexString((int)ch);
             for (int i = 0, len = 4 - hex.length(); i < len; i++) {
@@ -622,7 +622,7 @@ public abstract class BaseStaxTest
         }
 
         int len = str.length();
-        StringBuffer sb = new StringBuffer(len + 64);
+        StringBuilder sb = new StringBuilder(len + 64);
         for (int i = 0; i < len; ++i) {
             char c = str.charAt(i);
             String res = printable(c);

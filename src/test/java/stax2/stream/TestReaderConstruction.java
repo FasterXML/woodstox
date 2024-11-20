@@ -120,7 +120,7 @@ public class TestReaderConstruction
 
     String generateXML(String text)
     {
-        StringBuffer sb = new StringBuffer("<root>");
+        StringBuilder sb = new StringBuilder("<root>");
         sb.append(text);
         sb.append("</root>");
         return sb.toString();

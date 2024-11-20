@@ -41,19 +41,19 @@ public abstract class BaseStax2Test
      */
     final static String ATTR_NO_PREFIX = "";
 
-    final static HashMap<Integer,String> mTokenTypes = new HashMap<Integer,String>();
+    final static HashMap<Integer,String> mTokenTypes = new HashMap<>();
     static {
-        mTokenTypes.put(Integer.valueOf(START_ELEMENT), "START_ELEMENT");
-        mTokenTypes.put(Integer.valueOf(END_ELEMENT), "END_ELEMENT");
-        mTokenTypes.put(Integer.valueOf(START_DOCUMENT), "START_DOCUMENT");
-        mTokenTypes.put(Integer.valueOf(END_DOCUMENT), "END_DOCUMENT");
-        mTokenTypes.put(Integer.valueOf(CHARACTERS), "CHARACTERS");
-        mTokenTypes.put(Integer.valueOf(CDATA), "CDATA");
-        mTokenTypes.put(Integer.valueOf(COMMENT), "COMMENT");
-        mTokenTypes.put(Integer.valueOf(PROCESSING_INSTRUCTION), "PROCESSING_INSTRUCTION");
-        mTokenTypes.put(Integer.valueOf(DTD), "DTD");
-        mTokenTypes.put(Integer.valueOf(SPACE), "SPACE");
-        mTokenTypes.put(Integer.valueOf(ENTITY_REFERENCE), "ENTITY_REFERENCE");
+        mTokenTypes.put(START_ELEMENT, "START_ELEMENT");
+        mTokenTypes.put(END_ELEMENT, "END_ELEMENT");
+        mTokenTypes.put(START_DOCUMENT, "START_DOCUMENT");
+        mTokenTypes.put(END_DOCUMENT, "END_DOCUMENT");
+        mTokenTypes.put(CHARACTERS, "CHARACTERS");
+        mTokenTypes.put(CDATA, "CDATA");
+        mTokenTypes.put(COMMENT, "COMMENT");
+        mTokenTypes.put(PROCESSING_INSTRUCTION, "PROCESSING_INSTRUCTION");
+        mTokenTypes.put(DTD, "DTD");
+        mTokenTypes.put(SPACE, "SPACE");
+        mTokenTypes.put(ENTITY_REFERENCE, "ENTITY_REFERENCE");
     }
 
     /**
@@ -239,26 +239,26 @@ public abstract class BaseStax2Test
     protected static boolean isNamespaceAware(XMLInputFactory f)
         throws XMLStreamException
     {
-        return ((Boolean) f.getProperty(XMLInputFactory.IS_NAMESPACE_AWARE)).booleanValue();
+        return (Boolean) f.getProperty(XMLInputFactory.IS_NAMESPACE_AWARE);
     }
 
     protected static void setCoalescing(XMLInputFactory f, boolean state)
         throws XMLStreamException
     {
-        f.setProperty(XMLInputFactory.IS_COALESCING, Boolean.valueOf(state));
+        f.setProperty(XMLInputFactory.IS_COALESCING, state);
     }
 
     protected static void setValidating(XMLInputFactory f, boolean state)
         throws XMLStreamException
     {
-        f.setProperty(XMLInputFactory.IS_VALIDATING, Boolean.valueOf(state));
+        f.setProperty(XMLInputFactory.IS_VALIDATING, state);
     }
 
     protected static boolean setSupportDTD(XMLInputFactory f, boolean state)
         throws XMLStreamException
     {
         try {
-            f.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.valueOf(state));
+            f.setProperty(XMLInputFactory.SUPPORT_DTD, state);
             return (willSupportDTD(f) == state);
         } catch (IllegalArgumentException e) {
             // Let's assume that the property (or specific value) is NOT supported...
@@ -269,7 +269,7 @@ public abstract class BaseStax2Test
     protected static boolean willSupportDTD(XMLInputFactory f)
         throws XMLStreamException
     {
-        return ((Boolean) f.getProperty(XMLInputFactory.SUPPORT_DTD)).booleanValue();
+        return (Boolean) f.getProperty(XMLInputFactory.SUPPORT_DTD);
     }
 
     protected static void setReplaceEntities(XMLInputFactory f, boolean state)
@@ -301,8 +301,7 @@ public abstract class BaseStax2Test
 
     protected static void setRepairing(XMLOutputFactory f, boolean state)
     {
-        f.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES,
-                      Boolean.valueOf(state));
+        f.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, state);
     }
 
     protected static boolean setNamespaceAware(XMLOutputFactory f, boolean state)
@@ -325,7 +324,7 @@ public abstract class BaseStax2Test
     protected static boolean isNamespaceAware(XMLOutputFactory f)
         throws XMLStreamException
     {
-        return ((Boolean) f.getProperty(XMLStreamProperties.XSP_NAMESPACE_AWARE)).booleanValue();
+        return (Boolean) f.getProperty(XMLStreamProperties.XSP_NAMESPACE_AWARE);
     }
 
     /*
@@ -430,8 +429,8 @@ public abstract class BaseStax2Test
 
     protected static String tokenTypeDesc(int tt)
     {
-	String desc = mTokenTypes.get(Integer.valueOf(tt));
-	return (desc == null) ? ("["+tt+"]") : desc;
+	    String desc = mTokenTypes.get(tt);
+	    return (desc == null) ? ("["+tt+"]") : desc;
     }
 
     protected static void assertTokenType(int expType, XMLEvent evt)
@@ -589,7 +588,7 @@ public abstract class BaseStax2Test
         String msg = e.getMessage();
         String lmsg = msg.toLowerCase();
         String lmatch = match.toLowerCase();
-        if (lmsg.indexOf(lmatch) < 0) {
+        if (!lmsg.contains(lmatch)) {
             fail("Expected an exception with sub-string \""+match+"\": got one with message \""+msg+"\"");
         }
     }
@@ -597,14 +596,8 @@ public abstract class BaseStax2Test
     protected static void validateWriter(final String DOC, final List<XMLValidationProblem> probs, XMLInputFactory f,
             XMLValidationSchema schema, StringWriter writer, XMLStreamWriter2 sw) throws XMLStreamException {
         sw.validateAgainst(schema);
-        final List<XMLValidationProblem> writerProbs = new ArrayList<XMLValidationProblem>();
-        sw.setValidationProblemHandler(new ValidationProblemHandler() {
-            
-            @Override
-            public void reportProblem(XMLValidationProblem problem) throws XMLValidationException {
-                writerProbs.add(problem);
-            }
-        });
+        final List<XMLValidationProblem> writerProbs = new ArrayList<>();
+        sw.setValidationProblemHandler(writerProbs::add);
         
         XMLStreamReader2 sr = (XMLStreamReader2)f.createXMLStreamReader(
                 new StringReader(DOC));
@@ -654,7 +647,7 @@ public abstract class BaseStax2Test
             return "_";
         }
         if (ch > 127 || ch < 32) {
-            StringBuffer sb = new StringBuffer(6);
+            StringBuilder sb = new StringBuilder(6);
             sb.append("\\u");
             String hex = Integer.toHexString(ch);
             for (int i = 0, len = 4 - hex.length(); i < len; i++) {
@@ -678,7 +671,7 @@ public abstract class BaseStax2Test
             return "\\t";
         }
         if (ch > 127 || ch < 32) {
-            StringBuffer sb = new StringBuffer(6);
+            StringBuilder sb = new StringBuilder(6);
             sb.append("\\u");
             String hex = Integer.toHexString(ch);
             for (int i = 0, len = 4 - hex.length(); i < len; i++) {
@@ -697,7 +690,7 @@ public abstract class BaseStax2Test
         }
 
         int len = str.length();
-        StringBuffer sb = new StringBuffer(len + 64);
+        StringBuilder sb = new StringBuilder(len + 64);
         for (int i = 0; i < len; ++i) {
             char c = str.charAt(i);
             String res = printable(c);
@@ -717,7 +710,7 @@ public abstract class BaseStax2Test
         }
 
         int len = str.length();
-        StringBuffer sb = new StringBuffer(len + 64);
+        StringBuilder sb = new StringBuilder(len + 64);
         for (int i = 0; i < len; ++i) {
             char c = str.charAt(i);
             String res = printableWithSpaces(c);

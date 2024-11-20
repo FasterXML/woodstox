@@ -37,7 +37,7 @@ public class TestBijectiveNsMap
         // and then let's mask it
         nsMap = nsMap.createChild();
         nsMap.addMapping("ns", "xyz");
-        assertEquals(0, nsMap.getPrefixesBoundToUri("abc", new ArrayList<String>()).size());
+        assertEquals(0, nsMap.getPrefixesBoundToUri("abc", new ArrayList<>()).size());
 
         // and finally, let's re-bind it
         nsMap = nsMap.createChild();

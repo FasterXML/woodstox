@@ -24,10 +24,10 @@ public class TestEventWriter
 
         XMLEventFactory evtf = getEventFactory();
 
-        ArrayList<Attribute> attrs = new ArrayList<Attribute>();
+        ArrayList<Attribute> attrs = new ArrayList<>();
         attrs.add(evtf.createAttribute("attr", "value"));
         attrs.add(evtf.createAttribute("ns", "uri", "attr2", "value2"));
-        ArrayList<Namespace> ns = new ArrayList<Namespace>();
+        ArrayList<Namespace> ns = new ArrayList<>();
         ns.add(evtf.createNamespace("ns", "uri"));
         StartElement elem = evtf.createStartElement("", "", "root", attrs.iterator(), ns.iterator());
         
@@ -137,7 +137,7 @@ public class TestEventWriter
 
     private <T> List<T> fetchElems(Iterator<T> it)
     {
-        ArrayList<T> l = new ArrayList<T>();
+        ArrayList<T> l = new ArrayList<>();
         while (it.hasNext()) {
             l.add(it.next());
         }
@@ -178,7 +178,7 @@ public class TestEventWriter
     private List<XMLEvent> collectEvents(XMLEventReader er)
         throws XMLStreamException
     {
-        ArrayList<XMLEvent> events = new ArrayList<XMLEvent>();
+        ArrayList<XMLEvent> events = new ArrayList<>();
         while (er.hasNext()) {
             events.add(er.nextEvent());
         }

@@ -24,14 +24,14 @@ public class BasicSaxTest
     public void testCData() throws Exception
     {
         SAXParser parser = new WstxSAXParser();
-        StringBuffer buffer = new StringBuffer("<root><![CDATA[");
+        StringBuilder builder = new StringBuilder("<root><![CDATA[");
         for (int i=0; i<100000; i++) {
-            buffer.append('a');
+            builder.append('a');
         }
-        buffer.append("]]></root>");
+        builder.append("]]></root>");
         CDATASectionCounter handler = new CDATASectionCounter();
         parser.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
-        parser.parse(new InputSource(new StringReader(buffer.toString())), handler);
+        parser.parse(new InputSource(new StringReader(builder.toString())), handler);
         // Should get as many cdata sections as text segments
         int cdatas = handler.getCDATASectionCount();
         int segments = handler.getSegmentCount();

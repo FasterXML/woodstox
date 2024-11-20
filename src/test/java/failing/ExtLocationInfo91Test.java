@@ -42,16 +42,13 @@ public class ExtLocationInfo91Test
     public void testLocationsWithExtEntity()
             throws XMLStreamException
     {
-        XMLResolver resolver = new XMLResolver() {
-            @Override
-            public Object resolveEntity(String publicID, String systemID, String baseURI, String namespace) throws XMLStreamException {
-                if (INCL_URI.equals(systemID)){
-                    StreamSource src = new StreamSource(new StringReader(TEST_EXT_ENT_INCL), systemID);
-                    return src;
-                }
-                fail("Unexpected systemID to resolve: " + systemID);
-                return null;
+        XMLResolver resolver = (publicID, systemID, baseURI, namespace) -> {
+            if (INCL_URI.equals(systemID)){
+                StreamSource src = new StreamSource(new StringReader(TEST_EXT_ENT_INCL), systemID);
+                return src;
             }
+            fail("Unexpected systemID to resolve: " + systemID);
+            return null;
         };
         XMLStreamReader2 sr = getReader(TEST_EXT_ENT, URI, resolver);
 

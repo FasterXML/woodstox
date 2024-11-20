@@ -40,16 +40,10 @@ public class TestInvalidAttributeValue190
         XMLStreamReader2 sr = (XMLStreamReader2)f.createXMLStreamReader(
                 new StringReader(DOC));
 
-        final List<XMLValidationProblem> probs = new ArrayList<XMLValidationProblem>();
+        final List<XMLValidationProblem> probs = new ArrayList<>();
         
         sr.validateAgainst(schema);
-        sr.setValidationProblemHandler(new ValidationProblemHandler() {
-            @Override
-            public void reportProblem(XMLValidationProblem problem)
-                    throws XMLValidationException {
-                probs.add(problem);
-            }
-        });
+        sr.setValidationProblemHandler(probs::add);
 
         assertTokenType(START_ELEMENT, sr.next());
         assertEquals("root", sr.getLocalName());

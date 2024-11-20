@@ -20,7 +20,7 @@ public class TestCharacterLimits
         try {
             Reader reader = createLongReader("", "", false);
             XMLInputFactory factory = getNewInputFactory();
-            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, Integer.valueOf(1000));
+            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, 1000);
             XMLStreamReader xmlreader = factory.createXMLStreamReader(reader);
             while (xmlreader.next() != XMLStreamReader.START_ELEMENT) {
             }
@@ -35,7 +35,7 @@ public class TestCharacterLimits
         try {
             Reader reader = createLongReader("", "", false);
             XMLInputFactory factory = getNewInputFactory();
-            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, Integer.valueOf(100000));
+            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, 100000);
             XMLStreamReader xmlreader = factory.createXMLStreamReader(reader);
             while (xmlreader.next() != XMLStreamReader.START_ELEMENT) {
             }
@@ -51,7 +51,7 @@ public class TestCharacterLimits
         try {
             Reader reader = createLongReader("", "", true);
             XMLInputFactory factory = getNewInputFactory();
-            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, Integer.valueOf(1000));
+            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, 1000);
             XMLStreamReader xmlreader = factory.createXMLStreamReader(reader);
             while (xmlreader.next() != XMLStreamReader.START_ELEMENT) {
             }
@@ -66,7 +66,7 @@ public class TestCharacterLimits
         try {
             Reader reader = createLongReader("", "", true);
             XMLInputFactory factory = getNewInputFactory();
-            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, Integer.valueOf(50000));
+            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, 50000);
             XMLStreamReader xmlreader = factory.createXMLStreamReader(reader);
             while (xmlreader.next() != XMLStreamReader.START_ELEMENT) {
             }
@@ -83,7 +83,7 @@ public class TestCharacterLimits
         try {
             Reader reader = createLongReader("<![CDATA[", "]]>", true);
             XMLInputFactory factory = getNewInputFactory();
-            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, Integer.valueOf(50000));
+            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, 50000);
             XMLStreamReader xmlreader = factory.createXMLStreamReader(reader);
             while (xmlreader.next() != XMLStreamReader.START_ELEMENT) {
             }
@@ -99,7 +99,7 @@ public class TestCharacterLimits
     public void testLongCDATANextTag() throws Exception {
         Reader reader = createLongReader("<![CDATA[", "]]>", true);
         XMLInputFactory factory = getNewInputFactory();
-        factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, Integer.valueOf(1000));
+        factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, 1000);
         XMLStreamReader xmlreader = factory.createXMLStreamReader(reader);
         try {
             int tokens = 0;
@@ -117,7 +117,7 @@ public class TestCharacterLimits
         try {
             Reader reader = createLongReader("<!--", "-->", true);
             XMLInputFactory factory = getNewInputFactory();
-            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, Integer.valueOf(1000));
+            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, 1000);
             XMLStreamReader xmlreader = factory.createXMLStreamReader(reader);
             while (xmlreader.next() != XMLStreamReader.COMMENT) {
             }
@@ -133,7 +133,7 @@ public class TestCharacterLimits
         try {
             Reader reader = createLongReader("<!--", "-->", true);
             XMLInputFactory factory = getNewInputFactory();
-            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, Integer.valueOf(1000));
+            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, 1000);
             XMLStreamReader xmlreader = factory.createXMLStreamReader(reader);
             while (xmlreader.next() != XMLStreamReader.COMMENT) {
             }
@@ -149,7 +149,7 @@ public class TestCharacterLimits
             Reader reader = createLongReader("<!--", "-->", true);
             XMLInputFactory factory = getNewInputFactory();
             factory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
-            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, Integer.valueOf(1000));
+            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, 1000);
             XMLStreamReader xmlreader = factory.createXMLStreamReader(reader);
             while (xmlreader.next() != XMLStreamReader.START_ELEMENT) {
             }
@@ -165,7 +165,7 @@ public class TestCharacterLimits
             Reader reader = createLongReader("", "", true);
             XMLInputFactory factory = getNewInputFactory();
             factory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
-            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, Integer.valueOf(1000));
+            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, 1000);
             XMLStreamReader xmlreader = factory.createXMLStreamReader(reader);
             while (xmlreader.next() != XMLStreamReader.START_ELEMENT) {
             }

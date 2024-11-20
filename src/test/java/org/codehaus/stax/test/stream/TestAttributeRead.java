@@ -476,7 +476,7 @@ public class TestAttributeRead
 
     private String get11AttrDoc()
     {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("<root");
         for (int i = 0; i < ATTR11_NAMES.length; ++i) {
             sb.append(' ');
