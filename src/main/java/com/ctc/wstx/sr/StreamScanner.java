@@ -93,48 +93,10 @@ public abstract class StreamScanner
      */
 
     /**
-     * We will only use validity array for first 256 characters, mostly
-     * because after those characters it's easier to do fairly simple
-     * block checks.
-     */
-    private final static int VALID_CHAR_COUNT = 0x100;
-
-    private final static byte NAME_CHAR_INVALID_B = (byte) 0;
-    private final static byte NAME_CHAR_ALL_VALID_B = (byte) 1;
-    private final static byte NAME_CHAR_VALID_NONFIRST_B = (byte) -1;
-
-    private final static byte[] sCharValidity = new byte[VALID_CHAR_COUNT];
-
-    static {
-        // First, since all valid-as-first chars are also valid-as-other chars,
-        // we'll initialize common chars:
-        sCharValidity['_'] = NAME_CHAR_ALL_VALID_B;
-        for (int i = 0, last = ('z' - 'a'); i <= last; ++i) {
-            sCharValidity['A' + i] = NAME_CHAR_ALL_VALID_B;
-            sCharValidity['a' + i] = NAME_CHAR_ALL_VALID_B;
-        }
-        for (int i = 0xC0; i < 0xF6; ++i) { // not all are fully valid, but
-            sCharValidity[i] = NAME_CHAR_ALL_VALID_B;
-        }
-        // ... now we can 'revert' ones not fully valid:
-        sCharValidity[0xD7] = NAME_CHAR_INVALID_B;
-        sCharValidity[0xF7] = NAME_CHAR_INVALID_B;
-
-        // And then we can proceed with ones only valid-as-other.
-        sCharValidity['-'] = NAME_CHAR_VALID_NONFIRST_B;
-        sCharValidity['.'] = NAME_CHAR_VALID_NONFIRST_B;
-        sCharValidity[0xB7] = NAME_CHAR_VALID_NONFIRST_B;
-        for (int i = '0'; i <= '9'; ++i) {
-            sCharValidity[i] = NAME_CHAR_VALID_NONFIRST_B;
-        }
-    }
-
-    /**
      * Public identifiers only use 7-bit ascii range.
      */
     private final static int VALID_PUBID_CHAR_COUNT = 0x80;
     private final static byte[] sPubidValidity = new byte[VALID_PUBID_CHAR_COUNT];
-//    private final static byte PUBID_CHAR_INVALID_B = (byte) 0;
     private final static byte PUBID_CHAR_VALID_B = (byte) 1;
     static {
         for (int i = 0, last = ('z' - 'a'); i <= last; ++i) {
@@ -401,7 +363,7 @@ public abstract class StreamScanner
         
         mCfgTreatCharRefsAsEntities = mConfig.willTreatCharRefsAsEnts();
         if (mCfgTreatCharRefsAsEntities) {
-            mCachedEntities = new HashMap<String,IntEntity>();
+            mCachedEntities = new HashMap<>();
         } else {
             mCachedEntities = Collections.emptyMap();
         }
@@ -500,7 +462,7 @@ public abstract class StreamScanner
         throws XMLStreamException
     {
         String msg = (arg == null && arg2 == null) ? format
-                : MessageFormat.format(format, new Object[] { arg, arg2 });
+                : MessageFormat.format(format, arg, arg2);
         throw constructWfcException(msg);
     }
 
@@ -510,7 +472,7 @@ public abstract class StreamScanner
         XMLReporter rep = mConfig.getXMLReporter();
         if (rep != null) {
             _reportProblem(rep, probType,
-                            MessageFormat.format(format, new Object[] { arg, arg2 }), null);
+                            MessageFormat.format(format, arg, arg2), null);
         }
     }
 
@@ -522,7 +484,7 @@ public abstract class StreamScanner
         XMLReporter rep = mConfig.getXMLReporter();
         if (rep != null) {
             String msg = (arg != null || arg2 != null) ?
-                MessageFormat.format(format, new Object[] { arg, arg2 }) : format;
+                MessageFormat.format(format, arg, arg2) : format;
             _reportProblem(rep, probType, msg, loc);
         }
     }
@@ -620,7 +582,7 @@ public abstract class StreamScanner
     public void reportValidationProblem(String format, Object arg, Object arg2)
         throws XMLStreamException
     {
-        reportValidationProblem(MessageFormat.format(format, new Object[] { arg, arg2 }));
+        reportValidationProblem(MessageFormat.format(format, arg, arg2));
     }
 
     /*
@@ -1520,7 +1482,7 @@ public abstract class StreamScanner
         char c = getNextCharFromCurrent(SUFFIX_IN_ENTITY_REF);
         // Do we have a (numeric) character entity reference?
         if (c == '#') { // numeric
-            final StringBuffer originalSurface = new StringBuffer("#");
+            final StringBuilder originalSurface = new StringBuilder("#");
             int ch = resolveCharEnt(originalSurface, true);
             if (mCfgTreatCharRefsAsEntities) {
                 final char[] originalChars = new char[originalSurface.length()];
@@ -1590,7 +1552,7 @@ public abstract class StreamScanner
             if (ch <= 0xFFFF) {
                 repl = Character.toString((char) ch);
             } else {
-                StringBuffer sb = new StringBuffer(2);
+                StringBuilder sb = new StringBuilder(2);
                 ch -= 0x10000;
                 sb.append((char) ((ch >> 10)  + 0xD800));
                 sb.append((char) ((ch & 0x3FF)  + 0xDC00));
@@ -2317,7 +2279,7 @@ public abstract class StreamScanner
     ///////////////////////////////////////////////////////////////////////
      */
 
-    private int resolveCharEnt(StringBuffer originalCharacters, boolean validateChar)
+    private int resolveCharEnt(StringBuilder originalCharacters, boolean validateChar)
         throws XMLStreamException
     {
         int value = 0;
