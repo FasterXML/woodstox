@@ -62,9 +62,9 @@ Most configuration is handled using standard Stax mechanism, property access via
 
 Names of properties available, including standard Stax 1.x ones, are documented in a series of blog posts:
 
-* [Stax 1.x](https://medium.com/@cowtowncoder/configuring-woodstox-xml-parser-basic-stax-properties-39bdf88c18ec) standard configuration properties
-* [Stax2 extension](https://medium.com/@cowtowncoder/configuring-woodstox-xml-parser-stax2-properties-c80ef5a32ef1) configuration properties
-* [Woodstox-specific](https://medium.com/@cowtowncoder/configuring-woodstox-xml-parser-woodstox-specific-properties-1ce5030a5173) configuration properties
+* [Stax 1.x](https://github.com/FasterXML/woodstox/wiki/Configuring-Woodstox-I-%E2%80%90-Basic-Stax-Properties) standard configuration properties
+* [Stax2 extension](https://github.com/FasterXML/woodstox/wiki/Configuring-Woodstox-II-%E2%80%90-Stax2-Properties) configuration properties
+* [Woodstox-specific](https://github.com/FasterXML/woodstox/wiki/Configuring-Woodstox-III-%E2%80%90-Woodstox%E2%80%90Specific-Properties) configuration properties
 
 ## Support
 
