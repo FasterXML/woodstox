@@ -12,7 +12,7 @@ import javax.xml.stream.XMLInputFactory;
  */
 public class InputConfigIterator
 {
-    final ArrayList<InputTestConfig> mConfigs = new ArrayList<InputTestConfig>();
+    final ArrayList<InputTestConfig> mConfigs = new ArrayList<>();
 
     /*
     /////////////////////////////////////////////////
@@ -46,8 +46,8 @@ public class InputConfigIterator
 
         // First need to initialize the factory with first settings:
         final int len = mConfigs.size();
-        for (int i = 0; i < len; ++i) {
-            mConfigs.get(i).nextConfig(f);
+        for (InputTestConfig mConfig : mConfigs) {
+            mConfig.nextConfig(f);
         }
 
         // And then the main iteration
@@ -89,7 +89,7 @@ public class InputConfigIterator
     public String toString()
     {
         int len = mConfigs.size();
-        StringBuffer sb = new StringBuffer(16 + (len << 4));
+        StringBuilder sb = new StringBuilder(16 + (len << 4));
         sb.append('(');
         sb.append(len);
         sb.append(") ");

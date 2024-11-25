@@ -67,7 +67,7 @@ public class TestGetSegmentedText
         /* Ok... let's just access all the text, by one char reads, from
          * possibly multiple events:
          */
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
           while (type == CHARACTERS) {
             char[] buf = new char[5];
             int offset = 0;
@@ -161,7 +161,7 @@ public class TestGetSegmentedText
                 assertTokenType(START_ELEMENT, sr.next());
                 int segCount = 0;
                 int totalLen = sExpResult.length();
-                StringBuffer totalBuf = new StringBuffer(totalLen);
+                StringBuilder totalBuf = new StringBuilder(totalLen);
 
                 /* Ok; for each segment let's test separately first,
                  * and then combine all the results together as well
@@ -175,7 +175,7 @@ public class TestGetSegmentedText
                     if (coalescing && segCount > 1) {
                         fail("Didn't expect multiple CHARACTERS segments when coalescing: first segment contained "+segOffset+" chars from the whole expected "+totalLen+" chars");
                     }
-                    StringBuffer sb = new StringBuffer();
+                    StringBuilder sb = new StringBuilder();
                     int count;
                     int offset = 0;
                     int readCount = 0;
@@ -254,7 +254,7 @@ public class TestGetSegmentedText
     private void initData()
         throws XMLStreamException
     {
-        StringBuffer sb = new StringBuffer("<?xml version='1.0'?>");
+        StringBuilder sb = new StringBuilder("<?xml version='1.0'?>");
         sb.append("<root>");
         
         /* Let's create a ~64kchar text segment for testing, first; and one
@@ -273,7 +273,7 @@ public class TestGetSegmentedText
         XMLInputFactory f = getFactory(true, false, true);
         XMLStreamReader sr = constructStreamReader(f, XML);
         assertTokenType(START_ELEMENT, sr.next());
-        StringBuffer sb2 = new StringBuffer(XML.length());
+        StringBuilder sb2 = new StringBuilder(XML.length());
         while (sr.next() == CHARACTERS) {
             sb2.append(sr.getText());
         }

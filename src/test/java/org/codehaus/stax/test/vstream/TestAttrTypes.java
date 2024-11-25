@@ -44,7 +44,7 @@ public class TestAttrTypes
         int count = sr.getAttributeCount();
         assertEquals(7, count);
 
-        HashMap<String,String> seen = new HashMap<String,String>();
+        HashMap<String,String> seen = new HashMap<>();
         for (int i = 0; i < count; ++i) {
             String name = sr.getAttributeLocalName(i);
             String value = sr.getAttributeValue(i);

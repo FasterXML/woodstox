@@ -58,7 +58,7 @@ public class TestEncodingDetection
         /* Let's first check a somewhat common case; figuring out UTF-16
          * encoded doc (which has to have BOM, thus); first, big-endian
          */
-        StringBuffer sb = new StringBuffer(XML);
+        StringBuilder sb = new StringBuilder(XML);
         sb.setCharAt(0, (char) 0xFEFF);
 
         byte[] b = getUtf16Bytes(sb.toString(), true);
@@ -94,9 +94,9 @@ public class TestEncodingDetection
             "037", "277", "278", "280", "284", "285", "297",
             "420", "424", "500", "870", "871", "918",
         };
- 
-        for (int i = 0; i < subtypes.length; ++i) {
-            String actEnc = ENC_EBCDIC_IN_PREFIX + subtypes[i];
+
+        for (String subtype : subtypes) {
+            String actEnc = ENC_EBCDIC_IN_PREFIX + subtype;
             String xml = "<?xml version='1.0' encoding='"+actEnc+"' ?>"
                 +"<root attr='123'>rock &amp; roll!<!-- comment --></root>";
             byte[] bytes = xml.getBytes(actEnc);
@@ -108,7 +108,7 @@ public class TestEncodingDetection
             assertEquals(actEnc, sr.getCharacterEncodingScheme());
             
             // Found encoding, though, can be changed
-            String expEnc = ENC_EBCDIC_OUT_PREFIX + subtypes[i];
+            String expEnc = ENC_EBCDIC_OUT_PREFIX + subtype;
             assertEquals(expEnc, sr.getEncoding());
             
             assertTokenType(START_ELEMENT, sr.next());

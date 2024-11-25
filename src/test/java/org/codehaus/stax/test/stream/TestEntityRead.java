@@ -37,7 +37,7 @@ public class TestEntityRead
         assertTokenType(CHARACTERS, sr.next());
 
         // Let's not count on coalescing working, though...
-        StringBuffer sb = new StringBuffer(getAndVerifyText(sr));
+        StringBuilder sb = new StringBuilder(getAndVerifyText(sr));
         int type;
 
         while ((type = sr.next()) == CHARACTERS) {
@@ -61,7 +61,7 @@ public class TestEntityRead
         assertTokenType(START_ELEMENT, sr.next());
         assertTokenType(CHARACTERS, sr.next());
         // may still be split, though (buggy coalescing)
-        StringBuffer sb = new StringBuffer(getAndVerifyText(sr));
+        StringBuilder sb = new StringBuilder(getAndVerifyText(sr));
         int type;
 
         while ((type = sr.next()) == CHARACTERS) {
@@ -85,7 +85,7 @@ public class TestEntityRead
     public void testValidSurrogatePairEntities()
             throws XMLStreamException
     {
-        final Map<String, String> xmlWithExp = new HashMap<String, String>();
+        final Map<String, String> xmlWithExp = new HashMap<>();
         // Numeric surrogate pairs
         xmlWithExp.put("<root>surrogate pair: &#55356;&#57221;.</root>",
                 "surrogate pair: \uD83C\uDF85.");
@@ -110,7 +110,7 @@ public class TestEntityRead
             assertTokenType(START_ELEMENT, sr.next());
             assertTokenType(CHARACTERS, sr.next());
             
-            StringBuffer sb = new StringBuffer(getAndVerifyText(sr));
+            StringBuilder sb = new StringBuilder(getAndVerifyText(sr));
             int type;
 
             while ((type = sr.next()) == CHARACTERS) {
@@ -665,11 +665,11 @@ public class TestEntityRead
                     break;
                 case 3:
                     method = "getNamespaceCount";
-                    result = Integer.valueOf(sr.getNamespaceCount());
+                    result = sr.getNamespaceCount();
                     break;
                 case 4:
                     method = "getAttributeCount";
-                    result = Integer.valueOf(sr.getAttributeCount());
+                    result = sr.getAttributeCount();
                     break;
                 case 5:
                     method = "getPITarget";
@@ -685,11 +685,11 @@ public class TestEntityRead
                     break;
                 case 8:
                     method = "getTextStart";
-                    result = Integer.valueOf(sr.getTextStart());
+                    result = sr.getTextStart();
                     break;
                 case 9:
                     method = "getTextLength";
-                    result = Integer.valueOf(sr.getTextLength());
+                    result = sr.getTextLength();
                     break;
                 }
                 fail("Expected IllegalArgumentException, when calling "

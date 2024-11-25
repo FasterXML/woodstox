@@ -22,19 +22,19 @@ public abstract class BaseWstxTest
     extends BaseStax2Test
     implements XMLStreamConstants
 {
-    final static HashMap<Integer,String> mTokenTypes = new HashMap<Integer,String>();
+    final static HashMap<Integer,String> mTokenTypes = new HashMap<>();
     static {
-        mTokenTypes.put(Integer.valueOf(START_ELEMENT), "START_ELEMENT");
-        mTokenTypes.put(Integer.valueOf(END_ELEMENT), "END_ELEMENT");
-        mTokenTypes.put(Integer.valueOf(START_DOCUMENT), "START_DOCUMENT");
-        mTokenTypes.put(Integer.valueOf(END_DOCUMENT), "END_DOCUMENT");
-        mTokenTypes.put(Integer.valueOf(CHARACTERS), "CHARACTERS");
-        mTokenTypes.put(Integer.valueOf(CDATA), "CDATA");
-        mTokenTypes.put(Integer.valueOf(COMMENT), "COMMENT");
-        mTokenTypes.put(Integer.valueOf(PROCESSING_INSTRUCTION), "PROCESSING_INSTRUCTION");
-        mTokenTypes.put(Integer.valueOf(DTD), "DTD");
-        mTokenTypes.put(Integer.valueOf(SPACE), "SPACE");
-        mTokenTypes.put(Integer.valueOf(ENTITY_REFERENCE), "ENTITY_REFERENCE");
+        mTokenTypes.put(START_ELEMENT, "START_ELEMENT");
+        mTokenTypes.put(END_ELEMENT, "END_ELEMENT");
+        mTokenTypes.put(START_DOCUMENT, "START_DOCUMENT");
+        mTokenTypes.put(END_DOCUMENT, "END_DOCUMENT");
+        mTokenTypes.put(CHARACTERS, "CHARACTERS");
+        mTokenTypes.put(CDATA, "CDATA");
+        mTokenTypes.put(COMMENT, "COMMENT");
+        mTokenTypes.put(PROCESSING_INSTRUCTION, "PROCESSING_INSTRUCTION");
+        mTokenTypes.put(DTD, "DTD");
+        mTokenTypes.put(SPACE, "SPACE");
+        mTokenTypes.put(ENTITY_REFERENCE, "ENTITY_REFERENCE");
     }
 
     /**
@@ -182,7 +182,7 @@ public abstract class BaseWstxTest
     protected static void setMinTextSegment(XMLInputFactory f, int len)
         throws XMLStreamException
     {
-        f.setProperty(WstxInputProperties.P_MIN_TEXT_SEGMENT, Integer.valueOf(len));
+        f.setProperty(WstxInputProperties.P_MIN_TEXT_SEGMENT, len);
     }
 
     /*
@@ -193,26 +193,22 @@ public abstract class BaseWstxTest
 
     protected static void setRepairing(XMLOutputFactory f, boolean state)
     {
-        f.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES,
-                      Boolean.valueOf(state));
+        f.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, state);
     }
 
     protected static void setValidateStructure(XMLOutputFactory f, boolean state)
     {
-        f.setProperty(WstxOutputProperties.P_OUTPUT_VALIDATE_STRUCTURE,
-                      Boolean.valueOf(state));
+        f.setProperty(WstxOutputProperties.P_OUTPUT_VALIDATE_STRUCTURE, state);
     }
 
     protected static void setValidateContent(XMLOutputFactory f, boolean state)
     {
-        f.setProperty(WstxOutputProperties.P_OUTPUT_VALIDATE_CONTENT,
-                      Boolean.valueOf(state));
+        f.setProperty(WstxOutputProperties.P_OUTPUT_VALIDATE_CONTENT, state);
     }
 
     protected static void setValidateNames(XMLOutputFactory f, boolean state)
     {
-        f.setProperty(WstxOutputProperties.P_OUTPUT_VALIDATE_NAMES,
-                      Boolean.valueOf(state));
+        f.setProperty(WstxOutputProperties.P_OUTPUT_VALIDATE_NAMES, state);
     }
 
     protected static void setValidateAll(XMLOutputFactory f, boolean state)
@@ -224,8 +220,7 @@ public abstract class BaseWstxTest
 
     protected static void setFixContent(XMLOutputFactory f, boolean state)
     {
-        f.setProperty(WstxOutputProperties.P_OUTPUT_FIX_CONTENT,
-                      Boolean.valueOf(state));
+        f.setProperty(WstxOutputProperties.P_OUTPUT_FIX_CONTENT, state);
     }
 
     /*
@@ -300,7 +295,7 @@ public abstract class BaseWstxTest
 
     protected static String tokenTypeDesc(int tt)
     {
-        String desc = mTokenTypes.get(Integer.valueOf(tt));
+        String desc = mTokenTypes.get(tt);
         return (desc == null) ? ("["+tt+"]") : desc;
     }
 
@@ -553,7 +548,7 @@ public abstract class BaseWstxTest
             return "\\t";
         }
         if (ch > 127 || ch < 32) {
-            StringBuffer sb = new StringBuffer(6);
+            StringBuilder sb = new StringBuilder(6);
             sb.append("\\u");
             String hex = Integer.toHexString((int)ch);
             for (int i = 0, len = 4 - hex.length(); i < len; i++) {
@@ -572,7 +567,7 @@ public abstract class BaseWstxTest
         }
 
         int len = str.length();
-        StringBuffer sb = new StringBuffer(len + 64);
+        StringBuilder sb = new StringBuilder(len + 64);
         for (int i = 0; i < len; ++i) {
             char c = str.charAt(i);
             String res = printable(c);
@@ -592,7 +587,7 @@ public abstract class BaseWstxTest
         }
 
         int len = str.length();
-        StringBuffer sb = new StringBuffer(len + 64);
+        StringBuilder sb = new StringBuilder(len + 64);
         for (int i = 0; i < len; ++i) {
             char c = str.charAt(i);
             String res = printableWithSpaces(c);

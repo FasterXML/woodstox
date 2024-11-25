@@ -78,8 +78,7 @@ public class TestStreamWriter
         XMLOutputFactory2 outf = getFactory(true, false);
         XMLInputFactory2 inf = getNewInputFactory();
 
-        for (int i = 0; i < encs.length; ++i) {
-            String enc = encs[i];
+        for (String enc : encs) {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             XMLStreamWriter sw = outf.createXMLStreamWriter(new OutputStreamWriter(os, enc));
             sw.writeStartDocument("1.0");
@@ -324,10 +323,8 @@ public class TestStreamWriter
         throws XMLStreamException
     {
         XMLOutputFactory2 f = getOutputFactory();
-        f.setProperty(XMLStreamProperties.XSP_NAMESPACE_AWARE,
-                      Boolean.valueOf(nsAware));
-        f.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES,
-                      Boolean.valueOf(repairing));
+        f.setProperty(XMLStreamProperties.XSP_NAMESPACE_AWARE, nsAware);
+        f.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, repairing);
         return f;
     }
 

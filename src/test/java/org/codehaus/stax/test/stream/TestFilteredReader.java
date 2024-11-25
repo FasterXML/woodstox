@@ -66,13 +66,8 @@ public class TestFilteredReader
 
     private StreamFilter getElementFilter(final String localName)
     {
-        return new StreamFilter() {
-            @Override
-            public boolean accept(XMLStreamReader r) {
-                    return r.getEventType() == XMLStreamConstants.START_ELEMENT &&
-                        r.getLocalName().equals(localName);
-                }
-            };
+        return r -> r.getEventType() == XMLStreamConstants.START_ELEMENT &&
+            r.getLocalName().equals(localName);
     }
     
     private XMLStreamReader createFilteredReader(StreamFilter filter, String content,

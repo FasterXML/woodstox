@@ -294,7 +294,7 @@ public class TestEventFactory
         final String NS_URI = "http://foo";
 
         XMLEventFactory f = getEventFactory();
-        ArrayList<Attribute> attrs = new ArrayList<Attribute>();
+        ArrayList<Attribute> attrs = new ArrayList<>();
         Attribute attr1 = f.createAttribute(new QName("attr1"), "value");
         testEventWritability(attr1);
         attrs.add(attr1);

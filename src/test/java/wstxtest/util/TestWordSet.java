@@ -18,7 +18,7 @@ public class TestWordSet
 
     public void testNormal()
     {
-        TreeSet<String> set = new TreeSet<String>();
+        TreeSet<String> set = new TreeSet<>();
 
         set.add("word");
         set.add("123");

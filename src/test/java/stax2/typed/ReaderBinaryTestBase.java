@@ -149,10 +149,8 @@ public abstract class ReaderBinaryTestBase
          */
         final int REPS = 3;
 
-        for (int bv = 0; bv < sBase64Variants.length; ++bv) {
-            Base64Variant b64variant = sBase64Variants[bv];
-            for (int x = 0; x < LEN_ELEM_MULTIPLE.length; ++x) {
-                int size = LEN_ELEM_MULTIPLE[x];
+        for (Base64Variant b64variant : sBase64Variants) {
+            for (int size : LEN_ELEM_MULTIPLE) {
                 Random r = new Random(size+1);
                 byte[][] dataTable = generateDataTable(r, size, REPS);
                 String doc = buildMultiElemDoc(b64variant, dataTable);
@@ -197,10 +195,9 @@ public abstract class ReaderBinaryTestBase
         /* 20-Nov-2008, tatus: Let's test all available base64
          *   variants too:
          */
-        for (int bv = 0; bv < sPaddingVariants.length; ++bv) {
-            Base64Variant b64variant = sPaddingVariants[bv];
-            StringBuffer b64 = new StringBuffer(data.length * 2);
-            
+        for (Base64Variant b64variant : sPaddingVariants) {
+            StringBuilder b64 = new StringBuilder(data.length * 2);
+
             /* Ok, first, let's first just generate long String of base64
              * data:
              */
@@ -223,8 +220,8 @@ public abstract class ReaderBinaryTestBase
                 _verifyElemData(sr, b64variant, r, data, byteLen, METHOD_FULL);
                 sr.close();
             }
-            
-            StringBuffer sb = new StringBuffer(b64.length() * 2);
+
+            StringBuilder sb = new StringBuilder(b64.length() * 2);
             sb.append("<root>");
             
             ptr = 0;
@@ -257,10 +254,8 @@ public abstract class ReaderBinaryTestBase
     private void _testBinaryElem(int readMethod, boolean addNoise)
         throws XMLStreamException
     {
-        for (int bv = 0; bv < sBase64Variants.length; ++bv) {
-            Base64Variant b64variant = sBase64Variants[bv];
-            for (int x = 0; x < LEN_ELEM.length; ++x) {
-                int size = LEN_ELEM[x];
+        for (Base64Variant b64variant : sBase64Variants) {
+            for (int size : LEN_ELEM) {
                 Random r = new Random(size);
                 byte[] data = generateData(r, size);
                 String doc = buildDoc(b64variant, r, data, addNoise);
@@ -386,10 +381,9 @@ public abstract class ReaderBinaryTestBase
 
         // Hmmh. Here we need to skip testing of non-padded variants...
         // (ideally would also test non-padding ones, but using different method)
-        for (int bv = 0; bv < sPaddingVariants.length; ++bv) {
-            Base64Variant b64variant = sPaddingVariants[bv];
-            for (int i = 0; i < INVALID_PADDING.length; ++i) {
-                String doc = "<root>"+INVALID_PADDING[i]+"</root>";
+        for (Base64Variant b64variant : sPaddingVariants) {
+            for (String invalidPadding : INVALID_PADDING) {
+                String doc = "<root>"+invalidPadding+"</root>";
                 XMLStreamReader2 sr = getElemReader(doc);
                 try {
                     /*int count = */ sr.readElementAsBinary(resultBuffer, 0, resultBuffer.length, b64variant);
@@ -416,10 +410,9 @@ public abstract class ReaderBinaryTestBase
         // Let's try out couple of arbitrary broken ones...
         final byte[] resultBuffer = new byte[20];
 
-        for (int bv = 0; bv < sBase64Variants.length; ++bv) {
-            Base64Variant b64variant = sBase64Variants[bv];
-            for (int i = 0; i < INVALID_WS.length; ++i) {
-                String doc = "<root>"+INVALID_WS[i]+"</root>";
+        for (Base64Variant b64variant : sBase64Variants) {
+            for (String invalidWhiteSpace : INVALID_WS) {
+                String doc = "<root>"+invalidWhiteSpace+"</root>";
                 XMLStreamReader2 sr = getElemReader(doc);
                 try {
                     /*int count = */ sr.readElementAsBinary(resultBuffer, 0, resultBuffer.length, b64variant);
@@ -437,10 +430,9 @@ public abstract class ReaderBinaryTestBase
     {
         final byte[] resultBuffer = new byte[20];
 
-        for (int bv = 0; bv < sBase64Variants.length; ++bv) {
-            Base64Variant b64variant = sBase64Variants[bv];
-            for (int i = 0; i < INVALID_WEIRD_CHARS.length; ++i) {
-                String doc = "<root>"+INVALID_WEIRD_CHARS[i]+"</root>";
+        for (Base64Variant b64variant : sBase64Variants) {
+            for (String invalidWeirdChar : INVALID_WEIRD_CHARS) {
+                String doc = "<root>"+invalidWeirdChar+"</root>";
                 XMLStreamReader2 sr = getElemReader(doc);
                 try {
                     /*int count = */ sr.readElementAsBinary(resultBuffer, 0, resultBuffer.length, b64variant);
@@ -462,8 +454,7 @@ public abstract class ReaderBinaryTestBase
         // plus also skip non-padded variants, for now
 
         // So first we'll encode 1 to 6 bytes as base64
-        for (int bv = 0; bv < sPaddingVariants.length; ++bv) {
-            Base64Variant b64variant = sPaddingVariants[bv];
+        for (Base64Variant b64variant : sPaddingVariants) {
             for (int i = 1; i <= data.length; ++i) {
                 AsciiValueEncoder enc = new ValueEncoderFactory().getEncoder(b64variant, data, 0, i);
                 char[] cbuf = new char[20];
@@ -472,7 +463,7 @@ public abstract class ReaderBinaryTestBase
                 // and use all byte last 1, 2 or 3 chars
                 for (int j = 1; j <= 3; ++j) {
                     int testLen = clen-j;
-                    StringBuffer sb = new StringBuffer();
+                    StringBuilder sb = new StringBuilder();
                     sb.append("<root>");
                     sb.append(cbuf, 0, testLen);
                     sb.append("</root>");
@@ -504,10 +495,8 @@ public abstract class ReaderBinaryTestBase
     {
         final int REPS = 3;
         for (int j = 0; j < REPS; ++j) {
-            for (int bv = 0; bv < sBase64Variants.length; ++bv) {
-                Base64Variant b64variant = sBase64Variants[bv];
-                for (int i = 0; i < LEN_ATTR.length; ++i) {
-                    int size = LEN_ATTR[i];
+            for (Base64Variant b64variant : sBase64Variants) {
+                for (int size : LEN_ATTR) {
                     byte[] data = generateData(new Random(size), size);
                     char[] buffer = new char[4 + (data.length * 3 / 2)];
                     AsciiValueEncoder enc = new ValueEncoderFactory().getEncoder(b64variant, data, 0, data.length);
@@ -546,11 +535,9 @@ public abstract class ReaderBinaryTestBase
         throws XMLStreamException
     {
         // Hmmh. Here we need to skip testing of non-padded variants...
-        for (int bv = 0; bv < sPaddingVariants.length; ++bv) {
-            Base64Variant b64variant = sPaddingVariants[bv];
-            
-            for (int i = 0; i < INVALID_PADDING.length; ++i) {
-                String doc = "<root attr='"+INVALID_PADDING[i]+"' />";
+        for (Base64Variant b64variant : sPaddingVariants) {
+            for (String invalidPadding : INVALID_PADDING) {
+                String doc = "<root attr='"+invalidPadding+"' />";
                 XMLStreamReader2 sr = getElemReader(doc);
                 try {
                     /*byte[] data = */ sr.getAttributeAsBinary(0, b64variant);
@@ -566,10 +553,9 @@ public abstract class ReaderBinaryTestBase
     public void testInvalidAttrWhitespace()
         throws XMLStreamException
     {
-        for (int bv = 0; bv < sBase64Variants.length; ++bv) {
-            Base64Variant b64variant = sBase64Variants[bv];
-            for (int i = 0; i < INVALID_WS.length; ++i) {
-                String doc = "<root x='"+INVALID_WS[i]+"' />";
+        for (Base64Variant b64variant : sBase64Variants) {
+            for (String invalidWhiteSpace : INVALID_WS) {
+                String doc = "<root x='"+invalidWhiteSpace+"' />";
                 XMLStreamReader2 sr = getElemReader(doc);
                 try {
                     /*byte[] data = */ sr.getAttributeAsBinary(0, b64variant);
@@ -585,10 +571,9 @@ public abstract class ReaderBinaryTestBase
     public void testInvalidAttrWeirdChars()
         throws XMLStreamException
     {
-        for (int bv = 0; bv < sBase64Variants.length; ++bv) {
-            Base64Variant b64variant = sBase64Variants[bv];
-            for (int i = 0; i < INVALID_WEIRD_CHARS.length; ++i) {
-                String doc = "<root abc='"+INVALID_WEIRD_CHARS[i]+"'/>";
+        for (Base64Variant b64variant : sBase64Variants) {
+            for (String invalidWeirdChar : INVALID_WEIRD_CHARS) {
+                String doc = "<root abc='"+invalidWeirdChar+"'/>";
                 XMLStreamReader2 sr = getElemReader(doc);
                 try {
                     /*byte[] data = */ sr.getAttributeAsBinary(0, b64variant);
@@ -608,8 +593,7 @@ public abstract class ReaderBinaryTestBase
         final byte[] data = new byte[6];
         // plus also skip non-padded variants, for now
 
-        for (int bv = 0; bv < sPaddingVariants.length; ++bv) {
-            Base64Variant b64variant = sPaddingVariants[bv];
+        for (Base64Variant b64variant : sPaddingVariants) {
 
             // So first we'll encode 1 to 6 bytes as base64
             for (int i = 1; i <= data.length; ++i) {
@@ -620,7 +604,7 @@ public abstract class ReaderBinaryTestBase
                 // and use all byte last 1, 2 or 3 chars
                 for (int j = 1; j <= 3; ++j) {
                     int testLen = clen-j;
-                    StringBuffer sb = new StringBuffer();
+                    StringBuilder sb = new StringBuilder();
                     sb.append("<root attr='").append(cbuf, 0, testLen).append("'/>");
                     XMLStreamReader2 sr = getElemReader(sb.toString());
                     try {
@@ -662,7 +646,7 @@ public abstract class ReaderBinaryTestBase
         // Let's use base64 codec from RI here:
         AsciiValueEncoder enc = new ValueEncoderFactory().getEncoder(b64variant, data, 0, data.length);
 
-        StringBuffer sb = new StringBuffer(data.length * 2);
+        StringBuilder sb = new StringBuilder(data.length * 2);
         sb.append("<root>");
 
         // Without noise it's quite easy, just need enough space:
@@ -723,10 +707,9 @@ public abstract class ReaderBinaryTestBase
 
     private String buildMultiElemDoc(Base64Variant b64variant, byte[][] dataTable)
     {
-        StringBuffer sb = new StringBuffer(16 + dataTable.length * dataTable[0].length);
+        StringBuilder sb = new StringBuilder(16 + dataTable.length * dataTable[0].length);
         sb.append("<root>");
-        for (int i = 0; i < dataTable.length; ++i) {
-            byte[] data = dataTable[i];
+        for (byte[] data : dataTable) {
             char[] buffer = new char[4 + (data.length * 3 / 2)];
             AsciiValueEncoder enc = new ValueEncoderFactory().getEncoder(b64variant, data, 0, data.length);
             int len = enc.encodeMore(buffer, 0, buffer.length);
