@@ -111,7 +111,7 @@ public final class DTDId
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer(60);
+        StringBuilder sb = new StringBuilder(60);
         sb.append("Public-id: ");
         sb.append(mPublicId);
         sb.append(", system-id: ");

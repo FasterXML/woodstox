@@ -220,7 +220,7 @@ public class WstxEventReader
         // ??? do we need to update mPrePeekEvent now
 
         String str = null;
-        StringBuffer sb = null;
+        StringBuilder sb = null;
 
         // Ok, fine, then just need to loop through and get all the text...
         for (; true; evt = nextEvent()) {
@@ -240,7 +240,7 @@ public class WstxEventReader
                 str = curr;
             } else {
                 if (sb == null) {
-                    sb = new StringBuffer(str.length() + curr.length());
+                    sb = new StringBuilder(str.length() + curr.length());
                     sb.append(str);
                 }
                 sb.append(curr);
