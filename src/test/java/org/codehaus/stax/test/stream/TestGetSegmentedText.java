@@ -196,7 +196,7 @@ public class TestGetSegmentedText
                     // Sanity check #2: and string buf should have it too
                     assertEquals
                         ("Expected segment #"+segOffset+" (one-based; read with "+readCount+" reads) to get "
-                         +expLen+" chars; StringBuffer only has "+sb.length(),
+                         +expLen+" chars; StringBuilder only has "+sb.length(),
                          expLen, sb.length());
 		    
                     totalBuf.append(sb);
