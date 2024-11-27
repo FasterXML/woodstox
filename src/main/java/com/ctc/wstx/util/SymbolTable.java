@@ -638,7 +638,7 @@ public class SymbolTable {
             Bucket b = oldBuckets[i];
             while (b != null) {
                 ++count;
-                String symbol = b.mSymbol;
+                String symbol = b.symbol;
                 int index = calcHash(symbol) & mIndexMask;
                 if (mSymbols[index] == null) {
                     mSymbols[index] = symbol;
@@ -646,7 +646,7 @@ public class SymbolTable {
                     int bix = index >> 1;
                     mBuckets[bix] = new Bucket(symbol, mBuckets[bix]);
                 }
-                b = b.mNext;
+                b = b.next;
             }
         }
 
@@ -676,7 +676,7 @@ public class SymbolTable {
             while (b != null) {
                 count += cost;
                 ++cost;
-                b = b.mNext;
+                b = b.next;
             }
         }
 
@@ -694,17 +694,17 @@ public class SymbolTable {
      * in a linked list.
      */
     private static final class Bucket {
-        final String mSymbol;
-        final Bucket mNext;
+        public final String symbol;
+        public final Bucket next;
 
         public Bucket(String symbol, Bucket next) {
-            mSymbol = symbol;
-            mNext = next;
+            this.symbol = symbol;
+            this.next = next;
         }
 
         public String find(char[] buf, int start, int len) {
-            String sym = mSymbol;
-            Bucket b = mNext;
+            String sym = symbol;
+            Bucket b = next;
 
             while (true) { // Inlined equality comparison:
                 if (sym.length() == len) {
@@ -721,15 +721,15 @@ public class SymbolTable {
                 if (b == null) {
                     break;
                 }
-                sym = b.mSymbol;
-                b = b.mNext;
+                sym = b.symbol;
+                b = b.next;
             }
             return null;
         }
 
         public String find(String str) {
-            String sym = mSymbol;
-            Bucket b = mNext;
+            String sym = symbol;
+            Bucket b = next;
 
             while (true) {
                 if (sym.equals(str)) {
@@ -738,8 +738,8 @@ public class SymbolTable {
                 if (b == null) {
                     break;
                 }
-                sym = b.mSymbol;
-                b = b.mNext;
+                sym = b.symbol;
+                b = b.next;
             }
             return null;
         }
