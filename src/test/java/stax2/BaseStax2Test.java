@@ -14,8 +14,6 @@ import org.codehaus.stax2.*;
 import org.codehaus.stax2.evt.*;
 
 import org.codehaus.stax2.ri.Stax2ReaderAdapter;
-import org.codehaus.stax2.validation.ValidationProblemHandler;
-import org.codehaus.stax2.validation.XMLValidationException;
 import org.codehaus.stax2.validation.XMLValidationProblem;
 import org.codehaus.stax2.validation.XMLValidationSchema;
 
