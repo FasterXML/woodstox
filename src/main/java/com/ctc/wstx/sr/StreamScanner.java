@@ -1120,9 +1120,9 @@ public abstract class StreamScanner
      * <ol>
      *  <li>Entity in question is a simple character entity (either one of
      *    5 pre-defined ones, or using decimal/hex notation), AND
-     *   <li>
+     *   </li>
      *  <li>Entity fits completely inside current input buffer.
-     *   <li>
+     *   </li>
      * </ol>
      * If so, character value of entity is returned. Character 0 is returned
      * otherwise; if so, caller needs to do full resolution.
