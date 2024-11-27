@@ -638,7 +638,7 @@ public class SymbolTable {
             Bucket b = oldBuckets[i];
             while (b != null) {
                 ++count;
-                String symbol = b.getSymbol();
+                String symbol = b.mSymbol;
                 int index = calcHash(symbol) & mIndexMask;
                 if (mSymbols[index] == null) {
                     mSymbols[index] = symbol;
@@ -646,7 +646,7 @@ public class SymbolTable {
                     int bix = index >> 1;
                     mBuckets[bix] = new Bucket(symbol, mBuckets[bix]);
                 }
-                b = b.getNext();
+                b = b.mNext;
             }
         }
 
@@ -676,7 +676,7 @@ public class SymbolTable {
             while (b != null) {
                 count += cost;
                 ++cost;
-                b = b.getNext();
+                b = b.mNext;
             }
         }
 
@@ -693,17 +693,14 @@ public class SymbolTable {
      * This class is a symbol table entry. Each entry acts as a node
      * in a linked list.
      */
-    static final class Bucket {
-        private final String mSymbol;
-        private final Bucket mNext;
+    private static final class Bucket {
+        final String mSymbol;
+        final Bucket mNext;
 
         public Bucket(String symbol, Bucket next) {
             mSymbol = symbol;
             mNext = next;
         }
-
-        public String getSymbol() { return mSymbol; }
-        public Bucket getNext() { return mNext; }
 
         public String find(char[] buf, int start, int len) {
             String sym = mSymbol;
@@ -724,8 +721,8 @@ public class SymbolTable {
                 if (b == null) {
                     break;
                 }
-                sym = b.getSymbol();
-                b = b.getNext();
+                sym = b.mSymbol;
+                b = b.mNext;
             }
             return null;
         }
@@ -741,8 +738,8 @@ public class SymbolTable {
                 if (b == null) {
                     break;
                 }
-                sym = b.getSymbol();
-                b = b.getNext();
+                sym = b.mSymbol;
+                b = b.mNext;
             }
             return null;
         }
