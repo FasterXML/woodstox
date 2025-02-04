@@ -52,21 +52,23 @@ public class WstxInputData
      */
     public final static int MAX_UNICODE_CHAR = 0x10FFFF;
 
-    private static final boolean[] asciiNameStartChars = new boolean[128];
+    // @since 7.1.1
+    private static final boolean[] ASCII_NAME_START_CHARS = new boolean[128];
     static {
-        IntStream.rangeClosed('a', 'z').forEach(i -> asciiNameStartChars[i] = true);
-        IntStream.rangeClosed('A', 'Z').forEach(i -> asciiNameStartChars[i] = true);
-        asciiNameStartChars['_'] = true;
+        IntStream.rangeClosed('a', 'z').forEach(i -> ASCII_NAME_START_CHARS[i] = true);
+        IntStream.rangeClosed('A', 'Z').forEach(i -> ASCII_NAME_START_CHARS[i] = true);
+        ASCII_NAME_START_CHARS['_'] = true;
     }
 
-    private static final boolean[] asciiNameChars = new boolean[128];
+    // @since 7.1.1
+    private static final boolean[] ASCII_NAME_CHARS = new boolean[128];
     static {
-        IntStream.rangeClosed('a', 'z').forEach(i -> asciiNameChars[i] = true);
-        IntStream.rangeClosed('A', 'Z').forEach(i -> asciiNameChars[i] = true);
-        IntStream.rangeClosed('0', '9').forEach(i -> asciiNameChars[i] = true);
-        asciiNameChars['.'] = true;
-        asciiNameChars['-'] = true;
-        asciiNameChars['_'] = true;
+        IntStream.rangeClosed('a', 'z').forEach(i -> ASCII_NAME_CHARS[i] = true);
+        IntStream.rangeClosed('A', 'Z').forEach(i -> ASCII_NAME_CHARS[i] = true);
+        IntStream.rangeClosed('0', '9').forEach(i -> ASCII_NAME_CHARS[i] = true);
+        ASCII_NAME_CHARS['.'] = true;
+        ASCII_NAME_CHARS['-'] = true;
+        ASCII_NAME_CHARS['_'] = true;
     }
 
     /*
@@ -174,7 +176,7 @@ public class WstxInputData
          */
         if (c < 128) {
             // this is performance critical, so we use a lookup table instead of if-branches
-            return asciiNameStartChars[c];
+            return ASCII_NAME_START_CHARS[c];
         }
         /* Ok, otherwise need to use a big honking bit sets... which
          * differ between 1.0 and 1.1
@@ -194,7 +196,7 @@ public class WstxInputData
         // First, let's handle 7-bit ascii range
         if (c < 128) {
             // this is performance critical, so we use a lookup table instead of if-branches
-            return asciiNameChars[c];
+            return ASCII_NAME_CHARS[c];
         }
         return mXml11 ? XmlChars.is11NameChar(c) : XmlChars.is10NameChar(c);
     }
