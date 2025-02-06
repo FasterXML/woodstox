@@ -370,7 +370,7 @@ public class TypedStreamReader
             while (true) {
                 type = next();
                 if (type == END_ELEMENT) {
-                    // Simple... no textul content
+                    // Simple... no textual content
                     return -1;
                 }
                 if (type == COMMENT || type == PROCESSING_INSTRUCTION) {

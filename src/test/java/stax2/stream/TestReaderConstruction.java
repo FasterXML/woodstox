@@ -86,11 +86,11 @@ public class TestReaderConstruction
 	    byte[] b = orig.clone();
         verifyXML(ifact.createXMLStreamReader(new Stax2ByteArraySource(b, 0, b.length)), "ByteArraySource");
 
-	// Also: let's check that non-0 offset works...
-	final int OFFSET = 29;
-	final int DOCLEN  = b.length;
-	byte[] b2 = new byte[OFFSET + DOCLEN + 50];
-	System.arraycopy(b, 0, b2, OFFSET, DOCLEN);
+        // Also: let's check that non-0 offset works...
+        final int OFFSET = 29;
+        final int DOCLEN  = b.length;
+        byte[] b2 = new byte[OFFSET + DOCLEN + 50];
+        System.arraycopy(b, 0, b2, OFFSET, DOCLEN);
         verifyXML(ifact.createXMLStreamReader(new Stax2ByteArraySource(b2, OFFSET, DOCLEN)), "ByteArraySource");
     }
 
