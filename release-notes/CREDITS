@@ -116,3 +116,8 @@ Philipp Nanz (@philippn)
  (7.1.0)
 * Contributed #211: Disable `resolveEntityReferences` by default for newly created SAX parsers
  (7.1.0)
+
+Winfried Gerlach (@winfriedgerlach)
+
+* Contributed #220: Switch to lookup tables in hotspots `isNameChar()`/`isNameStartChar()`
+ (7.1.1)

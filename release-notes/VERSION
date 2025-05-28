@@ -9,6 +9,8 @@ Project: woodstox
 #213: SAX: `Locator#getSystemId` and `Locator#getPublicId` are not
   available during `startDocument` event
  (fix contributed by Philipp N)
+#220: Switch to lookup tables in hotspots `isNameChar()`/`isNameStartChar()`
+ (contributed by @winfriedgerlach)
 
 7.1.0 (22-Oct-2024)
 

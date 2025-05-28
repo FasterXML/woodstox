@@ -17,6 +17,8 @@ package com.ctc.wstx.io;
 
 import com.ctc.wstx.util.XmlChars;
 
+import java.util.stream.IntStream;
+
 /**
  * Base class used by readers (specifically, by
  * {@link com.ctc.wstx.sr.StreamScanner}, and its sub-classes)
@@ -49,6 +51,25 @@ public class WstxInputData
      * in XML content.
      */
     public final static int MAX_UNICODE_CHAR = 0x10FFFF;
+
+    // @since 7.1.1
+    private static final boolean[] ASCII_NAME_START_CHARS = new boolean[128];
+    static {
+        IntStream.rangeClosed('a', 'z').forEach(i -> ASCII_NAME_START_CHARS[i] = true);
+        IntStream.rangeClosed('A', 'Z').forEach(i -> ASCII_NAME_START_CHARS[i] = true);
+        ASCII_NAME_START_CHARS['_'] = true;
+    }
+
+    // @since 7.1.1
+    private static final boolean[] ASCII_NAME_CHARS = new boolean[128];
+    static {
+        IntStream.rangeClosed('a', 'z').forEach(i -> ASCII_NAME_CHARS[i] = true);
+        IntStream.rangeClosed('A', 'Z').forEach(i -> ASCII_NAME_CHARS[i] = true);
+        IntStream.rangeClosed('0', '9').forEach(i -> ASCII_NAME_CHARS[i] = true);
+        ASCII_NAME_CHARS['.'] = true;
+        ASCII_NAME_CHARS['-'] = true;
+        ASCII_NAME_CHARS['_'] = true;
+    }
 
     /*
     ////////////////////////////////////////////////////
@@ -153,14 +174,9 @@ public class WstxInputData
         /* First, let's handle 7-bit ascii range (identical between xml
          * 1.0 and 1.1)
          */
-        if (c <= 0x7A) { // 'z' or earlier
-            if (c >= 0x61) { // 'a' - 'z' are ok
-                return true;
-            }
-            if (c < 0x41) { // before 'A' just white space
-                return false;
-            }
-            return (c <= 0x5A) || (c == '_'); // 'A' - 'Z' and '_' are ok
+        if (c < 128) {
+            // this is performance critical, so we use a lookup table instead of if-branches
+            return ASCII_NAME_START_CHARS[c];
         }
         /* Ok, otherwise need to use a big honking bit sets... which
          * differ between 1.0 and 1.1
@@ -178,18 +194,9 @@ public class WstxInputData
     protected final boolean isNameChar(char c)
     {
         // First, let's handle 7-bit ascii range
-        if (c <= 0x7A) { // 'z' or earlier
-            if (c >= 0x61) { // 'a' - 'z' are ok
-                return true;
-            }
-            if (c <= 0x5A) {
-                if (c >= 0x41) { // 'A' - 'Z' ok too
-                    return true;
-                }
-                // As are 0-9, '.' and '-'
-                return (c >= 0x30 && c <= 0x39) || (c == '.') || (c == '-');
-            }
-            return (c == 0x5F); // '_' is ok too
+        if (c < 128) {
+            // this is performance critical, so we use a lookup table instead of if-branches
+            return ASCII_NAME_CHARS[c];
         }
         return mXml11 ? XmlChars.is11NameChar(c) : XmlChars.is10NameChar(c);
     }
