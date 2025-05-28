@@ -1,7 +1,7 @@
 package com.ctc.wstx.util;
 
 /**
- * Data container similar {@link java.util.List} (from storage perspective),
+ * Data container similar to {@link java.util.List} (from storage perspective),
  * but that can be used in multiple ways. For some uses it acts more like
  * type-safe String list/vector; for others as order associative list of
  * String-to-String mappings.
