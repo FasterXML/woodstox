@@ -84,6 +84,13 @@ public class TestStringVector
 
     public void testGrowArray()
     {
+        try {
+            new StringVector(0);
+            fail("Should have thrown IllegalArgumentException for StringVector with internal length of zero");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
         StringVector sv = new StringVector(2);
 
         // Initial size is 2, so we can add two elements without growing
