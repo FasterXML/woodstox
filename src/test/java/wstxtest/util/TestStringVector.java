@@ -34,4 +34,71 @@ public class TestStringVector
         sv.clear(true);
         assertEquals(0, sv.size());
     }
+
+    public void testGetString()
+    {
+        StringVector sv = new StringVector(2);
+
+        try {
+            sv.getString(-1);
+            fail("Should have thrown IllegalArgumentException for negative index");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        try {
+            sv.getString(0);
+            fail("Should have thrown IllegalArgumentException for index 0 in empty vector");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        sv.addString("foo");
+        assertEquals("foo", sv.getString(0));
+
+        try {
+            sv.getString(1);
+            fail("Should have thrown IllegalArgumentException for index 1 in vector with size 1");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
+
+    public void testGetLastString()
+    {
+        StringVector sv = new StringVector(2);
+
+        try {
+            sv.getLastString();
+            fail("Should have thrown IllegalStateException for empty vector");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+
+        sv.addString("foo");
+        assertEquals("foo", sv.getLastString());
+
+        sv.addString("bar");
+        assertEquals("bar", sv.getLastString());
+    }
+
+    public void testGrowArray()
+    {
+        StringVector sv = new StringVector(2);
+
+        // Initial size is 2, so we can add two elements without growing
+        sv.addString("foo");
+        sv.addString("bar");
+        assertEquals(2, sv.getInternalArray().length);
+
+        // Adding a third element triples the array size
+        sv.addString("baz");
+        assertEquals(6, sv.getInternalArray().length);
+        assertEquals("baz", sv.getString(2));
+
+        // Adding more elements should continue to work without growing the array
+        sv.addString("qux");
+        assertEquals(6, sv.getInternalArray().length);
+        assertEquals("qux", sv.getString(3));
+    }
 }
