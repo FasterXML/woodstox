@@ -753,7 +753,6 @@ public final class AttributeCollector
          */
         int amapLen = mAttrMap.length;
         int[] amap = new int[amapLen];
-        // TODO: JDK 1.6 has Arrays.copyOf(), should use with Woodstox 6
         System.arraycopy(mAttrMap, 0, amap, 0, amapLen);
         return new ElemAttrs(raw, mNonDefCount,
                              amap, mAttrHashSize, mAttrSpillEnd);
