@@ -4,6 +4,10 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+Not yet released
+
+- Branch "master" renamed as "main"
+
 7.1.1 (28-May-2025)
 
 #213: SAX: `Locator#getSystemId` and `Locator#getPublicId` are not
