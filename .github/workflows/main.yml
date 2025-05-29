@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: 'ubuntu-22.04'
+    runs-on: 'ubuntu-latest'
     strategy:
       fail-fast: false
       matrix:
@@ -32,7 +32,7 @@ jobs:
         distribution: 'temurin'
         java-version: ${{ matrix.java_version }}
         cache: 'maven'
-        server-id: sonatype-nexus-snapshots
+        server-id: central-snapshots
         server-username: CI_DEPLOY_USERNAME
         server-password: CI_DEPLOY_PASSWORD
     - name: Build
@@ -45,5 +45,5 @@ jobs:
       uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        file: ./target/site/jacoco/jacoco.xml
+        files: ./target/site/jacoco/jacoco.xml
         flags: unittests

@@ -11,6 +11,7 @@ Project: woodstox
  (fix contributed by Philipp N)
 #220: Switch to lookup tables in hotspots `isNameChar()`/`isNameStartChar()`
  (contributed by @winfriedgerlach)
+- Update to `oss-parent` v68 to switch to Central Portal publishing
 
 7.1.0 (22-Oct-2024)
 

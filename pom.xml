@@ -4,7 +4,7 @@
     <parent>
       <groupId>com.fasterxml</groupId>
       <artifactId>oss-parent</artifactId>
-      <version>61</version>
+      <version>68</version>
     </parent>
 
     <groupId>com.fasterxml.woodstox</groupId>
@@ -235,7 +235,8 @@ SAX2 and Stax2 APIs
            https://github.com/stephenc/git-timestamp-maven-plugin/blob/master/pom.xml#L327-L337
 
                to simplify releases. I hope.
-          -->
+        -->
+	<!-- 28-May-2025, tatu: No longer used/needed; can remove soon
 	<plugin>
             <groupId>org.sonatype.plugins</groupId>
             <artifactId>nexus-staging-maven-plugin</artifactId>
@@ -244,11 +245,16 @@ SAX2 and Stax2 APIs
             <configuration>
               <serverId>sonatype-nexus-staging</serverId>
               <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-              <!-- 12-Oct-2019, tatu: Found this from output of mvn:relase -->
               <stagingProfileId>b34f19b9cc6224</stagingProfileId>
             </configuration>
-        </plugin>
+          </plugin>
+	  -->
 
+        <plugin>
+          <groupId>org.sonatype.central</groupId>
+          <artifactId>central-publishing-maven-plugin</artifactId>
+        </plugin>
+	  
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
@@ -433,61 +439,5 @@ SAX2 and Stax2 APIs
             </plugin>
         </plugins>
     </reporting>
-
-  <profiles>
-      <!-- @GedMarc 20190717 - Because of shading cannot use a legitimate module file - must be dynamically built up like above-->
-
-   <!-- <profile>
-      <id>moditect</id>
-      <properties>
-        &lt;!&ndash; Not only do we need JDK 9+, must target later JDK too &ndash;&gt;
-        <java.version>1.9</java.version>
-      </properties>
-      <dependencies>
-	<dependency>
-            <groupId>net.java.dev.msv</groupId>
-            <artifactId>msv-rngconverter</artifactId>
-            <version>${version.msv}</version>
-            <scope>provided</scope>
-            <optional>true</optional>
-            <exclusions>
-	      &lt;!&ndash; 12-Mar-2019, tatu: xercesImpl causes heartburn to Moditect/jdeps so... &ndash;&gt;
-              <exclusion>
-		<groupId>xerces</groupId>
-		<artifactId>xercesImpl</artifactId>
-              </exclusion>
-            </exclusions>
-	</dependency>
-      </dependencies>
-      <build>
-	<plugins>
-	  <plugin>
-	    <groupId>org.moditect</groupId>
-	    <artifactId>moditect-maven-plugin</artifactId>
-	    <executions>
-	      <execution>
-		<id>generate-module-info</id>
-		<phase>generate-sources</phase>
-		<goals>
-		  <goal>generate-module-info</goal>
-		</goals>
-		<configuration>
-		  <modules>
-		    <module>
-		      <artifact>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>${project.artifactId}</artifactId>
-                        <version>${project.version}</version>
-		      </artifact>
-		    </module>
-		  </modules>
-		</configuration>
-	      </execution>
-	    </executions>
-	  </plugin>
-	</plugins>
-      </build>
-    </profile>-->
-  </profiles>
 
 </project>
