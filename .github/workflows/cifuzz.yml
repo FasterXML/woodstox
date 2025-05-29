@@ -1,5 +1,7 @@
 name: CIFuzz
-on: [pull_request]
+# 28-May-2025, tatu: Broken, comment out
+# on: [pull_request]
+on: [workflow_dispatch]
 
 permissions:
   contents: read
