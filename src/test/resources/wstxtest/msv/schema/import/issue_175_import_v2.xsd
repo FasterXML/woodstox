@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+		xmlns:imprt="http://www.example.org/issue_175_import"
+		targetNamespace="http://www.example.org/issue_175_import" 
+	    xmlns:tns="http://www.example.org/issue_175_import" 
+	    elementFormDefault="qualified"
+	    version="2">
+	    	    
+	<xsd:attribute name="XmlVersion">
+	  <xsd:simpleType>
+	  	<xsd:restriction base="xsd:string">
+	  		<xsd:pattern value="[0-9]{1}" />
+	  	</xsd:restriction>
+	  </xsd:simpleType>
+	</xsd:attribute>
+		    
+	<xsd:attributeGroup name="AttribGroup">
+		<xsd:attribute ref="imprt:Attrib1" use="required" />
+		<xsd:attribute ref="imprt:Attrib2" use="required" />		
+		<xsd:attribute ref="imprt:Attrib4" use="required" />
+	</xsd:attributeGroup>
+	
+	<xsd:attribute name="Attrib1" type="xsd:string" />
+	<xsd:attribute name="Attrib2" type="xsd:string" />		
+	<xsd:attribute name="Attrib3" type="xsd:boolean"/>
+	<xsd:attribute name="Attrib4" type="xsd:boolean"/>
+	<xsd:attribute name="Attrib5" type="xsd:string"/>	
+</xsd:schema>
