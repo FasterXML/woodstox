@@ -25,10 +25,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 
+import org.codehaus.stax2.validation.XMLValidationSchema;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
+import org.xml.sax.EntityResolver;
 import org.xml.sax.Locator;
 
 import com.sun.msv.grammar.ExpressionPool;
@@ -41,8 +42,6 @@ import com.sun.msv.reader.xmlschema.MultiSchemaReader;
 import com.sun.msv.reader.xmlschema.SchemaState;
 import com.sun.msv.reader.xmlschema.WSDLGrammarReaderController;
 import com.sun.msv.reader.xmlschema.XMLSchemaReader;
-
-import org.codehaus.stax2.validation.XMLValidationSchema;
 
 /**
  * This is a StAX2 schema factory that can parse and create schema instances
@@ -66,7 +65,8 @@ import org.codehaus.stax2.validation.XMLValidationSchema;
 public class W3CMultiSchemaFactory
 {
     private final SAXParserFactory parserFactory;
-
+    private EntityResolver entityResolver;
+    
     public W3CMultiSchemaFactory() {
         parserFactory = SAXParserFactory.newInstance();
         parserFactory.setNamespaceAware(true); 
@@ -125,7 +125,7 @@ public class W3CMultiSchemaFactory
         }
 
     }
-
+    
     /**
      * Creates an XMLValidateSchema that can be used to validate XML instances against
      * any of the schemas defined in the Map of schemaSources.
@@ -136,6 +136,20 @@ public class W3CMultiSchemaFactory
     public XMLValidationSchema createSchema(String baseURI,
             Map<String, Source> schemaSources) throws XMLStreamException
     {
+    	return createSchema(baseURI, schemaSources, this.entityResolver);
+    }
+    
+    /**
+     * Creates an XMLValidateSchema that can be used to validate XML instances against
+     * any of the schemas defined in the Map of schemaSources.
+     *
+     * @param baseURI Base URI for resolving dependant schemas
+     * @param schemaSources Map of schemas, namespace to Source
+     * @param entityResolver Entity resolver used to resolve path to unknown schemas
+     */
+    public XMLValidationSchema createSchema(String baseURI,
+            Map<String, Source> schemaSources, EntityResolver entityResolver) throws XMLStreamException
+    {    	
         Map<String, EmbeddedSchema> embeddedSources = new HashMap<String, EmbeddedSchema>();
         for (Map.Entry<String, Source> source : schemaSources.entrySet()) {
             if (source.getValue() instanceof DOMSource) {
@@ -150,7 +164,9 @@ public class W3CMultiSchemaFactory
             }
         }
         
-        WSDLGrammarReaderController ctrl = new WSDLGrammarReaderController(null, baseURI, embeddedSources);
+        final WSDLGrammarReaderController ctrl = new WSDLGrammarReaderController(null, baseURI, embeddedSources);
+       	ctrl.setEntityResolver(entityResolver);
+        
         final RecursiveAllowedXMLSchemaReader xmlSchemaReader = new RecursiveAllowedXMLSchemaReader(ctrl, parserFactory);
         final MultiSchemaReader multiSchemaReader = new MultiSchemaReader(xmlSchemaReader);
         for (Source source : schemaSources.values()) {
@@ -164,4 +180,10 @@ public class W3CMultiSchemaFactory
         return new W3CSchema(grammar);
     }
 
+    public W3CMultiSchemaFactory setEntityResolver(EntityResolver entityResolver)
+    {
+    	this.entityResolver = entityResolver;
+    	
+    	return this;
+    }    
 }
