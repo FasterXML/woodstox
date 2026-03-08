@@ -19,6 +19,10 @@ public final class StringVector
      */
 
     public StringVector(int initialCount) {
+        if (initialCount == 0) {
+            // StringVectors of internal size 0 can't grow, so they are not allowed
+            throw new IllegalArgumentException("Initial count cannot be zero");
+        }
         mStrings = new String[initialCount];
     }
 
