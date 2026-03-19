@@ -474,7 +474,7 @@ public abstract class BaseNsStreamWriter
         throws XMLStreamException
     {
         if (mVldException != null) {
-            throw new XMLStreamException("Cannot start an element after a validation error", mVldException);
+            throw new XMLStreamException("Cannot write after a validation error", mVldException);
         }
         // Need to finish an open start element?
         if (mStartElementOpen) {
@@ -637,7 +637,7 @@ public abstract class BaseNsStreamWriter
 
         // Better have something to close... (to figure out what to close)
         if (mVldException != null) {
-            throw new XMLStreamException("Cannot start an element after a validation error", mVldException);
+            throw new XMLStreamException("Cannot write after a validation error", mVldException);
         } else if (mState != STATE_TREE) {
             // Have to always throw exception... don't necessarily know the name
             reportNwfStructure("No open start element, when trying to write end element");
