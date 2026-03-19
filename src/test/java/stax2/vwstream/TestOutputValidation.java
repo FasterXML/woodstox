@@ -145,8 +145,9 @@ public class TestOutputValidation
 
             XMLStreamWriter2 sw = getDTDValidatingWriter(strw, dtdStr, nsAware, repairing);
             sw.writeStartElement("root");
+            sw.writeStartElement("leaf");
             try {
-                sw.writeStartElement("leaf");
+                sw.writeEndElement();
                 fail(modeDesc+" Expected a validation exception when trying to add an element into EMPTY content model");
             } catch (XMLValidationException vex) {
                 assertMessageContains(vex, "Validation error, encountered element <leaf> as a child of <root>: No elements allowed in pure #PCDATA content model");
@@ -156,8 +157,9 @@ public class TestOutputValidation
             // Then with an empty child
             sw = getDTDValidatingWriter(strw, dtdStr, nsAware, repairing);
             sw.writeStartElement("root");
+            sw.writeEmptyElement("leaf");
             try {
-                sw.writeEmptyElement("leaf");
+                sw.writeEndElement();
                 fail(modeDesc+" Expected a validation exception when trying to add an element into EMPTY content model");
             } catch (XMLValidationException vex) {
                 assertMessageContains(vex, "Validation error, encountered element <leaf> as a child of <root>: No elements allowed in pure #PCDATA content model");
@@ -307,8 +309,9 @@ public class TestOutputValidation
              * may be redundant to some degree)
              */
             sw.writeStartElement("root");
+            sw.writeStartElement("unknown");
             try {
-                sw.writeStartElement("unknown");
+                sw.writeEndElement();
                 fail(modeDesc+" Expected a validation exception when trying to add an undeclared element");
             } catch (XMLValidationException vex) {
                 assertMessageContains(vex, "Undefined element <unknown> encountered");
@@ -318,8 +321,9 @@ public class TestOutputValidation
             // undecl attr:
             sw = getDTDValidatingWriter(strw, dtdStr, nsAware, repairing);
             sw.writeStartElement("root");
+            sw.writeAttribute("unknown", "value");
             try {
-                sw.writeAttribute("unknown", "value");
+                sw.writeEndElement();
                 fail(modeDesc+" Expected a validation exception when trying to add an undeclared attribute");
             } catch (XMLValidationException vex) {
                 assertMessageContains(vex, "Element <root> has no attribute \"unknown\"");
