@@ -455,12 +455,20 @@ public class NonNsStreamWriter
 
     @Override
     public String getAttributeValue(String nsURI, String localName) {
-        return mAttrMap == null ? null : mAttrMap.get(localName).mValue;
+        if (mAttrMap == null) {
+            return null;
+        }
+        Attribute attr = mAttrMap.get(localName);
+        return attr == null ? null : attr.mValue;
     }
 
     @Override
     public int findAttributeIndex(String nsURI, String localName) {
-        return mAttrMap == null ? null : mAttrMap.get(localName).mIndex;
+        if (mAttrMap == null) {
+            return -1;
+        }
+        Attribute attr = mAttrMap.get(localName);
+        return attr == null ? -1 : attr.mIndex;
     }
 
     @Override

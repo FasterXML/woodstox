@@ -1,5 +1,4 @@
 package wstxtest.vstream;
-// ^^^ Move under "wstxtest/msv" once passing
 
 import java.io.StringReader;
 import java.io.StringWriter;
