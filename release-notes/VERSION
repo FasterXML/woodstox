@@ -4,6 +4,26 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+Not yet released
+
+- Branch "master" renamed as "main"
+
+7.1.1 (28-May-2025)
+
+#213: SAX: `Locator#getSystemId` and `Locator#getPublicId` are not
+  available during `startDocument` event
+ (fix contributed by Philipp N)
+#220: Switch to lookup tables in hotspots `isNameChar()`/`isNameStartChar()`
+ (contributed by @winfriedgerlach)
+- Update to `oss-parent` v68 to switch to Central Portal publishing
+
+7.1.0 (22-Oct-2024)
+
+#209: SAXParser: Add support for `LexicalHandler.startEntity()` and `.endEntity()`
+ (contributed by Philipp N)
+#211: Disable `resolveEntityReferences` by default for newly created SAX parsers
+ (contributed by Philipp N)
+
 7.0.0 (21-Jun-2024)
 
 #134: Increase JDK baseline to Java 8

@@ -20,7 +20,7 @@ public class TestBasic
         BundleContext ctxt = (BundleContext) Proxy.newProxyInstance(BundleContext.class.getClassLoader(), new Class[] { BundleContext.class }, h);
         WstxBundleActivator act = new WstxBundleActivator();
 
-        // won't prove much... but at least there's noo fundamental flaw:
+        // won't prove much... but at least there's no fundamental flaw:
         act.start(ctxt);
     }
 

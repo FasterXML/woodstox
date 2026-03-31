@@ -105,8 +105,7 @@ public abstract class WriterTestBase
             0, 3, -9, 999, -77, 1000000000, -1000000000,
             Integer.MIN_VALUE, Integer.MAX_VALUE
         };
-        for (int i = 0; i < values.length; ++i) {
-            int value = values[i];
+        for (int value : values) {
             assertXML("<root>"+value+"</root>", writeIntElemDoc("root", value));
         }
     }
@@ -118,8 +117,7 @@ public abstract class WriterTestBase
             0, 3, -7, 123, -102, 1000000, -999999,
             Integer.MIN_VALUE, Integer.MAX_VALUE
         };
-        for (int i = 0; i < values.length; ++i) {
-            int value = values[i];
+        for (int value : values) {
             assertXML("<a attr='"+value+"'></a>", writeIntAttrDoc("a", "attr", value));
         }
     }
@@ -165,8 +163,7 @@ public abstract class WriterTestBase
             -987654321098765423L,
             Long.MIN_VALUE, Long.MAX_VALUE
         };
-        for (int i = 0; i < values.length; ++i) {
-            long value = values[i];
+        for (long value : values) {
             assertXML("<root>"+value+"</root>", writeLongElemDoc("root", value));
         }
     }
@@ -180,8 +177,7 @@ public abstract class WriterTestBase
             -987654321098765423L,
             Long.MIN_VALUE, Long.MAX_VALUE
         };
-        for (int i = 0; i < values.length; ++i) {
-            long value = values[i];
+        for (long value : values) {
             assertXML("<a attr='"+value+"'></a>", writeLongAttrDoc("a", "attr", value));
         }
     }
@@ -226,8 +222,7 @@ public abstract class WriterTestBase
             Float.MIN_VALUE, Float.MAX_VALUE,
             Float.NaN, Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY
         };
-        for (int i = 0; i < values.length; ++i) {
-            float value = values[i];
+        for (float value : values) {
             assertXML("<root>"+value+"</root>", writeFloatElemDoc("root", value));
         }
     }
@@ -240,8 +235,7 @@ public abstract class WriterTestBase
             Float.MIN_VALUE, Float.MAX_VALUE,
             Float.NaN, Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY
         };
-        for (int i = 0; i < values.length; ++i) {
-            float value = values[i];
+        for (float value : values) {
             assertXML("<a attr='"+value+"'></a>", writeFloatAttrDoc("a", "attr", value));
         }
     }
@@ -254,8 +248,7 @@ public abstract class WriterTestBase
             Double.MIN_VALUE, Double.MAX_VALUE,
             Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY
         };
-        for (int i = 0; i < values.length; ++i) {
-            double value = values[i];
+        for (double value : values) {
             assertXML("<root>"+value+"</root>", writeDoubleElemDoc("root", value));
         }
     }
@@ -268,8 +261,7 @@ public abstract class WriterTestBase
             Double.MIN_VALUE, Double.MAX_VALUE,
             Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY
         };
-        for (int i = 0; i < values.length; ++i) {
-            double value = values[i];
+        for (double value : values) {
             assertXML("<a attr='"+value+"'></a>", writeDoubleAttrDoc("a", "attr", value));
         }
     }

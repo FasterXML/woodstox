@@ -28,7 +28,7 @@ public class TestStartElementEvent
             +"</a>";
         XMLEventReader er = XML_F.createXMLEventReader(new StringReader(DOC));
 
-        ArrayList<StartElement> elemEvents = new ArrayList<StartElement>();
+        ArrayList<StartElement> elemEvents = new ArrayList<>();
 
         assertTokenType(START_DOCUMENT, er.nextEvent());
         XMLEvent evt = er.nextEvent();
@@ -97,7 +97,7 @@ public class TestStartElementEvent
         Iterator<?> it = start.getAttributes();
         @SuppressWarnings("unused")
         int count = 0;
-        Map<QName,String> attrs = new HashMap<QName,String>();
+        Map<QName,String> attrs = new HashMap<>();
 
         // First, collect the attributes
         while (it.hasNext()) {
@@ -109,11 +109,7 @@ public class TestStartElementEvent
         assertEquals(expCount, attrs.size());
 
         // Then verify we can access them ok
-        //for (Map.Entry<QName,String> en : attrs) {
-
-        Iterator<Map.Entry<QName,String>> it2 = attrs.entrySet().iterator();
-        while (it2.hasNext()) {
-            Map.Entry<QName,String> en = it2.next();
+        for (Map.Entry<QName,String> en : attrs.entrySet()) {
             QName key = en.getKey();
             String value = en.getValue();
 

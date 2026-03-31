@@ -102,7 +102,7 @@ public class TestContentValidation
                 XMLStreamReader sr = getReader(output);
                 assertTokenType(START_ELEMENT, sr.next());
                 assertTokenType(COMMENT, sr.next());
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 sb.append(getAndVerifyText(sr));
                 
                 // May get another one too...?
@@ -222,7 +222,7 @@ public class TestContentValidation
                     int type = sr.next();
                     
                     assertTokenType(CDATA, type);
-                    StringBuffer sb = new StringBuffer();
+                    StringBuilder sb = new StringBuilder();
                     sb.append(getAndVerifyText(sr));
                     
                     // Should be getting one or more segments...

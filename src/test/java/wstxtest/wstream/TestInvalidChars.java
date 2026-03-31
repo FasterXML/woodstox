@@ -20,7 +20,7 @@ public class TestInvalidChars
 {
     final static String INVALID_TEXT = "\u0003";
 
-    final static Character REPL_CHAR = Character.valueOf('*');
+    final static Character REPL_CHAR = '*';
 
     // // First let's verify that we do catch problematic chars
 
@@ -153,7 +153,7 @@ public class TestInvalidChars
     }
 
     private void verifyValidReplacement(int evtType, XMLStreamWriter sw, String doc, boolean strict) {
-        if (doc.indexOf(REPL_CHAR.charValue()) < 0) { // no replacement...
+        if (doc.indexOf(REPL_CHAR) < 0) { // no replacement...
             handleFailure(sw,
                     "Failed to replace invalid char, event " + tokenTypeDesc(evtType) + ", xml = '" + doc + "'",
                     strict);
@@ -206,7 +206,7 @@ public class TestInvalidChars
         setRepairing(f, false);
         setValidateContent(f, true);
         f.setProperty(WstxOutputProperties.P_OUTPUT_INVALID_CHAR_HANDLER,
-                (replChar == null) ? null : new InvalidCharHandler.ReplacingHandler(replChar.charValue()));
+                (replChar == null) ? null : new InvalidCharHandler.ReplacingHandler(replChar));
         return f;
     }
 }

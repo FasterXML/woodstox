@@ -117,7 +117,7 @@ public abstract class BaseStreamTest
             type = sr.next();
         } while ((type == SPACE) || (type == DTD));
         
-        StringBuffer act = new StringBuffer(1000);
+        StringBuilder act = new StringBuilder(1000);
         int count = 0;
 
         do {

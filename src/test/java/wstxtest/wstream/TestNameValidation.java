@@ -72,21 +72,18 @@ public class TestNameValidation
                 /* Note: when not repairing, need not worry about
                  * namespace binding... makes life easier here
                  */
-                for (int i = 0; i < VALID_NS_NAMES.length; ++i) {
-                    String name = VALID_NS_NAMES[i];
+                for (String name : VALID_NS_NAMES) {
                     sw.writeEmptyElement(name);
                     sw.writeStartElement(name);
                     sw.writeEndElement();
                 }
-                for (int i = 0; i < VALID_NS_PREFIXES.length; ++i) {
-                    String prefix = VALID_NS_PREFIXES[i];
+                for (String prefix : VALID_NS_PREFIXES) {
                     sw.writeEmptyElement(prefix, "elem", DUMMY_URL);
                     sw.writeStartElement(prefix, "elem", DUMMY_URL);
                     sw.writeEndElement();
                 }
             } else {
-                for (int i = 0; i < VALID_NON_NS_NAMES.length; ++i) {
-                    String name = VALID_NON_NS_NAMES[i];
+                for (String name : VALID_NON_NS_NAMES) {
                     sw.writeEmptyElement(name);
                     sw.writeStartElement(name);
                     sw.writeEndElement();
@@ -104,17 +101,14 @@ public class TestNameValidation
         for (int n = 0; n < 2; ++n) {
             boolean ns = (n == 1);
             if (ns) { // need to check both prefixes and names
-                for (int i = 0; i < INVALID_NS_NAMES.length; ++i) {
-                    String name = INVALID_NS_NAMES[i];
-                    for (int j = 0; j < INVALID_NS_PREFIXES.length; ++j) {
-                        String prefix = INVALID_NS_PREFIXES[j];
+                for (String name : INVALID_NS_NAMES) {
+                    for (String prefix : INVALID_NS_PREFIXES) {
                         doTestInvalidElemName(true, prefix, name);
                         doTestInvalidElemName(true, null, name);
                     }
                 }
             } else {
-                for (int i = 0; i < INVALID_NON_NS_NAMES.length; ++i) {
-                    String name = INVALID_NON_NS_NAMES[i];
+                for (String name : INVALID_NON_NS_NAMES) {
                     doTestInvalidElemName(false, null, name);
                 }
             }
@@ -236,17 +230,14 @@ public class TestNameValidation
             sw.writeStartElement("dummy");
 
             if (ns) {
-                for (int i = 0; i < VALID_NS_NAMES.length; ++i) {
-                    String name = VALID_NS_NAMES[i];
+                for (String name : VALID_NS_NAMES) {
                     sw.writeAttribute(name, ATTR_VALUE);
                 }
-                for (int i = 0; i < VALID_NS_PREFIXES.length; ++i) {
-                    String prefix = VALID_NS_PREFIXES[i];
+                for (String prefix : VALID_NS_PREFIXES) {
                     sw.writeAttribute(prefix, DUMMY_URL, "attr", ATTR_VALUE);
                 }
             } else {
-                for (int i = 0; i < VALID_NON_NS_NAMES.length; ++i) {
-                    String name = VALID_NON_NS_NAMES[i];
+                for (String name : VALID_NON_NS_NAMES) {
                     sw.writeAttribute(name, ATTR_VALUE);
                 }
             }
@@ -262,17 +253,14 @@ public class TestNameValidation
         for (int n = 0; n < 2; ++n) {
             boolean ns = (n == 1);
             if (ns) { // need to check both prefixes and names
-                for (int i = 0; i < INVALID_NS_NAMES.length; ++i) {
-                    String name = INVALID_NS_NAMES[i];
-                    for (int j = 0; j < INVALID_NS_PREFIXES.length; ++j) {
-                        String prefix = INVALID_NS_PREFIXES[j];
+                for (String name : INVALID_NS_NAMES) {
+                    for (String prefix : INVALID_NS_PREFIXES) {
                         doTestInvalidAttrName(true, prefix, name);
                         doTestInvalidAttrName(true, null, name);
                     }
                 }
             } else {
-                for (int i = 0; i < INVALID_NON_NS_NAMES.length; ++i) {
-                    String name = INVALID_NON_NS_NAMES[i];
+                for (String name : INVALID_NON_NS_NAMES) {
                     doTestInvalidAttrName(false, null, name);
                 }
             }
@@ -319,8 +307,7 @@ public class TestNameValidation
             /* No colons allowed in namespace-aware mode
              */
             String[] strs = ns ? VALID_NS_NAMES : VALID_NON_NS_NAMES;
-            for (int i = 0; i < strs.length; ++i) {
-                String name = strs[i];
+            for (String name : strs) {
                 sw.writeProcessingInstruction(name);
                 sw.writeProcessingInstruction(name, PI_DATA);
             }
@@ -338,11 +325,9 @@ public class TestNameValidation
             boolean empty = ((n & 2) == 0);
             String[] strs = ns ? INVALID_NS_NAMES : INVALID_NON_NS_NAMES;
 
-            for (int i = 0; i < strs.length; ++i) {
-                String name = strs[i];
+            for (String name : strs) {
                 XMLStreamWriter sw = startDoc(true, ns);
                 sw.writeStartElement("dummy");
-
 
                 try {
                     if (empty) {
@@ -375,9 +360,8 @@ public class TestNameValidation
             boolean validate = ((n & 2) == 0);
 
             String[] strs = ns ? VALID_NS_ROOT_NAMES : VALID_NON_NS_NAMES;
-            for (int i = 0; i < strs.length; ++i) {
-                XMLStreamWriter2 sw = (XMLStreamWriter2)startDoc(validate, ns);
-                String rootName = strs[i];
+            for (String rootName : strs) {
+                XMLStreamWriter2 sw = (XMLStreamWriter2) startDoc(validate, ns);
                 // only root name is mandatory, others are optional
                 sw.writeDTD(rootName, null, null, null);
                 // need a matching root, then:
@@ -405,9 +389,8 @@ public class TestNameValidation
             boolean ns = ((n & 1) == 0);
             String[] strs = ns ? INVALID_NS_ROOT_NAMES : INVALID_NON_NS_NAMES;
 
-            for (int i = 0; i < strs.length; ++i) {
-                String rootName = strs[i];
-                XMLStreamWriter2 sw = (XMLStreamWriter2)startDoc(true, ns);
+            for (String rootName : strs) {
+                XMLStreamWriter2 sw = (XMLStreamWriter2) startDoc(true, ns);
                 try {
                     // only root name is mandatory, others are optional
                     sw.writeDTD(rootName, null, null, null);
@@ -444,8 +427,7 @@ public class TestNameValidation
             /* No colons allowed in namespace-aware mode
              */
             String[] strs = ns ? VALID_NS_NAMES : VALID_NON_NS_NAMES;
-            for (int i = 0; i < strs.length; ++i) {
-                String name = strs[i];
+            for (String name : strs) {
                 sw.writeEntityRef(name);
             }
 
@@ -461,9 +443,8 @@ public class TestNameValidation
             boolean ns = ((n & 1) == 0);
             String[] strs = ns ? INVALID_NS_ROOT_NAMES : INVALID_NON_NS_NAMES;
 
-            for (int i = 0; i < strs.length; ++i) {
-                String name = strs[i];
-                XMLStreamWriter2 sw = (XMLStreamWriter2)startDoc(true, ns);
+            for (String name : strs) {
+                XMLStreamWriter2 sw = (XMLStreamWriter2) startDoc(true, ns);
                 sw.writeStartElement("dummy");
                 try {
                     // only root name is mandatory, others are optional

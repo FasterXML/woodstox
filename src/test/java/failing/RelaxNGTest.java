@@ -112,7 +112,7 @@ public class RelaxNGTest
 	      } catch (XMLValidationException vex) {
 	          String origMsg = vex.getMessage();
 	          String msg = (origMsg == null) ? "" : origMsg.toLowerCase();
-	          if (msg.indexOf(failPhrase.toLowerCase()) < 0) {
+	          if (!msg.contains(failPhrase.toLowerCase())) {
 			String actualMsg = "Expected validation exception for "+failMsg+", containing phrase '"+failPhrase+"': got '"+origMsg+"'";
 			if (strict) {
 			    fail(actualMsg);

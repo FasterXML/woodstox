@@ -11,8 +11,8 @@ public class TestAttrBasic
         throws XMLStreamException
     {
         String[] LFs = new String[] { "\n", "\r", "\r\n" };
-        for (int i = 0; i < LFs.length; ++i) {
-            XMLStreamReader sr = constructNsStreamReader("<root attr='"+LFs[i]+"' />", true);
+        for (String lf : LFs) {
+            XMLStreamReader sr = constructNsStreamReader("<root attr='"+lf+"' />", true);
             assertTokenType(START_DOCUMENT, sr.getEventType());
             assertTokenType(START_ELEMENT, sr.next());
             assertEquals(1, sr.getAttributeCount());

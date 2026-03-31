@@ -210,11 +210,11 @@ public class TestDoctypeDecl
                     break;
                 case 4:
                     method = "getNamespaceCount";
-                    result = Integer.valueOf(sr.getNamespaceCount());
+                    result = sr.getNamespaceCount();
                     break;
                 case 5:
                     method = "getAttributeCount";
-                    result = Integer.valueOf(sr.getAttributeCount());
+                    result = sr.getAttributeCount();
                     break;
                 case 6:
                     method = "getPITarget";
@@ -230,11 +230,11 @@ public class TestDoctypeDecl
                     break;
                 case 9:
                     method = "getTextStart";
-                    result = Integer.valueOf(sr.getTextStart());
+                    result = sr.getTextStart();
                     break;
                 case 10:
                     method = "getTextLength";
-                    result = Integer.valueOf(sr.getTextLength());
+                    result = sr.getTextLength();
                     break;
                 }
                 fail("Expected IllegalStateException, when calling "

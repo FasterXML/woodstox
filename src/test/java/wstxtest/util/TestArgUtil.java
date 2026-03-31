@@ -24,7 +24,7 @@ public class TestArgUtil
 
         // and then errors:
         try {
-            /*boolean b =*/ ArgUtil.convertToBoolean("test", Integer.valueOf(0));
+            /*boolean b =*/ ArgUtil.convertToBoolean("test", 0);
             fail("Expected an IllegalArgumentException");
         } catch (IllegalArgumentException iae) { }
 
@@ -37,14 +37,14 @@ public class TestArgUtil
     public void testInt()
     {
         assertEquals(14, ArgUtil.convertToInt("test", "14", 0));
-        assertEquals(14, ArgUtil.convertToInt("test", Integer.valueOf(14), 0));
-        assertEquals(14, ArgUtil.convertToInt("test", Long.valueOf(14L), 0));
-        assertEquals(14, ArgUtil.convertToInt("test", Short.valueOf((short) 14), 0));
-        assertEquals(14, ArgUtil.convertToInt("test", Byte.valueOf((byte) 14), 0));
+        assertEquals(14, ArgUtil.convertToInt("test", 14, 0));
+        assertEquals(14, ArgUtil.convertToInt("test", 14L, 0));
+        assertEquals(14, ArgUtil.convertToInt("test", (short) 14, 0));
+        assertEquals(14, ArgUtil.convertToInt("test", (byte) 14, 0));
 
         // and then errors:
         try {
-            /*int x =*/ ArgUtil.convertToInt("test", new HashMap<Object,Object>(), 0);
+            /*int x =*/ ArgUtil.convertToInt("test", new HashMap<>(), 0);
             fail("Expected an IllegalArgumentException");
         } catch (IllegalArgumentException iae) { }
 

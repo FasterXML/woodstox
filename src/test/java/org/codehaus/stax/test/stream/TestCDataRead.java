@@ -14,8 +14,8 @@ public class TestCDataRead
     final static String CDATA1;
     final static String CDATA2;
     static {
-        StringBuffer sb1 = new StringBuffer(8000);
-        StringBuffer sb2 = new StringBuffer(8000);
+        StringBuilder sb1 = new StringBuilder(8000);
+        StringBuilder sb2 = new StringBuilder(8000);
 
         sb1.append("...");
         sb2.append("\n \n\n ");
@@ -92,7 +92,7 @@ public class TestCDataRead
                          CDATA, type);
         }
 
-        StringBuffer sb = new StringBuffer(16000);
+        StringBuilder sb = new StringBuilder(16000);
         do {
             sb.append(getAndVerifyText(sr));
             type = sr.next();
@@ -144,7 +144,7 @@ public class TestCDataRead
             XMLStreamReader sr = getReader(XML, coal);
             assertTokenType(START_ELEMENT, sr.next());
             // Ok, now should get an exception...
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             int type = -1;
             try {
                 while (true) {

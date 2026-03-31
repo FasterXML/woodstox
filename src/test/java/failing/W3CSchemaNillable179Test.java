@@ -110,12 +110,8 @@ public class W3CSchemaNillable179Test
             xmlReader = (XMLStreamReader2) f.createXMLStreamReader(new StringReader(xmlDocument));
 
             if (validateReader) {
-                xmlReader.setValidationProblemHandler(new ValidationProblemHandler() {
-                    @Override
-                    public void reportProblem(XMLValidationProblem problem)
-                            throws XMLValidationException {
-                        throw new LocalValidationError(problem);
-                    }
+                xmlReader.setValidationProblemHandler(problem -> {
+                    throw new LocalValidationError(problem);
                 });
                 xmlReader.validateAgainst(schema);
             }
@@ -123,12 +119,8 @@ public class W3CSchemaNillable179Test
             xmlWriter = (XMLStreamWriter2) getOutputFactory().createXMLStreamWriter(writer);
             
             if (validateWriter) {
-                xmlWriter.setValidationProblemHandler(new ValidationProblemHandler() {
-                    @Override
-                    public void reportProblem(XMLValidationProblem problem)
-                            throws XMLValidationException {
-                        throw new LocalValidationError(problem);
-                    }
+                xmlWriter.setValidationProblemHandler(problem -> {
+                    throw new LocalValidationError(problem);
                 });
                 xmlWriter.validateAgainst(schema);
             }

@@ -57,7 +57,7 @@ public class TestLocation
         final int ROWS = 1000;
 
         // First, let's create xml doc:
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("<a>");
         Random r = new Random(SEED);
         for (int i = 0; i < ROWS; ++i) {
@@ -107,7 +107,7 @@ public class TestLocation
             assertEquals(col, loc.getColumnNumber());
             assertEquals(chars, loc.getCharacterOffset());
 
-            sb = new StringBuffer();
+            sb = new StringBuilder();
             boolean offByOne = false;
             switch (r.nextInt() % 3) {
             case 1:
@@ -275,7 +275,7 @@ public class TestLocation
     public List<String> doTestCommentLocation(String input, boolean supportDtd)
             throws XMLStreamException
     {
-    	List<String> lstLineData = new ArrayList<String>();
+    	List<String> lstLineData = new ArrayList<>();
     	Reader reader = new StringReader(input);
 
         // Force woodstox factory instance

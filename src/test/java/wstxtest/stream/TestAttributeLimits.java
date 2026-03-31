@@ -16,7 +16,7 @@ public class TestAttributeLimits extends BaseStreamTest
     {
         final int max = 100;
         XMLInputFactory factory = getNewInputFactory();
-        factory.setProperty(WstxInputProperties.P_MAX_ATTRIBUTES_PER_ELEMENT, Integer.valueOf(50));
+        factory.setProperty(WstxInputProperties.P_MAX_ATTRIBUTES_PER_ELEMENT, 50);
         Reader reader = new Reader() {
             StringReader sreader = new StringReader("<ns:element xmlns:ns=\"http://foo.com\"");
             int count;
@@ -133,7 +133,7 @@ public class TestAttributeLimits extends BaseStreamTest
         };
         try {
             XMLInputFactory factory = getNewInputFactory();
-            factory.setProperty(WstxInputProperties.P_MAX_ATTRIBUTE_SIZE, Integer.valueOf(100));
+            factory.setProperty(WstxInputProperties.P_MAX_ATTRIBUTE_SIZE, 100);
             XMLStreamReader xmlreader = factory.createXMLStreamReader(reader);
             while (xmlreader.next() != XMLStreamReader.END_DOCUMENT) {
             }

@@ -42,10 +42,9 @@ public class TestEscaping
     {
         // Let's try out 2 main encoding types:
         String[] ENC = new String[] { "UTF-8", "ISO-8859-1", "US-ASCII" };
-        for (int encIx = 0; encIx < ENC.length; ++encIx) {
+        for (String enc : ENC) {
             // And 3 writer types:
             for (int type = 0; type < 3; ++type) {
-                String enc = ENC[encIx];
                 XMLOutputFactory2 f = getFactory(type, escaping);
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 XMLStreamWriter sw = f.createXMLStreamWriter(out, enc);

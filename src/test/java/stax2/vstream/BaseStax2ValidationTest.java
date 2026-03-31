@@ -73,7 +73,7 @@ public abstract class BaseStax2ValidationTest
         } catch (XMLValidationException vex) {
             String origMsg = vex.getMessage();
             String msg = (origMsg == null) ? "" : origMsg.toLowerCase();
-            if (msg.indexOf(failPhrase.toLowerCase()) < 0) {
+            if (!msg.contains(failPhrase.toLowerCase())) {
                 String actualMsg = "Expected validation exception for "
                     + failMsg + ", containing phrase '" + failPhrase
                     + "': got '" + origMsg + "'";

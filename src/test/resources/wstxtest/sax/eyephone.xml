@@ -1,0 +1,18 @@
+<!DOCTYPE product-info PUBLIC "-//Woodstox//DTD Sample V1.0//EN" "productinfo_v1.dtd">
+<product-info>
+    <meta>
+        <prodname>eyePhone&copyright; 2.0</prodname>
+        <company>MomCorp</company>
+        <prodtype>mobile phone</prodtype>
+        <source>http://theinfosphere.org/EyePhone</source>
+    </meta>
+    <!-- This is a comment -->
+    <description>
+        <para>The <b>eyePhone</b> is a new type of mobile phones released by MomCorp and one of the
+            products of Mom Store in 3010. It is called an eyePhone because it is located in the
+            eyes of its users and displays a screen in front of them. The eyePhone has a lot of
+            applications, such as Twit and can even make phone calls. Soon, everyone became addicted
+            to their new eyePhones, and Mom activated a Twit-worm so that she could have between 1
+            and 2 million zombies buying the machine's "upgraded" version, the eyePhone 2.0.</para>
+    </description>
+</product-info>

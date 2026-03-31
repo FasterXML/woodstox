@@ -22,17 +22,17 @@ public class TestDataUtil
     {
         // First, no match:
 
-        Collection<Object> c1 = new HashSet<Object>();
+        Collection<Object> c1 = new HashSet<>();
         c1.add("foo");
         c1.add(new String("bar"));
-        Collection<Object> c2 = new ArrayList<Object>();
+        Collection<Object> c2 = new ArrayList<>();
         c2.add("foobar");
-        c2.add(Integer.valueOf(3));
+        c2.add(3);
 
         assertFalse(DataUtil.anyValuesInCommon(c1, c2));
 
         // Then a match
-        c1.add(Integer.valueOf(3));
+        c1.add(3);
         assertTrue(DataUtil.anyValuesInCommon(c1, c2));
 
         // And another one:

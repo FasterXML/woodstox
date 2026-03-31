@@ -50,6 +50,9 @@ public class WstxSAXParserFactory
     public WstxSAXParserFactory()
     {
         this(new WstxInputFactory());
+        // 27-Aug-2024, philippn: For SAX parsing, we will usually want startEntity and endEntity events,
+        // thus we disable replaceEntityRefs by default (as per [woodstox-core#211])
+        mStaxFactory.getConfig().doReplaceEntityRefs(false);
     }
 
     /**

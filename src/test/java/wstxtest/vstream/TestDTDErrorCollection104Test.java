@@ -42,7 +42,7 @@ public class TestDTDErrorCollection104Test
 +"<!ELEMENT notval EMPTY>\n"
 ;
 
-        final List<XMLValidationProblem> probs = new ArrayList<XMLValidationProblem>();
+        final List<XMLValidationProblem> probs = new ArrayList<>();
         
         XMLInputFactory f = getInputFactory();
         setCoalescing(f, true);
@@ -55,13 +55,7 @@ public class TestDTDErrorCollection104Test
                     new StringReader(DOC));
             
             sr.validateAgainst(schema);
-            sr.setValidationProblemHandler(new ValidationProblemHandler() {
-                @Override
-                public void reportProblem(XMLValidationProblem problem)
-                        throws XMLValidationException {
-                    probs.add(problem);
-                }
-            });
+            sr.setValidationProblemHandler(probs::add);
 
             assertTokenType(START_ELEMENT, sr.next());
             assertEquals("map", sr.getLocalName());

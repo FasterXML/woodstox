@@ -84,7 +84,7 @@ public class TestTextCoalescing
          */
         // Now, we may get more than one CHARACTERS
         int count = 1;
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append('[');
         sb.append(sr.getText());
         sb.append(']');
@@ -143,7 +143,7 @@ public class TestTextCoalescing
     {
         assertTokenType(expType, sr.getEventType());
         //if (expType != sr.getEventType()) System.err.println("WARN: expected "+tokenTypeDesc(expType)+", got "+tokenTypeDesc(sr.getEventType()));
-        StringBuffer sb = new StringBuffer(getAndVerifyText(sr));
+        StringBuilder sb = new StringBuilder(getAndVerifyText(sr));
         int count = 1;
         while ((sr.next()) == expType) {
             ++count;

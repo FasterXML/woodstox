@@ -154,7 +154,7 @@ public class TestClosing
     XMLOutputFactory2 getFactory(boolean autoClose)
     {
         XMLOutputFactory2 f = getOutputFactory();
-        f.setProperty(XMLOutputFactory2.P_AUTO_CLOSE_OUTPUT, Boolean.valueOf(autoClose));
+        f.setProperty(XMLOutputFactory2.P_AUTO_CLOSE_OUTPUT, autoClose);
         return f;
     }
 

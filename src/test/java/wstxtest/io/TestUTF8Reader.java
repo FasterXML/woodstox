@@ -1,6 +1,7 @@
 package wstxtest.io;
 
 import java.io.*;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
@@ -26,9 +27,7 @@ public class TestUTF8Reader extends TestCase
 	
 	// Create input that will cause the array index out of bounds exception
 	byte[] inputBytes = new byte[INPUT_SIZE];
-	for (int i=0; i < inputBytes.length; i++) {
-	    inputBytes[i] = CHAR_FILLER;
-	}
+	Arrays.fill(inputBytes, CHAR_FILLER);
 	inputBytes[BYTE_BUFFER_SIZE - 1] = CHAR_DEL;
 	InputStream in = new ByteArrayInputStream(inputBytes);
 	

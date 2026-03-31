@@ -127,7 +127,7 @@ public class TestEntityRead
         String XML = "<root>ok: &myent;&myent2;</root>";
         String EXP_TEXT = "ok: (simple)expand to ([text])";
         XMLInputFactory fact = getConfiguredFactory(true, true);
-        Map<String,String> m = new HashMap<String,String>();
+        Map<String,String> m = new HashMap<>();
         m.put("myent", "(simple)");
         m.put("myent3", "[text]");
         m.put("myent2", "expand to (&myent3;)");

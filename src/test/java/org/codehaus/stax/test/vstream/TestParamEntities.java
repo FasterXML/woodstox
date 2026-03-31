@@ -20,7 +20,7 @@ public class TestParamEntities
     public void testExternalParamDeclViaPE()
         throws XMLStreamException
     {
-        HashMap<String,String> m = new HashMap<String,String>();
+        HashMap<String,String> m = new HashMap<>();
         m.put("ent1", "<!ELEMENT doc EMPTY>\n"
             +"<!ENTITY % e SYSTEM 'ent2'>\n"
               +"<!ATTLIST doc a1 CDATA %e; 'v1'>");

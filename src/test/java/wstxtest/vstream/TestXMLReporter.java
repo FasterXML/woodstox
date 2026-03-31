@@ -189,7 +189,7 @@ public class TestXMLReporter
             if (actMsg == null) {
                 actMsg = "";
             }
-            if (actMsg.indexOf(expMsg) < 0) {
+            if (!actMsg.contains(expMsg)) {
                 fail("Expected failure to contain phrase '"+expMsg+"', did not, was: '"+actMsg+"'");
             }
         }

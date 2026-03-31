@@ -1,0 +1,23 @@
+<?xml encoding="UTF-8"?>
+
+<!-- The DTD for the sample documents -->
+
+<!ENTITY copyright "&#169;">
+
+<!ELEMENT product-info (meta,description)>
+
+<!ELEMENT meta (prodname,company,prodtype,source)>
+
+<!ELEMENT description (para)>
+
+<!ELEMENT prodname (#PCDATA)>
+
+<!ELEMENT company (#PCDATA)>
+
+<!ELEMENT prodtype (#PCDATA)>
+
+<!ELEMENT source (#PCDATA)>
+
+<!ELEMENT para (#PCDATA|b)*>
+
+<!ELEMENT b (#PCDATA)*>

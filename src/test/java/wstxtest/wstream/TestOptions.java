@@ -44,11 +44,11 @@ public class TestOptions
             }
 
             if (space) {
-                if (str.indexOf("<root />") < 0) {
+                if (!str.contains("<root />")) {
                     fail("Expected '<root />' when space is to be added: got '"+str+"'");
                 }
             } else {
-                if (str.indexOf("<root/>") < 0) {
+                if (!str.contains("<root/>")) {
                     fail("Expected '<root />' when space is NOT to be added: got '"+str+"'");
                 }
             }
@@ -59,8 +59,7 @@ public class TestOptions
         throws IOException, XMLStreamException
     {
         XMLOutputFactory f = getOutputFactory();
-        f.setProperty(WstxOutputProperties.P_ADD_SPACE_AFTER_EMPTY_ELEM,
-                      Boolean.valueOf(addSpace));
+        f.setProperty(WstxOutputProperties.P_ADD_SPACE_AFTER_EMPTY_ELEM, addSpace);
         if (sw != null) {
             return f.createXMLStreamWriter(sw);
         }

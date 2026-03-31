@@ -164,8 +164,8 @@ public class TestMisc
 
         for (int i = 0; i < lengths.length; ++i) {
             int len = lengths[i];
-            StringBuffer input = new StringBuffer(len * 3 / 2);
-            StringBuffer output = new StringBuffer(len + 100);
+            StringBuilder input = new StringBuilder(len * 3 / 2);
+            StringBuilder output = new StringBuilder(len + 100);
 
             Random r = new Random(i);
 

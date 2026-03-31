@@ -146,7 +146,7 @@ public class TestRandomStream
         }
         assertEquals(START_ELEMENT, type);
         
-        StringBuffer act = new StringBuffer(1000);
+        StringBuilder act = new StringBuilder(1000);
 
         do {
             if (type == START_ELEMENT || type == END_ELEMENT) {

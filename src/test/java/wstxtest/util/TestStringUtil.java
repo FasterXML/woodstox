@@ -13,14 +13,14 @@ public class TestStringUtil
 {
     public void testConcatEntries()
     {
-        List<String> l = new ArrayList<String>();
+        List<String> l = new ArrayList<>();
         l.add("first");
         l.add("second");
         l.add("third");
         assertEquals("first, second and third",
                      StringUtil.concatEntries(l, ", ", " and "));
 
-        l = new ArrayList<String>();
+        l = new ArrayList<>();
         l.add("the only");
         assertEquals("the only",
                      StringUtil.concatEntries(l, ", ", " and "));

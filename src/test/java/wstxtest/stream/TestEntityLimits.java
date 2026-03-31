@@ -35,7 +35,7 @@ public class TestEntityLimits
         sr.close();
 
         // and with max depth of 3 as well
-        f.setProperty(WstxInputProperties.P_MAX_ENTITY_DEPTH, Integer.valueOf(3));
+        f.setProperty(WstxInputProperties.P_MAX_ENTITY_DEPTH, 3);
         sr = f.createXMLStreamReader(new StringReader(XML));
         assertTokenType(DTD, sr.next());
         assertTokenType(START_ELEMENT, sr.next());
@@ -44,7 +44,7 @@ public class TestEntityLimits
         sr.close();
 
         // but not with 2
-        f.setProperty(WstxInputProperties.P_MAX_ENTITY_DEPTH, Integer.valueOf(2));
+        f.setProperty(WstxInputProperties.P_MAX_ENTITY_DEPTH, 2);
         sr = f.createXMLStreamReader(new StringReader(XML));
         assertTokenType(DTD, sr.next());
         assertTokenType(START_ELEMENT, sr.next());
@@ -79,7 +79,7 @@ public class TestEntityLimits
         sr.close();
 
         // and with max set to 21 expansions
-        f.setProperty(WstxInputProperties.P_MAX_ENTITY_COUNT, Integer.valueOf(21));
+        f.setProperty(WstxInputProperties.P_MAX_ENTITY_COUNT, 21);
         sr = f.createXMLStreamReader(new StringReader(XML));
         assertTokenType(DTD, sr.next());
         assertTokenType(START_ELEMENT, sr.next());
@@ -89,7 +89,7 @@ public class TestEntityLimits
         sr.close();
 
         // but not with one less
-        f.setProperty(WstxInputProperties.P_MAX_ENTITY_COUNT, Integer.valueOf(20));
+        f.setProperty(WstxInputProperties.P_MAX_ENTITY_COUNT, 20);
         sr = f.createXMLStreamReader(new StringReader(XML));
         assertTokenType(DTD, sr.next());
         assertTokenType(START_ELEMENT, sr.next());

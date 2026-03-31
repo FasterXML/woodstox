@@ -94,7 +94,7 @@ public class TestXMLStreamReader2
         XMLInputFactory2 f = getInputFactory();
         // important: don't force coalescing, that'll convert CDATA to CHARACTERS
         setCoalescing(f, false);
-        f.setProperty(XMLInputFactory2.P_REPORT_CDATA, Boolean.valueOf(report));
+        f.setProperty(XMLInputFactory2.P_REPORT_CDATA, report);
         XMLStreamReader sr = f.createXMLStreamReader(new StringReader(XML));
         if (wrapped) {
             sr = wrapWithAdapter(sr);

@@ -175,9 +175,7 @@ public class TestEventDTD
 
     private void testListElems(List<?> l, Class<?> expType)
     {
-        Iterator<?> it = l.iterator();
-        while (it.hasNext()) {
-            Object o = it.next();
+        for (Object o : l) {
             assertNotNull(o);
             assertTrue(expType.isAssignableFrom(o.getClass()));
         }

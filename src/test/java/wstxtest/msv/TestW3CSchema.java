@@ -347,12 +347,8 @@ public class TestW3CSchema
         // Then invalid?
         String XML = "<foobar />";
         XMLStreamReader2 sr = getReader(XML);
-        sr.setValidationProblemHandler(new ValidationProblemHandler() {
-            @Override
-            public void reportProblem(XMLValidationProblem problem)
-                    throws XMLValidationException {
-                throw new LocalValidationError(problem);
-            }
+        sr.setValidationProblemHandler(problem -> {
+            throw new LocalValidationError(problem);
         });
         sr.validateAgainst(schema);
         try {

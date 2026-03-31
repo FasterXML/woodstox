@@ -23,6 +23,7 @@ public class TestBasicSax
         +"<!DOCTYPE root []>"
         +"<root><!-- comment -->"
         +"<leaf attr='a&amp;b!'>rock&apos;n <![CDATA[roll]]></leaf><?proc instr?></root>  ";
+    final static String DOCUMENT_SYSTEMID = "document.xml";
 
     public void testSimpleNs()
         throws Exception
@@ -89,8 +90,10 @@ public class TestBasicSax
         } else {
             src = new InputSource(new ByteArrayInputStream(XML.getBytes("UTF-8")));
         }
+        src.setSystemId(DOCUMENT_SYSTEMID);
 
         sp.parse(src, h);
+        assertEquals(DOCUMENT_SYSTEMID, h._systemId);
         assertEquals(2, h._elems);
         assertEquals(1, h._attrs);
         assertEquals(11, h._charCount);
@@ -111,9 +114,19 @@ public class TestBasicSax
     final static class MyHandler
         extends DefaultHandler
     {
-        public int _elems, _attrs;
+        public int _elems, _attrs, _charCount;
+        public String _systemId;
+        private Locator locator;
 
-        public int _charCount;
+        @Override
+        public void setDocumentLocator(Locator locator) {
+            this.locator = locator;
+        }
+
+        @Override
+        public void startDocument() throws SAXException {
+            _systemId = locator.getSystemId();
+        }
 
         @Override
         public void characters(char[] ch, int start, int length) {
