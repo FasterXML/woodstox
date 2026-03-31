@@ -29,19 +29,19 @@ import com.ctc.wstx.cfg.XmlConsts;
 public final class UTF8Reader
     extends BaseReader
 {
-    boolean mXml11 = false;
+    private boolean mXml11 = false;
 
-    char mSurrogate = NULL_CHAR;
+    private char mSurrogate = NULL_CHAR;
 
     /**
      * Total read character count; used for error reporting purposes
      */
-    int mCharCount = 0;
+    private int mCharCount = 0;
 
     /**
      * Total read byte count; used for error reporting purposes
      */
-    int mByteCount = 0;
+    private int mByteCount = 0;
 
     /*
     ////////////////////////////////////////
@@ -127,6 +127,7 @@ public final class UTF8Reader
         byte[] buf = mByteBuffer;
         int inPtr = mBytePtr;
         int inBufLen = mByteBufferEnd;
+        final boolean xml11 = mXml11;
 
         main_loop:
         while (outPtr < len) {
@@ -135,7 +136,7 @@ public final class UTF8Reader
 
             // Let's first do the quickie loop for common case; 7-bit ascii:
             if (c >= 0) { // ascii? can probably loop, then
-                if (c == 0x7F && mXml11) { // DEL illegal in xml1.1
+                if (xml11 && c == 0x7F) { // DEL illegal in xml1.1
                     int bytePos = mByteCount + inPtr - 1;
                     int charPos = mCharCount + (outPtr-start);
                     reportInvalidXml11(c, bytePos, charPos);
@@ -162,7 +163,7 @@ public final class UTF8Reader
                     cbuf[outPtr++] = (char) c;
                 }
                 if (c == 0x7F) { 
-                    if (mXml11) { // DEL illegal in xml1.1
+                    if (xml11) { // DEL illegal in xml1.1
                         int bytePos = mByteCount + inPtr - 1;
                         int charPos = mCharCount + (outPtr-start);
                         reportInvalidXml11(c, bytePos, charPos);
@@ -252,7 +253,7 @@ public final class UTF8Reader
                         } else if (c >= 0xFFFE) {
                             reportInvalid(c, outPtr-start, "");
                         }
-                    } else if (mXml11 && c == 0x2028) { // LSEP?
+                    } else if (xml11 && c == 0x2028) { // LSEP?
                         /* 10-May-2006, TSa: Since LSEP is "non-associative",
                          *    it needs additional handling. One way to do
                          *    this is to convert preceding \r to \n. This
@@ -266,7 +267,7 @@ public final class UTF8Reader
                     }
                 }
             } else { // (needed == 1)
-                if (mXml11) { // high-order ctrl char detection...
+                if (xml11) { // high-order ctrl char detection...
                     if (c <= 0x9F) {
                         if (c == 0x85) { // NEL, let's convert?
                             c = CONVERT_NEL_TO;
