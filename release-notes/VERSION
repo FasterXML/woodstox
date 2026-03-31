@@ -6,6 +6,8 @@ Project: woodstox
 
 7.2.0 (not yet released)
 
+#250: Bug in `ValidatingStreamReader.getProcessedDTDSchema()`
+ (reported by @winfriedgerlach)
 - Update `stax2-api` dependency to 4.3.0
 - Branch "master" renamed as "main"
 - Update to `oss-parent` v79 for latest Maven plug-in versions
