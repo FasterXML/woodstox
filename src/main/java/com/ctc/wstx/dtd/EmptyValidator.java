@@ -22,7 +22,7 @@ public class EmptyValidator
     }
 
     public static EmptyValidator getPcdataInstance() { return sPcdataInstance; }
-    public static EmptyValidator getEmptyInstance() { return sPcdataInstance; }
+    public static EmptyValidator getEmptyInstance() { return sEmptyInstance; }
 
     /**
      * Simple; can always (re)use instance itself; no state information
