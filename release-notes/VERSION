@@ -8,6 +8,7 @@ Project: woodstox
 
 - Update `stax2-api` dependency to 4.3.0
 - Branch "master" renamed as "main"
+- Update to `oss-parent` v79 for latest Maven plug-in versions
 
 7.1.1 (28-May-2025)
 
