@@ -10,6 +10,27 @@ import com.ctc.wstx.util.StringVector;
 public class TestStringVector
     extends TestCase
 {
+    public void testConstructor()
+    {
+        try {
+            new StringVector(0);
+            fail("Should have thrown IllegalArgumentException for StringVector with initial count of zero");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        try {
+            new StringVector(-1);
+            fail("Should have thrown IllegalArgumentException for StringVector with negative initial count");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        StringVector sv = new StringVector(1);
+        assertEquals(1, sv.getInternalArray().length);
+        assertEquals(0, sv.size());
+    }
+
     public void testBasic()
     {
         StringVector sv = new StringVector(2);
