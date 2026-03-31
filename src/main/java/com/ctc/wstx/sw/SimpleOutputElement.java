@@ -165,7 +165,7 @@ public final class SimpleOutputElement
         mAttrList = null;
         mAttrMap = null;
         return new SimpleOutputElement(this, null, localName,
-                                       mDefaultNsURI, mNsMapping);
+                                       "", mNsMapping);
     }
 
     /**
@@ -177,7 +177,7 @@ public final class SimpleOutputElement
         mAttrList = null;
         mAttrMap = null;
         SimpleOutputElement poolHead = mParent;
-        relink(parent, null, localName, mDefaultNsURI);
+        relink(parent, null, localName, "");
         return poolHead;
     }
 
