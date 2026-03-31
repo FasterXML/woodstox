@@ -191,7 +191,7 @@ public class ValidatingStreamReader
         if (dtd == null) {
             dtd = mDTD;
         }
-        return mDTD;
+        return dtd;
     }
 
     /*

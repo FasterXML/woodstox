@@ -4,12 +4,11 @@
     <parent>
       <groupId>com.fasterxml</groupId>
       <artifactId>oss-parent</artifactId>
-      <version>68</version>
+      <version>79</version>
     </parent>
-
     <groupId>com.fasterxml.woodstox</groupId>
     <artifactId>woodstox-core</artifactId>
-    <version>7.1.2-SNAPSHOT</version>
+    <version>7.2.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>Woodstox</name>
     <description>Woodstox is a high-performance XML processor that implements Stax (JSR-173),
@@ -72,7 +71,8 @@ SAX2 and Stax2 APIs
           <groupId>org.codehaus.woodstox</groupId>
           <artifactId>stax2-api</artifactId>
           <!-- 13-Mar-2019, tatu: Upgraded to 4.2 (for Woodstox 5.3) get JDK 9 module-info -->
-          <version>4.2.2</version>
+          <!-- 31-Mar-2026, tatu: Upgraded to 4.3 (for Woodstox 7.2); minor fixes -->
+          <version>4.3.0</version>
 	  <exclusions>
             <exclusion>
               <groupId>javax.xml.stream</groupId>

@@ -33,7 +33,7 @@ Coordinates for this are:
 
 * Group id: `com.fasterxml.woodstox`
 * Artifact id: `woodstox-core`
-* Latest published version: 7.0.0 (2024-06-21)
+* Latest published version: 7.1.1 (2025-05-29)
 
 Note that Maven id has changed since Woodstox 4.x but API is still compatible (despite nominal major version upgrade -- major version upgrades in this case were only due to package coordinate changes)
 
@@ -42,9 +42,9 @@ Note that Maven id has changed since Woodstox 4.x but API is still compatible (d
 Woodstox 7 and above require Java 8; Woodstox 5 and above require Java 6 (JDK 1.6).
 All versions also require Stax API that is included in JDK (since Java 6).
 The only other mandatory dependency is [Stax2 API](../../../stax2-api), extended API implemented
-by Woodstox and some other Stax implementations (like [Aalto](../../../aalto-xml).
+by Woodstox and some other Stax implementations (like [Aalto](../../../aalto-xml)).
 
-Optional dependency is [Multi-Schema Validator (MSV)](https://github.com/kohsuke/msv) that is needed if
+Optional dependency is [Multi-Schema Validator (MSV)](https://github.com/xmlark/msv) that is needed if
 using XML Schema or RelaxNG validation functionality
 
 ## License
