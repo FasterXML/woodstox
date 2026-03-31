@@ -326,6 +326,9 @@ public class SimpleNsStreamWriter
             attrCollector.getSpecifiedCount();
 
         if (attrCount > 0) {
+            // mCheckAttrs is guaranteed true when mValidator is non-null
+            // (validateAgainst() forces it), so this correctly collects
+            // attributes for deferred validation whenever validation is active.
             XMLValidator vld = mCheckAttrs ? mCurrElem.getAttributeCollector() : null;
             for (int i = 0; i < attrCount; ++i) {
                 attrCollector.writeAttribute(i, mWriter, vld);

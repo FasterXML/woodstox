@@ -21,10 +21,10 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
-import org.codehaus.stax2.validation.XMLValidationSchema;
 import org.codehaus.stax2.validation.XMLValidator;
 
 import com.ctc.wstx.api.WstxInputProperties;
+import com.ctc.wstx.cfg.XmlConsts;
 import com.ctc.wstx.util.BijectiveNsMap;
 
 /**
@@ -165,7 +165,7 @@ public final class SimpleOutputElement
         mAttrList = null;
         mAttrMap = null;
         return new SimpleOutputElement(this, null, localName,
-                                       "", mNsMapping);
+                                       XmlConsts.ELEM_NO_NS_URI, mNsMapping);
     }
 
     /**
@@ -177,7 +177,7 @@ public final class SimpleOutputElement
         mAttrList = null;
         mAttrMap = null;
         SimpleOutputElement poolHead = mParent;
-        relink(parent, null, localName, "");
+        relink(parent, null, localName, XmlConsts.ELEM_NO_NS_URI);
         return poolHead;
     }
 
@@ -305,6 +305,13 @@ public final class SimpleOutputElement
         mDefaultNsURI = uri;
     }
 
+    /**
+     * Propagates the validator reference to this element and all ancestors.
+     * This is needed because both the active element tree (linked via
+     * {@link #mParent}) and pooled elements (linked via the same field
+     * in {@link #addToPool}) must carry the current validator so that
+     * newly created or reused children inherit it automatically.
+     */
     void setValidator(XMLValidator validator) {
         mValidator = validator;
         if (mParent != null) {
@@ -402,26 +409,7 @@ public final class SimpleOutputElement
      */
 
 
-    final class AttributeCollector extends XMLValidator {
-
-        public AttributeCollector() {
-            super();
-        }
-
-        @Override
-        public String getSchemaType() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public XMLValidationSchema getSchema() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void validateElementStart(String localName, String uri, String prefix) throws XMLStreamException {
-            throw new UnsupportedOperationException();
-        }
+    final class AttributeCollector extends AbstractAttributeCollector {
 
         @Override
         public String validateAttribute(String localName, String uri, String prefix, String value) throws XMLStreamException {
@@ -436,47 +424,6 @@ public final class SimpleOutputElement
             addAttribute(uri, localName, prefix, value);
             return value;
         }
-
-        @Override
-        public int validateElementAndAttributes() throws XMLStreamException {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public int validateElementEnd(String localName, String uri, String prefix) throws XMLStreamException {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void validateText(String text, boolean lastTextSegment) throws XMLStreamException {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void validateText(char[] cbuf, int textStart, int textEnd, boolean lastTextSegment) throws XMLStreamException {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void validationCompleted(boolean eod) throws XMLStreamException {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public String getAttributeType(int index) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public int getIdAttrIndex() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public int getNotationAttrIndex() {
-            throw new UnsupportedOperationException();
-        }
-
     }
 
     /**

@@ -194,9 +194,17 @@ public abstract class BaseStreamWriter
      */
     protected int mVldContent = XMLValidator.CONTENT_ALLOW_ANY_TEXT;
 
-    /** 
-     * If set, any attempts to write something must fail or be avoided 
-     * (e.g. when auto-closing the tree).
+    /**
+     * If a validation error has been thrown, the exception is stored here
+     * to permanently block further writes.  This prevents confusing
+     * cascading errors (e.g. during automatic end-element generation in
+     * {@code _finishDocument}) and ensures callers see the original
+     * validation failure rather than a secondary symptom.
+     * <p>
+     * Note: once set, the writer is effectively "poisoned" — no further
+     * elements, attributes, or text can be written.  This is intentional:
+     * the old behaviour of silently continuing after a validation error
+     * produced misleading downstream exceptions (see issues #179, #190).
      */
     protected XMLValidationException mVldException;
 
@@ -1441,6 +1449,9 @@ public abstract class BaseStreamWriter
         throws XMLStreamException
     {
         // Is tree still open or worth to write anything?
+        // Skip auto-closing when mVldException is set: the writer is
+        // poisoned after a validation error, so generating additional
+        // end-elements would produce confusing cascading exceptions.
         if (mState != STATE_EPILOG && mVldException == null) {
             if (mCheckStructure  && mState == STATE_PROLOG) {
                 reportNwfStructure("Trying to write END_DOCUMENT when document has no root (ie. trying to output empty document).");

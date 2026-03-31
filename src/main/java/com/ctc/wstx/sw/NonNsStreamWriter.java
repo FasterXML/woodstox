@@ -28,7 +28,6 @@ import javax.xml.stream.events.StartElement;
 
 import org.codehaus.stax2.ri.typed.AsciiValueEncoder;
 import org.codehaus.stax2.validation.XMLValidationException;
-import org.codehaus.stax2.validation.XMLValidationSchema;
 import org.codehaus.stax2.validation.XMLValidator;
 
 import com.ctc.wstx.api.WriterConfig;
@@ -66,8 +65,8 @@ public class NonNsStreamWriter
      * if uniqueness of attribute names is to be enforced
      * or if a validator is set.
      */
-    private HashMap<String, Attribute> mAttrMap;
-    private ArrayList<Attribute> mAttrList;
+    private HashMap<String, AttrInfo> mAttrMap;
+    private ArrayList<AttrInfo> mAttrList;
     private AttrCollector mAttrCollector;
 
     /*
@@ -255,9 +254,9 @@ public class NonNsStreamWriter
         QName name = elem.getName();
         writeStartElement(name.getLocalPart());
         @SuppressWarnings("unchecked")
-        Iterator<javax.xml.stream.events.Attribute> it = elem.getAttributes();
+        Iterator<Attribute> it = elem.getAttributes();
         while (it.hasNext()) {
-            javax.xml.stream.events.Attribute attr = it.next();
+            Attribute attr = it.next();
             name = attr.getName();
             writeAttribute(name.getLocalPart(), attr.getValue());
         }
@@ -458,7 +457,7 @@ public class NonNsStreamWriter
         if (mAttrMap == null) {
             return null;
         }
-        Attribute attr = mAttrMap.get(localName);
+        AttrInfo attr = mAttrMap.get(localName);
         return attr == null ? null : attr.mValue;
     }
 
@@ -467,7 +466,7 @@ public class NonNsStreamWriter
         if (mAttrMap == null) {
             return -1;
         }
-        Attribute attr = mAttrMap.get(localName);
+        AttrInfo attr = mAttrMap.get(localName);
         return attr == null ? -1 : attr.mIndex;
     }
 
@@ -642,12 +641,12 @@ public class NonNsStreamWriter
     private int validateElementStartAndAttributes(String localName) throws XMLStreamException {
         final XMLValidator vld = mValidator;
         vld.validateElementStart(localName, XmlConsts.ELEM_NO_NS_URI, XmlConsts.ELEM_NO_PREFIX);
-        ArrayList<Attribute> attrList = mAttrList;
+        ArrayList<AttrInfo> attrList = mAttrList;
         if (attrList != null)  {
             mAttrMap = null;
             mAttrList = null;
             if (!attrList.isEmpty()) {
-                for (Attribute attr : attrList) {
+                for (AttrInfo attr : attrList) {
                     vld.validateAttribute(attr.mLocalName, XmlConsts.ATTR_NO_NS_URI, XmlConsts.ATTR_NO_PREFIX, attr.mValue);
                 }
             }
@@ -657,10 +656,10 @@ public class NonNsStreamWriter
 
     private void addAttribute(String localName, String value) throws XMLStreamException {
         if (mAttrMap == null) {
-            mAttrMap = new HashMap<String, Attribute>();
-            mAttrList = new ArrayList<Attribute>();
+            mAttrMap = new HashMap<String, AttrInfo>();
+            mAttrList = new ArrayList<AttrInfo>();
         }
-        Attribute attr = new Attribute(mAttrMap.size(), localName, value);
+        AttrInfo attr = new AttrInfo(mAttrMap.size(), localName, value);
         if (mAttrMap.put(localName, attr) != null) {
             reportNwfAttr("Trying to write attribute '"+localName+"' twice");
         } else {
@@ -668,26 +667,7 @@ public class NonNsStreamWriter
         }
     }
 
-    final class AttrCollector extends XMLValidator {
-
-        AttrCollector() {
-            super();
-        }
-        
-        @Override
-        public String getSchemaType() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public XMLValidationSchema getSchema() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void validateElementStart(String localName, String uri, String prefix) throws XMLStreamException {
-            throw new UnsupportedOperationException();
-        }
+    final class AttrCollector extends AbstractAttributeCollector {
 
         @Override
         public String validateAttribute(String localName, String uri, String prefix, String value) throws XMLStreamException {
@@ -702,54 +682,13 @@ public class NonNsStreamWriter
             addAttribute(localName, value);
             return value;
         }
-
-        @Override
-        public int validateElementAndAttributes() throws XMLStreamException {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public int validateElementEnd(String localName, String uri, String prefix) throws XMLStreamException {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void validateText(String text, boolean lastTextSegment) throws XMLStreamException {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void validateText(char[] cbuf, int textStart, int textEnd, boolean lastTextSegment) throws XMLStreamException {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void validationCompleted(boolean eod) throws XMLStreamException {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public String getAttributeType(int index) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public int getIdAttrIndex() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public int getNotationAttrIndex() {
-            throw new UnsupportedOperationException();
-        }
-
     }
 
-    static final class Attribute {
+    static final class AttrInfo {
         private final int mIndex;
         private final String mLocalName;
         private final String mValue;
-        public Attribute(int mIndex, String mLocalName, String mValue) {
+        public AttrInfo(int mIndex, String mLocalName, String mValue) {
             super();
             this.mIndex = mIndex;
             this.mLocalName = mLocalName;

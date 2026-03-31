@@ -389,6 +389,9 @@ public final class RepairingNsStreamWriter
          * prefixes have been remapped... so need to be bit more careful.
          */
         if (attrCount > 0) {
+            // mCheckAttrs is guaranteed true when mValidator is non-null
+            // (validateAgainst() forces it), so this correctly collects
+            // attributes for deferred validation whenever validation is active.
             XMLValidator vld = mCheckAttrs ? mCurrElem.getAttributeCollector() : null;
             for (int i = 0; i < attrCount; ++i) {
                 // First; need to make sure that the prefix-to-ns mapping
