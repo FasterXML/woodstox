@@ -1433,7 +1433,7 @@ public abstract class BasicStreamReader
                 }
                 if (mCfgCoalesceText &&
                     (mTokenState < TOKEN_FULL_COALESCED)) {
-                        count += readAndWriteCoalesced(w, false);
+                    count += readAndWriteCoalesced(w, false);
                 }
                 return count;
             } else if (currToken == CDATA) {
@@ -1444,7 +1444,7 @@ public abstract class BasicStreamReader
                 }
                 if (mCfgCoalesceText &&
                     (mTokenState < TOKEN_FULL_COALESCED)) {
-                        count += readAndWriteCoalesced(w, true);
+                    count += readAndWriteCoalesced(w, true);
                 }
                 return count;
             }
