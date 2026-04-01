@@ -1,7 +1,7 @@
 package com.ctc.wstx.util;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Singleton class that implements "fast intern" functionality, essentially
@@ -9,12 +9,8 @@ import java.util.Map;
  * but that probably shouldn't be added to symbol tables.
  * This is usually used by improving intern()ing of things like namespace
  * URIs.
- *<p>
- * Note: that this class extends {@link LinkedHashMap} is an implementation
- * detail -- no code should ever directly call Map methods.
  */
-@SuppressWarnings("serial")
-public final class InternCache extends LinkedHashMap<String,String>
+public final class InternCache
 {
     /**
      * Let's create cache big enough to usually have enough space for
@@ -23,19 +19,23 @@ public final class InternCache extends LinkedHashMap<String,String>
     private final static int DEFAULT_SIZE = 64;
 
     /**
-     * Let's limit to hash area size of 1024.
+     * Let's limit maximum size.
      */
-    private final static int MAX_SIZE = 660;
+    private final static int MAX_SIZE = 1024;
 
     private final static InternCache sInstance = new InternCache();
 
+    private final ConcurrentHashMap<String,String> mCache;
+
+    /**
+     * Queue tracking insertion order for FIFO eviction when the
+     * cache exceeds {@link #MAX_SIZE}.
+     */
+    private final ConcurrentLinkedQueue<String> mInsertionOrder;
+
     private InternCache() {
-        /* Let's also try to seriously minimize collisions... since
-         * collisions are likely to be more costly here, with longer
-         * Strings; so let's use 2/3 ratio (67%) instead of default
-         * (75%)
-         */
-        super(DEFAULT_SIZE, 0.6666f, false);
+        mCache = new ConcurrentHashMap<>(DEFAULT_SIZE);
+        mInsertionOrder = new ConcurrentLinkedQueue<>();
     }
 
     public static InternCache getInstance() {
@@ -44,27 +44,31 @@ public final class InternCache extends LinkedHashMap<String,String>
 
     public String intern(String input)
     {
-        String result;
-
-        /* Let's split sync block to help in edge cases like
-         * [WSTX-220]
-         */
-        synchronized (this) {
-            result = get(input);
+        // Ideally, lock-free return from cache
+        String result = mCache.get(input);
+        if (result != null) {
+            return result;
         }
-        if (result == null) {
-            result = input.intern();
-            synchronized (this) {
-                put(result, result);
+
+        // If not found, intern the string (expensive) and attempt to add to cache
+        result = input.intern();
+        String prev = mCache.putIfAbsent(result, result);
+
+        // If another thread added the same string in the meantime, use that one
+        if (prev != null) {
+            return prev;
+        }
+
+        // New entry added: track insertion order and evict oldest if needed
+        mInsertionOrder.add(result);
+        while (mCache.size() > MAX_SIZE) {
+            String eldest = mInsertionOrder.poll();
+            if (eldest == null) {
+                // Queue is empty, should never happen in practice
+                break;
             }
+            mCache.remove(eldest);
         }
         return result;
     }
-
-    // We will force maximum size here (for [WSTX-237])
-    @Override protected boolean removeEldestEntry(Map.Entry<String,String> eldest)
-    {
-        return size() > MAX_SIZE;
-    }
 }
-

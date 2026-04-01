@@ -125,3 +125,5 @@ Winfried Gerlach (@winfriedgerlach)
  (7.2.0)
 * Reported #250: Bug in `ValidatingStreamReader.getProcessedDTDSchema()`
  (7.2.0)
+* Contributed #254: Optimize locking on global `InternCache`
+ (7.2.0)
