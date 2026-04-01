@@ -100,8 +100,8 @@ public final class UTF8Writer
         if (mOutPtr > 0 && mOutBuffer != null) {
             mOut.write(mOutBuffer, 0, mOutPtr);
             mOutPtr = 0;
-            mOut.flush();
         }
+        mOut.flush();
     }
 
     @Override
