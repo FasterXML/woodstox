@@ -19,9 +19,9 @@ public final class InternCache
     private final static int DEFAULT_SIZE = 64;
 
     /**
-     * Let's limit size [WSTX-237]
+     * Let's limit maximum size.
      */
-    private final static int MAX_SIZE = 660;
+    private final static int MAX_SIZE = 1024;
 
     private final static InternCache sInstance = new InternCache();
 
@@ -34,12 +34,7 @@ public final class InternCache
     private final ConcurrentLinkedQueue<String> mInsertionOrder;
 
     private InternCache() {
-        /* Let's also try to seriously minimize collisions... since
-         * collisions are likely to be more costly here, with longer
-         * Strings; so let's use 2/3 ratio (67%) instead of default
-         * (75%)
-         */
-        mCache = new ConcurrentHashMap<>(DEFAULT_SIZE, 0.6666f);
+        mCache = new ConcurrentHashMap<>(DEFAULT_SIZE);
         mInsertionOrder = new ConcurrentLinkedQueue<>();
     }
 
