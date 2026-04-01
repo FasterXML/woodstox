@@ -16,31 +16,32 @@ public final class UTF8Writer
     extends Writer
     implements CompletelyCloseable
 {
-    private final static int DEFAULT_BUF_LEN = 4000;
 
-    final static int SURR1_FIRST = 0xD800;
-    final static int SURR1_LAST = 0xDBFF;
-    final static int SURR2_FIRST = 0xDC00;
-    final static int SURR2_LAST = 0xDFFF;
+    private static final int DEFAULT_BUF_LEN = 4000;
 
-    final WriterConfig mConfig;
+    private static final int SURR1_FIRST = 0xD800;
+    private static final int SURR1_LAST = 0xDBFF;
+    private static final int SURR2_FIRST = 0xDC00;
+    private static final int SURR2_LAST = 0xDFFF;
 
-    final boolean mAutoCloseOutput;
+    private final WriterConfig mConfig;
 
-    final OutputStream mOut;
+    private final boolean mAutoCloseOutput;
 
-    byte[] mOutBuffer;
+    private final OutputStream mOut;
 
-    final int mOutBufferLast;
+    private byte[] mOutBuffer;
 
-    int mOutPtr;
+    private final int mOutBufferLast;
+
+    private int mOutPtr;
 
     /**
      * When outputting chars from BMP, surrogate pairs need to be coalesced.
      * To do this, both pairs must be known first; and since it is possible
      * pairs may be split, we need temporary storage for the first half
      */
-    int mSurrogate = 0;
+    private int mSurrogate = 0;
 
     public UTF8Writer(WriterConfig cfg, OutputStream out, boolean autoclose)
     {
@@ -359,18 +360,21 @@ public final class UTF8Writer
     ////////////////////////////////////////////////////////////
      */
 
-    private final void _close(boolean forceClosing)
+    private void _close(boolean forceClosing)
         throws IOException
     {
         byte[] buf = mOutBuffer;
         if (buf != null) {
             mOutBuffer = null;
-            if (mOutPtr > 0) {
-                mOut.write(buf, 0, mOutPtr);
-                mOutPtr = 0;
-            }
-            if (mConfig != null) {
-                mConfig.freeFullBBuffer(buf);
+            try {
+                if (mOutPtr > 0) {
+                    mOut.write(buf, 0, mOutPtr);
+                    mOutPtr = 0;
+                }
+            } finally {
+                if (mConfig != null) {
+                    mConfig.freeFullBBuffer(buf);
+                }
             }
         }
 
