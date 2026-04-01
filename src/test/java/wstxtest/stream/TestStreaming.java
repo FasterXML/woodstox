@@ -144,6 +144,34 @@ public class TestStreaming
         }
     }
 
+    // Regression test: readAndWriteText() used wrong indices when checking
+    // for forbidden ']]>' in text content (checked mInputPtr-1 which is '>'
+    // itself, instead of mInputPtr-3 and mInputPtr-2 for the two ']' chars)
+    public void testStreamingTextRejectsBracketSequence()
+        throws IOException, XMLStreamException
+    {
+        String XML = "<root>text ]]> more</root>";
+        XMLStreamReader2 sr = getReader(XML, false);
+        assertTokenType(START_ELEMENT, sr.next());
+        assertTokenType(CHARACTERS, sr.next());
+        StringWriter sw = new StringWriter();
+        try {
+            sr.getText(sw, false);
+            // If we get here without exception, it may have deferred...
+            // try to consume remaining
+            while (sr.hasNext()) {
+                sr.next();
+            }
+            fail("Expected XMLStreamException for ']]>' in text content via streaming accessor");
+        } catch (XMLStreamException ex) {
+            // expected — verify the message mentions the bracket issue
+            String msg = ex.getMessage();
+            if (msg == null || (!msg.contains("]]>") && !msg.contains("BRACKET"))) {
+                fail("Expected error about ']]>' but got: " + msg);
+            }
+        }
+    }
+
     /*
     //////////////////////////////////////////////////////
     // Internal methods

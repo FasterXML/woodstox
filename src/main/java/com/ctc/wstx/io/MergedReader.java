@@ -128,7 +128,7 @@ public final class MergedReader
 
             if (amount > n) { // all in pushed back segment?
                 mPtr += (int) n;
-                return amount;
+                return n;
             }
             freeMergedBuffer();
             count += amount;

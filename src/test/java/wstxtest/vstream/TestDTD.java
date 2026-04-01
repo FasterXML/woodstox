@@ -163,6 +163,39 @@ public class TestDTD
                 "EMPTY content model");
     }
 
+    // Regression test: DFA state construction used "> 0" instead of ">= 0"
+    // for BitSet.nextSetBit(), skipping token at bit index 0. This could cause
+    // incorrect validation of content models where multiple elements share
+    // the same position in a choice/sequence group.
+    public void testContentModelWithMultipleChoiceElements()
+        throws XMLStreamException
+    {
+        // Use a content model with a choice of several elements;
+        // the first declared element may land at bit index 0
+        final String DTD_STR =
+            "<!ELEMENT root (a|b|c)+>\n"
+            +"<!ELEMENT a EMPTY>\n"
+            +"<!ELEMENT b EMPTY>\n"
+            +"<!ELEMENT c EMPTY>\n";
+
+        XMLValidationSchema schema = parseDTDSchema(DTD_STR);
+
+        // All three elements should be valid children — including whichever
+        // lands at bit index 0
+        for (ValidationMode mode : ValidationMode.values()) {
+            mode.validate(schema, "<root><a/></root>");
+            mode.validate(schema, "<root><b/></root>");
+            mode.validate(schema, "<root><c/></root>");
+            mode.validate(schema, "<root><a/><b/><c/></root>");
+        }
+
+        // And an invalid child should still be rejected
+        verifyFailure("<root><d/></root>",
+                schema,
+                "undefined element in content model",
+                "undefined");
+    }
+
     /*
     //////////////////////////////////////////////////////
     // Helper methods
