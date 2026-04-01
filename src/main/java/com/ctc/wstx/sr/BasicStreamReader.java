@@ -5254,9 +5254,9 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                     /* 21-Apr-2005, TSa: But we can NOT check the output buffer
                      *  (see comments in readTextSecondary() for details)
                      */
-                    if (mInputPtr >= 2) { // can we do it here?
-                        if (mInputBuffer[mInputPtr-2] == ']'
-                            && mInputBuffer[mInputPtr-1] == ']') {
+                    if (mInputPtr >= 3) { // can we do it here?
+                        if (mInputBuffer[mInputPtr-3] == ']'
+                            && mInputBuffer[mInputPtr-2] == ']') {
                             // Anything to flush?
                             int len = mInputPtr - start;
                             if (len > 0) {
