@@ -233,8 +233,8 @@ public final class WriterConfig
         // Underlying stream/writer access
         sProperties.put(WstxOutputProperties.P_OUTPUT_UNDERLYING_STREAM,
                         DataUtil.Integer(PROP_UNDERLYING_STREAM));
-        sProperties.put(WstxOutputProperties.P_OUTPUT_UNDERLYING_STREAM,
-                        DataUtil.Integer(PROP_UNDERLYING_STREAM));
+        sProperties.put(WstxOutputProperties.P_OUTPUT_UNDERLYING_WRITER,
+                        DataUtil.Integer(PROP_UNDERLYING_WRITER));
     }
 
     /*

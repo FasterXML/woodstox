@@ -25,17 +25,17 @@ import com.ctc.wstx.util.PrefixedName;
  */
 public final class DFAState
 {
-    final int mIndex;
-    final boolean mAccepting;
+    private final int mIndex;
+    private final boolean mAccepting;
 
-    BitSet mTokenSet;
+    private BitSet mTokenSet;
 
-    HashMap<PrefixedName,DFAState> mNext = new HashMap<PrefixedName,DFAState>();
+    private final HashMap<PrefixedName,DFAState> mNext = new HashMap<>();
 
     /*
-    ///////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
     // Life-cycle:
-    ///////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
      */
 
     public DFAState(int index, BitSet tokenSet)
@@ -106,9 +106,9 @@ public final class DFAState
     }    
 
     /*
-    ///////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
     // Public API, accessors:
-    ///////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
      */
 
     public boolean isAcceptingState() {
@@ -135,14 +135,11 @@ public final class DFAState
     public void calcNext(PrefixedName[] tokenNames, BitSet[] tokenFPs,
                          List<DFAState> stateList, Map<BitSet,DFAState> stateMap)
     {
-        /* Need to loop over all included tokens, and find groups
-         * of said tokens
-         */
+        // Need to loop over all included tokens, and find groups of said tokens
         int first = -1;
 
-        /* Need to clone; can not modify in place, since the BitSet
-         * is also used as the key...
-         */
+        // Need to clone; can not modify in place, since the BitSet
+        // is also used as the key...
         BitSet tokenSet = (BitSet) mTokenSet.clone();
         // No need to keep the reference to it, though:
         mTokenSet = null;
@@ -150,9 +147,8 @@ public final class DFAState
         while ((first = tokenSet.nextSetBit(first+1)) >= 0) {
             PrefixedName tokenName = tokenNames[first];
 
-            /* Special case; the dummy end token has null as name;
-             * we can skip that one:
-             */
+            // Special case; the dummy end token has null as name;
+            // we can skip that one:
             if (tokenName == null) {
                 continue;
             }
@@ -160,7 +156,7 @@ public final class DFAState
             BitSet nextGroup = (BitSet) tokenFPs[first].clone();
             int second = first;
 
-            while ((second = tokenSet.nextSetBit(second+1)) > 0) {
+            while ((second = tokenSet.nextSetBit(second+1)) >= 0) {
                 if (tokenNames[second] == tokenName) {
                     // Let's clear it, too, so we won't match it again:
                     tokenSet.clear(second);
@@ -180,9 +176,9 @@ public final class DFAState
     }
 
     /*
-    ///////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
     // Other methods
-    ///////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
      */
 
     @Override
