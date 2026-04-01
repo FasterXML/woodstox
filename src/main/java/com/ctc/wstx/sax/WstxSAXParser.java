@@ -777,9 +777,10 @@ public class WstxSAXParser
              */
             if (mLexicalHandler != null) {
                 String text = mScanner.getText();
-                mLexicalHandler.startEntity(mScanner.getLocalName());
+                String localName = mScanner.getLocalName();
+                mLexicalHandler.startEntity(localName);
                 mContentHandler.characters(text.toCharArray(), 0, text.length());
-                mLexicalHandler.endEntity(mScanner.getLocalName());
+                mLexicalHandler.endEntity(localName);
             } else if (mContentHandler != null) {
                 mContentHandler.skippedEntity(mScanner.getLocalName());
             }

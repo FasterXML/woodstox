@@ -148,6 +148,21 @@ public class TestDTD
         assertNotNull(sch);
     }
 
+    // Verify that EMPTY content model uses the correct error message (not #PCDATA message)
+    public void testEmptyContentModelErrorMessage()
+        throws XMLStreamException
+    {
+        final String DTD_STR = "<!ELEMENT root (child)>\n"
+            +"<!ELEMENT child EMPTY>\n"
+            +"<!ELEMENT nested EMPTY>\n";
+
+        XMLValidationSchema schema = parseDTDSchema(DTD_STR);
+        verifyFailure("<root><child><nested/></child></root>",
+                schema,
+                "element in EMPTY content model",
+                "EMPTY content model");
+    }
+
     /*
     //////////////////////////////////////////////////////
     // Helper methods

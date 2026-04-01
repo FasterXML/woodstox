@@ -1482,7 +1482,7 @@ public abstract class StreamScanner
         char c = getNextCharFromCurrent(SUFFIX_IN_ENTITY_REF);
         // Do we have a (numeric) character entity reference?
         if (c == '#') { // numeric
-            final StringBuilder originalSurface = new StringBuilder("#");
+            final StringBuilder originalSurface = mCfgTreatCharRefsAsEntities ? new StringBuilder("#") : null;
             int ch = resolveCharEnt(originalSurface, true);
             if (mCfgTreatCharRefsAsEntities) {
                 final char[] originalChars = new char[originalSurface.length()];
@@ -1558,7 +1558,7 @@ public abstract class StreamScanner
                 sb.append((char) ((ch & 0x3FF)  + 0xDC00));
                 repl = sb.toString();
             }
-            entity = IntEntity.create(new String(originalChars), repl);
+            entity = IntEntity.create(cacheKey, repl);
             mCachedEntities.put(cacheKey, entity);
         }
         return entity;

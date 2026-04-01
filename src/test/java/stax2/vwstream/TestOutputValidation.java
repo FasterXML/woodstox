@@ -150,7 +150,7 @@ public class TestOutputValidation
                 sw.writeEndElement();
                 fail(modeDesc+" Expected a validation exception when trying to add an element into EMPTY content model");
             } catch (XMLValidationException vex) {
-                assertMessageContains(vex, "Validation error, encountered element <leaf> as a child of <root>: No elements allowed in pure #PCDATA content model");
+                assertMessageContains(vex, "Validation error, encountered element <leaf> as a child of <root>: No elements allowed in EMPTY content model");
             }
             sw.close();
 
@@ -162,7 +162,7 @@ public class TestOutputValidation
                 sw.writeEndElement();
                 fail(modeDesc+" Expected a validation exception when trying to add an element into EMPTY content model");
             } catch (XMLValidationException vex) {
-                assertMessageContains(vex, "Validation error, encountered element <leaf> as a child of <root>: No elements allowed in pure #PCDATA content model");
+                assertMessageContains(vex, "Validation error, encountered element <leaf> as a child of <root>: No elements allowed in EMPTY content model");
             }
             sw.close();
 

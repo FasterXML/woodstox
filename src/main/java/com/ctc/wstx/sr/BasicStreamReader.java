@@ -1275,13 +1275,13 @@ public abstract class BasicStreamReader
     @Override
     @Deprecated
     public Object getFeature(String name)  {
-        throw new IllegalArgumentException(MessageFormat.format(ErrorConsts.ERR_UNKNOWN_FEATURE, new Object[] { name })); 
+        throw new IllegalArgumentException(MessageFormat.format(ErrorConsts.ERR_UNKNOWN_FEATURE, name));
     }
 
     @Override
     @Deprecated
     public void setFeature(String name, Object value) {
-        throw new IllegalArgumentException(MessageFormat.format(ErrorConsts.ERR_UNKNOWN_FEATURE, new Object[] { name })); 
+        throw new IllegalArgumentException(MessageFormat.format(ErrorConsts.ERR_UNKNOWN_FEATURE, name));
     }
 
     // NOTE: getProperty() defined in Stax 1.0 interface
@@ -1433,9 +1433,7 @@ public abstract class BasicStreamReader
                 }
                 if (mCfgCoalesceText &&
                     (mTokenState < TOKEN_FULL_COALESCED)) {
-                    if (mCfgCoalesceText) {
-                        count += readAndWriteCoalesced(w, false);
-                    }
+                    count += readAndWriteCoalesced(w, false);
                 }
                 return count;
             } else if (currToken == CDATA) {
@@ -1446,9 +1444,7 @@ public abstract class BasicStreamReader
                 }
                 if (mCfgCoalesceText &&
                     (mTokenState < TOKEN_FULL_COALESCED)) {
-                    if (mCfgCoalesceText) {
-                        count += readAndWriteCoalesced(w, true);
-                    }
+                    count += readAndWriteCoalesced(w, true);
                 }
                 return count;
             }
@@ -1960,7 +1956,7 @@ public abstract class BasicStreamReader
      *   this attribute value
      * @param tb TextBuilder into which attribute value will be added
      */
-    private final void parseAttrValue(char openingQuote, TextBuilder tb)
+    private void parseAttrValue(char openingQuote, TextBuilder tb)
         throws XMLStreamException
     {
         char[] outBuf = tb.getCharBuffer();
@@ -5597,7 +5593,7 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
 
     protected void throwNotTextualOrElem(int type) {
         throw new IllegalStateException(MessageFormat.format(ErrorConsts.ERR_STATE_NOT_ELEM_OR_TEXT,
-                new Object[] { tokenTypeDesc(type) }));
+                tokenTypeDesc(type)));
     }
 
     /**

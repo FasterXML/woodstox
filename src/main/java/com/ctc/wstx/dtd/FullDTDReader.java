@@ -2286,7 +2286,7 @@ public class FullDTDReader
                 } else if (c == 'E') {
                     keyw = checkDTDKeyword("MPTY");
                     if (keyw == null) {
-                        val = EmptyValidator.getPcdataInstance();
+                        val = EmptyValidator.getEmptyInstance();
                         vldContent = XMLValidator.CONTENT_ALLOW_NONE; // needed to prevent non-elements too
                         break;
                     }
