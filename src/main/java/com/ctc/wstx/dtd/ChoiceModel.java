@@ -45,6 +45,7 @@ public class ChoiceModel
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
+        sb.append('(');
         for (int i = 0; i < mSubModels.length; ++i) {
             if (i > 0) {
                 sb.append(" | ");
