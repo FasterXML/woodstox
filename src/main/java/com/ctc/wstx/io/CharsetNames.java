@@ -226,7 +226,7 @@ public final class CharsetNames
                     if (StringUtil.equalEncodings(csName, "Unicode")) {
                         return CS_UTF16; // need BOM
                     }
-                    if (StringUtil.equalEncodings(csName, "UnicodeAscii")) {
+                    if (StringUtil.equalEncodings(csName, "UnicodeLatin1")) {
                         return CS_ISO_LATIN1;
                     }
                     if (StringUtil.equalEncodings(csName, "UnicodeAscii")) {
