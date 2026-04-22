@@ -195,6 +195,20 @@ public abstract class BaseStreamWriter
     protected int mVldContent = XMLValidator.CONTENT_ALLOW_ANY_TEXT;
 
     /**
+     * If a validation error has been thrown, the exception is stored here
+     * to permanently block further writes.  This prevents confusing
+     * cascading errors (e.g. during automatic end-element generation in
+     * {@code _finishDocument}) and ensures callers see the original
+     * validation failure rather than a secondary symptom.
+     * <p>
+     * Note: once set, the writer is effectively "poisoned" — no further
+     * elements, attributes, or text can be written.  This is intentional:
+     * the old behaviour of silently continuing after a validation error
+     * produced misleading downstream exceptions (see issues #179, #190).
+     */
+    protected XMLValidationException mVldException;
+
+    /**
      * Value passed as the expected root element, when using the multiple
      * argument {@link #writeDTD} method. Will be used in structurally
      * validating mode (and in dtd-validating mode, since that automatically
@@ -331,9 +345,14 @@ public abstract class BaseStreamWriter
         verifyWriteCData();
         if (mVldContent == XMLValidator.CONTENT_ALLOW_VALIDATABLE_TEXT
             && mValidator != null) {
-            // Last arg is false, since we do not know if more text
-            // may be added with additional calls
-            mValidator.validateText(data, false);
+            try {
+                // Last arg is false, since we do not know if more text
+                // may be added with additional calls
+                mValidator.validateText(data, false);
+            } catch (XMLValidationException e) {
+                mVldException = e;
+                throw e;
+            }
         }
         int ix;
         try {
@@ -375,9 +394,14 @@ public abstract class BaseStreamWriter
             }
         } else if (mVldContent == XMLValidator.CONTENT_ALLOW_VALIDATABLE_TEXT) {
             if (mValidator != null) {
-                // Last arg is false, since we do not know if more text
-                // may be added with additional calls
-                mValidator.validateText(text, start, start + len, false);
+                try {
+                    // Last arg is false, since we do not know if more text
+                    // may be added with additional calls
+                    mValidator.validateText(text, start, start + len, false);
+                } catch (XMLValidationException e) {
+                    mVldException = e;
+                    throw e;
+                }
             }
         }
 
@@ -431,10 +455,15 @@ public abstract class BaseStreamWriter
             }
         } else if (mVldContent == XMLValidator.CONTENT_ALLOW_VALIDATABLE_TEXT) {
             if (mValidator != null) {
-                /* Last arg is false, since we do not know if more text
-                 * may be added with additional calls
-                 */
-                mValidator.validateText(text, false);
+                try {
+                    /* Last arg is false, since we do not know if more text
+                     * may be added with additional calls
+                     */
+                    mValidator.validateText(text, false);
+                } catch (XMLValidationException e) {
+                    mVldException = e;
+                    throw e;
+                }
             }
         }
 
@@ -1079,10 +1108,15 @@ public abstract class BaseStreamWriter
         verifyWriteCData();
         if (mVldContent == XMLValidator.CONTENT_ALLOW_VALIDATABLE_TEXT
             && mValidator != null) {
-            /* Last arg is false, since we do not know if more text
-             * may be added with additional calls
-             */
-            mValidator.validateText(cbuf, start, start + len, false);
+            try {
+                /* Last arg is false, since we do not know if more text
+                 * may be added with additional calls
+                 */
+                mValidator.validateText(cbuf, start, start + len, false);
+            } catch (XMLValidationException e) {
+                mVldException = e;
+                throw e;
+            }
         }
         int ix;
         try {
@@ -1277,42 +1311,6 @@ public abstract class BaseStreamWriter
     @Override
     public boolean isUnparsedEntityDeclared(String name) { return false; }
 
-    // // // Attribute access: not yet implemented:
-
-    /* !!! TODO: Implement attribute access (iff validate-attributes
-     *   enabled?
-     */
-
-    @Override
-    public int getAttributeCount() { return 0; }
-
-    @Override
-    public String getAttributeLocalName(int index) { return null; }
-
-    @Override
-    public String getAttributeNamespace(int index) { return null; }
-
-    @Override
-    public String getAttributePrefix(int index) { return null; }
-
-    @Override
-    public String getAttributeValue(int index) { return null; }
-
-    @Override
-    public String getAttributeValue(String nsURI, String localName) {
-        return null;
-    }
-
-    @Override
-    public String getAttributeType(int index) {
-        return "";
-    }
-
-    @Override
-    public int findAttributeIndex(String nsURI, String localName) {
-        return -1;
-    }
-
     /*
     ///////////////////////////////////////////////////////////
     // Package methods (ie not part of public API)
@@ -1409,10 +1407,15 @@ public abstract class BaseStreamWriter
             }
         } else if (mVldContent == XMLValidator.CONTENT_ALLOW_VALIDATABLE_TEXT) {
             if (mValidator != null) {
-                /* Last arg is false, since we do not know if more text
-                 * may be added with additional calls
-                 */
-                mValidator.validateText(ch.getData(), false);
+                try {
+                    /* Last arg is false, since we do not know if more text
+                     * may be added with additional calls
+                     */
+                    mValidator.validateText(ch.getData(), false);
+                } catch (XMLValidationException e) {
+                    mVldException = e;
+                    throw e;
+                }
             }
         }
 
@@ -1445,8 +1448,11 @@ public abstract class BaseStreamWriter
     private final void _finishDocument(boolean forceRealClose)
         throws XMLStreamException
     {
-        // Is tree still open?
-        if (mState != STATE_EPILOG) {
+        // Is tree still open or worth to write anything?
+        // Skip auto-closing when mVldException is set: the writer is
+        // poisoned after a validation error, so generating additional
+        // end-elements would produce confusing cascading exceptions.
+        if (mState != STATE_EPILOG && mVldException == null) {
             if (mCheckStructure  && mState == STATE_PROLOG) {
                 reportNwfStructure("Trying to write END_DOCUMENT when document has no root (ie. trying to output empty document).");
             }
@@ -1459,10 +1465,10 @@ public abstract class BaseStreamWriter
             /* 17-Nov-2008, TSa: that is, if we are allowed to do it
              *   (see [WSTX-165])
              */
-            if (mState != STATE_EPILOG && mConfig.automaticEndElementsEnabled()) {
+            if (mState != STATE_EPILOG && mVldException == null && mConfig.automaticEndElementsEnabled()) {
                 do {
                     writeEndElement();
-                } while (mState != STATE_EPILOG);
+                } while (mState != STATE_EPILOG && mVldException == null);
             }
         }
 
