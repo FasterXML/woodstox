@@ -3146,7 +3146,10 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
             } else {
                 tb = ac.getAttrBuilder(prefix, localName);
             }
+            tb.pushLocation(getCurrentLocation());
             parseAttrValue(c, tb);
+            tb.pushLocation(getCurrentLocation());
+
 
             /* 19-Jul-2004, TSa: Need to check that non-default namespace
              *     URI is NOT empty, as per XML namespace specs, #2,
@@ -3220,8 +3223,11 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
             }
 
             // And then the actual value
+            tb.pushLocation(getCurrentLocation());
             parseAttrValue(c, tb);
+            tb.pushLocation(getCurrentLocation());
             // and then we need to iterate some more
+
             c = (mInputPtr < mInputEnd) ?
                 mInputBuffer[mInputPtr++] : getNextCharFromCurrent(SUFFIX_IN_ELEMENT);
         }
