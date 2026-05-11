@@ -86,6 +86,7 @@ public final class ReaderConfig
 
     // And then JAXB feature(s) (since 5.3)
     final static int PROP_JAXP_SECURE_PROCESSING = 30;
+    final static int PROP_JAXP_ACCESS_EXTERNAL_DTD = 31;
 
     // // // Constants for additional Wstx properties:
 
@@ -312,6 +313,8 @@ public final class ReaderConfig
         
         sProperties.put(XMLConstants.FEATURE_SECURE_PROCESSING,
                 PROP_JAXP_SECURE_PROCESSING);
+        sProperties.put(XMLConstants.ACCESS_EXTERNAL_DTD,
+                PROP_JAXP_ACCESS_EXTERNAL_DTD);
 
         // Non-standard ones, flags:
 
@@ -450,6 +453,8 @@ public final class ReaderConfig
      */
     protected boolean mXml11 = false;
 
+    protected String mAccessExternalDTD = "all";
+
     /*
     ///////////////////////////////////////////////////////////////////////
     // Common configuration objects
@@ -585,6 +590,7 @@ public final class ReaderConfig
         rc.mReporter = mReporter;
         rc.mDtdResolver = mDtdResolver;
         rc.mEntityResolver = mEntityResolver;
+        rc.mAccessExternalDTD = mAccessExternalDTD;
         rc.mBaseURL = mBaseURL;
         rc.mParsingMode = mParsingMode;
         rc.mMaxAttributesPerElement = mMaxAttributesPerElement;
@@ -804,6 +810,7 @@ public final class ReaderConfig
     public XMLResolver getUndeclaredEntityResolver() {
         return (XMLResolver) _getSpecialProperty(SP_IX_UNDECL_ENT_RESOLVER);
     }
+    public String getAccessExternalDTD() { return mAccessExternalDTD; }
 
     public URL getBaseURL() { return mBaseURL; }
 
@@ -930,6 +937,73 @@ public final class ReaderConfig
         if (value) {
             doSupportExternalEntities(false);
         }
+    }
+
+    public void setAccessExternalDTD(String value) {
+        mAccessExternalDTD = (value == null) ? "" : value;
+    }
+
+    public void checkExternalDtdAccess(URL url) throws XMLStreamException {
+        if (!isExternalDtdAccessAllowed(url)) {
+            throw new XMLStreamException("External DTD access to '"
+                    + url + "' is not allowed due to restriction set by the "
+                    + XMLConstants.ACCESS_EXTERNAL_DTD + " property.");
+        }
+    }
+
+    public boolean isExternalDtdAccessAllowed(URL url) {
+        if (url == null) {
+            return true;
+        }
+        String allowed = removeAccessExternalWhitespace(mAccessExternalDTD);
+        if (allowed.length() == 0) {
+            return false;
+        }
+        if ("all".equalsIgnoreCase(allowed)) {
+            return true;
+        }
+
+        String protocol = externalDtdProtocol(url);
+        String urlProtocol = url.getProtocol();
+        StringTokenizer tokens = new StringTokenizer(allowed, ",");
+        while (tokens.hasMoreTokens()) {
+            String token = tokens.nextToken();
+            if ("all".equalsIgnoreCase(token)
+                    || token.equalsIgnoreCase(protocol)
+                    || token.equalsIgnoreCase(urlProtocol)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static String removeAccessExternalWhitespace(String value) {
+        if (value == null || value.length() == 0) {
+            return "";
+        }
+        StringBuilder result = new StringBuilder(value.length());
+        for (int i = 0, len = value.length(); i < len; ++i) {
+            char ch = value.charAt(i);
+            if (!Character.isWhitespace(ch) && !Character.isSpaceChar(ch)) {
+                result.append(ch);
+            }
+        }
+        return result.toString();
+    }
+
+    private static String externalDtdProtocol(URL url) {
+        String protocol = url.getProtocol();
+        if (!"jar".equalsIgnoreCase(protocol)) {
+            return protocol;
+        }
+
+        String externalForm = url.toExternalForm();
+        int nestedStart = externalForm.indexOf(':') + 1;
+        int nestedEnd = externalForm.indexOf(':', nestedStart);
+        if (nestedStart > 0 && nestedEnd > nestedStart) {
+            return "jar:" + externalForm.substring(nestedStart, nestedEnd);
+        }
+        return protocol;
     }
     
     // // // Mutators for Woodstox-specific properties
@@ -1493,6 +1567,8 @@ public final class ReaderConfig
 
         case PROP_JAXP_SECURE_PROCESSING:
             return _hasConfigFlag(CFG_JAXP_FEATURE_SECURE_PROCESSING);
+        case PROP_JAXP_ACCESS_EXTERNAL_DTD:
+            return getAccessExternalDTD();
 
         // // // Then Woodstox custom properties:
 
@@ -1672,6 +1748,14 @@ public final class ReaderConfig
         case PROP_JAXP_SECURE_PROCESSING:
             // 13-Jul-2019, tatu: This is an alias... 
             doProcessSecurely(ArgUtil.convertToBoolean(propName, value));
+            break;
+        case PROP_JAXP_ACCESS_EXTERNAL_DTD:
+            if (!(value instanceof String)) {
+                throw new IllegalArgumentException("Invalid value type ("
+                        + ((value == null) ? "null" : value.getClass().getName())
+                        + ") for property '" + propName + "': expected String value.");
+            }
+            setAccessExternalDTD((String) value);
             break;
 
             // // // And then Woodstox specific, flags

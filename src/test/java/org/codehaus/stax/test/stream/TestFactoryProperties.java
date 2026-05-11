@@ -58,5 +58,17 @@ public class TestFactoryProperties
         assertEquals(Boolean.TRUE,
                 f.getProperty(XMLConstants.FEATURE_SECURE_PROCESSING));
     }
-}
 
+    public void testAccessExternalDTD()
+    {
+        assertTrue(DEFAULT_FACTORY.isPropertySupported(XMLConstants.ACCESS_EXTERNAL_DTD));
+        assertEquals("all", DEFAULT_FACTORY.getProperty(XMLConstants.ACCESS_EXTERNAL_DTD));
+
+        XMLInputFactory f = getNewInputFactory();
+        f.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        assertEquals("", f.getProperty(XMLConstants.ACCESS_EXTERNAL_DTD));
+
+        f.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, " file , http,\njar:file\t");
+        assertEquals(" file , http,\njar:file\t", f.getProperty(XMLConstants.ACCESS_EXTERNAL_DTD));
+    }
+}

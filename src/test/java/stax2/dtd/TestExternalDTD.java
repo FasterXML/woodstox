@@ -3,6 +3,7 @@ package stax2.dtd;
 import java.io.*;
 import java.net.URL;
 
+import javax.xml.XMLConstants;
 import javax.xml.stream.*;
 import javax.xml.transform.stream.StreamSource;
 
@@ -206,6 +207,39 @@ public class TestExternalDTD
             assertEquals(SIMPLE_EXT_ENTITY_TEXT, getAndVerifyText(sr));
             assertTokenType(END_ELEMENT, sr.next());
         }
+    }
+
+    public void testAccessExternalDtdDeniesFileProtocol()
+        throws IOException, XMLStreamException
+    {
+        XMLInputFactory2 f = getFactory();
+        f.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+
+        String sysId = constructSystemId(resolveFile(EXTERNAL_FILENAME1));
+        XMLStreamReader sr = f.createXMLStreamReader(sysId, utf8StreamFromString(EXTERNAL_XML1));
+        try {
+            while (sr.hasNext()) {
+                sr.next();
+            }
+            fail("Expected external DTD access to be denied");
+        } catch (XMLStreamException e) {
+            assertTrue(e.getMessage().contains(XMLConstants.ACCESS_EXTERNAL_DTD));
+        }
+    }
+
+    public void testAccessExternalDtdAllowsFileProtocol()
+        throws IOException, XMLStreamException
+    {
+        XMLInputFactory2 f = getFactory();
+        f.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, " \nfile\t ");
+
+        String sysId = constructSystemId(resolveFile(EXTERNAL_FILENAME1));
+        XMLStreamReader sr = f.createXMLStreamReader(sysId, utf8StreamFromString(EXTERNAL_XML1));
+        assertTokenType(DTD, sr.next());
+        assertTokenType(START_ELEMENT, sr.next());
+        assertTokenType(CHARACTERS, sr.next());
+        assertEquals(SIMPLE_EXT_ENTITY_TEXT, getAndVerifyText(sr));
+        assertTokenType(END_ELEMENT, sr.next());
     }
 
     /*
