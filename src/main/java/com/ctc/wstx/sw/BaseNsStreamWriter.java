@@ -500,12 +500,7 @@ public abstract class BaseNsStreamWriter
     {
         if (mCheckAttrs) {
             // ensure no duplicate attrs and possibly pass them to validator when closing the start element
-            try {
-                mCurrElem.addAttribute(nsURI, localName, prefix, value);
-            } catch (XMLValidationException e) {
-                mVldException = e;
-                throw e;
-            }
+            mCurrElem.addAttribute(nsURI, localName, prefix, value);
         }
         try {
             int vlen = value.length();

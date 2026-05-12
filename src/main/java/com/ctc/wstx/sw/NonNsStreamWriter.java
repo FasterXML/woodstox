@@ -640,18 +640,21 @@ public class NonNsStreamWriter
 
     private int validateElementStartAndAttributes(String localName) throws XMLStreamException {
         final XMLValidator vld = mValidator;
-        vld.validateElementStart(localName, XmlConsts.ELEM_NO_NS_URI, XmlConsts.ELEM_NO_PREFIX);
-        ArrayList<AttrInfo> attrList = mAttrList;
-        if (attrList != null)  {
-            mAttrMap = null;
-            mAttrList = null;
-            if (!attrList.isEmpty()) {
-                for (AttrInfo attr : attrList) {
+        // Keep mAttrMap/mAttrList populated during the whole validation
+        // sequence so that validator callbacks (e.g. getAttributeValue for
+        // xsi:nil) see the attributes. Clear only after validateElementAndAttributes.
+        try {
+            vld.validateElementStart(localName, XmlConsts.ELEM_NO_NS_URI, XmlConsts.ELEM_NO_PREFIX);
+            if (mAttrList != null && !mAttrList.isEmpty()) {
+                for (AttrInfo attr : mAttrList) {
                     vld.validateAttribute(attr.mLocalName, XmlConsts.ATTR_NO_NS_URI, XmlConsts.ATTR_NO_PREFIX, attr.mValue);
                 }
             }
+            return vld.validateElementAndAttributes();
+        } finally {
+            mAttrMap = null;
+            mAttrList = null;
         }
-        return vld.validateElementAndAttributes();
     }
 
     private void addAttribute(String localName, String value) throws XMLStreamException {
