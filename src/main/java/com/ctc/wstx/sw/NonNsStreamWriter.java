@@ -438,12 +438,20 @@ public class NonNsStreamWriter
     @Override
     public String getAttributeNamespace(int index)
     {
+        if (mAttrList == null) {
+            return null;
+        }
+        mAttrList.get(index); // force IOOBE if invalid
         return XmlConsts.ATTR_NO_NS_URI;
     }
 
     @Override
     public String getAttributePrefix(int index)
     {
+        if (mAttrList == null) {
+            return null;
+        }
+        mAttrList.get(index); // force IOOBE if invalid
         return XmlConsts.ATTR_NO_PREFIX;
     }
 

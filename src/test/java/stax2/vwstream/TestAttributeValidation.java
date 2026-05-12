@@ -29,7 +29,7 @@ public class TestAttributeValidation
     public void testValidFixedAttr() throws XMLStreamException
     {
         if (HAS_NON_NS_MODE) { // only test non-ns mode if supported
-            _testValidFixedAttr(true, false);
+            _testValidFixedAttr(false, false);
         }
         _testValidFixedAttr(true, false);
         _testValidFixedAttr(true, true);
@@ -64,7 +64,7 @@ public class TestAttributeValidation
     {
         for (WriterValidationTrigger trigger : WriterValidationTrigger.values()) {
             if (HAS_NON_NS_MODE) { // only test non-ns mode if supported
-                _testInvalidFixedAttr(true, false, trigger);
+                _testInvalidFixedAttr(false, false, trigger);
             }
             _testInvalidFixedAttr(true, false, trigger);
             _testInvalidFixedAttr(true, true, trigger);
@@ -119,7 +119,7 @@ public class TestAttributeValidation
     public void testValidRequiredAttr() throws XMLStreamException
     {
         if (HAS_NON_NS_MODE) { // only test non-ns mode if supported
-            _testValidRequiredAttr(true, false);
+            _testValidRequiredAttr(false, false);
         }
         _testValidRequiredAttr(true, false);
         _testValidRequiredAttr(true, true);
@@ -160,7 +160,7 @@ public class TestAttributeValidation
     {
         for (WriterValidationTrigger trigger : WriterValidationTrigger.values()) {
             if (HAS_NON_NS_MODE) { // only test non-ns mode if supported
-                _testInvalidRequiredAttr(true, false, trigger);
+                _testInvalidRequiredAttr(false, false, trigger);
             }
             _testInvalidRequiredAttr(true, false, trigger);
             _testInvalidRequiredAttr(true, true, trigger);
