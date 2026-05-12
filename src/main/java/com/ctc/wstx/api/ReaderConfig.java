@@ -453,6 +453,14 @@ public final class ReaderConfig
      */
     protected boolean mXml11 = false;
 
+    /**
+     * Protocol allow-list for external DTD and external entity references
+     * configured through {@link XMLConstants#ACCESS_EXTERNAL_DTD}.
+     * Defaults to {@code "all"} to preserve existing Woodstox behavior unless
+     * users explicitly restrict access.
+     *
+     * @since 7.2
+     */
     protected String mAccessExternalDTD = "all";
 
     /*
@@ -810,6 +818,9 @@ public final class ReaderConfig
     public XMLResolver getUndeclaredEntityResolver() {
         return (XMLResolver) _getSpecialProperty(SP_IX_UNDECL_ENT_RESOLVER);
     }
+    /**
+     * @since 7.2
+     */
     public String getAccessExternalDTD() { return mAccessExternalDTD; }
 
     public URL getBaseURL() { return mBaseURL; }
@@ -981,6 +992,11 @@ public final class ReaderConfig
         if (value == null || value.length() == 0) {
             return "";
         }
+        /*
+         * JAXP ACCESS_EXTERNAL_DTD is a comma-separated protocol allow-list,
+         * and its value ignores whitespace. This only normalizes the property
+         * value; URL parsing and validation remain handled by java.net.URL.
+         */
         StringBuilder result = new StringBuilder(value.length());
         for (int i = 0, len = value.length(); i < len; ++i) {
             char ch = value.charAt(i);
@@ -997,6 +1013,11 @@ public final class ReaderConfig
             return protocol;
         }
 
+        /*
+         * JAXP uses "jar[:scheme]" tokens for jar URLs, for example
+         * "jar:file". URL#getProtocol() only returns "jar", so inspect the
+         * external form to recover the nested scheme for allow-list matching.
+         */
         String externalForm = url.toExternalForm();
         int nestedStart = externalForm.indexOf(':') + 1;
         int nestedEnd = externalForm.indexOf(':', nestedStart);
