@@ -1,6 +1,6 @@
 # Woodstox Project
 
-## Individual Contributor License Agreement (ICLA) - version 2.0 (May 2026)
+## Individual Contributor License Agreement (ICLA) (v2.0, May 2026)
 
 This Contribution License Agreement ("Agreement") is agreed to by the party signing below ("You"), and conveys certain license rights to the maintainer(s) ("Maintainer") of the Woodstox project ("Project") for Your contributions to the Woodstox project. This Agreement is effective as of the latest signature date below.  
 
@@ -49,5 +49,3 @@ Github account: _________________________
 Email:     ______________________________
 
 Date:      ______________________________
-
-
