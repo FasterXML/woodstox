@@ -6,6 +6,14 @@ Project: woodstox
 
 7.2.0 (not yet released)
 
+#179: `WstxValidationException`: Unknown reason (at end element </nl:nillableIntElement>)
+  when validating a document with nillable elements
+ (reported by Peter P)
+ (fix by Guillaume N)
+#190: 'Element <root> has no attribute "verbose"' not thrown from
+ `RepairingNsStreamWriter` when validating against a DTD schema
+ (reported by Peter P)
+ (fix by Guillaume N)
 #249: Minor performance optimizations
  (contributed by @winfriedgerlach)
 #250: Bug in `ValidatingStreamReader.getProcessedDTDSchema()`
