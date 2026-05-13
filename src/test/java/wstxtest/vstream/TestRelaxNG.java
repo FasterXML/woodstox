@@ -495,6 +495,11 @@ public class TestRelaxNG
         }
         {
             StringWriter writer = new StringWriter();
+            RepairingNsStreamWriter sw = (RepairingNsStreamWriter) constructStreamWriter(writer, true, true);
+            _testPartialValidationOk(XML, schema, sw, writer);
+        }
+        {
+            StringWriter writer = new StringWriter();
             NonNsStreamWriter sw = (NonNsStreamWriter) constructStreamWriter(writer, false, false);
             _testPartialValidationOk(XML, schema, sw, writer);
         }
@@ -506,7 +511,14 @@ public class TestRelaxNG
         sw.copyEventFromReader(sr, false);
 
         sr.validateAgainst(schema);
+
+        // writer validation has to be turned on one event later because
+        // it does not trigger the validation of an element before its start tag is closed
+        // which happens upon the next event
+        assertTokenType(CHARACTERS, sr.next());
+        sw.copyEventFromReader(sr, false);
         sw.validateAgainst(schema);
+
         while (sr.hasNext()) {
             sr.next();
             sw.copyEventFromReader(sr, false);
