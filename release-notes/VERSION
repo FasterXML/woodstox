@@ -14,6 +14,10 @@ Project: woodstox
 #113: `IllegalStateException` on closing tags; cannot recover from
   unbalanced close tag when it is not preceded by whitespace
  (reported by Joshua E)
+#156: Javadoc for `XMLStreamReader.getLocation()` (`BasicStreamReader`)
+  is inconsistent with the implementation; document that Woodstox
+  returns the start-of-event location
+ (reported by @klease)
 #179: `WstxValidationException`: Unknown reason (at end element </nl:nillableIntElement>)
   when validating a document with nillable elements
  (reported by Peter P)

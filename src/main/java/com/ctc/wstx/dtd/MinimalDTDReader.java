@@ -106,8 +106,8 @@ public class MinimalDTDReader
 
     /**
      * What DTD reader returns doesn't really matter, so let's just return
-     * perceived start location (different from what stream readers actually
-     * do)
+     * the start location -- which incidentally is also what
+     * {@link com.ctc.wstx.sr.BasicStreamReader#getLocation()} returns.
      */
     @Override
     public final Location getLocation() {

@@ -409,9 +409,18 @@ public abstract class StreamScanner
      */
 
     /**
-     * Returns location of last properly parsed token; as per StAX specs,
-     * apparently needs to be the end of current event, which is the same
-     * as the start of the following event (or EOF if that's next).
+     * Returns a {@link Location} for the current event. For stream readers
+     * (see {@link com.ctc.wstx.sr.BasicStreamReader#getLocation()}) this is
+     * the location at the <b>start</b> of the current event (e.g. the
+     * opening {@code <} of a start tag) -- not the end. Note that the JDK
+     * built-in StAX implementation reports the end of the event instead;
+     * the StAX 1.0 specification leaves this ambiguous and Woodstox has
+     * historically returned the start location. Callers that need a
+     * specific point should use the Stax2 extension methods
+     * {@link #getStartLocation()}, {@link #getCurrentLocation()} or
+     * {@code XMLStreamReader2.getEndLocation()} instead, which are
+     * unambiguous (see issue
+     * <a href="https://github.com/FasterXML/woodstox/issues/156">#156</a>).
      */
     @Override
     public abstract Location getLocation();
