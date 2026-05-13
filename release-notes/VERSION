@@ -14,6 +14,10 @@ Project: woodstox
 #113: `IllegalStateException` on closing tags; cannot recover from
   unbalanced close tag when it is not preceded by whitespace
  (reported by Joshua E)
+#156: Javadoc for `XMLStreamReader.getLocation()` (`BasicStreamReader`)
+  is inconsistent with the implementation; document that Woodstox
+  returns the start-of-event location
+ (reported by @klease)
 #179: `WstxValidationException`: Unknown reason (at end element </nl:nillableIntElement>)
   when validating a document with nillable elements
  (reported by Peter P)
@@ -23,10 +27,6 @@ Project: woodstox
  (reported, fix contributed by Nektarios K)
 #189: 'Undefined ID' not thrown when validating with `SimpleNsStreamWriter`
  (reported by Peter P)
-#156: Javadoc for `XMLStreamReader.getLocation()` (`BasicStreamReader`)
-  is inconsistent with the implementation; document that Woodstox
-  returns the start-of-event location
- (reported by Karen L)
 #190: 'Element <root> has no attribute "verbose"' not thrown from
  `RepairingNsStreamWriter` when validating against a DTD schema
  (reported by Peter P)
