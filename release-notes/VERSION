@@ -6,6 +6,9 @@ Project: woodstox
 
 7.2.0 (not yet released)
 
+#113: `IllegalStateException` on closing tags; cannot recover from
+  unbalanced close tag when it is not preceded by whitespace
+ (reported by Joshua E)
 #179: `WstxValidationException`: Unknown reason (at end element </nl:nillableIntElement>)
   when validating a document with nillable elements
  (reported by Peter P)
