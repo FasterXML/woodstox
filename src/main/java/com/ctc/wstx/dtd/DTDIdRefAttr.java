@@ -81,7 +81,8 @@ public final class DTDIdRefAttr
             --end;
         }
 
-        // Ok, let's check and update id ref list...
+        // Look up the per-document id map up front; need its seed to fold
+        // into the per-character hash computed below.
         ElementIdMap m = v.getIdMap();
 
         // Ok, need to check char validity, and also calc hash code:
