@@ -196,7 +196,7 @@ public class SymbolTable {
      *   when more entries are added, table will be expanded.
      */
     public SymbolTable(boolean internStrings, int initialSize,
-                       float fillFactor)
+            float fillFactor)
     {
         mInternStrings = internStrings;
         // Let's start versions from 1
@@ -242,8 +242,8 @@ public class SymbolTable {
      * Internal constructor used when creating child instances.
      */
     private SymbolTable(boolean internStrings, String[] symbols,
-                        Bucket[] buckets, int size, int sizeThreshold,
-                        int indexMask, int version, int hashSeed)
+            Bucket[] buckets, int size, int sizeThreshold,
+            int indexMask, int version, int hashSeed)
     {
         mInternStrings = internStrings;
         mSymbols = symbols;
@@ -433,9 +433,8 @@ public class SymbolTable {
         // Need to expand?
         if (mSize >= mSizeThreshold) {
             rehash();
-            /* Need to recalc hash; rare occurence (index mask has been
-             * recalculated as part of rehash)
-             */
+            // Need to recalc hash; rare occurence (index mask has been
+            // recalculated as part of rehash)
             hash = calcHash(buffer, start, len, mHashSeed) & mIndexMask;
         } else if (!mDirty) {
             // Or perhaps we need to do copy-on-write?
