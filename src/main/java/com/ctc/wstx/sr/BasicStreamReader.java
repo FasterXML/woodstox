@@ -18,6 +18,7 @@ package com.ctc.wstx.sr;
 import java.io.*;
 import java.text.MessageFormat;
 import java.util.Map;
+import java.util.Objects;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -2717,6 +2718,8 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
      * either by entering an expansion or by popping back out of one).
      * Internal entity expansions share the parent's system id and coordinate
      * space, so we deliberately do not consider those a boundary.
+     *
+     * @since 7.2
      */
     private boolean crossedExternalBoundary(WstxInputSource tokenStartInput)
     {
@@ -2725,7 +2728,7 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
         }
         String oldId = tokenStartInput.getSystemId();
         String newId = mInput.getSystemId();
-        return (oldId == null) ? (newId != null) : !oldId.equals(newId);
+        return !Objects.equals(oldId, newId);
     }
 
     /**

@@ -75,11 +75,177 @@ public class ExtLocationInfo91Test
         sr.close();
     }
 
+    // [woodstox-core#91] Text content inside an external entity must report
+    // the external entity's system id, not the parent document's.
+    public void testCharactersInExtEntity()
+        throws XMLStreamException
+    {
+        final String mainXml =
+            "<!DOCTYPE main ["
+            + "<!ENTITY ext SYSTEM 'ext.xml'>"
+            + "]>"
+            + "<main>&ext;</main>";
+        final String extXml = "<a>hello</a>";
+        // ext.xml offsets:
+        //   <a>     : start 0, end 3
+        //   hello   : start 3, end 8
+        //   </a>    : start 8, end 12
+
+        XMLStreamReader2 sr = getReader(mainXml, URI, resolverFor("ext.xml", extXml));
+
+        assertTokenType(DTD, sr.next());
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals("main", sr.getLocalName());
+        assertSystemId(sr, URI);
+
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals("a", sr.getLocalName());
+        assertOffset(sr, 0, 3, "ext.xml");
+
+        assertTokenType(CHARACTERS, sr.next());
+        assertEquals("hello", sr.getText());
+        assertOffset(sr, 3, 8, "ext.xml");
+
+        assertTokenType(END_ELEMENT, sr.next());
+        assertEquals("a", sr.getLocalName());
+        assertOffset(sr, 8, 12, "ext.xml");
+
+        assertTokenType(END_ELEMENT, sr.next());
+        assertEquals("main", sr.getLocalName());
+        assertSystemId(sr, URI);
+
+        sr.close();
+    }
+
+    // [woodstox-core#91] A comment inside an external entity must report the
+    // external entity's system id, not the parent document's.
+    public void testCommentInExtEntity()
+        throws XMLStreamException
+    {
+        final String mainXml =
+            "<!DOCTYPE main ["
+            + "<!ENTITY ext SYSTEM 'ext.xml'>"
+            + "]>"
+            + "<main>&ext;</main>";
+        final String extXml = "<a><!-- hi --></a>";
+        // ext.xml offsets:
+        //   <a>           : 0..2 (end 3)
+        //   <!-- hi -->   : 3..13 (end 14)
+        //   </a>          : 14..17 (end 18)
+
+        XMLStreamReader2 sr = getReader(mainXml, URI, resolverFor("ext.xml", extXml));
+
+        assertTokenType(DTD, sr.next());
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals("main", sr.getLocalName());
+
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals("a", sr.getLocalName());
+        assertOffset(sr, 0, 3, "ext.xml");
+
+        assertTokenType(COMMENT, sr.next());
+        assertOffset(sr, 3, 14, "ext.xml");
+
+        assertTokenType(END_ELEMENT, sr.next());
+        assertEquals("a", sr.getLocalName());
+        assertOffset(sr, 14, 18, "ext.xml");
+
+        assertTokenType(END_ELEMENT, sr.next());
+        assertEquals("main", sr.getLocalName());
+        assertSystemId(sr, URI);
+
+        sr.close();
+    }
+
+    // [woodstox-core#91] Three-level nested external entities: locations must
+    // track the innermost source on entry and the correct outer source on each
+    // pop. Both entities are declared in the main document DTD (XML rules
+    // prohibit DOCTYPE inside external parsed entities).
+    public void testNestedExternalEntities()
+        throws XMLStreamException
+    {
+        final String mainXml =
+            "<!DOCTYPE main ["
+            + "<!ENTITY outer SYSTEM 'outer.xml'>"
+            + "<!ENTITY inner SYSTEM 'inner.xml'>"
+            + "]>"
+            + "<main>&outer;</main>";
+        final String outerXml = "<o>&inner;</o>";
+        // outer.xml offsets:
+        //   <o>        : 0..2 (end 3)
+        //   &inner;    : 3..9
+        //   </o>       : 10..13 (end 14)
+        final String innerXml = "<i></i>";
+        // inner.xml offsets:
+        //   <i>        : 0..2 (end 3)
+        //   </i>       : 3..6 (end 7)
+
+        XMLResolver resolver = (publicID, systemID, baseURI, namespace) -> {
+            if ("outer.xml".equals(systemID)) {
+                return new StreamSource(new StringReader(outerXml), systemID);
+            }
+            if ("inner.xml".equals(systemID)) {
+                return new StreamSource(new StringReader(innerXml), systemID);
+            }
+            fail("Unexpected systemID to resolve: " + systemID);
+            return null;
+        };
+        XMLStreamReader2 sr = getReader(mainXml, URI, resolver);
+
+        assertTokenType(DTD, sr.next());
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals("main", sr.getLocalName());
+        assertSystemId(sr, URI);
+
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals("o", sr.getLocalName());
+        assertOffset(sr, 0, 3, "outer.xml");
+
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals("i", sr.getLocalName());
+        assertOffset(sr, 0, 3, "inner.xml");
+
+        assertTokenType(END_ELEMENT, sr.next());
+        assertEquals("i", sr.getLocalName());
+        assertOffset(sr, 3, 7, "inner.xml");
+
+        assertTokenType(END_ELEMENT, sr.next());
+        assertEquals("o", sr.getLocalName());
+        assertOffset(sr, 10, 14, "outer.xml");
+
+        assertTokenType(END_ELEMENT, sr.next());
+        assertEquals("main", sr.getLocalName());
+        assertSystemId(sr, URI);
+
+        sr.close();
+    }
+
     /*
     ////////////////////////////////////////
     // Private methods
     ////////////////////////////////////////
      */
+
+    private XMLResolver resolverFor(final String wantSystemId, final String contents)
+    {
+        return (publicID, systemID, baseURI, namespace) -> {
+            if (wantSystemId.equals(systemID)) {
+                return new StreamSource(new StringReader(contents), systemID);
+            }
+            fail("Unexpected systemID to resolve: " + systemID);
+            return null;
+        };
+    }
+
+    private void assertSystemId(XMLStreamReader2 sr, String expected)
+        throws XMLStreamException
+    {
+        LocationInfo li = sr.getLocationInfo();
+        assertEquals("Wrong starting systemID for " + tokenTypeDesc(sr.getEventType()),
+                expected, li.getStartLocation().getSystemId());
+        assertEquals("Wrong ending systemID for " + tokenTypeDesc(sr.getEventType()),
+                expected, li.getEndLocation().getSystemId());
+    }
 
     private void assertOffset(XMLStreamReader2 sr, int startOffset, int endOffset, String systemId)
         throws XMLStreamException
