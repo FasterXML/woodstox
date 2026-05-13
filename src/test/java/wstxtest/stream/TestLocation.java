@@ -50,6 +50,56 @@ public class TestLocation
         assertEquals(13, loc.getCharacterOffset());
     }
 
+    /**
+     * [woodstox#156]: lock down that the StAX 1.0
+     * {@link XMLStreamReader#getLocation()} returns the location at the
+     * <b>start</b> of the current event (matching
+     * {@code getLocationInfo().getStartLocation()}), <i>not</i> the end --
+     * the JDK built-in StAX implementation reports the end of the event,
+     * so this divergence is part of Woodstox's documented contract.
+     * Existing callers (e.g. Apache Camel) rely on the start-of-event
+     * behavior.
+     */
+    public void testGetLocationReturnsStartLocation()
+        throws XMLStreamException
+    {
+        // Same XML as testSimpleLocation so the absolute offsets (4 and 13)
+        // act as a documented anchor for "this is the start of <root>" and
+        // "this is the start of </root>".
+        final String XML = "\r\n  <root>\r\n </root>";
+
+        XMLInputFactory f = getWstxInputFactory();
+        XMLStreamReader2 sr = (XMLStreamReader2) f.createXMLStreamReader(new StringReader(XML));
+
+        int type = sr.next();
+        if (type == XMLStreamConstants.SPACE) {
+            type = sr.next();
+        }
+        assertTokenType(START_ELEMENT, type);
+        assertSameAsStartLocation(sr, /*expectedOffset*/ 4);
+
+        assertTokenType(CHARACTERS, sr.next());
+        assertSameAsStartLocation(sr, /*expectedOffset*/ 10);
+
+        assertTokenType(END_ELEMENT, sr.next());
+        assertSameAsStartLocation(sr, /*expectedOffset*/ 13);
+
+        sr.close();
+    }
+
+    private void assertSameAsStartLocation(XMLStreamReader2 sr, int expectedStartOffset) {
+        Location stax = sr.getLocation();
+        Location start = sr.getLocationInfo().getStartLocation();
+        assertEquals("getLocation() character offset should match getStartLocation()",
+                start.getCharacterOffset(), stax.getCharacterOffset());
+        assertEquals("getLocation() line number should match getStartLocation()",
+                start.getLineNumber(), stax.getLineNumber());
+        assertEquals("getLocation() column number should match getStartLocation()",
+                start.getColumnNumber(), stax.getColumnNumber());
+        assertEquals("getLocation() should point at start of event",
+                expectedStartOffset, stax.getCharacterOffset());
+    }
+
     public void testLineNumbers()
         throws XMLStreamException
     {

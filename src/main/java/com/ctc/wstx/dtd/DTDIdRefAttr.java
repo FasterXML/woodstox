@@ -8,6 +8,7 @@ import com.ctc.wstx.sr.InputProblemReporter;
 import com.ctc.wstx.util.ElementId;
 import com.ctc.wstx.util.ElementIdMap;
 import com.ctc.wstx.util.PrefixedName;
+import com.ctc.wstx.util.SymbolTable;
 
 /**
  * Attribute class for attributes that contain references
@@ -80,12 +81,16 @@ public final class DTDIdRefAttr
             --end;
         }
 
+        // Look up the per-document id map up front; need its seed to fold
+        // into the per-character hash computed below.
+        ElementIdMap m = v.getIdMap();
+
         // Ok, need to check char validity, and also calc hash code:
         char c = cbuf[start];
         if (!WstxInputData.isNameStartChar(c, mCfgNsAware, mCfgXml11)) {
             return reportInvalidChar(v, c, "not valid as the first IDREF character");
         }
-        int hash = (int) c;
+        int hash = m.getHashSeed() ^ (int) c;
         for (int i = start+1; i <= end; ++i) {
             c = cbuf[i];
             if (!WstxInputData.isNameChar(c, mCfgNsAware, mCfgXml11)) {
@@ -94,10 +99,9 @@ public final class DTDIdRefAttr
             hash = (hash * 31) + (int) c;
         }
 
-        // Ok, let's check and update id ref list...
-        ElementIdMap m = v.getIdMap();
         Location loc = v.getLocation();
-        ElementId id = m.addReferenced(cbuf, start, (end - start + 1), hash,
+        ElementId id = m.addReferenced(cbuf, start, (end - start + 1),
+                                       SymbolTable.finalizeHash(hash),
                                        loc, v.getElemName(), mName);
         // and that's all; no more checks needed here
         return normalize ? id.getId() : null;

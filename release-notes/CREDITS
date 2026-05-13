@@ -45,6 +45,8 @@ Konrad Windszus (kwin@github)
 
 * Contributed fix for #96: woodstox-core.jar 6.0.2 uses JDK-11 removed internal APIs
  (6.1.0)
+* Reported #95: `BaseStreamWriter.writeRaw()` should not close open element
+ (7.2.0)
 
 Daniel Kulp (dkulp@github)
 
@@ -133,6 +135,12 @@ Winfried Gerlach (@winfriedgerlach)
 * Contributed #254: Optimize locking on global `InternCache`
  (7.2.0)
 
+Nico Kutscherauer (@nkutsche)
+
+* Reported #91: `getStartLocation()` returns inconsistent system id / offset when
+  reader crosses into or out of an expanded external entity
+ (7.2.0)
+
 Joshua Efiong (@Josh-ES)
 
 * Reported #113: `IllegalStateException` on closing tags; cannot recover from
@@ -148,4 +156,10 @@ Peter Palaga (@ppalaga)
  (7.2.0)
 * Reported #190: 'Element <root> has no attribute "verbose"' not thrown from
   `RepairingNsStreamWriter` when validating against a DTD schema
+ (7.2.0)
+
+Nektarios Kitsios (@nektarios-kitsios)
+
+* Reported, contributed fix for #184: Notations declared in external
+  DTD subsets reported as undefined
  (7.2.0)

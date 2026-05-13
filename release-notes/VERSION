@@ -6,19 +6,39 @@ Project: woodstox
 
 7.2.0 (not yet released)
 
+#12: Improve hashing implementation used for symbol tables for element
+  and attribute names
+#91: `getStartLocation()` returns inconsistent system id / offset when
+  reader crosses into or out of an expanded external entity
+ (reported by Nico K)
+#95: `BaseStreamWriter.writeRaw()` no longer closes an open start element
+  (NOTE: behavior change; existing callers that relied on the auto-close
+  must now emit an empty `writeCharacters("")` or other element-body call
+  before writing post-attribute content with `writeRaw()`)
+ (reported by Konrad W)
 #113: `IllegalStateException` on closing tags; cannot recover from
   unbalanced close tag when it is not preceded by whitespace
  (reported by Joshua E)
+#156: Javadoc for `XMLStreamReader.getLocation()` (`BasicStreamReader`)
+  is inconsistent with the implementation; document that Woodstox
+  returns the start-of-event location
+ (reported by @klease)
 #179: `WstxValidationException`: Unknown reason (at end element </nl:nillableIntElement>)
   when validating a document with nillable elements
  (reported by Peter P)
  (fix by Guillaume N)
+#184: Notations declared in external DTD subsets reported as undefined
+  when referenced from the internal subset
+ (reported, fix contributed by Nektarios K)
 #189: 'Undefined ID' not thrown when validating with `SimpleNsStreamWriter`
  (reported by Peter P)
 #190: 'Element <root> has no attribute "verbose"' not thrown from
  `RepairingNsStreamWriter` when validating against a DTD schema
  (reported by Peter P)
  (fix by Guillaume N)
+#201: `BufferingXmlWriter` does not check for invalid characters in
+  CDATA / COMMENT / PI content
+ (reported by @marcinar)
 #226: `WstxSAXParser` does not inherit `XMLResolver` configuration from
   underlying `WstxInputFactory`
  (reported by @coreders)

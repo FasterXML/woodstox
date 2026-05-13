@@ -409,9 +409,18 @@ public abstract class StreamScanner
      */
 
     /**
-     * Returns location of last properly parsed token; as per StAX specs,
-     * apparently needs to be the end of current event, which is the same
-     * as the start of the following event (or EOF if that's next).
+     * Returns a {@link Location} for the current event. For stream readers
+     * (see {@link com.ctc.wstx.sr.BasicStreamReader#getLocation()}) this is
+     * the location at the <b>start</b> of the current event (e.g. the
+     * opening {@code <} of a start tag) -- not the end. Note that the JDK
+     * built-in StAX implementation reports the end of the event instead;
+     * the StAX 1.0 specification leaves this ambiguous and Woodstox has
+     * historically returned the start location. Callers that need a
+     * specific point should use the Stax2 extension methods
+     * {@link #getStartLocation()}, {@link #getCurrentLocation()} or
+     * {@code XMLStreamReader2.getEndLocation()} instead, which are
+     * unambiguous (see issue
+     * <a href="https://github.com/FasterXML/woodstox/issues/156">#156</a>).
      */
     @Override
     public abstract Location getLocation();
@@ -1783,7 +1792,7 @@ public abstract class StreamScanner
         }
 
         int ptr = mInputPtr;
-        int hash = c;
+        int hash = mSymbols.getHashSeed() ^ c;
         final int inputLen = mInputEnd;
         int startPtr = ptr-1; // already read previous char
         final char[] inputBuf = mInputBuffer;
@@ -1812,7 +1821,8 @@ public abstract class StreamScanner
             ++ptr;
         }
         mInputPtr = ptr;
-        return mSymbols.findSymbol(mInputBuffer, startPtr, ptr - startPtr, hash);
+        return mSymbols.findSymbol(mInputBuffer, startPtr, ptr - startPtr,
+                SymbolTable.finalizeHash(hash));
     }
 
     /**
@@ -1858,7 +1868,7 @@ public abstract class StreamScanner
             hash = (hash * 31) + c;
         }
         // Still need to canonicalize the name:
-        return mSymbols.findSymbol(outBuf, 0, ptr, hash);
+        return mSymbols.findSymbol(outBuf, 0, ptr, SymbolTable.finalizeHash(hash));
     }
 
     /**
@@ -1906,7 +1916,7 @@ public abstract class StreamScanner
         }
 
         int ptr = mInputPtr;
-        int hash = c;
+        int hash = mSymbols.getHashSeed() ^ c;
         int inputLen = mInputEnd;
         int startPtr = ptr-1; // to account for the first char
 
@@ -1940,7 +1950,8 @@ public abstract class StreamScanner
             ++ptr;
         }
         mInputPtr = ptr;
-        return mSymbols.findSymbol(mInputBuffer, startPtr, ptr - startPtr, hash);
+        return mSymbols.findSymbol(mInputBuffer, startPtr, ptr - startPtr,
+                SymbolTable.finalizeHash(hash));
     }
 
     @SuppressWarnings("cast")
@@ -1988,7 +1999,7 @@ public abstract class StreamScanner
         }
 
         // Still need to canonicalize the name:
-        return mSymbols.findSymbol(outBuf, 0, ptr, hash);
+        return mSymbols.findSymbol(outBuf, 0, ptr, SymbolTable.finalizeHash(hash));
     }
 
     /**

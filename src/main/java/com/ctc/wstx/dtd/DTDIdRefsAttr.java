@@ -8,6 +8,7 @@ import com.ctc.wstx.sr.InputProblemReporter;
 import com.ctc.wstx.util.ElementId;
 import com.ctc.wstx.util.ElementIdMap;
 import com.ctc.wstx.util.PrefixedName;
+import com.ctc.wstx.util.SymbolTable;
 
 /**
  * Attribute class for attributes that contain multiple references
@@ -81,6 +82,7 @@ public final class DTDIdRefsAttr
         // Ok; now start points to first, end to last char (both inclusive)
         ElementIdMap m = v.getIdMap();
         Location loc = v.getLocation();
+        final int seed = m.getHashSeed();
 
         String idStr = null;
         StringBuilder sb = null;
@@ -90,7 +92,7 @@ public final class DTDIdRefsAttr
             if (!WstxInputData.isNameStartChar(c, mCfgNsAware, mCfgXml11)) {
                 return reportInvalidChar(v, c, "not valid as the first IDREFS character");
             }
-            int hash = (int) c;
+            int hash = seed ^ (int) c;
             int i = start+1;
             for (; i <= end; ++i) {
                 c = cbuf[i];
@@ -104,7 +106,8 @@ public final class DTDIdRefsAttr
             }
 
             // Ok, got the next id ref...
-            ElementId id = m.addReferenced(cbuf, start, i - start, hash,
+            ElementId id = m.addReferenced(cbuf, start, i - start,
+                                           SymbolTable.finalizeHash(hash),
                                            loc, v.getElemName(), mName);
             
             // Can skip the trailing space char (if there was one)
