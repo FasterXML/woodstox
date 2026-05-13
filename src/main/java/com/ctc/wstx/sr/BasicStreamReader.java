@@ -1646,6 +1646,18 @@ public abstract class BasicStreamReader
 
     // // // and then the object-based access methods:
 
+    /**
+     * Returns the location at the <b>start</b> of the current event (e.g.
+     * the opening {@code <} of a start tag) -- this is equivalent to
+     * {@link #getStartLocation()}. Note that the JDK built-in StAX
+     * implementation reports the <b>end</b> of the event instead, and the
+     * StAX 1.0 specification is ambiguous on this point. For code that
+     * needs an unambiguous start / current / end location, use the Stax2
+     * extension methods {@link #getStartLocation()},
+     * {@link #getCurrentLocation()} or {@link #getEndLocation()} (declared
+     * on {@code XMLStreamReader2}) rather than this method.
+     * See <a href="https://github.com/FasterXML/woodstox/issues/156">#156</a>.
+     */
     @Override
     public final Location getLocation() {
         return getStartLocation();

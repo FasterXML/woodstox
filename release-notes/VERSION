@@ -23,6 +23,10 @@ Project: woodstox
  (reported, fix contributed by Nektarios K)
 #189: 'Undefined ID' not thrown when validating with `SimpleNsStreamWriter`
  (reported by Peter P)
+#156: Javadoc for `XMLStreamReader.getLocation()` (`BasicStreamReader`)
+  is inconsistent with the implementation; document that Woodstox
+  returns the start-of-event location
+ (reported by Karen L)
 #190: 'Element <root> has no attribute "verbose"' not thrown from
  `RepairingNsStreamWriter` when validating against a DTD schema
  (reported by Peter P)
