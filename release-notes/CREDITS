@@ -84,6 +84,11 @@ Guillaume Nodet (@gnodet)
 * Contributed #176: Fix parser when not replacing entities and treating char references
   as entities
  (6.6.0)
+* Contributed fix for #179: `WstxValidationException`: Unknown reason (at end element
+  </nl:nillableIntElement>) when validating a document with nillable elements
+ (7.2.0)
+* Contributed fix for #190: 'Element <root> has no attribute "verbose"' not thrown from
+  `RepairingNsStreamWriter` when validating against a DTD schema
 
 Tim Martin (@Orbisman)
 
@@ -126,4 +131,13 @@ Winfried Gerlach (@winfriedgerlach)
 * Reported #250: Bug in `ValidatingStreamReader.getProcessedDTDSchema()`
  (7.2.0)
 * Contributed #254: Optimize locking on global `InternCache`
+ (7.2.0)
+
+Peter Palaga (@ppalaga)
+
+* Reported #179: `WstxValidationException`: Unknown reason (at end element </nl:nillableIntElement>)
+  when validating a document with nillable elements
+ (7.2.0)
+* Reported #190: 'Element <root> has no attribute "verbose"' not thrown from
+  `RepairingNsStreamWriter` when validating against a DTD schema
  (7.2.0)

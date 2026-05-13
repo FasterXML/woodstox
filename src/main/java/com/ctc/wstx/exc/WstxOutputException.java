@@ -12,4 +12,9 @@ public class WstxOutputException
     public WstxOutputException(String msg) {
         super(msg);
     }
+
+    public WstxOutputException(String msg, Throwable cause) {
+        super(msg);
+        initCause(cause);
+    }
 }
