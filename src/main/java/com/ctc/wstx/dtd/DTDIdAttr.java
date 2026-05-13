@@ -90,7 +90,8 @@ public final class DTDIdAttr
             --end;
         }
 
-        // Either way, we do need to validate characters, and calculate hash
+        // Look up the per-document id map up front; need its seed to fold
+        // into the per-character hash computed below.
         ElementIdMap m = v.getIdMap();
 
         // Ok, need to check char validity, and also calc hash code:
