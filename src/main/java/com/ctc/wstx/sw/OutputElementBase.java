@@ -21,6 +21,7 @@ import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.XMLStreamException;
 
+import com.ctc.wstx.exc.WstxOutputException;
 import com.ctc.wstx.util.BijectiveNsMap;
 import com.ctc.wstx.util.DataUtil;
 
@@ -378,6 +379,6 @@ public abstract class OutputElementBase
     protected final void throwOutputError(String msg)
         throws XMLStreamException
     {
-        throw new XMLStreamException(msg);
+        throw new WstxOutputException(msg);
     }
 }
