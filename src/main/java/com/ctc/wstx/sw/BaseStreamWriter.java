@@ -652,7 +652,7 @@ public abstract class BaseStreamWriter
             throw new WstxIOException(ioe);
         }
         if (ix >= 0) {
-            throw new XMLStreamException("Illegal input: processing instruction content has embedded '?>' in it (index "+ix+")");
+            throwOutputError("Illegal input: processing instruction content has embedded '?>' in it (index "+ix+")");
         }
     }
 
@@ -945,7 +945,7 @@ public abstract class BaseStreamWriter
         } catch (IOException ioe) {
             throw new WstxIOException(ioe);
         }
-        throw new XMLStreamException("Unrecognized event type ("
+        throwOutputError("Unrecognized event type ("
                 +sr.getEventType()+"); not sure how to copy");
     }
 
@@ -1472,6 +1472,22 @@ public abstract class BaseStreamWriter
             }
         }
 
+        // [woodstox-core#189]: signal end-of-document to the validator so
+        // accumulated state can be checked (e.g. undefined IDREF targets).
+        // Mirrors what the reader side does in InputElementStack when the
+        // root element is closed. Done after auto-closing so the call only
+        // happens when the document has reached its actual end.
+        if (mValidator != null && mVldException == null && mState == STATE_EPILOG) {
+            XMLValidator vld = mValidator;
+            mValidator = null;
+            try {
+                vld.validationCompleted(true);
+            } catch (XMLValidationException e) {
+                mVldException = e;
+                throw e;
+            }
+        }
+
         /* And finally, inform the underlying writer that it should flush
          * and release its buffers, and close components it uses if any.
          */
@@ -1536,11 +1552,11 @@ public abstract class BaseStreamWriter
         // 20-Nov-2004, TSa: can check that we are in prolog
         if (mCheckStructure) {
             if (mState != STATE_PROLOG) {
-                throw new XMLStreamException("Can not write DOCTYPE declaration (DTD) when not in prolog any more (state "+mState+"; start element(s) written)");
+                throwOutputError("Can not write DOCTYPE declaration (DTD) when not in prolog any more (state "+mState+"; start element(s) written)");
             }
             // 20-Dec-2005, TSa: and that we only output one...
             if (mDtdRootElem != null) {
-                throw new XMLStreamException("Trying to write multiple DOCTYPE declarations");
+                throwOutputError("Trying to write multiple DOCTYPE declarations");
             }
         }
     }

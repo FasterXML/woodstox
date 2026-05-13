@@ -377,12 +377,13 @@ public class TestRelaxNG
                          "attribute \"ref\" has a bad value");
 
         // And then invalid one, with dangling ref
+        // [woodstox-core#189]: covered on both reader and writer paths
         XML = "<root>"
             +" <leaf id='a' ref='second' />\n"
             +"</root>"
             ;
         verifyFailure(XML, schema, "reference to undefined id",
-                         "Undefined ID", true, true, false);
+                         "Undefined ID", true);
 
         // and another one with some of refs undefined
         XML = "<root>"
@@ -390,7 +391,7 @@ public class TestRelaxNG
             +"</root>"
             ;
         verifyFailure(XML, schema, "reference to undefined id",
-                         "Undefined ID", true, true, false);
+                         "Undefined ID", true);
     }
 
     public void testSimpleIntAttr()

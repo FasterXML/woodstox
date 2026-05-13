@@ -2737,6 +2737,12 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                     return END_ELEMENT;
                 }
             } else if (mCurrToken == END_ELEMENT) {
+                // 12-May-2026, tatu: [woodstox-core#113] Mark END_ELEMENT as
+                //   "consumed" BEFORE popping/parsing further: if a parse
+                //   error is thrown while reading the next event, the caller
+                //   may catch it and call next() again, and we must not
+                //   re-pop the element stack or re-enter closeContentTree().
+                mCurrToken = SPACE;
                 // Close tag removes current element from stack
                 if (!mElementStack.pop()) { // false if root closed
                     // if so, we'll get to epilog, unless in fragment mode
@@ -2755,6 +2761,11 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                  * partial ones!). Let's just read it like a new
                  * CData section first:
                  */
+                // 12-May-2026, tatu: [woodstox-core#113] Same as END_ELEMENT
+                //   above: mark CDATA continuation as "consumed" so a parse
+                //   error inside readCData* won't cause us to re-enter this
+                //   branch (with input pointer already advanced) on retry.
+                mCurrToken = SPACE;
                 // First, need to update the start location...
                 mTokenInputTotal = mCurrInputProcessed + mInputPtr;
                 mTokenInputRow = mCurrInputRow;

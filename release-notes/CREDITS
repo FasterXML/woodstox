@@ -133,10 +133,18 @@ Winfried Gerlach (@winfriedgerlach)
 * Contributed #254: Optimize locking on global `InternCache`
  (7.2.0)
 
+Joshua Efiong (@Josh-ES)
+
+* Reported #113: `IllegalStateException` on closing tags; cannot recover from
+  unbalanced close tag when it is not preceded by whitespace
+ (7.2.0)
+
 Peter Palaga (@ppalaga)
 
 * Reported #179: `WstxValidationException`: Unknown reason (at end element </nl:nillableIntElement>)
   when validating a document with nillable elements
+ (7.2.0)
+* Reported #189: 'Undefined ID' not thrown when validating with `SimpleNsStreamWriter`
  (7.2.0)
 * Reported #190: 'Element <root> has no attribute "verbose"' not thrown from
   `RepairingNsStreamWriter` when validating against a DTD schema

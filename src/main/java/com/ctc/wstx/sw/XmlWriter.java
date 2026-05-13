@@ -32,6 +32,7 @@ import com.ctc.wstx.api.WstxOutputProperties;
 import com.ctc.wstx.cfg.ErrorConsts;
 import com.ctc.wstx.cfg.OutputConfigFlags;
 import com.ctc.wstx.exc.WstxIOException;
+import com.ctc.wstx.exc.WstxOutputException;
 import com.ctc.wstx.io.WstxInputData;
 
 /**
@@ -600,7 +601,7 @@ public abstract class XmlWriter
             throw new WstxIOException(ioe);
         }
 
-        throw new XMLStreamException(msg);
+        throw new WstxOutputException(msg);
     }
 
     protected void throwOutputError(String format, Object arg)

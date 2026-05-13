@@ -166,6 +166,8 @@ public class TestW3CSchema
                       "is missing \"id\" attribute");
     }
     
+    // [woodstox-core#189]: ensure undefined IDREF detection works on both
+    // reader and writer validation paths.
     public void testSimpleNonNsUndefinedId() throws XMLStreamException
     {
         XMLValidationSchema schema = parseW3CSchema(SIMPLE_NON_NS_SCHEMA);
@@ -173,7 +175,7 @@ public class TestW3CSchema
             + "<name><family>F</family><given>G</given>"
             + "</name><link manager='m3' /></person></personnel>";
         verifyFailure(XML, schema, "undefined referenced id ('m3')",
-                      "Undefined ID 'm3'", true, true, false);
+                      "Undefined ID 'm3'", true);
     }
 
     public void testSimpleDataTypes() throws XMLStreamException
