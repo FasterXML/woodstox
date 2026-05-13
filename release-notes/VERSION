@@ -10,6 +10,8 @@ Project: woodstox
   when validating a document with nillable elements
  (reported by Peter P)
  (fix by Guillaume N)
+#189: 'Undefined ID' not thrown when validating with `SimpleNsStreamWriter`
+ (reported by Peter P)
 #190: 'Element <root> has no attribute "verbose"' not thrown from
  `RepairingNsStreamWriter` when validating against a DTD schema
  (reported by Peter P)
