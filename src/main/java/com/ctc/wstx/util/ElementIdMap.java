@@ -15,6 +15,8 @@
 
 package com.ctc.wstx.util;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import javax.xml.stream.Location;
 
 
@@ -91,6 +93,12 @@ public final class ElementIdMap
 
     protected ElementId mTail;
 
+    /**
+     * Seed mixed into the per-character hash, to defend against collision
+     * attacks crafted from attribute values. See issue #12.
+     */
+    protected final int mHashSeed;
+
     /*
     ////////////////////////////////////////
     // Life-cycle:
@@ -118,7 +126,14 @@ public final class ElementIdMap
         mSize = 0;
         mSizeThreshold = (actual * FILL_PCT) / 100;
         mHead = mTail = null;
+        mHashSeed = ThreadLocalRandom.current().nextInt();
     }
+
+    /**
+     * Returns the random seed that callers must fold into per-character
+     * hash computation for keys looked up in this table.
+     */
+    public int getHashSeed() { return mHashSeed; }
 
     /*
     ////////////////////////////////////////////////////
@@ -184,7 +199,7 @@ public final class ElementIdMap
     public ElementId addReferenced(String idStr,
                                    Location loc, PrefixedName elemName, PrefixedName attrName)
     {
-        int hash = calcHash(idStr);
+        int hash = calcHash(idStr, mHashSeed);
         int index = (hash & mIndexMask);
         ElementId id = mTable[index];
 
@@ -292,7 +307,7 @@ public final class ElementIdMap
     public ElementId addDefined(String idStr,
                                 Location loc, PrefixedName elemName, PrefixedName attrName)
     {
-        int hash = calcHash(idStr);
+        int hash = calcHash(idStr, mHashSeed);
         int index = (hash & mIndexMask);
         ElementId id = mTable[index];
 
@@ -351,14 +366,41 @@ public final class ElementIdMap
      * is done by caller during parsing, not here; however, sometimes
      * it needs to be done for parsed "String" too.
      *<p>
-     * Note: identical to {@link com.ctc.wstx.util.SymbolTable#calcHash},
-     * although not required to be.
+     * Seed and finalizer match {@link SymbolTable#calcHash}, so attacker-
+     * chosen names cannot land in the same bucket without knowing the
+     * table's per-instance seed.
      *
      * @param len Length of String; has to be at least 1 (caller guarantees
      *   this pre-condition)
+     * @param seed Per-table seed obtained from {@link #getHashSeed()}
      */
     @SuppressWarnings("cast")
-	public static int calcHash(char[] buffer, int start, int len)
+    public static int calcHash(char[] buffer, int start, int len, int seed)
+    {
+        int hash = seed ^ (int) buffer[start];
+        for (int i = 1; i < len; ++i) {
+            hash = (hash * 31) + (int) buffer[start+i];
+        }
+        return SymbolTable.finalizeHash(hash);
+    }
+
+    @SuppressWarnings("cast")
+    public static int calcHash(String key, int seed)
+    {
+        int hash = seed ^ (int) key.charAt(0);
+        for (int i = 1, len = key.length(); i < len; ++i) {
+            hash = (hash * 31) + (int) key.charAt(i);
+        }
+        return SymbolTable.finalizeHash(hash);
+    }
+
+    /**
+     * @deprecated since 7.2; retained for binary compatibility. Use
+     *   {@link #calcHash(char[], int, int, int)} with {@link #getHashSeed()}.
+     */
+    @Deprecated
+    @SuppressWarnings("cast")
+    public static int calcHash(char[] buffer, int start, int len)
     {
         int hash = (int) buffer[start];
         for (int i = 1; i < len; ++i) {
@@ -367,13 +409,17 @@ public final class ElementIdMap
         return hash;
     }
 
+    /**
+     * @deprecated since 7.2; retained for binary compatibility. Use
+     *   {@link #calcHash(String, int)} with {@link #getHashSeed()}.
+     */
+    @Deprecated
     @SuppressWarnings("cast")
-	public static int calcHash(String key)
+    public static int calcHash(String key)
     {
         int hash = (int) key.charAt(0);
         for (int i = 1, len = key.length(); i < len; ++i) {
             hash = (hash * 31) + (int) key.charAt(i);
-
         }
         return hash;
     }
@@ -412,7 +458,7 @@ public final class ElementIdMap
         for (int i = 0; i < size; ++i) {
             for (ElementId id = oldSyms[i]; id != null; ) {
                 ++count;
-                int index = calcHash(id.getId()) & mIndexMask;
+                int index = calcHash(id.getId(), mHashSeed) & mIndexMask;
                 ElementId nextIn = id.nextColliding();
                 id.setNextColliding(mTable[index]);
                 mTable[index] = id;

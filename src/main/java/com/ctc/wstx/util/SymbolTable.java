@@ -15,6 +15,8 @@
 
 package com.ctc.wstx.util;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 /**
  * This class is a kind of specialized type-safe Map, from char array to
  * String value. Specialization means that in addition to type-safety
@@ -146,6 +148,14 @@ public class SymbolTable {
      */
     protected boolean mDirty;
 
+    /**
+     * Seed mixed into the per-character hash, to defend against collision
+     * attacks crafted from element/attribute names. Set when a master
+     * instance is constructed and propagated unchanged to child instances
+     * (since children share the master's bucket layout).
+     */
+    protected final int mHashSeed;
+
     /*
     ////////////////////////////////////////
     // Life-cycle:
@@ -186,13 +196,16 @@ public class SymbolTable {
      *   when more entries are added, table will be expanded.
      */
     public SymbolTable(boolean internStrings, int initialSize,
-                       float fillFactor)
+            float fillFactor)
     {
         mInternStrings = internStrings;
         // Let's start versions from 1
         mThisVersion = 1;
         // And we'll also set flags so no copying of buckets is needed:
         mDirty = true;
+        // Random per-table seed to defend against hash-collision attacks
+        // (see issue #12).
+        mHashSeed = ThreadLocalRandom.current().nextInt();
 
         // No point in requesting funny initial sizes...
         if (initialSize < 1) {
@@ -229,8 +242,8 @@ public class SymbolTable {
      * Internal constructor used when creating child instances.
      */
     private SymbolTable(boolean internStrings, String[] symbols,
-                        Bucket[] buckets, int size, int sizeThreshold,
-                        int indexMask, int version)
+            Bucket[] buckets, int size, int sizeThreshold,
+            int indexMask, int version, int hashSeed)
     {
         mInternStrings = internStrings;
         mSymbols = symbols;
@@ -239,6 +252,8 @@ public class SymbolTable {
         mSizeThreshold = sizeThreshold;
         mIndexMask = indexMask;
         mThisVersion = version;
+        // Children must reuse the parent's seed: they share its bucket layout.
+        mHashSeed = hashSeed;
 
         // Need to make copies of arrays, if/when adding new entries
         mDirty = false;
@@ -266,7 +281,7 @@ public class SymbolTable {
         final int indexMask;
         final int version;
 
-        synchronized (this) {      
+        synchronized (this) {
             internStrings = mInternStrings;
             symbols = mSymbols;
             buckets = mBuckets;
@@ -276,7 +291,7 @@ public class SymbolTable {
             version = mThisVersion+1;
         }
         return new SymbolTable(internStrings, symbols, buckets,
-                size, sizeThreshold, indexMask, version);
+                size, sizeThreshold, indexMask, version, mHashSeed);
     }
 
     /**
@@ -333,6 +348,13 @@ public class SymbolTable {
     public int size() { return mSize; }
 
     public int version() { return mThisVersion; }
+
+    /**
+     * Returns the random seed that must be folded into per-character hash
+     * computation for keys looked up in this table. Used by parsers that
+     * compute the hash inline while scanning name characters.
+     */
+    public int getHashSeed() { return mHashSeed; }
 
     public boolean isDirty() { return mDirty; }
 
@@ -411,10 +433,9 @@ public class SymbolTable {
         // Need to expand?
         if (mSize >= mSizeThreshold) {
             rehash();
-            /* Need to recalc hash; rare occurence (index mask has been
-             * recalculated as part of rehash)
-             */
-            hash = calcHash(buffer, start, len) & mIndexMask;
+            // Need to recalc hash; rare occurence (index mask has been
+            // recalculated as part of rehash)
+            hash = calcHash(buffer, start, len, mHashSeed) & mIndexMask;
         } else if (!mDirty) {
             // Or perhaps we need to do copy-on-write?
             copyArrays();
@@ -490,7 +511,7 @@ public class SymbolTable {
             return EMPTY_STRING;
         }
 
-        int index = calcHash(str) & mIndexMask;
+        int index = calcHash(str, mHashSeed) & mIndexMask;
         String sym = mSymbols[index];
 
         // Optimal case; checking existing primary symbol for hash index:
@@ -524,7 +545,7 @@ public class SymbolTable {
             /* Need to recalc hash; rare occurence (index mask has been
              * recalculated as part of rehash)
              */
-            index = calcHash(str) & mIndexMask;
+            index = calcHash(str, mHashSeed) & mIndexMask;
         } else if (!mDirty) {
             // Or perhaps we need to do copy-on-write?
             copyArrays();
@@ -551,10 +572,57 @@ public class SymbolTable {
      * Strings. Most of the time intention is that this calculation
      * is done by caller during parsing, not here; however, sometimes
      * it needs to be done for parsed "String" too.
+     *<p>
+     * The seed is mixed into the initial state and a MurmurHash3 finalizer
+     * is applied to scramble the output, so attacker-chosen names cannot
+     * land in the same bucket without knowing the table's seed.
      *
      * @param len Length of String; has to be at least 1 (caller guarantees
      *   this pre-condition)
+     * @param seed Per-table seed obtained from {@link #getHashSeed()}
      */
+    @SuppressWarnings("cast")
+    public static int calcHash(char[] buffer, int start, int len, int seed) {
+        int hash = seed ^ (int) buffer[start];
+        for (int i = 1; i < len; ++i) {
+            hash = (hash * 31) + (int) buffer[start+i];
+        }
+        return finalizeHash(hash);
+    }
+
+    @SuppressWarnings("cast")
+    public static int calcHash(String key, int seed) {
+        int hash = seed ^ (int) key.charAt(0);
+        for (int i = 1, len = key.length(); i < len; ++i) {
+            hash = (hash * 31) + (int) key.charAt(i);
+        }
+        return finalizeHash(hash);
+    }
+
+    /**
+     * MurmurHash3 32-bit finalizer; applied after the per-character hash
+     * accumulation to ensure that small input deltas spread across all
+     * output bits. Callers that compute the hash inline (e.g. while
+     * scanning) must apply this before passing the value to
+     * {@link #findSymbol(char[], int, int, int)}.
+     */
+    public static int finalizeHash(int hash) {
+        hash ^= hash >>> 16;
+        hash *= 0x85ebca6b;
+        hash ^= hash >>> 13;
+        hash *= 0xc2b2ae35;
+        hash ^= hash >>> 16;
+        return hash;
+    }
+
+    /**
+     * @deprecated since 7.2; retained for binary compatibility. Produces
+     *   the legacy seedless hash and will not match symbols stored in
+     *   tables created after the seeding fix (issue #12). Use
+     *   {@link #calcHash(char[], int, int, int)} with
+     *   {@link #getHashSeed()}.
+     */
+    @Deprecated
     @SuppressWarnings("cast")
     public static int calcHash(char[] buffer, int start, int len) {
         int hash = (int) buffer[start];
@@ -564,12 +632,18 @@ public class SymbolTable {
         return hash;
     }
 
+    /**
+     * @deprecated since 7.2; retained for binary compatibility. Produces
+     *   the legacy seedless hash and will not match symbols stored in
+     *   tables created after the seeding fix (issue #12). Use
+     *   {@link #calcHash(String, int)} with {@link #getHashSeed()}.
+     */
+    @Deprecated
     @SuppressWarnings("cast")
     public static int calcHash(String key) {
         int hash = (int) key.charAt(0);
         for (int i = 1, len = key.length(); i < len; ++i) {
             hash = (hash * 31) + (int) key.charAt(i);
-
         }
         return hash;
     }
@@ -623,7 +697,7 @@ public class SymbolTable {
             String symbol = oldSyms[i];
             if (symbol != null) {
                 ++count;
-                int index = calcHash(symbol) & mIndexMask;
+                int index = calcHash(symbol, mHashSeed) & mIndexMask;
                 if (mSymbols[index] == null) {
                     mSymbols[index] = symbol;
                 } else {
@@ -639,7 +713,7 @@ public class SymbolTable {
             while (b != null) {
                 ++count;
                 String symbol = b.symbol;
-                int index = calcHash(symbol) & mIndexMask;
+                int index = calcHash(symbol, mHashSeed) & mIndexMask;
                 if (mSymbols[index] == null) {
                     mSymbols[index] = symbol;
                 } else {
