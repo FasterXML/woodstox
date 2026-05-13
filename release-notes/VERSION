@@ -23,6 +23,7 @@ Project: woodstox
 #251: Update `stax2-api` dependency to 4.3.0
 #254: Optimize locking on global `InternCache`
  (contributed by @winfriedgerlach)
+#266: Convert "new XMLStreamException()" calls with "throwOutputError()" for writers
 - Branch "master" renamed as "main"
 - Update to `oss-parent` v79 for latest Maven plug-in versions
 

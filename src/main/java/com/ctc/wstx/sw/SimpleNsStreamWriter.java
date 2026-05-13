@@ -237,7 +237,7 @@ public class SimpleNsStreamWriter
         // Need a prefix...
         String prefix = mCurrElem.getPrefix(nsURI);
         if (prefix == null) {
-            throw new XMLStreamException("Unbound namespace URI '"+nsURI+"'");
+            throwOutputError("Unbound namespace URI '"+nsURI+"'");
         }
         checkStartElement(localName, prefix);
 
