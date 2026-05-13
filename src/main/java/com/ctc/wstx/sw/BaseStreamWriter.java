@@ -1599,7 +1599,13 @@ public abstract class BaseStreamWriter
     protected static void throwOutputError(String msg)
         throws XMLStreamException
     {
-        throw new XMLStreamException(msg);
+        throw new WstxOutputException(msg);
+    }
+
+    protected static void throwOutputError(String msg, Throwable cause)
+        throws XMLStreamException
+    {
+        throw new WstxOutputException(msg, cause);
     }
 
     protected static void throwOutputError(String format, Object arg)

@@ -494,7 +494,7 @@ public class NonNsStreamWriter
         throws XMLStreamException
     {
         if (mVldException != null) {
-            throw new XMLStreamException("Cannot write after a validation error", mVldException);
+            throwOutputError("Cannot write after a validation error", mVldException);
         }
         mAnyOutput = true;
         // Need to finish an open start element?
@@ -542,7 +542,7 @@ public class NonNsStreamWriter
         throws XMLStreamException
     {
         if (mVldException != null) {
-            throw new XMLStreamException("Cannot write after a validation error", mVldException);
+            throwOutputError("Cannot write after a validation error", mVldException);
         }
         /* First of all, do we need to close up an earlier empty element?
          * (open start element that was not created via call to

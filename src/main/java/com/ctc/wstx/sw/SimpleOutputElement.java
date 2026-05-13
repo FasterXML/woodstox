@@ -25,6 +25,7 @@ import org.codehaus.stax2.validation.XMLValidator;
 
 import com.ctc.wstx.api.WstxInputProperties;
 import com.ctc.wstx.cfg.XmlConsts;
+import com.ctc.wstx.exc.WstxOutputException;
 import com.ctc.wstx.util.BijectiveNsMap;
 
 /**
@@ -285,7 +286,7 @@ public final class SimpleOutputElement
         }
         Attribute an = new Attribute(nsURI, localName, prefix, value, mAttrList.size());
         if (mAttrMap.put(an, an) != null) {
-            throw new XMLStreamException("Duplicate attribute write for attribute '"+an+"'");
+            throw new WstxOutputException("Duplicate attribute write for attribute '"+an+"'");
         }
         mAttrList.add(an);
     }

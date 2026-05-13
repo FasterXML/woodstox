@@ -18,9 +18,11 @@ import org.codehaus.stax2.validation.XMLValidator;
  * <p>
  * Concrete subclasses are inner classes of {@link SimpleOutputElement}
  * (namespace-aware) and {@link NonNsStreamWriter} (non-namespace-aware).
+ *
+ * @since 7.2
  */
-abstract class AbstractAttributeCollector extends XMLValidator {
-
+abstract class AbstractAttributeCollector extends XMLValidator
+{
     protected AbstractAttributeCollector() {
         super();
     }
