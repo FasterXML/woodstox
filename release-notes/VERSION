@@ -14,6 +14,8 @@ Project: woodstox
  `RepairingNsStreamWriter` when validating against a DTD schema
  (reported by Peter P)
  (fix by Guillaume N)
+#231: Fix locale-dependent assertion in `TestEntityResolver`
+ (reported by @AlexUg)
 #249: Minor performance optimizations
  (contributed by @winfriedgerlach)
 #250: Bug in `ValidatingStreamReader.getProcessedDTDSchema()`

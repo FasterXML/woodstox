@@ -43,9 +43,14 @@ public class TestEntityResolver
             Throwable cause = e.getCause();
             assertNotNull(cause);
             assertTrue(cause instanceof WstxException);
-            // [woodstox-core#84]: actual message varies by OS so only verify this:
-            verifyException(e, " file ");
+            // [woodstox-core#84]: actual message varies by OS so only verify
+            // the file name appears (locale-independent)
             verifyException(e, "no-such-thing.dtd");
+            // [woodstox-core#231]: previously also verified " file " substring,
+            // but that part of the message is localized by the JVM/OS.
+            // The "(was java.io.FileNotFoundException)" tag prepended by
+            // Woodstox is locale-independent, so check for that instead.
+            verifyException(e, FileNotFoundException.class.getName());
         }
 
         // And then with dummy resolver; should work ok now
