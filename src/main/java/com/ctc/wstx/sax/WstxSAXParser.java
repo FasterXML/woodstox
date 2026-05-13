@@ -208,19 +208,22 @@ public class WstxSAXParser
         mStaxFactory = sf;
         mFeatNsPrefixes = nsPrefixes;
         mConfig = sf.createPrivateConfig();
-        mConfig.doSupportDTDs(true);
         /* Lazy parsing is a tricky thing: although most of the time
          * it's useless with SAX, it is actually necessary to be able
          * to properly model internal DTD subsets, for example. So,
          * we can not really easily determine defaults.
          */
-        ResolverProxy r = new ResolverProxy();
+        // [woodstox-core#226]: preserve resolvers configured on the factory
+        // so they can be used as a fallback if no SAX EntityResolver is set
+        // on this parser explicitly.
+        XMLResolver origDtdResolver = mConfig.getDtdResolver();
+        XMLResolver origEntityResolver = mConfig.getEntityResolver();
         /* SAX doesn't distinguish between DTD (ext. subset, PEs) and
          * entity (external general entities) resolvers, so let's
          * assign them both:
          */
-        mConfig.setDtdResolver(r);
-        mConfig.setEntityResolver(r);
+        mConfig.setDtdResolver(new ResolverProxy(origDtdResolver));
+        mConfig.setEntityResolver(new ResolverProxy(origEntityResolver));
         mConfig.setDTDEventListener(this);
 
         /* These settings do NOT make sense as generic defaults, but
@@ -1329,7 +1332,20 @@ public class WstxSAXParser
     final class ResolverProxy
         implements XMLResolver
     {
-        public ResolverProxy() { }
+        /**
+         * Stax resolver originally configured on the factory; used as a
+         * fallback when no SAX EntityResolver has been set on the parser.
+         * See [woodstox-core#226].
+         */
+        private final XMLResolver mFallback;
+
+        public ResolverProxy() {
+            this(null);
+        }
+
+        public ResolverProxy(XMLResolver fallback) {
+            mFallback = fallback;
+        }
 
         @Override
         public Object resolveEntity(String publicID, String systemID, String baseURI, String namespace)
@@ -1354,14 +1370,20 @@ public class WstxSAXParser
                             return r;
                         }
                     }
-
-                    // Returning null should be fine, actually...
-                    return null;
+                    // Fall through to factory-configured fallback resolver
+                    // (the SAX resolver could not resolve; this matches the
+                    // behavior of a no-op DefaultHandler resolver, which is
+                    // implicitly registered by parse(InputSource, DefaultHandler))
                 } catch (IOException ex) {
                     throw new WstxIOException(ex);
                 } catch (Exception ex) {
                     throw new XMLStreamException(ex.getMessage(), ex);
                 }
+            }
+            // [woodstox-core#226]: if SAX EntityResolver did not resolve, fall
+            // back to the XMLResolver configured on the underlying Stax factory.
+            if (mFallback != null) {
+                return mFallback.resolveEntity(publicID, systemID, baseURI, namespace);
             }
             return null;
         }

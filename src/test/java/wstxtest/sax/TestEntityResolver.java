@@ -4,12 +4,16 @@ import java.io.*;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLResolver;
+import javax.xml.stream.XMLStreamException;
 
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 
 import com.ctc.wstx.exc.WstxException;
 import com.ctc.wstx.sax.WstxSAXParserFactory;
+import com.ctc.wstx.stax.WstxInputFactory;
 
 import wstxtest.BaseWstxTest;
 
@@ -62,6 +66,116 @@ public class TestEntityResolver
         } catch (SAXException e) {
             fail("Should not have failed with entity resolver, got ("+e.getClass()+"): "+e.getMessage());
         }
+    }
+
+    /**
+     * Test for [woodstox-core#226]: the {@link XMLResolver} configured on the
+     * underlying {@link WstxInputFactory} should be used by the SAX parser
+     * when no SAX EntityResolver is explicitly set on the parser itself.
+     */
+    public void testFactoryXMLResolverIsInherited()
+        throws Exception
+    {
+        final String XML =
+            "<!DOCTYPE root PUBLIC '//some//public//id' 'no-such-thing.dtd'>\n"
+            +"<root />"
+            ;
+
+        WstxInputFactory inputFactory = new WstxInputFactory();
+        final boolean[] resolverCalled = new boolean[] { false };
+        inputFactory.setXMLResolver(new XMLResolver() {
+            @Override
+            public Object resolveEntity(String publicID, String systemID, String baseURI, String namespace)
+                throws XMLStreamException {
+                resolverCalled[0] = true;
+                // Return an empty stream, equivalent to an empty DTD subset
+                return new ByteArrayInputStream(new byte[0]);
+            }
+        });
+        WstxSAXParserFactory spf = new WstxSAXParserFactory(inputFactory);
+        SAXParser sp = spf.newSAXParser();
+
+        DefaultHandler h = new DefaultHandler();
+        try {
+            sp.parse(new InputSource(new StringReader(XML)), h);
+        } catch (SAXException e) {
+            fail("Should not have failed when XMLResolver is set on factory, got ("
+                    + e.getClass() + "): " + e.getMessage());
+        }
+        assertTrue("Expected XMLResolver configured on factory to be invoked", resolverCalled[0]);
+    }
+
+    /**
+     * Test for [woodstox-core#226]: when {@code SUPPORT_DTD} is disabled on the
+     * underlying {@link WstxInputFactory}, the SAX parser should honor that
+     * setting and not attempt to resolve the external DTD subset.
+     */
+    public void testFactorySupportDtdIsInherited()
+        throws Exception
+    {
+        final String XML =
+            "<!DOCTYPE root PUBLIC '//some//public//id' 'no-such-thing.dtd'>\n"
+            +"<root />"
+            ;
+
+        WstxInputFactory inputFactory = new WstxInputFactory();
+        inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
+        WstxSAXParserFactory spf = new WstxSAXParserFactory(inputFactory);
+        SAXParser sp = spf.newSAXParser();
+
+        DefaultHandler h = new DefaultHandler();
+        try {
+            sp.parse(new InputSource(new StringReader(XML)), h);
+        } catch (SAXException e) {
+            fail("Should not have failed when SUPPORT_DTD is disabled on factory, got ("
+                    + e.getClass() + "): " + e.getMessage());
+        }
+    }
+
+    /**
+     * Test for [woodstox-core#226]: when a SAX EntityResolver is explicitly
+     * registered on the parser, it should win over the {@link XMLResolver}
+     * configured on the factory (the factory resolver is only a fallback).
+     */
+    public void testSAXEntityResolverWinsOverFactoryResolver()
+        throws Exception
+    {
+        final String XML =
+            "<!DOCTYPE root PUBLIC '//some//public//id' 'no-such-thing.dtd'>\n"
+            +"<root />"
+            ;
+
+        WstxInputFactory inputFactory = new WstxInputFactory();
+        final boolean[] factoryResolverCalled = new boolean[] { false };
+        inputFactory.setXMLResolver(new XMLResolver() {
+            @Override
+            public Object resolveEntity(String publicID, String systemID, String baseURI, String namespace)
+                throws XMLStreamException {
+                factoryResolverCalled[0] = true;
+                return new ByteArrayInputStream(new byte[0]);
+            }
+        });
+        WstxSAXParserFactory spf = new WstxSAXParserFactory(inputFactory);
+        SAXParser sp = spf.newSAXParser();
+
+        final boolean[] saxResolverCalled = new boolean[] { false };
+        sp.getXMLReader().setEntityResolver(new EntityResolver() {
+            @Override
+            public InputSource resolveEntity(String publicId, String systemId) {
+                saxResolverCalled[0] = true;
+                return new InputSource(new StringReader(""));
+            }
+        });
+
+        DefaultHandler h = new DefaultHandler();
+        try {
+            sp.parse(new InputSource(new StringReader(XML)), h);
+        } catch (SAXException e) {
+            fail("Parsing failed: ("+e.getClass()+"): "+e.getMessage());
+        }
+        assertTrue("Expected SAX EntityResolver to be invoked", saxResolverCalled[0]);
+        assertFalse("Factory XMLResolver must not be consulted when SAX EntityResolver resolves",
+                factoryResolverCalled[0]);
     }
 
     /*
