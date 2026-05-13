@@ -119,7 +119,7 @@ public final class DTDSubsetImpl
 
     /*
     //////////////////////////////////////////////////////
-    // Notation definitions:
+    // Notation definitions
     //////////////////////////////////////////////////////
      */
 
@@ -136,10 +136,19 @@ public final class DTDSubsetImpl
      */
     transient List<NotationDeclaration> mNotationList = null;
 
+    /**
+     * Notation references made in this subset that had not been resolved
+     * by the time parsing of this subset finished. Used by
+     * {@link #combineWithExternalSubset(InputProblemReporter, DTDSubset)}
+     * to validate against the combined notation map. See
+     * [woodstox-core#184]. Only set for internal subsets; always {@code null}
+     * for external or combined subsets.
+     */
+    final HashMap<String,Location> mNotationForwardRefs;
 
     /*
     //////////////////////////////////////////////////////
-    // Element definitions:
+    // Element definitions
     //////////////////////////////////////////////////////
      */
 
@@ -152,10 +161,11 @@ public final class DTDSubsetImpl
      */
 
     private DTDSubsetImpl(boolean cachable,
-                          HashMap<String,EntityDecl> genEnt, Set<String> refdGEs,
-                          HashMap<String,EntityDecl> paramEnt, Set<String> peRefs,
-                          HashMap<String,NotationDeclaration> notations, HashMap<PrefixedName,DTDElement> elements,
-                          boolean fullyValidating)
+            HashMap<String,EntityDecl> genEnt, Set<String> refdGEs,
+            HashMap<String,EntityDecl> paramEnt, Set<String> peRefs,
+            HashMap<String,NotationDeclaration> notations, HashMap<PrefixedName,DTDElement> elements,
+            boolean fullyValidating,
+            HashMap<String,Location> notationForwardRefs)
     {
         mIsCachable = cachable;
         mGeneralEntities = genEnt;
@@ -165,10 +175,11 @@ public final class DTDSubsetImpl
         mNotations = notations;
         mElements = elements;
         mFullyValidating = fullyValidating;
+        mNotationForwardRefs = notationForwardRefs;
 
         boolean anyNsDefs = false;
         if (elements != null) {
-        	for (DTDElement elem : elements.values()) {
+            for (DTDElement elem : elements.values()) {
                 if (elem.hasNsDefaults()) {
                     anyNsDefs = true;
                     break;
@@ -179,16 +190,33 @@ public final class DTDSubsetImpl
     }
 
     public static DTDSubsetImpl constructInstance(boolean cachable,
-                                                  HashMap<String,EntityDecl> genEnt, Set<String> refdGEs,
-                                                  HashMap<String,EntityDecl> paramEnt, Set<String> refdPEs,
-                                                  HashMap<String,NotationDeclaration> notations,
-                                                  HashMap<PrefixedName,DTDElement> elements,
-                                                  boolean fullyValidating)
+            HashMap<String,EntityDecl> genEnt, Set<String> refdGEs,
+            HashMap<String,EntityDecl> paramEnt, Set<String> refdPEs,
+            HashMap<String,NotationDeclaration> notations,
+            HashMap<PrefixedName,DTDElement> elements,
+            boolean fullyValidating)
+    {
+        return constructInstance(cachable, genEnt, refdGEs,
+                paramEnt, refdPEs,
+                notations, elements,
+                fullyValidating, null);
+    }
+
+    /**
+     * @since 7.2
+     */
+    public static DTDSubsetImpl constructInstance(boolean cachable,
+            HashMap<String,EntityDecl> genEnt, Set<String> refdGEs,
+            HashMap<String,EntityDecl> paramEnt, Set<String> refdPEs,
+            HashMap<String,NotationDeclaration> notations,
+            HashMap<PrefixedName,DTDElement> elements,
+            boolean fullyValidating,
+            HashMap<String,Location> notationForwardRefs)
     {
         return new DTDSubsetImpl(cachable, genEnt, refdGEs,
-                                 paramEnt, refdPEs,
-                                 notations, elements,
-                                 fullyValidating);
+                paramEnt, refdPEs,
+                notations, elements,
+                fullyValidating, notationForwardRefs);
     }
 
     /**
@@ -236,6 +264,30 @@ public final class DTDSubsetImpl
             }
         }
 
+        // 13-May-2026, tatu: [woodstox-core#184] Internal subset may have
+        //   referenced notations defined only in the external subset; now
+        //   that we have the combined notation map, validate any deferred
+        //   forward references.
+        if (mNotationForwardRefs != null && !mNotationForwardRefs.isEmpty()) {
+            int unresolved = 0;
+            String firstUnresolved = null;
+            for (String id : mNotationForwardRefs.keySet()) {
+                if (n1 == null || !n1.containsKey(id)) {
+                    if (firstUnresolved == null) {
+                        firstUnresolved = id;
+                    }
+                    ++unresolved;
+                }
+            }
+            if (unresolved > 0) {
+                String msg = ""+unresolved+" referenced notation"+((unresolved == 1) ? "":"s")+" undefined: first one '"+firstUnresolved+"'";
+                if (mFullyValidating) {
+                    rep.reportValidationProblem(msg);
+                } else {
+                    rep.reportProblem(null, ErrorConsts.WT_DT_DECL, msg, null, null);
+                }
+            }
+        }
 
         // And finally elements, rather similarly:
         HashMap<PrefixedName,DTDElement> e1 = getElementMap();
@@ -431,9 +483,9 @@ public final class DTDSubsetImpl
     {
         throw new WstxParsingException
             (MessageFormat.format(ErrorConsts.ERR_DTD_ELEM_REDEFD,
-                                  new Object[] {
-                                  oldElem.getDisplayName(),
-                                  oldElem.getLocation().toString() }),
+                    new Object[] {
+                            oldElem.getDisplayName(),
+                            oldElem.getLocation().toString() }),
              loc);
     }
 
@@ -452,9 +504,8 @@ public final class DTDSubsetImpl
     {
     	for (Map.Entry<K,V> me : m2.entrySet()) {
             K key = me.getKey();
-            /* Int. subset has precedence, but let's guess most of
-             * the time there are no collisions:
-             */
+            // Int. subset has precedence, but let's guess most of
+            // the time there are no collisions:
             V old = m1.put(key, me.getValue());
             // Oops, got value! Let's put it back
             if (old != null) {
@@ -522,7 +573,7 @@ public final class DTDSubsetImpl
          * way), so that we have a chance of catching the first problem
          * (As long as Maps iterate in insertion order).
          */
-    	for (Map.Entry<String, NotationDeclaration> en : fromExt.entrySet()) {
+        for (Map.Entry<String, NotationDeclaration> en : fromExt.entrySet()) {
             if (fromInt.containsKey(en.getKey())) {
                 throwNotationException(fromInt.get(en.getKey()), en.getValue());
             }

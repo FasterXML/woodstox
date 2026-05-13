@@ -18,6 +18,9 @@ Project: woodstox
   when validating a document with nillable elements
  (reported by Peter P)
  (fix by Guillaume N)
+#184: Notations declared in external DTD subsets reported as undefined
+  when referenced from the internal subset
+ (reported, fix contributed by Nektarios K)
 #189: 'Undefined ID' not thrown when validating with `SimpleNsStreamWriter`
  (reported by Peter P)
 #190: 'Element <root> has no attribute "verbose"' not thrown from

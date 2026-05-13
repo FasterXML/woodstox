@@ -207,6 +207,16 @@ public class FullDTDReader
      */
     HashMap<String,Location> mNotationForwardRefs;
 
+    /**
+     * If true, this reader is parsing an internal subset whose unresolved
+     * notation references should NOT be reported immediately because an
+     * external subset is expected to follow and may contain the missing
+     * notation declarations. The check is then deferred to
+     * {@link DTDSubsetImpl#combineWithExternalSubset}.
+     * See [woodstox-core#184].
+     */
+    boolean mWillCombineWithExternal = false;
+
     /*
     ///////////////////////////////////////////////////////////
     // Element specifications
@@ -412,13 +422,36 @@ public class FullDTDReader
      * Method called to read in the internal subset definition.
      */
     public static DTDSubset readInternalSubset(WstxInputData srcData,
-                                               WstxInputSource input,
-                                               ReaderConfig cfg,
-                                               boolean constructFully,
-                                               int xmlVersion)
+            WstxInputSource input,
+            ReaderConfig cfg,
+            boolean constructFully,
+            int xmlVersion)
+        throws XMLStreamException
+    {
+        return readInternalSubset(srcData, input, cfg, constructFully, xmlVersion, false);
+    }
+
+    /**
+     * Method called to read in the internal subset definition.
+     *
+     * @param willCombineWithExternal If true, an external subset is expected
+     *    to follow and unresolved notation references should be deferred so
+     *    they can be resolved against the combined subset (see
+     *    [woodstox-core#184]); if false, unresolved references are reported
+     *    immediately at end of internal subset parsing.
+     *
+     * @since 7.2
+     */
+    public static DTDSubset readInternalSubset(WstxInputData srcData,
+            WstxInputSource input,
+            ReaderConfig cfg,
+            boolean constructFully,
+            int xmlVersion,
+            boolean willCombineWithExternal)
         throws XMLStreamException
     {
         FullDTDReader r = new FullDTDReader(input, cfg, constructFully, xmlVersion);
+        r.mWillCombineWithExternal = willCombineWithExternal;
         // Need to read using the same low-level reader interface:
         r.copyBufferStateFrom(srcData);
         DTDSubset ss;
@@ -634,9 +667,18 @@ public class FullDTDReader
 
         /* First check: have all notation references been resolved?
          * (related to [WSTX-121])
+         *
+         * 13-May-2026, tatu: [woodstox-core#184] When parsing an internal
+         *   subset that will be combined with an external subset, defer
+         *   the check until after the combine: notations may legitimately
+         *   be declared only in the external subset.
          */
         if (mNotationForwardRefs != null && mNotationForwardRefs.size() > 0) {
-            _reportUndefinedNotationRefs();
+            if (mIsExternal || !mWillCombineWithExternal) {
+                _reportUndefinedNotationRefs();
+            }
+            // else: forward refs are carried on the DTDSubset below and
+            //   validated by DTDSubsetImpl#combineWithExternalSubset.
         }
 
         // Ok; time to construct and return DTD data object.
@@ -667,7 +709,8 @@ public class FullDTDReader
             ss = DTDSubsetImpl.constructInstance(false, mGeneralEntities, null,
                                                  mParamEntities, null,
                                                  mNotations, mElements,
-                                                 mCfgFullyValidating);
+                                                 mCfgFullyValidating,
+                                                 mNotationForwardRefs);
         }
         return ss;
     }
