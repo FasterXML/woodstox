@@ -135,6 +135,12 @@ Winfried Gerlach (@winfriedgerlach)
 * Contributed #254: Optimize locking on global `InternCache`
  (7.2.0)
 
+Nico Kutscherauer (@nkutsche)
+
+* Reported #91: `getStartLocation()` returns inconsistent system id / offset when
+  reader crosses into or out of an expanded external entity
+ (7.2.0)
+
 Joshua Efiong (@Josh-ES)
 
 * Reported #113: `IllegalStateException` on closing tags; cannot recover from

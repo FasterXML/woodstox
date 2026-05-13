@@ -18,6 +18,7 @@ package com.ctc.wstx.sr;
 import java.io.*;
 import java.text.MessageFormat;
 import java.util.Map;
+import java.util.Objects;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -2711,6 +2712,26 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
      */
 
     /**
+     * Helper for [woodstox-core#91]: returns true if {@code mInput} has been
+     * switched away from {@code tokenStartInput} into a source with a
+     * different system id (i.e., an external-entity boundary was crossed,
+     * either by entering an expansion or by popping back out of one).
+     * Internal entity expansions share the parent's system id and coordinate
+     * space, so we deliberately do not consider those a boundary.
+     *
+     * @since 7.2
+     */
+    private boolean crossedExternalBoundary(WstxInputSource tokenStartInput)
+    {
+        if (mInput == tokenStartInput) {
+            return false;
+        }
+        String oldId = tokenStartInput.getSystemId();
+        String newId = mInput.getSystemId();
+        return !Objects.equals(oldId, newId);
+    }
+
+    /**
      * Method called to parse beginning of the next event within
      * document tree, and return its type.
      */
@@ -2718,6 +2739,10 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
         throws XMLStreamException
     {
         int i;
+        // [woodstox-core#91] Track the input source the token-start info refers to,
+        // so we can re-anchor it whenever an entity-source boundary is crossed
+        // (either entered via expansion or exited via EOF + pop to parent).
+        WstxInputSource tokenStartInput = mInput;
 
         // First, do we need to finish currently open token?
         if (mTokenState < mStTextThreshold) {
@@ -2820,7 +2845,20 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
             mTokenInputTotal = mCurrInputProcessed + mInputPtr;
             mTokenInputRow = mCurrInputRow;
             mTokenInputCol = mInputPtr - mCurrInputRowStart;
+            // [woodstox-core#91] Remember which input source this start refers to;
+            // if an external-entity boundary is crossed below we must re-anchor.
+            tokenStartInput = mInput;
             i = getNext();
+            if (crossedExternalBoundary(tokenStartInput)) {
+                // [woodstox-core#91] getNext() hit EOF of an expanded external
+                // entity and popped back to a parent input source with a
+                // different system id; the char just read came from the new
+                // source, so re-anchor token-start to it.
+                mTokenInputTotal = mCurrInputProcessed + mInputPtr - 1;
+                mTokenInputRow = mCurrInputRow;
+                mTokenInputCol = mInputPtr - mCurrInputRowStart - 1;
+                tokenStartInput = mInput;
+            }
         }
 
         if (i < 0) {
@@ -2911,8 +2949,25 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                 return ENTITY_REFERENCE;
             }
 
-            // Otherwise automatic expansion fine; just need the next char:
+            // Otherwise automatic expansion fine; need next char from the
+            // (possibly newly entered) input source.
+            // [woodstox-core#91] If expansion crossed into an external-entity
+            // source (different system id), re-anchor token-start to that
+            // source's current position before reading the first char.
+            if (crossedExternalBoundary(tokenStartInput)) {
+                mTokenInputTotal = mCurrInputProcessed + mInputPtr;
+                mTokenInputRow = mCurrInputRow;
+                mTokenInputCol = mInputPtr - mCurrInputRowStart;
+                tokenStartInput = mInput;
+            }
             i = getNextChar(SUFFIX_IN_DOC);
+            if (crossedExternalBoundary(tokenStartInput)) {
+                // Rare: empty expansion immediately EOFed and popped further
+                mTokenInputTotal = mCurrInputProcessed + mInputPtr - 1;
+                mTokenInputRow = mCurrInputRow;
+                mTokenInputCol = mInputPtr - mCurrInputRowStart - 1;
+                tokenStartInput = mInput;
+            }
         }
 
         if (i == '<') { // Markup
