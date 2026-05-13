@@ -1472,6 +1472,22 @@ public abstract class BaseStreamWriter
             }
         }
 
+        // [woodstox-core#189]: signal end-of-document to the validator so
+        // accumulated state can be checked (e.g. undefined IDREF targets).
+        // Mirrors what the reader side does in InputElementStack when the
+        // root element is closed. Done after auto-closing so the call only
+        // happens when the document has reached its actual end.
+        if (mValidator != null && mVldException == null && mState == STATE_EPILOG) {
+            XMLValidator vld = mValidator;
+            mValidator = null;
+            try {
+                vld.validationCompleted(true);
+            } catch (XMLValidationException e) {
+                mVldException = e;
+                throw e;
+            }
+        }
+
         /* And finally, inform the underlying writer that it should flush
          * and release its buffers, and close components it uses if any.
          */
