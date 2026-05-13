@@ -54,6 +54,7 @@ public class TestRecovery113
         XMLStreamReader sr = f.createXMLStreamReader(new StringReader(xml));
 
         int errorCount = 0;
+        String firstErrorMsg = null;
         boolean reachedEnd = false;
         // Bound the loop so a regression cannot hang the test
         for (int i = 0; i < 200; ++i) {
@@ -65,12 +66,16 @@ public class TestRecovery113
                 }
             } catch (XMLStreamException e) {
                 ++errorCount;
+                if (firstErrorMsg == null) {
+                    firstErrorMsg = e.getMessage();
+                }
                 // Should never throw IllegalStateException, only a proper
                 // XMLStreamException (which we are already in the catch for).
                 if (errorCount > 1) {
                     fail("Expected at most one parse error during recovery"
                             + ", got at least " + errorCount
-                            + "; latest: " + e.getMessage());
+                            + "; first: '" + firstErrorMsg
+                            + "', latest: '" + e.getMessage() + "'");
                 }
             } catch (RuntimeException e) {
                 fail("Should not throw RuntimeException during recovery, got "
@@ -79,6 +84,14 @@ public class TestRecovery113
         }
         assertTrue("Should have thrown one parse error for the unbalanced close tag",
                 errorCount == 1);
+        // The error must specifically be about the unbalanced close tag,
+        // not e.g. a stale "in epilog" error from a cascade.
+        assertNotNull(firstErrorMsg);
+        assertTrue("Expected parse error message to mention unbalanced/unexpected"
+                        + " close tag </CD>, got: '" + firstErrorMsg + "'",
+                firstErrorMsg.contains("</CD>")
+                        && (firstErrorMsg.contains("Unexpected close tag")
+                                || firstErrorMsg.contains("Unbalanced close tag")));
         assertTrue("Parsing should have recovered and reached END_DOCUMENT",
                 reachedEnd);
         sr.close();

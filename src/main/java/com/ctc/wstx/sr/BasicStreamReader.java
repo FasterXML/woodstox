@@ -2761,6 +2761,11 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                  * partial ones!). Let's just read it like a new
                  * CData section first:
                  */
+                // 12-May-2026, tatu: [woodstox-core#113] Same as END_ELEMENT
+                //   above: mark CDATA continuation as "consumed" so a parse
+                //   error inside readCData* won't cause us to re-enter this
+                //   branch (with input pointer already advanced) on retry.
+                mCurrToken = SPACE;
                 // First, need to update the start location...
                 mTokenInputTotal = mCurrInputProcessed + mInputPtr;
                 mTokenInputRow = mCurrInputRow;
