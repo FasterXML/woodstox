@@ -76,6 +76,103 @@ public class TestInvalidChars
         doTestValid(ATTRIBUTE);
     }
 
+    // // [woodstox#201] regression coverage: char[] overload of writeCData,
+    // // and XML 1.1 mode (RestrictedChars cannot be escaped inside CDATA).
+
+    /**
+     * Exercises the {@code writeCData(char[], int, int)} overload, which was
+     * not covered by the parameterized {@link #doTestInvalid}/{@link #doTestValid}
+     * paths (those only call the {@code String} overload).
+     */
+    public void testCDataCharArrayInvalidIsCaught() throws Exception
+    {
+        XMLOutputFactory2 f = getFactory(null);
+        // Embed INVALID_TEXT in middle of a larger buffer, with non-zero offset:
+        char[] cbuf = ("xx" + INVALID_TEXT + "yy").toCharArray();
+        for (XMLStreamWriter sw : new XMLStreamWriter[] {
+                f.createXMLStreamWriter(new StringWriter()),
+                f.createXMLStreamWriter(new ByteArrayOutputStream(), "UTF-8"),
+                f.createXMLStreamWriter(new ByteArrayOutputStream(), "ISO-8859-1"),
+                f.createXMLStreamWriter(new ByteArrayOutputStream(), "US-ASCII"),
+        }) {
+            XMLStreamWriter2 sw2 = (XMLStreamWriter2) sw;
+            sw2.writeStartDocument();
+            sw2.writeStartElement("root");
+            try {
+                sw2.writeCData(cbuf, 0, cbuf.length);
+                fail("Expected exception for invalid char in writeCData(char[]) (writer: " + sw2 + ")");
+            } catch (XMLStreamException expected) {
+                sw2.closeCompletely();
+            }
+        }
+    }
+
+    public void testCDataCharArrayInvalidIsReplaced() throws Exception
+    {
+        XMLOutputFactory2 f = getFactory(REPL_CHAR);
+        char[] cbuf = ("xx" + INVALID_TEXT + "yy").toCharArray();
+        // Use StringWriter to easily inspect the output text:
+        StringWriter strw = new StringWriter();
+        XMLStreamWriter2 sw = (XMLStreamWriter2) f.createXMLStreamWriter(strw);
+        sw.writeStartDocument();
+        sw.writeStartElement("root");
+        sw.writeCData(cbuf, 0, cbuf.length);
+        sw.writeEndElement();
+        sw.writeEndDocument();
+        sw.closeCompletely();
+        String out = strw.toString();
+        if (out.indexOf(INVALID_TEXT) >= 0) {
+            fail("Invalid char (U+0003) still present in output: '" + out + "'");
+        }
+        if (out.indexOf("xx" + REPL_CHAR + "yy") < 0) {
+            fail("Expected replacement '" + REPL_CHAR + "' surrounded by 'xx'/'yy' in CDATA. Got: '" + out + "'");
+        }
+    }
+
+    /**
+     * XML 1.1 RestrictedChars (0x01-0x1F minus tab/LF/CR) must appear as
+     * character references in content, which is not possible inside CDATA.
+     * Verify they're still caught when the document is XML 1.1.
+     */
+    public void testCDataXml11RestrictedCharIsCaught() throws Exception
+    {
+        XMLOutputFactory2 f = getFactory(null);
+        for (XMLStreamWriter sw : new XMLStreamWriter[] {
+                f.createXMLStreamWriter(new StringWriter()),
+                f.createXMLStreamWriter(new ByteArrayOutputStream(), "UTF-8"),
+        }) {
+            XMLStreamWriter2 sw2 = (XMLStreamWriter2) sw;
+            sw2.writeStartDocument("1.1");
+            sw2.writeStartElement("root");
+            try {
+                sw2.writeCData(INVALID_TEXT);
+                fail("Expected exception for XML 1.1 RestrictedChar in CDATA (writer: " + sw2 + ")");
+            } catch (XMLStreamException expected) {
+                sw2.closeCompletely();
+            }
+        }
+    }
+
+    public void testCDataXml11RestrictedCharIsReplaced() throws Exception
+    {
+        XMLOutputFactory2 f = getFactory(REPL_CHAR);
+        StringWriter strw = new StringWriter();
+        XMLStreamWriter2 sw = (XMLStreamWriter2) f.createXMLStreamWriter(strw);
+        sw.writeStartDocument("1.1");
+        sw.writeStartElement("root");
+        sw.writeCData(INVALID_TEXT);
+        sw.writeEndElement();
+        sw.writeEndDocument();
+        sw.closeCompletely();
+        String out = strw.toString();
+        if (out.indexOf(INVALID_TEXT) >= 0) {
+            fail("XML 1.1: invalid char still present in output: '" + out + "'");
+        }
+        if (out.indexOf(REPL_CHAR) < 0) {
+            fail("XML 1.1: expected replacement '" + REPL_CHAR + "' in output. Got: '" + out + "'");
+        }
+    }
+
     /*
     //////////////////////////////////////////////
     // Shared test code
