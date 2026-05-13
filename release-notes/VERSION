@@ -8,6 +8,9 @@ Project: woodstox
 
 #12: Improve hashing implementation used for symbol tables for element
   and attribute names
+#91: `getStartLocation()` returns inconsistent system id / offset when
+  reader crosses into or out of an expanded external entity
+ (reported by Nico K)
 #95: `BaseStreamWriter.writeRaw()` no longer closes an open start element
   (NOTE: behavior change; existing callers that relied on the auto-close
   must now emit an empty `writeCharacters("")` or other element-body call

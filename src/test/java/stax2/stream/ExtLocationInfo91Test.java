@@ -1,4 +1,4 @@
-package failing;
+package stax2.stream;
 
 import org.codehaus.stax2.LocationInfo;
 import org.codehaus.stax2.XMLStreamReader2;
