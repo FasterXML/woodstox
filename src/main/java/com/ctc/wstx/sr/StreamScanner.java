@@ -1792,7 +1792,7 @@ public abstract class StreamScanner
         }
 
         int ptr = mInputPtr;
-        int hash = c;
+        int hash = mSymbols.getHashSeed() ^ c;
         final int inputLen = mInputEnd;
         int startPtr = ptr-1; // already read previous char
         final char[] inputBuf = mInputBuffer;
@@ -1821,7 +1821,8 @@ public abstract class StreamScanner
             ++ptr;
         }
         mInputPtr = ptr;
-        return mSymbols.findSymbol(mInputBuffer, startPtr, ptr - startPtr, hash);
+        return mSymbols.findSymbol(mInputBuffer, startPtr, ptr - startPtr,
+                SymbolTable.finalizeHash(hash));
     }
 
     /**
@@ -1867,7 +1868,7 @@ public abstract class StreamScanner
             hash = (hash * 31) + c;
         }
         // Still need to canonicalize the name:
-        return mSymbols.findSymbol(outBuf, 0, ptr, hash);
+        return mSymbols.findSymbol(outBuf, 0, ptr, SymbolTable.finalizeHash(hash));
     }
 
     /**
@@ -1915,7 +1916,7 @@ public abstract class StreamScanner
         }
 
         int ptr = mInputPtr;
-        int hash = c;
+        int hash = mSymbols.getHashSeed() ^ c;
         int inputLen = mInputEnd;
         int startPtr = ptr-1; // to account for the first char
 
@@ -1949,7 +1950,8 @@ public abstract class StreamScanner
             ++ptr;
         }
         mInputPtr = ptr;
-        return mSymbols.findSymbol(mInputBuffer, startPtr, ptr - startPtr, hash);
+        return mSymbols.findSymbol(mInputBuffer, startPtr, ptr - startPtr,
+                SymbolTable.finalizeHash(hash));
     }
 
     @SuppressWarnings("cast")
@@ -1997,7 +1999,7 @@ public abstract class StreamScanner
         }
 
         // Still need to canonicalize the name:
-        return mSymbols.findSymbol(outBuf, 0, ptr, hash);
+        return mSymbols.findSymbol(outBuf, 0, ptr, SymbolTable.finalizeHash(hash));
     }
 
     /**
