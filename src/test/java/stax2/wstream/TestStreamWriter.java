@@ -249,6 +249,10 @@ public class TestStreamWriter
             w.writeStartDocument();
             w.writeStartElement("test");
             w.writeAttribute("attr", "value");
+            // 13-May-2026, tatu: As of [woodstox-core#95], writeRaw() no longer
+            //   closes an open start element; an empty writeCharacters() is the
+            //   idiomatic way to commit the start tag before raw content.
+            w.writeCharacters("");
             w.writeRaw("this or &apos;that&apos;");
             char[] cbuf = new char[RAW2.length() + 10];
             RAW2.getChars(0, RAW2.length(), cbuf, 3);
@@ -276,6 +280,58 @@ public class TestStreamWriter
             assertTokenType(END_ELEMENT, sr.next());
             assertEquals("test", sr.getLocalName());
             assertTokenType(END_DOCUMENT, sr.next());
+        }
+    }
+
+    /**
+     * Unit test for [woodstox-core#95]: writeRaw() must not close an open
+     * start element, so it can be used to emit content (typically whitespace)
+     * between attributes within the start tag, e.g. for indenting attributes.
+     */
+    public void testRawBetweenAttributes()
+        throws XMLStreamException
+    {
+        for (int i = 0; i < 3; ++i) {
+            boolean ns = (i > 0);
+            StringWriter strw = new StringWriter();
+            XMLStreamWriter2 w = (i == 2) ? getRepairingWriter(strw)
+                : getNonRepairingWriter(strw, ns);
+            w.writeStartDocument();
+            w.writeStartElement("test");
+            w.writeAttribute("a", "1");
+            // Raw whitespace between attributes must be allowed and must
+            // not close the start tag.
+            w.writeRaw("\n      ");
+            w.writeAttribute("b", "2");
+            w.writeRaw("\n      ");
+            w.writeAttribute("c", "3");
+            w.writeEndElement();
+            w.writeEndDocument();
+            w.close();
+
+            String xml = strw.toString();
+            // Verify the literal raw whitespace made it into the start tag,
+            // between the attributes. (The writer also prepends its own ' '
+            // before each attribute name, so the exact number of spaces after
+            // the newline is implementation detail; we just check the newline
+            // and indentation we asked for is present.)
+            assertTrue("Expected raw newline+indent between attributes, got: " + xml,
+                    xml.contains("a=\"1\"\n      ")
+                    && xml.contains("b=\"2\"\n      "));
+
+            // And the result must still parse as well-formed XML with all
+            // three attributes present.
+            XMLStreamReader sr = constructNsStreamReader(xml, true);
+            assertTokenType(START_DOCUMENT, sr.getEventType());
+            assertTokenType(START_ELEMENT, sr.next());
+            assertEquals("test", sr.getLocalName());
+            assertEquals(3, sr.getAttributeCount());
+            assertEquals("1", sr.getAttributeValue(null, "a"));
+            assertEquals("2", sr.getAttributeValue(null, "b"));
+            assertEquals("3", sr.getAttributeValue(null, "c"));
+            assertTokenType(END_ELEMENT, sr.next());
+            assertTokenType(END_DOCUMENT, sr.next());
+            sr.close();
         }
     }
 

@@ -245,8 +245,9 @@ public final class WstxInputProperties
     public final static String P_MAX_ENTITY_COUNT = "com.ctc.wstx.maxEntityCount";
 
     /**
-     * Maximum depth of nested (general parsed) entity expansions.
-     * 
+     * Property of type {@link java.lang.Integer}:
+     * defines maximum allowed nesting of (general parsed) entity expansions.
+     *
      * @since 4.3
      */
     public final static String P_MAX_ENTITY_DEPTH = "com.ctc.wstx.maxEntityDepth";
@@ -254,7 +255,9 @@ public final class WstxInputProperties
     // and yet more size constraints (4.3+)
 
     /**
-     * Maximum level of nesting of XML elements, starting with root element.
+     * Property of type {@link java.lang.Integer}:
+     * defines maximum allowed level of nesting of DTD subsets (starting with the internal
+     * DTD subset).
      *
      * @since 5.4 / 6.4
      */
