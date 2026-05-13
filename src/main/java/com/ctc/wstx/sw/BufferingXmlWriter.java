@@ -1486,11 +1486,17 @@ public final class BufferingXmlWriter
     /**
      * Helper called for content that will be written out verbatim (CDATA,
      * comment, PI body) and therefore cannot use character entities to
-     * escape illegal characters. Scans for chars not legal in XML output
-     * (XML 1.0: control chars 0x00-0x1F except tab/LF/CR; XML 1.1: just NUL),
-     * invoking {@link #handleInvalidChar} for each: the configured
+     * escape illegal characters. Scans for control chars 0x00-0x1F except
+     * tab/LF/CR -- illegal both in XML 1.0 (production [2] Char) and in
+     * XML 1.1 inside CDATA/comment/PI (XML 1.1 RestrictedChars must appear
+     * as character references, which is not possible here). Each illegal
+     * char goes through {@link #handleInvalidChar}: the configured
      * {@link com.ctc.wstx.api.InvalidCharHandler} either returns a
      * replacement char, or (default) throws via FailingHandler.
+     *<p>
+     * Behavior matches the encoded-byte-stream backends
+     * ({@code AsciiXmlWriter}, {@code ISOLatin1XmlWriter}) which already
+     * applied this rule unconditionally.
      *
      * @return {@code content} unchanged if no illegal chars were found;
      *   otherwise a new String with every illegal char replaced.
@@ -1505,12 +1511,6 @@ public final class BufferingXmlWriter
         for (int i = 0; i < len; ++i) {
             char c = content.charAt(i);
             if (c < 0x0020 && c != '\n' && c != '\r' && c != '\t') {
-                // XML 1.1 allows control chars 0x01-0x1F (must normally be
-                // escaped, but cannot in CDATA/comment/PI -- we still pass through
-                // as XML 1.1 lets them appear here). Only NUL is illegal.
-                if (mXml11 && c != 0) {
-                    continue;
-                }
                 char repl = handleInvalidChar(c);
                 if (sb == null) {
                     sb = new StringBuilder(len);
@@ -1541,9 +1541,6 @@ public final class BufferingXmlWriter
         for (int i = offset; i < end; ++i) {
             char c = cbuf[i];
             if (c < 0x0020 && c != '\n' && c != '\r' && c != '\t') {
-                if (mXml11 && c != 0) {
-                    continue;
-                }
                 char repl = handleInvalidChar(c);
                 if (out == null) {
                     out = new char[len];
