@@ -27,6 +27,9 @@ Project: woodstox
  `RepairingNsStreamWriter` when validating against a DTD schema
  (reported by Peter P)
  (fix by Guillaume N)
+#201: `BufferingXmlWriter` does not check for invalid characters in
+  CDATA / COMMENT / PI content
+ (reported by @marcinar)
 #226: `WstxSAXParser` does not inherit `XMLResolver` configuration from
   underlying `WstxInputFactory`
  (reported by @coreders)

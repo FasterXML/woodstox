@@ -416,6 +416,9 @@ public final class BufferingXmlWriter
     public int writeCData(String data) throws IOException
     {
         if (mCheckContent) {
+            // [woodstox#201]: scan for chars not legal in CDATA (cannot be
+            // escaped), invoking configured InvalidCharHandler if any.
+            data = replaceInvalidInUnescapable(data);
             int ix = verifyCDataContent(data);
             if (ix >= 0) {
                 if (!mFixContent) { // Can we fix it?
@@ -436,6 +439,11 @@ public final class BufferingXmlWriter
     public int writeCData(char[] cbuf, int offset, int len) throws IOException
     {
         if (mCheckContent) {
+            char[] replaced = replaceInvalidInUnescapable(cbuf, offset, len);
+            if (replaced != null) {
+                cbuf = replaced;
+                offset = 0;
+            }
             int ix = verifyCDataContent(cbuf, offset, len);
             if (ix >= 0) {
                 if (!mFixContent) { // Can we fix it?
@@ -619,6 +627,8 @@ public final class BufferingXmlWriter
     public int writeComment(String data) throws IOException
     {
         if (mCheckContent) {
+            // [woodstox#201]: also catch chars not legal in comments (cannot be escaped)
+            data = replaceInvalidInUnescapable(data);
             int ix = verifyCommentContent(data);
             if (ix >= 0) {
                 if (!mFixContent) { // Can we fix it?
@@ -726,6 +736,8 @@ public final class BufferingXmlWriter
         fastWriteRaw(target);
         if (data != null && data.length() > 0) {
             if (mCheckContent) {
+                // [woodstox#201]: also catch chars not legal in PIs (cannot be escaped)
+                data = replaceInvalidInUnescapable(data);
                 int ix = data.indexOf('?');
                 if (ix >= 0) {
                     ix = data.indexOf("?>", ix);
@@ -1452,10 +1464,8 @@ public final class BufferingXmlWriter
             if (mOut == null) {
                 return;
             }
-            /* It's even possible that String is longer than the buffer (not
-             * likely, possible). If so, let's just call the full
-             * method:
-             */
+            // It's even possible that String is longer than the buffer (not
+            // likely, possible). If so, let's just call the full method:
             if (len > mOutputBufLen) {
                 writeRaw(str);
                 return;
@@ -1472,6 +1482,80 @@ public final class BufferingXmlWriter
     // Internal methods, content verification/fixing
     ////////////////////////////////////////////////////
      */
+
+    /**
+     * Helper called for content that will be written out verbatim (CDATA,
+     * comment, PI body) and therefore cannot use character entities to
+     * escape illegal characters. Scans for chars not legal in XML output
+     * (XML 1.0: control chars 0x00-0x1F except tab/LF/CR; XML 1.1: just NUL),
+     * invoking {@link #handleInvalidChar} for each: the configured
+     * {@link com.ctc.wstx.api.InvalidCharHandler} either returns a
+     * replacement char, or (default) throws via FailingHandler.
+     *
+     * @return {@code content} unchanged if no illegal chars were found;
+     *   otherwise a new String with every illegal char replaced.
+     *
+     * @since 7.2 (fix for [woodstox#201])
+     */
+    protected String replaceInvalidInUnescapable(String content)
+        throws IOException
+    {
+        final int len = content.length();
+        StringBuilder sb = null;
+        for (int i = 0; i < len; ++i) {
+            char c = content.charAt(i);
+            if (c < 0x0020 && c != '\n' && c != '\r' && c != '\t') {
+                // XML 1.1 allows control chars 0x01-0x1F (must normally be
+                // escaped, but cannot in CDATA/comment/PI -- we still pass through
+                // as XML 1.1 lets them appear here). Only NUL is illegal.
+                if (mXml11 && c != 0) {
+                    continue;
+                }
+                char repl = handleInvalidChar(c);
+                if (sb == null) {
+                    sb = new StringBuilder(len);
+                    sb.append(content, 0, i);
+                }
+                sb.append(repl);
+            } else if (sb != null) {
+                sb.append(c);
+            }
+        }
+        return (sb == null) ? content : sb.toString();
+    }
+
+    /**
+     * Char-array variant of {@link #replaceInvalidInUnescapable(String)}.
+     *
+     * @return {@code null} if no replacement was needed (caller should keep
+     *   using the original array/offset/len); otherwise a fresh array of
+     *   length {@code len} with every illegal char replaced.
+     *
+     * @since 7.2 (fix for [woodstox#201])
+     */
+    protected char[] replaceInvalidInUnescapable(char[] cbuf, int offset, int len)
+        throws IOException
+    {
+        char[] out = null;
+        final int end = offset + len;
+        for (int i = offset; i < end; ++i) {
+            char c = cbuf[i];
+            if (c < 0x0020 && c != '\n' && c != '\r' && c != '\t') {
+                if (mXml11 && c != 0) {
+                    continue;
+                }
+                char repl = handleInvalidChar(c);
+                if (out == null) {
+                    out = new char[len];
+                    System.arraycopy(cbuf, offset, out, 0, i - offset);
+                }
+                out[i - offset] = repl;
+            } else if (out != null) {
+                out[i - offset] = c;
+            }
+        }
+        return out;
+    }
 
     /**
      * @return Index at which a problem was found, if any; -1 if there's

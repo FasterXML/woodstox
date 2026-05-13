@@ -88,9 +88,12 @@ public class TestInvalidChars
         XMLOutputFactory2 f = getFactory(null);
         doTestInvalid(evtType, f.createXMLStreamWriter(new ByteArrayOutputStream(), "ISO-8859-1"), true);
         doTestInvalid(evtType, f.createXMLStreamWriter(new ByteArrayOutputStream(), "US-ASCII"), true);
-        // [WSTX-173] affects backends that do not do their own encoding:
-        doTestInvalid(evtType, f.createXMLStreamWriter(new StringWriter()), false);
-        doTestInvalid(evtType, f.createXMLStreamWriter(new ByteArrayOutputStream(), "UTF-8"), false);
+        // [WSTX-173] / [woodstox#201]: BufferingXmlWriter (StringWriter and
+        // UTF-8 byte-stream backends) used to skip invalid-char checks for
+        // CDATA/COMMENT/PI; the failures were suppressed via this flag rather
+        // than uncovered. Now fixed -- strict for all backends.
+        doTestInvalid(evtType, f.createXMLStreamWriter(new StringWriter()), true);
+        doTestInvalid(evtType, f.createXMLStreamWriter(new ByteArrayOutputStream(), "UTF-8"), true);
     }
 
     /**
@@ -135,13 +138,15 @@ public class TestInvalidChars
         doTestValid(f, evtType, "ISO-8859-1", true);
         doTestValid(f, evtType, "US-ASCII", true);
 
-        // [WSTX-173] affects backends that do not do their own encoding:
-        doTestValid(f, evtType, "UTF-8", false);
+        // [WSTX-173] / [woodstox#201]: BufferingXmlWriter (UTF-8 and raw
+        // Writer backends) used to skip CDATA/COMMENT/PI invalid-char
+        // handling; failures were suppressed here. Now fixed -- strict.
+        doTestValid(f, evtType, "UTF-8", true);
 
         StringWriter strw = new StringWriter();
         XMLStreamWriter sw = f.createXMLStreamWriter(strw);
         buildValid(evtType, sw);
-        verifyValidReplacement(evtType, sw, strw.toString(), false);
+        verifyValidReplacement(evtType, sw, strw.toString(), true);
     }
 
     private void doTestValid(XMLOutputFactory2 f, int evtType, String enc, boolean strict)
