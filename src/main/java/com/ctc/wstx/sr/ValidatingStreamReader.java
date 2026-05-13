@@ -274,9 +274,17 @@ public class ValidatingStreamReader
             }
 
             try {
+                // 13-May-2026, tatu: [woodstox-core#184] If an external subset
+                //   will follow (and no DTD override is configured to replace
+                //   both), tell the reader to defer reporting unresolved
+                //   notation references: they may be declared only in the
+                //   external subset.
+                boolean willCombineWithExternal = (mDtdPublicId != null || mDtdSystemId != null)
+                        && mConfig.getDTDOverride() == null;
                 intSubset = FullDTDReader.readInternalSubset(this, mInput, mConfig,
-                                                             hasConfigFlags(CFG_VALIDATE_AGAINST_DTD),
-                                                             mDocXmlVersion);
+                        hasConfigFlags(CFG_VALIDATE_AGAINST_DTD),
+                        mDocXmlVersion,
+                        willCombineWithExternal);
             } finally {
                 /* Let's close branching in any and every case (may allow
                  * graceful recovery in error cases in future

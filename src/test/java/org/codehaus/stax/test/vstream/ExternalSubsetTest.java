@@ -56,6 +56,38 @@ public class ExternalSubsetTest
         sr.close();
     }
 
+    /**
+     * Regression test for [woodstox-core#184]: a NOTATION declared in the
+     * external DTD subset must be resolvable from the internal subset
+     * (per XML 1.0 §2.8 the internal subset is considered to appear
+     * <em>before</em> the external subset, so order of declarations does
+     * not constrain resolution).
+     */
+    public void testNotationReferenceInInternalSubset()
+            throws XMLStreamException
+    {
+        String EXT_ENTITY_VALUE = "Overridden value";
+        String XML = "<!DOCTYPE root SYSTEM 'myurl' [ <!ENTITY gr2 SYSTEM \"gr2\" NDATA IMAGE> " +
+                " <!ENTITY extEnt '"+EXT_ENTITY_VALUE+"'>" + " ]>"
+                +"<root>&extEnt;</root>";
+
+        String EXT_SUBSET =
+                "<!ELEMENT root (#PCDATA)>\n"
+                        +"<!ENTITY extEnt 'Original DTD value'>\n" +
+                        "<!NOTATION IMAGE       PUBLIC \"-//ES//NOTATION image format//EN\" \n" +
+                        "                       \"http://www.test.com/xml/common/dtd/notation/image\">";
+
+        XMLStreamReader sr = getReader(XML, true,
+                new SimpleResolver(EXT_SUBSET));
+        assertTokenType(DTD, sr.next());
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals("root", sr.getLocalName());
+        assertTokenType(CHARACTERS, sr.next());
+        assertEquals(EXT_ENTITY_VALUE, getAndVerifyText(sr));
+        assertTokenType(END_ELEMENT, sr.next());
+        sr.close();
+    }
+
     public void testParameterEntityOverrideInInternalSubset()
             throws XMLStreamException
     {

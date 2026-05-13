@@ -151,3 +151,9 @@ Peter Palaga (@ppalaga)
 * Reported #190: 'Element <root> has no attribute "verbose"' not thrown from
   `RepairingNsStreamWriter` when validating against a DTD schema
  (7.2.0)
+
+Nektarios Kitsios (@nektarios-kitsios)
+
+* Reported, contributed fix for #184: Notations declared in external
+  DTD subsets reported as undefined
+ (7.2.0)
