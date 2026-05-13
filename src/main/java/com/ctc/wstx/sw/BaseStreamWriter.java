@@ -1161,14 +1161,14 @@ public abstract class BaseStreamWriter
         doWriteStartDocument(version, encoding, standAlone ? "yes" : "no");
     }
 
+    // 13-May-2026, tatu: [woodstox-core#95] writeRaw() must NOT close an
+    //   open start element, so that callers can use it to emit content
+    //   (typically whitespace) between attributes within a start tag.
     @Override
     public void writeRaw(String text)
         throws XMLStreamException
     {
         mAnyOutput = true;
-        if (mStartElementOpen) {
-            closeStartElement(mEmptyElement);
-        }
         try {
             mWriter.writeRaw(text, 0, text.length());
         } catch (IOException ioe) {
@@ -1181,9 +1181,6 @@ public abstract class BaseStreamWriter
         throws XMLStreamException
     {
         mAnyOutput = true;
-        if (mStartElementOpen) {
-            closeStartElement(mEmptyElement);
-        }
         try {
             mWriter.writeRaw(text, start, offset);
         } catch (IOException ioe) {
@@ -1196,9 +1193,6 @@ public abstract class BaseStreamWriter
         throws XMLStreamException
     {
         mAnyOutput = true;
-        if (mStartElementOpen) {
-            closeStartElement(mEmptyElement);
-        }
         try {
             mWriter.writeRaw(text, start, offset);
         } catch (IOException ioe) {

@@ -6,6 +6,11 @@ Project: woodstox
 
 7.2.0 (not yet released)
 
+#95: `BaseStreamWriter.writeRaw()` no longer closes an open start element
+  (NOTE: behavior change; existing callers that relied on the auto-close
+  must now emit an empty `writeCharacters("")` or other element-body call
+  before writing post-attribute content with `writeRaw()`)
+ (reported by Konrad W)
 #113: `IllegalStateException` on closing tags; cannot recover from
   unbalanced close tag when it is not preceded by whitespace
  (reported by Joshua E)

@@ -778,7 +778,7 @@ public final class ReaderConfig
         }
         // Better be defensive and just return a copy...
         int len = custEnt.size();
-        HashMap<String,EntityDecl> m = new HashMap<String,EntityDecl>(len + (len >> 2), 0.81f);
+        HashMap<String,EntityDecl> m = new HashMap<>(len + (len >> 2), 0.81f);
         for (Map.Entry<String,EntityDecl> me : custEnt.entrySet()) {
             m.put(me.getKey(), me.getValue());
         }
