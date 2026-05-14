@@ -472,6 +472,38 @@ public class TestRelaxNG
     }
 
     /**
+     * Verify that the "empty content vs. typed value" diagnostic enrichment
+     * works when the data type is wrapped in a composite expression
+     * ({@code <choice>}, {@code <list>}) rather than being the bare content model.
+     */
+    public void testEmptyContentForCompositeTypedModels() throws XMLStreamException
+    {
+        // <choice> nests two DataExps under a BinaryExp
+        String choiceSchema =
+            "<element xmlns='http://relaxng.org/ns/structure/1.0'"
+            +"  datatypeLibrary='http://www.w3.org/2001/XMLSchema-datatypes' name='root'>\n"
+            +"  <element name='leaf'>\n"
+            +"   <choice><data type='int'/><data type='boolean'/></choice>\n"
+            +"  </element>\n"
+            +"</element>"
+        ;
+        verifyFailure("<root><leaf/></root>", parseRngSchema(choiceSchema),
+                "missing typed value in choice", "does not satisfy");
+
+        // <list> nests a DataExp under a UnaryExp
+        String listSchema =
+            "<element xmlns='http://relaxng.org/ns/structure/1.0'"
+            +"  datatypeLibrary='http://www.w3.org/2001/XMLSchema-datatypes' name='root'>\n"
+            +"  <element name='leaf'>\n"
+            +"   <list><data type='int'/></list>\n"
+            +"  </element>\n"
+            +"</element>"
+        ;
+        verifyFailure("<root><leaf/></root>", parseRngSchema(listSchema),
+                "missing typed value in list", "does not satisfy");
+    }
+
+    /**
      * Another test, but one that verifies that empty tags do not
      * cause problems with validation
      */
