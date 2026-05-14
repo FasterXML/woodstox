@@ -8,6 +8,9 @@ Project: woodstox
 
 #12: Improve hashing implementation used for symbol tables for element
   and attribute names
+#33: `xml:lang` attribute not handled correctly by `XMLStreamReader2`
+  using DTD validation
+ (reported by Dennis S)
 #91: `getStartLocation()` returns inconsistent system id / offset when
   reader crosses into or out of an expanded external entity
  (reported by Nico K)

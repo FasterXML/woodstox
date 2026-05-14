@@ -203,7 +203,7 @@ public class DTDValidator
                                     String prefix, String value)
         throws XMLStreamException
     {
-        DTDAttribute attr = mCurrAttrDefs.get(mTmpKey.reset(prefix, localName));
+        DTDAttribute attr = findAttrDef(prefix, localName);
         if (attr == null) {
             // Only report error if not already recovering from an error:
             if (mCurrElem != null) {
@@ -242,7 +242,7 @@ public class DTDValidator
             char[] valueChars, int valueStart, int valueEnd)
         throws XMLStreamException
     {
-        DTDAttribute attr = mCurrAttrDefs.get(mTmpKey.reset(prefix, localName));
+        DTDAttribute attr = findAttrDef(prefix, localName);
         if (attr == null) {
             // Only report error if not already covering from an error:
             if (mCurrElem != null) {
