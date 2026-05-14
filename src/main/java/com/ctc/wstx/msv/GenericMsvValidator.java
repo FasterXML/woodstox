@@ -382,9 +382,6 @@ public final class GenericMsvValidator
          *   validation anyway, in case there might be restriction(s) on
          *   textual content. Otherwise we'll get an error.
          */
-        // Retain whether element body was empty so we can craft a useful
-        // diagnostic if MSV can't (it can't for empty content vs. a typed value)
-        boolean emptyContent = !mTextAccumulator.hasText();
         doValidateText(mTextAccumulator);
 
         // [WSTX-200]: need to avoid problems when doing sub-tree
@@ -396,7 +393,7 @@ public final class GenericMsvValidator
         Acceptor acc = (Acceptor)mAcceptors.remove(lastIx);
         if (acc != null) { // may be null during error recovery? or not?
             if (!acc.isAcceptState(mErrorRef) || mErrorRef.str != null) {
-                if (mErrorRef.str == null && emptyContent) {
+                if (mErrorRef.str == null) {
                     mErrorRef.str = _diagnoseEmptyTypedContent(acc);
                 }
                 reportError(mErrorRef, XMLStreamConstants.END_ELEMENT, _qname(uri, localName, prefix));
