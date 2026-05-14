@@ -2,15 +2,13 @@ package wstxtest.util;
 
 import java.util.*;
 
-import junit.framework.TestCase;
-
 import com.ctc.wstx.util.ArgUtil;
 
 /**
  * Simple unit tests for testing methods in {@link ArgUtil}.
  */
 public class TestArgUtil
-    extends TestCase
+    extends wstxtest.BaseWstxTest
 {
     public void testBoolean()
     {
@@ -119,16 +117,6 @@ public class TestArgUtil
             fail("Expected an IllegalArgumentException");
         } catch (IllegalArgumentException iae) {
             verifyException(iae, "minimum is 10");
-        }
-    }
-
-    private void verifyException(Throwable e, String substr)
-    {
-        String msg = e.getMessage();
-        assertNotNull("Exception message should not be null", msg);
-        if (msg.indexOf(substr) < 0) {
-            fail("Expected exception message to contain '" + substr
-                    + "', got: " + msg);
         }
     }
 }

@@ -87,11 +87,18 @@ public class TestMergedNsContext extends TestCase
                 ns("p2", "shared-uri", "other", "other-uri"));
 
         Set<String> prefixes = collect(child.getPrefixes("shared-uri"));
-        assertEquals(new HashSet<String>(Arrays.asList("p1", "p2")), prefixes);
+        assertEquals(new HashSet<>(Arrays.asList("p1", "p2")), prefixes);
+    }
 
-        // URI only present in parent
-        prefixes = collect(child.getPrefixes("shared-uri"));
-        assertTrue(prefixes.contains("p1"));
+    public void testChildPrefixShadowsParent()
+    {
+        // When the SAME prefix is declared in both child and parent, child wins
+        // for prefix->URI lookup — the most important shadowing semantic.
+        BaseNsContext parent = MergedNsContext.construct(null, ns("x", "parent-uri"));
+        BaseNsContext child  = MergedNsContext.construct(parent, ns("x", "child-uri"));
+
+        assertEquals("child-uri", child.getNamespaceURI("x"));
+        assertEquals("x", child.getPrefix("child-uri"));
     }
 
     public void testGetPrefixesOnlyInParent()
@@ -173,7 +180,7 @@ public class TestMergedNsContext extends TestCase
     public void testOutputNamespaceDeclarationsToWriter() throws IOException
     {
         // Mix of default namespace and a prefixed one to cover both branches
-        List<Namespace> nsList = new ArrayList<Namespace>();
+        List<Namespace> nsList = new ArrayList<>();
         nsList.add(eventFactory.createNamespace("default-uri"));
         nsList.add(eventFactory.createNamespace("p", "prefix-uri"));
         BaseNsContext ctxt = MergedNsContext.construct(null, nsList);
@@ -194,7 +201,7 @@ public class TestMergedNsContext extends TestCase
 
     public void testOutputNamespaceDeclarationsToStreamWriter() throws Exception
     {
-        List<Namespace> nsList = new ArrayList<Namespace>();
+        List<Namespace> nsList = new ArrayList<>();
         nsList.add(eventFactory.createNamespace("default-uri"));
         nsList.add(eventFactory.createNamespace("p", "prefix-uri"));
         BaseNsContext ctxt = MergedNsContext.construct(null, nsList);
@@ -217,7 +224,7 @@ public class TestMergedNsContext extends TestCase
         if ((pairs.length & 1) != 0) {
             throw new IllegalArgumentException("Need even number of args");
         }
-        List<Namespace> list = new ArrayList<Namespace>(pairs.length / 2);
+        List<Namespace> list = new ArrayList<>(pairs.length / 2);
         for (int i = 0; i < pairs.length; i += 2) {
             list.add(eventFactory.createNamespace(pairs[i], pairs[i + 1]));
         }
@@ -226,7 +233,7 @@ public class TestMergedNsContext extends TestCase
 
     private static Set<String> collect(Iterator<String> it)
     {
-        Set<String> s = new HashSet<String>();
+        Set<String> s = new HashSet<>();
         while (it.hasNext()) {
             s.add(it.next());
         }
@@ -239,7 +246,7 @@ public class TestMergedNsContext extends TestCase
      */
     static final class RecordingStreamWriter implements XMLStreamWriter
     {
-        final List<String> calls = new ArrayList<String>();
+        final List<String> calls = new ArrayList<>();
 
         @Override public void writeDefaultNamespace(String uri) {
             calls.add("default:" + uri);

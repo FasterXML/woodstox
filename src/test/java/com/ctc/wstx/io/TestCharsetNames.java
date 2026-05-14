@@ -178,16 +178,14 @@ public class TestCharsetNames extends TestCase
 
     public void testFindEncodingForOutputStreamWriter() throws Exception
     {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        Writer w = new OutputStreamWriter(bos, "UTF-8");
         // Whatever the JDK reports (legacy "UTF8" or canonical "UTF-8") must
         // come back normalized to the canonical form.
-        assertEquals(CharsetNames.CS_UTF8, CharsetNames.findEncodingFor(w));
-        w.close();
-
-        Writer w2 = new OutputStreamWriter(new ByteArrayOutputStream(), "ISO-8859-1");
-        assertEquals(CharsetNames.CS_ISO_LATIN1, CharsetNames.findEncodingFor(w2));
-        w2.close();
+        try (Writer w = new OutputStreamWriter(new ByteArrayOutputStream(), "UTF-8")) {
+            assertEquals(CharsetNames.CS_UTF8, CharsetNames.findEncodingFor(w));
+        }
+        try (Writer w = new OutputStreamWriter(new ByteArrayOutputStream(), "ISO-8859-1")) {
+            assertEquals(CharsetNames.CS_ISO_LATIN1, CharsetNames.findEncodingFor(w));
+        }
     }
 
     public void testFindEncodingForNonOutputStreamWriter()
