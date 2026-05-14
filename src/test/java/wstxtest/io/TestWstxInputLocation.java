@@ -27,12 +27,13 @@ public class TestWstxInputLocation extends wstxtest.BaseWstxTest
     {
         // Long offset that doesn't fit in int — getCharacterOffset() truncates,
         // but getCharacterOffsetLong() preserves the full value.
+        // bigOffset = Integer.MAX_VALUE + 100 = 2147483747; the (int) cast
+        // wraps it around to Integer.MIN_VALUE + 99 = -2147483549.
         long bigOffset = ((long) Integer.MAX_VALUE) + 100L;
         WstxInputLocation loc = new WstxInputLocation(null,
                 "p", "s", bigOffset, 0, 0);
         assertEquals(bigOffset, loc.getCharacterOffsetLong());
-        // Truncated int reflects the low 32 bits cast
-        assertEquals((int) bigOffset, loc.getCharacterOffset());
+        assertEquals(Integer.MIN_VALUE + 99, loc.getCharacterOffset());
     }
 
     // ---------- empty location singleton ----------
@@ -85,16 +86,22 @@ public class TestWstxInputLocation extends wstxtest.BaseWstxTest
     public void testEqualsHandlesNullIdsOnOtherInstance()
     {
         // equals() normalizes null public/system ids on the OTHER side to "",
-        // so a location with null ids should equal an otherwise-identical one
-        // whose ids are empty strings.
+        // but does NOT normalize this.mPublicId / this.mSystemId. That makes
+        // equals asymmetric across null vs empty-string id pairs.
         WstxInputLocation empty = new WstxInputLocation(null, "", "", 0L, 0, 0);
         // Cast disambiguates from the (String, SystemId, ...) overload.
         WstxInputLocation nulls = new WstxInputLocation(null, null, (String) null, 0L, 0, 0);
-        // Note: 'empty' has "" stored, while 'nulls' has null stored. The
-        // implementation only re-maps null on the OTHER side, so the result
-        // depends on direction:
+
+        // empty.equals(nulls): nulls' nulls get normalized to "" before compare → equal
         assertTrue("empty should equal nulls (nulls' getters normalized to '')",
                 empty.equals(nulls));
+
+        // nulls.equals(empty): empty's "" compared via "".equals(null) → false.
+        // This locks in the current (asymmetric) behavior — see equals() in
+        // WstxInputLocation, where only the 'other' side is null-normalized.
+        // If the asymmetry is ever fixed, this assertion should flip.
+        assertFalse("documents current asymmetric-equals behavior",
+                nulls.equals(empty));
     }
 
     public void testEqualsRejectsNonLocation()

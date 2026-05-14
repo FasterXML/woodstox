@@ -151,9 +151,8 @@ public class TestMergedStream extends wstxtest.BaseWstxTest
     public void testMarkSupportedFalseWhileBuffered() throws IOException
     {
         byte[] buf = "AB".getBytes("ISO-8859-1");
-        InputStream underlying = new ByteArrayInputStream(new byte[]{ 'C' }) {
-            @Override public boolean markSupported() { return true; }
-        };
+        // ByteArrayInputStream.markSupported() returns true by default
+        InputStream underlying = new ByteArrayInputStream(new byte[]{ 'C' });
         try (MergedStream ms = new MergedStream(null, underlying, buf, 0, buf.length)) {
             // While in buffered segment, marks are not supported
             assertFalse(ms.markSupported());
