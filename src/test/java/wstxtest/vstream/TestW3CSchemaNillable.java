@@ -79,7 +79,7 @@ public class TestW3CSchemaNillable
                 + "    <nl:nillableDateTime xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\"/>\n"
                 + "</nl:nillableParent>";
         
-        _testNillable(schema, XML, "nillableDateTime");
+        _testNillable(schema, XML, "nillableDateTime", "dateTime");
 
     }
 
@@ -87,16 +87,16 @@ public class TestW3CSchemaNillable
     public void testNillableInt() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(SCHEMA);
-        final String XML = 
+        final String XML =
                 "<nl:nillableParent xmlns:nl=\"http://server.hw.demo/nillable\">\n"
                 + "    <nl:nillableInt xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\"/>\n"
                 + "</nl:nillableParent>";
-        
-        _testNillable(schema, XML, "nillableInt");
+
+        _testNillable(schema, XML, "nillableInt", "int");
 
     }
 
-    private void _testNillable(XMLValidationSchema schema, final String XML, String localName) throws XMLStreamException, Exception {
+    private void _testNillable(XMLValidationSchema schema, final String XML, String localName, String typeName) throws XMLStreamException, Exception {
         // A document with xsi:nil="true" should pass for both reader and writer side validation
         // Reader and SimpleNsStreamWriter validation with xsi:nil="true"
         {
@@ -119,7 +119,7 @@ public class TestW3CSchemaNillable
             _testNillable(XML.replace(" xsi:nil=\"true\"", ""), schema, true, null, null);
             fail("Expected a LocalValidationError");
         } catch (XMLValidationException vex) {
-            assertMessageContains(vex, "Unknown reason (at end element </nl:"+ localName +">)");
+            assertMessageContains(vex, "does not satisfy the \""+ typeName +"\" type");
         }
         
         // SimpleNsStreamWriter validation without xsi:nil="true"
@@ -129,7 +129,7 @@ public class TestW3CSchemaNillable
             _testNillable(XML.replace(" xsi:nil=\"true\"", ""), schema, false, sw, writer);
             fail("Expected a LocalValidationError");
         } catch (XMLValidationException vex) {
-            assertMessageContains(vex, "Unknown reason (at end element </nl:"+ localName +">)");
+            assertMessageContains(vex, "does not satisfy the \""+ typeName +"\" type");
         }
         
         // RepairingNsStreamWriter validation without xsi:nil="true"
@@ -139,7 +139,7 @@ public class TestW3CSchemaNillable
             _testNillable(XML.replace(" xsi:nil=\"true\"", ""), schema, false, sw, writer);
             fail("Expected a LocalValidationError");
         } catch (XMLValidationException vex) {
-            assertMessageContains(vex, "Unknown reason (at end element </nl:"+ localName +">)");
+            assertMessageContains(vex, "does not satisfy the \""+ typeName +"\" type");
         }
     }
 
