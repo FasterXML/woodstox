@@ -4,6 +4,7 @@
 package wstxtest.msv;
 
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.net.URL;
