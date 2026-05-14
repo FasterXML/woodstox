@@ -24,13 +24,19 @@ import javax.xml.stream.XMLStreamException;
 
 import org.codehaus.stax2.validation.*;
 import org.relaxng.datatype.Datatype;
+import org.relaxng.datatype.DatatypeException;
 
+import com.sun.msv.grammar.BinaryExp;
+import com.sun.msv.grammar.DataExp;
+import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.IDContextProvider2;
+import com.sun.msv.grammar.UnaryExp;
 import com.sun.msv.util.DatatypeRef;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringRef;
 import com.sun.msv.verifier.Acceptor;
 import com.sun.msv.verifier.DocumentDeclaration;
+import com.sun.msv.verifier.regexp.ExpressionAcceptor;
 import com.sun.msv.verifier.regexp.StringToken;
 import com.ctc.wstx.util.ElementId;
 import com.ctc.wstx.util.ElementIdMap;
@@ -376,6 +382,9 @@ public final class GenericMsvValidator
          *   validation anyway, in case there might be restriction(s) on
          *   textual content. Otherwise we'll get an error.
          */
+        // Retain whether element body was empty so we can craft a useful
+        // diagnostic if MSV can't (it can't for empty content vs. a typed value)
+        boolean emptyContent = !mTextAccumulator.hasText();
         doValidateText(mTextAccumulator);
 
         // [WSTX-200]: need to avoid problems when doing sub-tree
@@ -387,6 +396,9 @@ public final class GenericMsvValidator
         Acceptor acc = (Acceptor)mAcceptors.remove(lastIx);
         if (acc != null) { // may be null during error recovery? or not?
             if (!acc.isAcceptState(mErrorRef) || mErrorRef.str != null) {
+                if (mErrorRef.str == null && emptyContent) {
+                    mErrorRef.str = _diagnoseEmptyTypedContent(acc);
+                }
                 reportError(mErrorRef, XMLStreamConstants.END_ELEMENT, _qname(uri, localName, prefix));
             }
         }
@@ -576,6 +588,47 @@ public final class GenericMsvValidator
 
     private QName _startTagAsQName() {
         return _qname(mStartTag.namespaceURI, mStartTag.localName, mStartTagPrefix);
+    }
+
+    /**
+     * When an element ends with no character content but its content model
+     * requires a typed value, MSV's {@code isAcceptState} reports failure with
+     * no diagnostic message (see {@code diagnoseUncompletedContent}, which only
+     * lists candidate element names). Drill into the acceptor's expression to
+     * find the expected datatype and use it to produce a proper error message.
+     */
+    private String _diagnoseEmptyTypedContent(Acceptor acc) {
+        if (!(acc instanceof ExpressionAcceptor)) {
+            return null;
+        }
+        DataExp dataExp = _findDataExp(((ExpressionAcceptor) acc).getExpression());
+        if (dataExp == null) {
+            return null;
+        }
+        try {
+            dataExp.dt.checkValid("", this);
+        } catch (DatatypeException de) {
+            return de.getMessage();
+        }
+        return null;
+    }
+
+    private DataExp _findDataExp(Expression expr) {
+        if (expr == null) {
+            return null;
+        }
+        if (expr instanceof DataExp) {
+            return (DataExp) expr;
+        }
+        if (expr instanceof BinaryExp) {
+            BinaryExp bin = (BinaryExp) expr;
+            DataExp r = _findDataExp(bin.exp1);
+            return (r != null) ? r : _findDataExp(bin.exp2);
+        }
+        if (expr instanceof UnaryExp) {
+            return _findDataExp(((UnaryExp) expr).exp);
+        }
+        return null;
     }
     
     private QName _qname(String ns, String local, String prefix) {
