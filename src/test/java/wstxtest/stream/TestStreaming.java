@@ -7,6 +7,7 @@ import javax.xml.stream.*;
 import org.codehaus.stax2.XMLStreamReader2;
 
 import com.ctc.wstx.stax.WstxInputFactory;
+import org.junit.jupiter.api.Test;
 
 /**
  * This test verifies that the "fully streaming" text access method(s)
@@ -22,6 +23,7 @@ import com.ctc.wstx.stax.WstxInputFactory;
 public class TestStreaming
     extends BaseStreamTest
 {
+    @Test
     public void testTextStreaming()
         throws IOException, XMLStreamException
     {
@@ -62,6 +64,7 @@ public class TestStreaming
         assertTokenType(END_ELEMENT, sr.next());
     }
 
+    @Test
     public void testCDataStreaming()
         throws IOException, XMLStreamException
     {
@@ -107,6 +110,7 @@ public class TestStreaming
      * Let's also ensure that coalescing still works ok with streaming
      * as well...
      */
+    @Test
     public void testCoalescingStreaming()
         throws IOException, XMLStreamException
     {
@@ -147,6 +151,7 @@ public class TestStreaming
     // Regression test: readAndWriteText() used wrong indices when checking
     // for forbidden ']]>' in text content (checked mInputPtr-1 which is '>'
     // itself, instead of mInputPtr-3 and mInputPtr-2 for the two ']' chars)
+    @Test
     public void testStreamingTextRejectsBracketSequence()
         throws IOException, XMLStreamException
     {

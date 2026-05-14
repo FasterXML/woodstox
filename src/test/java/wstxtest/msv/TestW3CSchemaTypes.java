@@ -9,6 +9,7 @@ import wstxtest.vstream.BaseValidationTest;
 import wstxtest.vstream.BaseValidationTest.ValidationMode;
 
 import java.io.StringWriter;
+import org.junit.jupiter.api.Test;
 
 /**
  * Simple testing of W3C Schema datatypes.
@@ -43,6 +44,7 @@ public class TestW3CSchemaTypes
 
     // // // First 'int' datatype
 
+    @Test
     public void testSimpleValidInt() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(SCHEMA_INT);
@@ -51,6 +53,7 @@ public class TestW3CSchemaTypes
         }
     }
 
+    @Test
     public void testSimpleInvalidInt() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(SCHEMA_INT);
@@ -58,6 +61,7 @@ public class TestW3CSchemaTypes
                       "does not satisfy the \"int\" type");
     }
 
+    @Test
     public void testSimpleMissingInt() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(SCHEMA_INT);
@@ -67,6 +71,7 @@ public class TestW3CSchemaTypes
 
     // // // Then 'float' datatype
 
+    @Test
     public void testSimpleValidFloat() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(SCHEMA_FLOAT);
@@ -75,6 +80,7 @@ public class TestW3CSchemaTypes
         }
     }
 
+    @Test
     public void testSimpleInvalidFloat() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(SCHEMA_FLOAT);
@@ -82,6 +88,7 @@ public class TestW3CSchemaTypes
                       "does not satisfy the \"float\" type");
     }
 
+    @Test
     public void testSimpleMissingFloat() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(SCHEMA_FLOAT);
@@ -91,6 +98,7 @@ public class TestW3CSchemaTypes
 
     // // // Writing
 
+    @Test
     public void testValidationWhenWritingAttribute() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(SCHEMA_ATTRIBUTE);
@@ -111,6 +119,7 @@ public class TestW3CSchemaTypes
         streamThrough(sr);
     }
 
+    @Test
     public void testValdiationWhenWritingCharactersFromArray() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(SCHEMA_INT);

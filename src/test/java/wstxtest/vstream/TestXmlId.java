@@ -3,6 +3,7 @@ package wstxtest.vstream;
 import javax.xml.stream.*;
 
 import wstxtest.stream.BaseStreamTest;
+import org.junit.jupiter.api.Test;
 
 public class TestXmlId
     extends BaseStreamTest
@@ -11,12 +12,14 @@ public class TestXmlId
      * This is a simple regression test -- at one point, last character
      * of id attributes was dropped.
      */
+    @Test
     public void testSimpleNonNs()
         throws XMLStreamException
     {
         doTestSimple(false);
     }
 
+    @Test
     public void testSimpleNs()
         throws XMLStreamException
     {

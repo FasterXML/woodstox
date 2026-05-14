@@ -1,6 +1,7 @@
 package org.codehaus.stax.test.vstream;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests handling of attributes that are declared
@@ -17,6 +18,7 @@ public class TestEntityAttrRead
     ///////////////////////////////////////
      */
 
+    @Test
     public void testValidEntityAttrDecl()
         throws XMLStreamException
     {
@@ -39,6 +41,7 @@ public class TestEntityAttrRead
         streamThrough(getValidatingReader(XML));
     }
 
+    @Test
     public void testValidUnorderedEntityAttrDecl()
         throws XMLStreamException
     {
@@ -56,6 +59,7 @@ public class TestEntityAttrRead
         }
     }
 
+    @Test
     public void testValidEntitiesAttrDecl()
         throws XMLStreamException
     {
@@ -81,6 +85,7 @@ public class TestEntityAttrRead
         streamThrough(getValidatingReader(XML));
     }
 
+    @Test
     public void testInvalidEntityAttrDecl()
         throws XMLStreamException
     {
@@ -105,6 +110,7 @@ public class TestEntityAttrRead
                              "undeclared entity for ENTITY default value");
     }
 
+    @Test
     public void testInvalidEntitiesAttrDecl()
         throws XMLStreamException
     {
@@ -138,6 +144,7 @@ public class TestEntityAttrRead
                              "undeclared entity for ENTITIES default value");
     }
 
+    @Test
     public void testValidEntityAttrUse()
         throws XMLStreamException
     {
@@ -159,6 +166,7 @@ public class TestEntityAttrRead
         assertEquals("unpEnt2", sr.getAttributeValue(0));
     }
 
+    @Test
     public void testValidEntitiesAttrUse()
         throws XMLStreamException
     {
@@ -184,6 +192,7 @@ public class TestEntityAttrRead
     }
 
     /*
+    @Test
     public void testInvalidEntityAttrUse()
         throws XMLStreamException
     {
@@ -191,6 +200,7 @@ public class TestEntityAttrRead
     */
 
     /*
+    @Test
     public void testInvalidEntitiesAttrUse()
         throws XMLStreamException
     {

@@ -10,6 +10,7 @@ import org.codehaus.stax2.validation.*;
 
 import com.ctc.wstx.sw.RepairingNsStreamWriter;
 import com.ctc.wstx.sw.SimpleNsStreamWriter;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test whether nillable elements are handled correctly by both reader and writer.
@@ -35,6 +36,7 @@ public class TestW3CSchemaNillable
             + "</xs:schema>";
 
     // for [woodstox-core#179]
+    @Test
     public void testNillableString() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(SCHEMA);
@@ -71,6 +73,7 @@ public class TestW3CSchemaNillable
     }
 
     // for [woodstox-core#179]
+    @Test
     public void testNillableDateTime() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(SCHEMA);
@@ -84,6 +87,7 @@ public class TestW3CSchemaNillable
     }
 
     // for [woodstox-core#179]
+    @Test
     public void testNillableInt() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(SCHEMA);

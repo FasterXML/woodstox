@@ -3,20 +3,20 @@ package wstxtest.util;
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.framework.TestCase;
 
 import com.ctc.wstx.io.WstxInputLocation;
 import com.ctc.wstx.util.ElementId;
 import com.ctc.wstx.util.ElementIdMap;
 import com.ctc.wstx.util.PrefixedName;
 import com.ctc.wstx.util.SymbolTable;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link ElementIdMap}, mirroring {@link TestSymbolTable}
  * since both classes share the seeded-hashing scheme added for issue #12.
  */
 public class TestElementIdMap
-    extends TestCase
+    extends wstxtest.BaseJUnit4Test
 {
     private static final PrefixedName ELEM = new PrefixedName(null, "elem");
     private static final PrefixedName ATTR = new PrefixedName(null, "attr");
@@ -25,6 +25,7 @@ public class TestElementIdMap
         return new WstxInputLocation(null, null, "test", -1L, -1, -1);
     }
 
+    @Test
     public void testSeedsDifferAcrossInstances()
     {
         Set<Integer> seen = new HashSet<>();
@@ -35,6 +36,7 @@ public class TestElementIdMap
                 seen.size() > 1);
     }
 
+    @Test
     public void testSeededHashMatchesInlineComputation()
     {
         ElementIdMap map = new ElementIdMap();
@@ -58,6 +60,7 @@ public class TestElementIdMap
                 inline, viaString);
     }
 
+    @Test
     public void testBucketIndexVariesWithSeed()
     {
         final String key = "id-stable";
@@ -71,6 +74,7 @@ public class TestElementIdMap
                 indexes.size() > 1);
     }
 
+    @Test
     public void testLookupRoundTripCharBuf()
     {
         // Verify the inline-compute path the DTD validators use end-to-end:
@@ -100,6 +104,7 @@ public class TestElementIdMap
         }
     }
 
+    @Test
     public void testLookupRoundTripString()
     {
         // Mirror of the char[] test, exercising the String overload used by
@@ -119,6 +124,7 @@ public class TestElementIdMap
         }
     }
 
+    @Test
     public void testRehashPreservesLookups()
     {
         // MIN_SIZE is 16, so an initial size of 16 with 500 entries forces

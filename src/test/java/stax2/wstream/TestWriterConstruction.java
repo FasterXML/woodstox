@@ -6,6 +6,7 @@ import javax.xml.stream.*;
 
 import org.codehaus.stax2.*;
 import org.codehaus.stax2.io.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests additional StAX2 stream writer construction
@@ -14,6 +15,7 @@ import org.codehaus.stax2.io.*;
 public class TestWriterConstruction
     extends BaseWriterTest
 {
+    @Test
     public void testCreateWithFileSource()
         throws IOException, XMLStreamException
     {
@@ -23,6 +25,7 @@ public class TestWriterConstruction
         writeAndVerify(sw, f, "withFileSource");
     }
 
+    @Test
     public void testCreateWithFileStreamReader()
         throws IOException, XMLStreamException
     {

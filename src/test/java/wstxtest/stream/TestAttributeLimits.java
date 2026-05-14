@@ -9,9 +9,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import com.ctc.wstx.api.WstxInputProperties;
+import org.junit.jupiter.api.Test;
 
 public class TestAttributeLimits extends BaseStreamTest
 {
+    @Test
     public void testMaxAttributesLimit() throws Exception
     {
         final int max = 100;
@@ -49,6 +51,7 @@ public class TestAttributeLimits extends BaseStreamTest
     }
 
     // [woodstox-core#112]: Let's apply stricter limit actually
+    @Test
     public void testExactSmallMaxAttributeCount() throws Exception
     {
         // First: check for very small limit, lower than default collector
@@ -83,6 +86,7 @@ public class TestAttributeLimits extends BaseStreamTest
     }
 
     // [woodstox-core#93]: should use stricter verification of max attr length
+    @Test
     public void testShorterAttribute() throws Exception
     {
         XMLInputFactory factory = getNewInputFactory();
@@ -107,6 +111,7 @@ public class TestAttributeLimits extends BaseStreamTest
         }
     }
 
+    @Test
     public void testLongAttribute() throws Exception {
         final int max = 500;
         Reader reader = new Reader() {
@@ -145,6 +150,7 @@ public class TestAttributeLimits extends BaseStreamTest
     }
 
     // [woodstox-core#122]: problem setting max-attr-size to Integer.MAX_VALUE
+    @Test
     public void testMaxAttrMaxIntValue() throws Exception
     {
         XMLInputFactory factory = getNewInputFactory();

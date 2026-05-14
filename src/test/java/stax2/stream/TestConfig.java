@@ -5,6 +5,7 @@ import javax.xml.stream.*;
 import org.codehaus.stax2.*;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Set of unit tests that checks that configuring of
@@ -13,6 +14,7 @@ import stax2.BaseStax2Test;
 public class TestConfig
     extends BaseStax2Test
 {
+    @Test
     public void testForXmlConformanceProfile()
         throws XMLStreamException
     {
@@ -25,6 +27,7 @@ public class TestConfig
         assertEquals(Boolean.TRUE, ifact.getProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES));
     }
 
+    @Test
     public void testForConvenienceProfile()
         throws XMLStreamException
     {
@@ -38,6 +41,7 @@ public class TestConfig
         assertEquals(Boolean.TRUE, ifact.getProperty(XMLInputFactory2.P_PRESERVE_LOCATION));
     }
 
+    @Test
     public void testForSpeedProfile()
         throws XMLStreamException
     {
@@ -51,6 +55,7 @@ public class TestConfig
         assertEquals(Boolean.TRUE, ifact.getProperty(XMLInputFactory2.P_INTERN_NS_URIS));
     }
 
+    @Test
     public void testForLowMemProfile()
         throws XMLStreamException
     {
@@ -61,6 +66,7 @@ public class TestConfig
         assertEquals(Boolean.FALSE, ifact.getProperty(XMLInputFactory2.P_PRESERVE_LOCATION));
     }
 
+    @Test
     public void testForRoundTrippingProfile()
         throws XMLStreamException
     {

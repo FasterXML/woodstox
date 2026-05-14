@@ -5,6 +5,7 @@ import java.io.*;
 import javax.xml.stream.*;
 
 import com.ctc.wstx.api.WstxOutputProperties;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for verifying that [WSTX-165] works ok.
@@ -12,12 +13,14 @@ import com.ctc.wstx.api.WstxOutputProperties;
 public class TestAutoEndElems
     extends BaseWriterTest
 {
+    @Test
     public void testDefaultSetting() throws Exception
     {
         XMLOutputFactory f = getOutputFactory();
         assertEquals(Boolean.TRUE, f.getProperty(WstxOutputProperties.P_AUTOMATIC_END_ELEMENTS));
     }
 
+    @Test
     public void testAutomaticEndElemsEnabled() throws Exception
     {
         StringWriter strw = new StringWriter();
@@ -30,6 +33,7 @@ public class TestAutoEndElems
         assertEquals("<root><leaf></leaf></root>", strw.toString());
     }
 
+    @Test
     public void testAutomaticEndElemsDisabled() throws Exception
     {
         StringWriter strw = new StringWriter();

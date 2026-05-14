@@ -3,6 +3,7 @@ package wstxtest.wstream;
 import java.io.*;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 public class TestRepairingNsOutput
     extends BaseWriterTest
@@ -14,6 +15,7 @@ public class TestRepairingNsOutput
     ////////////////////////////////////////////////////
      */
 
+    @Test
     public void testNoDummyDefaultNs()
         throws XMLStreamException
     {
@@ -51,6 +53,7 @@ public class TestRepairingNsOutput
      * I can tell) by Stax 1.0 specs (and Stax2 does not change definitions
      * of core API), this is in woodstox-specific section of tests.
      */
+    @Test
     public void testExplicitNsWrites()
         throws XMLStreamException
     {
@@ -104,6 +107,7 @@ public class TestRepairingNsOutput
      * Similar to {@link #testExplicitNsWrites}, but tests behavior
      * of calls to <code>XMLStreamWriter.writeDefaultNamespace</code>
      */
+    @Test
     public void testExplicitDefaultNsWrite()
         throws XMLStreamException
     {
@@ -157,6 +161,7 @@ public class TestRepairingNsOutput
      * has higher priority than that of trying to find an existing
      * prefix to use.
      */
+    @Test
     public void testExplicitDupNsWrite()
         throws XMLStreamException
     {

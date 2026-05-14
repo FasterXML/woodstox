@@ -7,6 +7,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.codehaus.stax2.io.Stax2ByteArraySource;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * This unit test suite verifies use of {@link StreamSource} as input
@@ -23,6 +24,7 @@ public class TestStreamSource
      * This test is related to problem reported as [WSTX-182], inability
      * to use SystemId alone as source.
      */
+    @Test
     public void testCreateUsingSystemId() throws Exception
     {
         File tmpF = File.createTempFile("staxtest", ".xml");
@@ -44,6 +46,7 @@ public class TestStreamSource
 
     // For [woodstox-core#123]: edge case where content ends right after XML declaration
     // with unrecognized encoding
+    @Test
     public void testInvalidDecl123() throws Exception
     {
         final byte[] XML = "<?xml version=\"1.1\" encoding=\"U\"?>".getBytes("UTF-8");

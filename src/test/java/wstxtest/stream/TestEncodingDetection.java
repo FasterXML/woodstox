@@ -4,6 +4,7 @@ import javax.xml.stream.*;
 
 import org.codehaus.stax2.XMLInputFactory2;
 import org.codehaus.stax2.io.Stax2ByteArraySource;
+import org.junit.jupiter.api.Test;
 
 /**
  * This set on unit tests checks that woodstox-specific invariants
@@ -18,6 +19,7 @@ public class TestEncodingDetection
 
     final static String ENC_EBCDIC_OUT_PREFIX = "IBM";
 
+    @Test
     public void testUtf8() throws Exception
     {
         /* Default is, in absence of any other indications, UTF-8...
@@ -35,6 +37,7 @@ public class TestEncodingDetection
     }
 
     // for [woodstox-core#117]
+    @Test
     public void testWindows1252() throws Exception
     {
         final String doc = "<?xml version='1.0' encoding='WINDOWS-1252'?><x/>";
@@ -50,6 +53,7 @@ public class TestEncodingDetection
         sr.close();
     }
 
+    @Test
     public void testUtf16() throws Exception
     {
         // Should be able to figure out encoding...
@@ -88,6 +92,7 @@ public class TestEncodingDetection
      * But let's try a straight-forward (naive?) test
      * to verify that what is supposed to work does.
      */
+    @Test
     public void testEBCDIC() throws Exception
     {
         final String[] subtypes = new String[] {

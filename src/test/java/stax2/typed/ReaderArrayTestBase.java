@@ -9,6 +9,7 @@ import org.codehaus.stax2.*;
 import org.codehaus.stax2.typed.*;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Base class that contains set of simple unit tests to verify implementation
@@ -43,10 +44,12 @@ public abstract class ReaderArrayTestBase
     ////////////////////////////////////////
      */
 
+    @Test
     public void testSimpleIntArrayElem() throws XMLStreamException
     {
         _testSimpleIntArrayElem(false);
     }
+    @Test
     public void testSimpleIntArrayElemWithNoise() throws XMLStreamException
     {
         _testSimpleIntArrayElem(true);
@@ -68,11 +71,13 @@ public abstract class ReaderArrayTestBase
         }
     }
 
+    @Test
     public void testSimpleLongArrayElem()
         throws XMLStreamException
     {
         _testSimpleLongArrayElem(false);
     }
+    @Test
     public void testSimpleLongArrayElemWithNoise()
         throws XMLStreamException
     {
@@ -95,11 +100,13 @@ public abstract class ReaderArrayTestBase
         }
     }
 
+    @Test
     public void testSimpleFloatArrayElem()
         throws XMLStreamException
     {
         _testSimpleFloatArrayElem(false);
     }
+    @Test
     public void testSimpleFloatArrayElemWithNoise()
         throws XMLStreamException
     {
@@ -122,11 +129,13 @@ public abstract class ReaderArrayTestBase
         }
     }
 
+    @Test
     public void testSimpleDoubleArrayElem()
         throws XMLStreamException
     {
         _testSimpleDoubleArrayElem(false);
     }
+    @Test
     public void testSimpleDoubleArrayElemWithNoise()
         throws XMLStreamException
     {
@@ -149,6 +158,7 @@ public abstract class ReaderArrayTestBase
         }
     }
 
+    @Test
     public void testEmptyElems()
         throws XMLStreamException
     {
@@ -183,6 +193,7 @@ public abstract class ReaderArrayTestBase
     ////////////////////////////////////////
      */
 
+    @Test
     public void testInvalidIntArrayElem()
         throws XMLStreamException
     {
@@ -242,6 +253,7 @@ public abstract class ReaderArrayTestBase
     ////////////////////////////////////////
      */
 
+    @Test
     public void testSimpleIntArrayAttr()
         throws XMLStreamException
     {
@@ -252,6 +264,7 @@ public abstract class ReaderArrayTestBase
         }
     }
 
+    @Test
     public void testSimpleLongArrayAttr()
         throws XMLStreamException
     {
@@ -262,6 +275,7 @@ public abstract class ReaderArrayTestBase
         }
     }
 
+    @Test
     public void testSimpleFloatArrayAttr()
         throws XMLStreamException
     {
@@ -272,6 +286,7 @@ public abstract class ReaderArrayTestBase
         }
     }
 
+    @Test
     public void testSimpleDoubleArrayAttr()
         throws XMLStreamException
     {

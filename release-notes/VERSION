@@ -56,6 +56,7 @@ Project: woodstox
  (contributed by @winfriedgerlach)
 #266: Convert "new XMLStreamException()" calls with "throwOutputError()" for writers
 #279: Deprecate unused/unsupported property `WstxInputProperties.P_VALIDATE_TEXT_CHARS`
+#286: Convert tests from JUnit4 to JUnit5
 - Branch "master" renamed as "main"
 - Update to `oss-parent` v79 for latest Maven plug-in versions
 

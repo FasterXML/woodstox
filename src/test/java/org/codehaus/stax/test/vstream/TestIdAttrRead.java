@@ -1,6 +1,7 @@
 package org.codehaus.stax.test.vstream;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests handling of attributes that are declared
@@ -14,6 +15,7 @@ public class TestIdAttrRead
      * Test case that verifies behaviour of valid ID/IDREF/IDREF
      * attribute declarations.
      */
+    @Test
     public void testValidIdAttrDecl()
         throws XMLStreamException
     {
@@ -31,6 +33,7 @@ public class TestIdAttrRead
      * Test case that verifies behaviour of invalid ID/IDREF/IDREF
      * attribute declarations.
      */
+    @Test
     public void testInvalidIdAttrDecl()
         throws XMLStreamException
     {
@@ -60,6 +63,7 @@ public class TestIdAttrRead
         streamThroughFailing(sr, "more than one attribute id per element");
     }
 
+    @Test
     public void testInvalidIdRefAttrDecl()
         throws XMLStreamException
     {
@@ -88,6 +92,7 @@ public class TestIdAttrRead
         streamThroughFailing(sr, "invalid (missing) IDREFS default value");
     }
 
+    @Test
     public void testValidIdAttrUse()
         throws XMLStreamException
     {
@@ -100,6 +105,7 @@ public class TestIdAttrRead
         streamThrough(getValidatingReader(XML));
     }
 
+    @Test
     public void testInvalidIdAttrUse()
         throws XMLStreamException
     {
@@ -122,6 +128,7 @@ public class TestIdAttrRead
                              "empty IDREF value");
     }
 
+    @Test
     public void testValidIdAttrsUse()
         throws XMLStreamException
     {
@@ -136,6 +143,7 @@ public class TestIdAttrRead
         streamThrough(getValidatingReader(XML));
     }
 
+    @Test
     public void testInvalidIdAttrsUse()
         throws XMLStreamException
     {
@@ -162,6 +170,7 @@ public class TestIdAttrRead
      * Unit test that verifies that values of attributes of type ID 
      * will get properly normalized.
      */
+    @Test
     public void testIdAttrNormalization()
         throws XMLStreamException
     {
@@ -186,6 +195,7 @@ public class TestIdAttrRead
         assertTokenType(END_ELEMENT, sr.next());
     }
 
+    @Test
     public void testIdRefAttrNormalization()
         throws XMLStreamException
     {

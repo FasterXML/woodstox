@@ -5,6 +5,7 @@ import javax.xml.stream.*;
 import javax.xml.stream.events.*;
 
 import java.io.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * This test tries to verify that events can be copied from event reader
@@ -15,6 +16,7 @@ import java.io.*;
 public class TestEventCopy
     extends BaseEventTest
 {
+	@Test
 	public void testCopy()
         throws XMLStreamException
     {
@@ -91,6 +93,7 @@ public class TestEventCopy
         assertEquals(new QName("root"), evt.asEndElement().getName());
 	}
 
+	@Test
 	public void testCopyWithCData()
         throws XMLStreamException
     {

@@ -5,6 +5,7 @@ import java.io.*;
 import javax.xml.stream.*;
 
 import org.codehaus.stax2.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that focuses on testing additional methods that
@@ -19,6 +20,7 @@ public class TestStreamWriter
     //////////////////////////////////////////////////////////
      */
 
+    @Test
     public void testGetEncoding()
         throws XMLStreamException
     {
@@ -70,6 +72,7 @@ public class TestStreamWriter
      * encoding names, we shouldn't report those but rather IANA
      * approved canonical equivalents.
      */
+    @Test
     public void testLegacyEncodings()
         throws Exception
     {
@@ -98,6 +101,7 @@ public class TestStreamWriter
      * just call the method and do not expect and exception. Returned
      * object (or lack thereof) is not inspected
      */
+    @Test
     public void testGetLocation()
         throws XMLStreamException
     {
@@ -121,6 +125,7 @@ public class TestStreamWriter
     //////////////////////////////////////////////////////////
      */
 
+    @Test
     public void testCData()
         throws XMLStreamException
     {
@@ -163,6 +168,7 @@ public class TestStreamWriter
      * This test was inspired by a failing regression test: it required
      * long enough COMMENT content to trigger buffar boundary problems
      */
+    @Test
     public void testLongerComment()
         throws XMLStreamException
     {
@@ -177,6 +183,7 @@ public class TestStreamWriter
         doTestLonger(COMMENT, true, true, "US-ASCII");
     }
 
+    @Test
     public void testLongerPI()
         throws XMLStreamException
     {
@@ -191,6 +198,7 @@ public class TestStreamWriter
         doTestLonger(PROCESSING_INSTRUCTION, true, true, "US-ASCII");
     }
 
+    @Test
     public void testCopy()
         throws XMLStreamException
     {
@@ -236,6 +244,7 @@ public class TestStreamWriter
     /**
      * Unit test for verifyin that writeRaw() works as expected.
      */
+    @Test
     public void testRaw()
         throws XMLStreamException
     {
@@ -288,6 +297,7 @@ public class TestStreamWriter
      * start element, so it can be used to emit content (typically whitespace)
      * between attributes within the start tag, e.g. for indenting attributes.
      */
+    @Test
     public void testRawBetweenAttributes()
         throws XMLStreamException
     {
@@ -345,6 +355,7 @@ public class TestStreamWriter
      * First a simplish testing of how exotic characters are escaped
      * in attribute values.
      */
+    @Test
     public void testAttrValueWriterSimple()
         throws IOException, XMLStreamException
     {
@@ -360,6 +371,7 @@ public class TestStreamWriter
      * And then bit more advanced test for things that need special
      * support for round-tripping
      */
+    @Test
     public void testAttrValueWriterTabsEtc()
         throws IOException, XMLStreamException
     {

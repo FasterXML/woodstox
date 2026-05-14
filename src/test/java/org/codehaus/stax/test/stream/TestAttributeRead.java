@@ -2,6 +2,7 @@ package org.codehaus.stax.test.stream;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests handling of the XML attributes, both
@@ -23,6 +24,7 @@ public class TestAttributeRead
     final String VALID_XML3
         = "<root><e1 a='123' /><e2 /></root>";
 
+    @Test
     public void testValidNsAttrsByName()
         throws XMLStreamException
     {
@@ -48,6 +50,7 @@ public class TestAttributeRead
      * Additional unit test that verifies that empty namespace URI
      * can be used as expected
      */
+    @Test
     public void testValidNsAttrsByName2()
         throws XMLStreamException
     {
@@ -73,6 +76,7 @@ public class TestAttributeRead
 
     // [woodstox-core#53]: oddly enough, `null` for namespace should, as per Javadocs,
     // IGNORE any namespace information from matches.
+    @Test
     public void testValidNsAttrsIgnoreNamespace()
         throws XMLStreamException
     {
@@ -93,6 +97,7 @@ public class TestAttributeRead
         assertEquals(END_DOCUMENT, sr.next());
     }
 
+    @Test
     public void testValidNsAttrsByIndex()
         throws XMLStreamException
     {
@@ -132,6 +137,7 @@ public class TestAttributeRead
         assertEquals("url", sr.getAttributeNamespace(index2));
     }
 
+    @Test
     public void testValidNsAttrs2()
         throws XMLStreamException
     {
@@ -164,6 +170,7 @@ public class TestAttributeRead
         sr.close();
     }
 
+    @Test
     public void testValidNsAttrNsInfo()
         throws XMLStreamException
     {
@@ -195,6 +202,7 @@ public class TestAttributeRead
         assertEquals(END_DOCUMENT, sr.next());
     }
 
+    @Test
     public void testValidNonNsAttrs()
         throws XMLStreamException
     {
@@ -216,6 +224,7 @@ public class TestAttributeRead
         assertEquals(END_DOCUMENT, sr.next());
     }
 
+    @Test
     public void testValidNonNsAttrsByIndex()
         throws XMLStreamException
     {
@@ -262,6 +271,7 @@ public class TestAttributeRead
         assertNoAttrNamespace(sr.getAttributeNamespace(index2));
     }
 
+    @Test
     public void testInvalidAttrNames()
         throws XMLStreamException
     {
@@ -284,6 +294,7 @@ public class TestAttributeRead
         }
     }
 
+    @Test
     public void testInvalidAttrValue()
         throws XMLStreamException
     {
@@ -308,6 +319,7 @@ public class TestAttributeRead
     /**
      * This tests that spaces are actually needed between attributes...
      */
+    @Test
     public void testInvalidAttrSpaces()
         throws XMLStreamException
     {
@@ -326,6 +338,7 @@ public class TestAttributeRead
         }
     }
 
+    @Test
     public void testInvalidNsAttrDup()
         throws XMLStreamException
     {
@@ -348,6 +361,7 @@ public class TestAttributeRead
                              "duplicate attributes (same URI, different prefix)");
     }
     
+    @Test
     public void testInvalidNonNsAttrDup()
         throws XMLStreamException
     {
@@ -376,12 +390,14 @@ public class TestAttributeRead
      * This test verifies that handling of multiple attributes should
      * work as expected
      */
+    @Test
     public void testManyAttrsNs()
         throws Exception
     {
         doTestManyAttrs(true);
     }
 
+    @Test
     public void testManyAttrsNonNs()
         throws Exception
     {
@@ -393,6 +409,7 @@ public class TestAttributeRead
      * will throw proper exception when using invalid index to
      * access data (value, name, uri/prefix).
      */
+    @Test
     public void testInvalidAccessByIndex()
         throws Exception
     {

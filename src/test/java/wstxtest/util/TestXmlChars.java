@@ -1,16 +1,17 @@
 package wstxtest.util;
 
-import junit.framework.TestCase;
 
 import com.ctc.wstx.io.WstxInputData;
+import org.junit.jupiter.api.Test;
 
 /**
  * Simple unit tests for testing methods in {@link com.ctc.wstx.util.XmlChars}
  * and {@link com.ctc.wstx.io.WstxInputData}
  */
 public class TestXmlChars
-    extends TestCase
+    extends wstxtest.BaseJUnit4Test
 {
+    @Test
     public void testXml10Chars()
     {
         // First, 8-bit range:
@@ -43,6 +44,7 @@ public class TestXmlChars
         assertTrue(WstxInputData.isNameChar((char) 0x30ea, true, false));
     }
 
+    @Test
     public void testXml11NameStartChars()
     {
         // First, 8-bit range:

@@ -1,6 +1,7 @@
 package org.codehaus.stax.test.vstream;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests handling of attributes that are declared
@@ -9,6 +10,7 @@ import javax.xml.stream.*;
 public class TestEnumAttrRead
     extends BaseVStreamTest
 {
+    @Test
     public void testValidAttrDecl()
         throws XMLStreamException
     {
@@ -22,6 +24,7 @@ public class TestEnumAttrRead
     }
 
 
+    @Test
     public void testValidAttrDecl2()
         throws XMLStreamException
     {
@@ -36,6 +39,7 @@ public class TestEnumAttrRead
         streamThrough(getReader(XML));
     }
 
+    @Test
     public void testInvalidAttrDecl()
         throws XMLStreamException
     {
@@ -48,6 +52,7 @@ public class TestEnumAttrRead
                              "duplicate enumeration in attribute declaration");
     }
 
+    @Test
     public void testValidAttrUse()
         throws XMLStreamException
     {
@@ -71,6 +76,7 @@ public class TestEnumAttrRead
      * Unit test that verifies that values of attributes of type ID 
      * will get properly normalized.
      */
+    @Test
     public void testEnumAttrNormalization()
         throws XMLStreamException
     {

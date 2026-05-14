@@ -8,6 +8,7 @@ import javax.xml.stream.*;
 import org.codehaus.stax2.*;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 public class TestStreamReader
     extends BaseStax2Test
@@ -16,6 +17,7 @@ public class TestStreamReader
      * Unit test to verify fixing of (and guard against regression of)
      * [WSTX-201].
      */
+    @Test
     public void testIsCharacters() throws Exception
     {
         XMLInputFactory2 f = getInputFactory();
@@ -35,6 +37,7 @@ public class TestStreamReader
     /**
      * Unit test related to [WSTX-274]
      */
+    @Test
     public void testCData() throws Exception
     {
         XMLInputFactory2 f = getInputFactory();
@@ -59,6 +62,7 @@ public class TestStreamReader
     }
 
     // Unit test for [WSTX-299]: use of "exotic" URLs
+    @Test
     public void testCustomSystemIds() throws Exception
     {
         XMLInputFactory2 f = getNewInputFactory();
@@ -85,6 +89,7 @@ public class TestStreamReader
     }
 
     // Another test for [WSTX-299]
+    @Test
     public void testCustomSystemIdWithResolver() throws Exception
     {
         XMLInputFactory2 f = getNewInputFactory();

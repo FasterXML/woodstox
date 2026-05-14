@@ -1,6 +1,7 @@
 package org.codehaus.stax.test.vstream;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests handling of attributes that are declared
@@ -17,6 +18,7 @@ public class TestNotationAttrRead
     ///////////////////////////////////////
      */
 
+    @Test
     public void testValidAttrDecl()
         throws XMLStreamException
     {
@@ -44,6 +46,7 @@ public class TestNotationAttrRead
      * and NOTATION(s) it refers to need not be done in a specific
      * order.
      */
+    @Test
     public void testValidUnorderedAttrDecl()
         throws XMLStreamException
     {
@@ -71,6 +74,7 @@ public class TestNotationAttrRead
         }
     }
 
+    @Test
     public void testInvalidAttrDecl()
         throws XMLStreamException
     {
@@ -106,6 +110,7 @@ public class TestNotationAttrRead
         streamThroughFailing(sr, "duplicate notation values enumerated for attribute");
     }
 
+    @Test
     public void testValidAttrUse()
         throws XMLStreamException
     {
@@ -119,6 +124,7 @@ public class TestNotationAttrRead
         streamThrough(getReader(XML));
     }
 
+    @Test
     public void testInvalidAttrUse()
         throws XMLStreamException
     {

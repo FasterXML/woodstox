@@ -7,6 +7,7 @@ import javax.xml.stream.*;
 
 import com.ctc.wstx.api.EmptyElementHandler;
 import com.ctc.wstx.api.WstxOutputProperties;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests to verify that [WSTX-252] (ability to control whether
@@ -18,6 +19,7 @@ import com.ctc.wstx.api.WstxOutputProperties;
 public class TestEmptyElementWriter
     extends BaseWriterTest
 {
+    @Test
     public void testDefaults() throws Exception
     {
         XMLOutputFactory f = getOutputFactory();
@@ -35,6 +37,7 @@ public class TestEmptyElementWriter
         assertEquals("<root><a/><b/></root>", sw.toString());
     }
 
+    @Test
     public void testSimple() throws Exception
     {
         XMLOutputFactory f = getOutputFactory();
@@ -56,6 +59,7 @@ public class TestEmptyElementWriter
         assertEquals("<root><a/><b></b></root>", sw.toString());
     }
 
+    @Test
     public void testHTML() throws Exception
     {
         XMLOutputFactory f = getOutputFactory();

@@ -3,6 +3,7 @@ package org.codehaus.stax.test.stream;
 import java.io.*;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests handling of the xml declaration.
@@ -21,6 +22,7 @@ public class TestXmlDecl
      * START_DOCUMENT is the current event (ie before iterating), ie.
      * right after xml declaration has been read
      */
+    @Test
     public void testProperties()
         throws XMLStreamException
     {
@@ -28,6 +30,7 @@ public class TestXmlDecl
         doTestProperties(true);
     }
 
+    @Test
     public void testValidDecl() 
         throws XMLStreamException, IOException
     {
@@ -35,6 +38,7 @@ public class TestXmlDecl
         doTestValid(true);
     }
 
+    @Test
     public void testValidStandaloneDecls() 
         throws XMLStreamException, IOException
     {
@@ -64,12 +68,14 @@ public class TestXmlDecl
         assertEquals("US-ASCII", sr.getCharacterEncodingScheme());
     }
 
+    @Test
     public void testInvalidDecl() throws XMLStreamException
     {
         doTestInvalid(false);
         doTestInvalid(true);
     }
 
+    @Test
     public void testInvalidDeclXXX() throws Exception
     {
         final byte[] XML = "<?xml version=\"1.1\" encoding=\"U\"?>".getBytes("UTF-8");

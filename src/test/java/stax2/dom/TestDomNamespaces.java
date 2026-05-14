@@ -11,6 +11,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Additional reader-side tests for namespace handling with DOM input
@@ -26,6 +27,7 @@ public class TestDomNamespaces
         +"</arg0>"
         +"</ns2:root>"; 
 
+    @Test
     public void testDOMSource() throws Exception
     {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

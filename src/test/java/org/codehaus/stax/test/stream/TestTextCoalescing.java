@@ -1,6 +1,7 @@
 package org.codehaus.stax.test.stream;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests that the stream reader does in fact
@@ -12,6 +13,7 @@ public class TestTextCoalescing
     final static String VALID_XML = "<root>Text <![CDATA[cdata\n"
         +"in two lines]]><![CDATA[!]]>/that's all!</root>";
 
+    @Test
     public void testCoalescing()
         throws XMLStreamException
     {
@@ -34,6 +36,7 @@ public class TestTextCoalescing
      * Test that ensures that even when just skipping (ie not accessing
      * any data), we'll still see just one event for the whole text
      */
+    @Test
     public void testCoalescingSkipping()
         throws XMLStreamException
     {
@@ -44,6 +47,7 @@ public class TestTextCoalescing
         assertTokenType(END_DOCUMENT, sr.next());
     }
 
+    @Test
     public void testNonCoalescing()
         throws XMLStreamException
     {
@@ -68,6 +72,7 @@ public class TestTextCoalescing
         assertTokenType(END_DOCUMENT, sr.next());
     }
 
+    @Test
     public void testNonCoalescingSkipping()
         throws XMLStreamException
     {
@@ -108,6 +113,7 @@ public class TestTextCoalescing
         assertTokenType(END_DOCUMENT, sr.next());
     }
 
+    @Test
     public void testInvalidTextWithCDataEndMarker()
         throws XMLStreamException
     {

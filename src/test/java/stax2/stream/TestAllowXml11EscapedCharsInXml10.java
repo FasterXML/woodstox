@@ -6,11 +6,13 @@ import org.codehaus.stax2.XMLInputFactory2;
 import stax2.BaseStax2Test;
 
 import javax.xml.stream.XMLStreamReader;
+import org.junit.jupiter.api.Test;
 
 public class TestAllowXml11EscapedCharsInXml10 extends BaseStax2Test {
     /**
      * Unit test to verify workaround for XML 1.1 escaped chars in XML 1.0 file.
      */
+    @Test
     public void testAllowXml11EscapedCharsInXml10() throws Exception {
         XMLInputFactory2 f = getInputFactory();
         setNamespaceAware(f, true);
@@ -25,6 +27,7 @@ public class TestAllowXml11EscapedCharsInXml10 extends BaseStax2Test {
     /**
      * Unit test to verify failure for XML 1.1 escaped chars in XML 1.0 file.
      */
+    @Test
     public void testDoNotAllowXml11EscapedCharsInXml10() throws Exception {
         XMLInputFactory2 f = getInputFactory();
         setNamespaceAware(f, true);

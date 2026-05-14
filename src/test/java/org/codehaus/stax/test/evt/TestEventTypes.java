@@ -3,6 +3,7 @@ package org.codehaus.stax.test.evt;
 import javax.xml.namespace.QName;
 import javax.xml.stream.*;
 import javax.xml.stream.events.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Class that contains simple tests for making sure that event types
@@ -13,6 +14,7 @@ import javax.xml.stream.events.*;
 public class TestEventTypes
     extends BaseEventTest
 {
+    @Test
     public void testTypes()
         throws XMLStreamException
     {

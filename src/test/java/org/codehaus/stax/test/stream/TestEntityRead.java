@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import javax.xml.stream.*;
 
 import org.codehaus.stax.test.SimpleResolver;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests handling of various kinds of entities.
@@ -17,6 +18,7 @@ public class TestEntityRead
     /**
      * Method that tests properties of unresolved DTD event.
      */
+    @Test
     public void testEntityProperties()
         throws XMLStreamException
     {
@@ -25,6 +27,7 @@ public class TestEntityRead
         doTestProperties(false);
     }
 
+    @Test
     public void testValidPredefdEntities()
         throws XMLStreamException
     {
@@ -52,6 +55,7 @@ public class TestEntityRead
      * as expected, including corner cases like characters that expand
      * to surrogate pairs in Java.
      */
+    @Test
     public void testValidCharEntities()
         throws XMLStreamException
     {
@@ -82,6 +86,7 @@ public class TestEntityRead
      * This unit test checks that resolving of surrogate pairs works
      * as expected, including different ways of writing entities
      */
+    @Test
     public void testValidSurrogatePairEntities()
             throws XMLStreamException
     {
@@ -124,6 +129,7 @@ public class TestEntityRead
         }
     }
 
+    @Test
     public void testValidGeneralEntities()
         throws XMLStreamException
     {
@@ -165,6 +171,7 @@ public class TestEntityRead
      * Test that checks that generic parsed entities are returned as
      * entity reference events, when automatic entity expansion is disabled.
      */
+    @Test
     public void testUnexpandedEntities()
         throws XMLStreamException
     {
@@ -221,6 +228,7 @@ public class TestEntityRead
         streamThrough(sr);
     }
 
+    @Test
     public void testUnexpandedEntities2()
         throws XMLStreamException
     {
@@ -263,6 +271,7 @@ public class TestEntityRead
      * Test that checks that entities that expand to elements, comments
      * and processing instructions are properly handled.
      */
+    @Test
     public void testElementEntities()
         throws XMLStreamException
     {
@@ -329,6 +338,7 @@ public class TestEntityRead
      * Test that verifies that it is possible to quote CDATA end marker
      * ("]]>") using character and general entities.
      */
+    @Test
     public void testQuotedCDataEndMarker()
         throws XMLStreamException
     {
@@ -366,12 +376,14 @@ public class TestEntityRead
      * external entities, or at least ext. subset.
      */
     /*
+    @Test
     public void testValidEntityWithQuotes()
         throws XMLStreamException
     {
     }
     */
 
+    @Test
     public void testInvalidEntityUndeclared()
         throws XMLStreamException
     {
@@ -383,6 +395,7 @@ public class TestEntityRead
         } catch (Exception e) { }
     }
 
+    @Test
     public void testInvalidEntityRecursive()
         throws XMLStreamException
     {
@@ -401,6 +414,7 @@ public class TestEntityRead
          */
     }
 
+    @Test
     public void testInvalidEntityPEInIntSubset()
         throws XMLStreamException
     {
@@ -425,6 +439,7 @@ public class TestEntityRead
      * another expanded entity, and rest comes from content following.
      * Such partial entities are not legal according to XML specs.
      */
+    @Test
     public void testInvalidEntityPartial()
         throws XMLStreamException
     {
@@ -463,6 +478,7 @@ public class TestEntityRead
      * It could be pair of high surrogate and simple entity, high surrogate
      * with no pair, low surrogate as first or unclosed entity
      */
+    @Test
     public void testInvalidSurrogatePairEntities()
             throws XMLStreamException
     {
@@ -505,6 +521,7 @@ public class TestEntityRead
      * Expected default behavior should be an exception
      * with message starting with: Illegal character entity
      */
+    @Test
     public void testAllowSurrogatePairEntitiesDisabled()
             throws XMLStreamException
     {
@@ -536,6 +553,7 @@ public class TestEntityRead
      * to do that without requiring external files, will use a simple
      * helper resolver
      */
+    @Test
     public void testExternalEntityWithResolver()
         throws XMLStreamException
     {

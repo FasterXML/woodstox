@@ -4,6 +4,7 @@ import java.util.NoSuchElementException;
 
 import javax.xml.stream.*;
 import javax.xml.stream.events.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Class that contains simple tests for making sure that event objects
@@ -14,6 +15,7 @@ import javax.xml.stream.events.*;
 public class TestEventReader
     extends BaseEventTest
 {
+    @Test
     public void testSimpleValid()
         throws XMLStreamException
     {
@@ -44,6 +46,7 @@ public class TestEventReader
         }
     }
 
+    @Test
     public void testInvalidUsage()
         throws XMLStreamException
     {
@@ -76,6 +79,7 @@ public class TestEventReader
      * The main purpose of this test is to ensure that an exception
      * is thrown at the end.
      */
+    @Test
     public void testIterationEndException()
         throws XMLStreamException
     {
@@ -109,6 +113,7 @@ public class TestEventReader
         }
     }
 
+    @Test
     public void testNextTagOk()
         throws XMLStreamException
     {
@@ -143,6 +148,7 @@ public class TestEventReader
         }
     }
 
+    @Test
     public void testNextTagInvalid()
         throws XMLStreamException
     {
@@ -193,6 +199,7 @@ public class TestEventReader
         }
     }
 
+    @Test
     public void testSkip()
         throws XMLStreamException
     {
@@ -248,6 +255,7 @@ public class TestEventReader
      * initial state was not properly set if nextTag() was called (instead
      * of nextEvent()), and subsequent peek() failed.
      */
+    @Test
     public void testPeek()
         throws XMLStreamException
     {
@@ -284,6 +292,7 @@ public class TestEventReader
         }
     }
 
+    @Test
     public void testElementText()
         throws XMLStreamException
     {

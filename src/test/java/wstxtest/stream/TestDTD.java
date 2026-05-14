@@ -3,6 +3,7 @@ package wstxtest.stream;
 import javax.xml.stream.*;
 
 import org.codehaus.stax2.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Set of unit tests that checks some additional invariants Woodstox
@@ -16,6 +17,7 @@ public class TestDTD
      * Tests that the DOCTYPE declaration can be succesfully skipped in
      * the non-DTD-support mode.
      */
+    @Test
     public void testSkipping()
         throws XMLStreamException
     {

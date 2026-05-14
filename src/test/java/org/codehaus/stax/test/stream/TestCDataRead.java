@@ -3,6 +3,7 @@ package org.codehaus.stax.test.stream;
 import java.io.*;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests that the stream reader does in fact
@@ -50,6 +51,7 @@ public class TestCDataRead
      * This test verifies that no character quoting need (or can) be
      * done within CDATA section.
      */
+    @Test
     public void testCDataSimple()
         throws XMLStreamException
     {
@@ -64,6 +66,7 @@ public class TestCDataRead
         assertTokenType(END_ELEMENT, sr.next());
     }
 
+    @Test
     public void testCDataCoalescing()
         throws XMLStreamException
     {
@@ -76,6 +79,7 @@ public class TestCDataRead
         assertTokenType(END_ELEMENT, sr.next());
     }
 
+    @Test
     public void testCDataNonCoalescing()
         throws XMLStreamException
     {
@@ -101,6 +105,7 @@ public class TestCDataRead
         assertTokenType(END_ELEMENT, sr.getEventType());
     }
 
+    @Test
     public void testInvalidCData()
         throws XMLStreamException
     {
@@ -131,6 +136,7 @@ public class TestCDataRead
      *<p>
      * Note: this is directly based on XMLTest/SAXTest #735.
      */
+    @Test
     public void testInvalidNestedCData()
         throws XMLStreamException
     {
@@ -177,6 +183,7 @@ public class TestCDataRead
     }
 
     // [WSTX-294]: Incorrect coalescing in some cases
+    @Test
     public void testIssue294() throws Exception
     {
         XMLInputFactory f = getInputFactory();
@@ -229,6 +236,7 @@ public class TestCDataRead
     }
 
     // [woodstox-core#21]: CDATA contents truncated to buffer size (500 initially)
+    @Test
     public void testLongerCData2() throws Exception
     {
         String SRC_TEXT =
@@ -262,6 +270,7 @@ public class TestCDataRead
     }
 
     // [woodstox-core#22]: and some CDATA contents truncation via different codepath
+    @Test
     public void testLongerCData3() throws Exception {
         String SRC_TEXT =
             "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678\r\n"

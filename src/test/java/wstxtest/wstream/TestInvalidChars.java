@@ -8,6 +8,7 @@ import org.codehaus.stax2.*;
 
 import com.ctc.wstx.api.InvalidCharHandler;
 import com.ctc.wstx.api.WstxOutputProperties;
+import org.junit.jupiter.api.Test;
 
 /**
  * This unit test suite verifies handling of invalid/illegal xml
@@ -24,26 +25,31 @@ public class TestInvalidChars
 
     // // First let's verify that we do catch problematic chars
 
+    @Test
     public void testInvalidCatchingCharacters() throws XMLStreamException
     {
         doTestInvalid(CHARACTERS);
     }
 
+    @Test
     public void testInvalidCatchingCData() throws XMLStreamException
     {
         doTestInvalid(CDATA);
     }
 
+    @Test
     public void testInvalidCatchingComment() throws XMLStreamException
     {
         doTestInvalid(COMMENT);
     }
 
+    @Test
     public void testInvalidCatchingPI() throws XMLStreamException
     {
         doTestInvalid(PROCESSING_INSTRUCTION);
     }
 
+    @Test
     public void testInvalidCatchingAttribute() throws XMLStreamException
     {
         doTestInvalid(ATTRIBUTE);
@@ -51,26 +57,31 @@ public class TestInvalidChars
 
     // // And then also that we can fix problems
 
+    @Test
     public void testValidReplacingCharacters() throws Exception
     {
         doTestValid(CHARACTERS);
     }
 
+    @Test
     public void testValidReplacingCData() throws Exception
     {
         doTestValid(CDATA);
     }
  
+    @Test
     public void testValidReplacingComment() throws Exception
     {
         doTestValid(COMMENT);
     }
 
+    @Test
     public void testValidReplacingPI() throws Exception
     {
         doTestValid(PROCESSING_INSTRUCTION);
     }
 
+    @Test
     public void testValidReplacingAttribute() throws Exception
     {
         doTestValid(ATTRIBUTE);
@@ -84,6 +95,7 @@ public class TestInvalidChars
      * not covered by the parameterized {@link #doTestInvalid}/{@link #doTestValid}
      * paths (those only call the {@code String} overload).
      */
+    @Test
     public void testCDataCharArrayInvalidIsCaught() throws Exception
     {
         XMLOutputFactory2 f = getFactory(null);
@@ -107,6 +119,7 @@ public class TestInvalidChars
         }
     }
 
+    @Test
     public void testCDataCharArrayInvalidIsReplaced() throws Exception
     {
         XMLOutputFactory2 f = getFactory(REPL_CHAR);
@@ -141,26 +154,32 @@ public class TestInvalidChars
      * CDATA / comment / PI. Verify they're still caught when the document
      * is XML 1.1, for all of CDATA, COMMENT and PROCESSING_INSTRUCTION.
      */
+    @Test
     public void testCDataXml11RestrictedCharIsCaught() throws Exception {
         doTestXml11UnescapableInvalidIsCaught(CDATA);
     }
 
+    @Test
     public void testCommentXml11RestrictedCharIsCaught() throws Exception {
         doTestXml11UnescapableInvalidIsCaught(COMMENT);
     }
 
+    @Test
     public void testPIXml11RestrictedCharIsCaught() throws Exception {
         doTestXml11UnescapableInvalidIsCaught(PROCESSING_INSTRUCTION);
     }
 
+    @Test
     public void testCDataXml11RestrictedCharIsReplaced() throws Exception {
         doTestXml11UnescapableInvalidIsReplaced(CDATA);
     }
 
+    @Test
     public void testCommentXml11RestrictedCharIsReplaced() throws Exception {
         doTestXml11UnescapableInvalidIsReplaced(COMMENT);
     }
 
+    @Test
     public void testPIXml11RestrictedCharIsReplaced() throws Exception {
         doTestXml11UnescapableInvalidIsReplaced(PROCESSING_INSTRUCTION);
     }

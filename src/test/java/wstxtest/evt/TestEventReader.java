@@ -12,6 +12,7 @@ import org.codehaus.stax2.evt.NotationDeclaration2;
 
 import com.ctc.wstx.api.WstxInputProperties;
 import com.ctc.wstx.exc.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Set of unit tests that verify that Woodstox implementation of
@@ -36,6 +37,7 @@ import com.ctc.wstx.exc.*;
 public class TestEventReader
     extends wstxtest.BaseWstxTest
 {
+    @Test
     public void testEventReaderNonLaziness()
         throws XMLStreamException
     {
@@ -75,6 +77,7 @@ public class TestEventReader
         }
     }
 
+    @Test
     public void testEventReaderLongSegments()
         throws XMLStreamException
     {
@@ -108,6 +111,7 @@ public class TestEventReader
      * NotationDeclarations (base URI). Let's verify it gets properly
      * populated.
      */
+    @Test
     public void testDtdNotations()
         throws Exception
     {

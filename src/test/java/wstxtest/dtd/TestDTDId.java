@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import com.ctc.wstx.dtd.DTDId;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link DTDId}, the cache key used for parsed external DTDs.
@@ -12,6 +13,7 @@ public class TestDTDId extends wstxtest.BaseWstxTest
 {
     // ---------- construction: public-id only ----------
 
+    @Test
     public void testConstructFromPublicId()
     {
         DTDId id = DTDId.constructFromPublicId("-//W3C//DTD HTML 4.01//EN", 0, false);
@@ -26,6 +28,7 @@ public class TestDTDId extends wstxtest.BaseWstxTest
                 s.contains("xml11: false"));
     }
 
+    @Test
     public void testConstructFromPublicIdRejectsNull()
     {
         try {
@@ -36,6 +39,7 @@ public class TestDTDId extends wstxtest.BaseWstxTest
         }
     }
 
+    @Test
     public void testConstructFromPublicIdRejectsEmpty()
     {
         try {
@@ -48,6 +52,7 @@ public class TestDTDId extends wstxtest.BaseWstxTest
 
     // ---------- construction: system-id only ----------
 
+    @Test
     public void testConstructFromSystemId() throws URISyntaxException
     {
         URI sys = new URI("http://example.com/x.dtd");
@@ -62,6 +67,7 @@ public class TestDTDId extends wstxtest.BaseWstxTest
                 s.contains("config flags: 0x7"));
     }
 
+    @Test
     public void testConstructFromSystemIdRejectsNull()
     {
         try {
@@ -74,6 +80,7 @@ public class TestDTDId extends wstxtest.BaseWstxTest
 
     // ---------- construct(publicId, systemId, ...) ----------
 
+    @Test
     public void testConstructPrefersPublicIdWhenBothGiven() throws URISyntaxException
     {
         URI sys = new URI("http://example.com/x.dtd");
@@ -83,6 +90,7 @@ public class TestDTDId extends wstxtest.BaseWstxTest
         assertTrue(id.toString().contains("system-id: null"));
     }
 
+    @Test
     public void testConstructFallsBackToSystemId() throws URISyntaxException
     {
         URI sys = new URI("file:/tmp/x.dtd");
@@ -96,6 +104,7 @@ public class TestDTDId extends wstxtest.BaseWstxTest
         assertTrue(id.toString().contains("file:/tmp/x.dtd"));
     }
 
+    @Test
     public void testConstructRejectsAllNullOrEmpty()
     {
         try {
@@ -114,6 +123,7 @@ public class TestDTDId extends wstxtest.BaseWstxTest
 
     // ---------- equals / hashCode ----------
 
+    @Test
     public void testEqualsByPublicId()
     {
         DTDId a = DTDId.constructFromPublicId("PUB", 0, false);
@@ -126,6 +136,7 @@ public class TestDTDId extends wstxtest.BaseWstxTest
         assertFalse(a.equals(c));            // different public id
     }
 
+    @Test
     public void testEqualsBySystemId() throws URISyntaxException
     {
         URI u1 = new URI("http://example.com/a.dtd");
@@ -141,6 +152,7 @@ public class TestDTDId extends wstxtest.BaseWstxTest
         assertFalse(a.equals(c));
     }
 
+    @Test
     public void testEqualsRespectsConfigFlagsAndXml11()
     {
         DTDId a = DTDId.constructFromPublicId("PUB", 0, false);
@@ -153,6 +165,7 @@ public class TestDTDId extends wstxtest.BaseWstxTest
         assertFalse(a.hashCode() == differentXml11.hashCode());
     }
 
+    @Test
     public void testEqualsRejectsOtherTypes()
     {
         DTDId a = DTDId.constructFromPublicId("PUB", 0, false);
@@ -160,6 +173,7 @@ public class TestDTDId extends wstxtest.BaseWstxTest
         assertFalse(a.equals("PUB"));
     }
 
+    @Test
     public void testHashCodeIsCached()
     {
         DTDId a = DTDId.constructFromPublicId("PUB", 7, true);

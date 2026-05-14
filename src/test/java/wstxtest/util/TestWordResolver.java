@@ -2,16 +2,17 @@ package wstxtest.util;
 
 import java.util.*;
 
-import junit.framework.TestCase;
 
 import com.ctc.wstx.util.WordResolver;
+import org.junit.jupiter.api.Test;
 
 /**
  * Simple unit tests for testing {@link WordResolver}.
  */
 public class TestWordResolver
-    extends TestCase
+    extends wstxtest.BaseJUnit4Test
 {
+    @Test
     public void testNormal()
     {
         checkResolver(new String[] {
@@ -26,6 +27,7 @@ public class TestWordResolver
      * This unit test was created as a regression test, to check for
      * a bug that was found during development.
      */
+    @Test
     public void testSingle()
     {
         // this caused an arrayindexoutofbounds exception
@@ -40,6 +42,7 @@ public class TestWordResolver
      * This unit test tries to verify that things work ok with even bigger
      * word sets
      */
+    @Test
     public void testLarge()
     {
         // this caused an arrayindexoutofbounds exception

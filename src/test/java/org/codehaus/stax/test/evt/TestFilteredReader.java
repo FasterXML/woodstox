@@ -2,6 +2,7 @@ package org.codehaus.stax.test.evt;
 
 import javax.xml.stream.*;
 import javax.xml.stream.events.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Simple unit test suite that tries to if filtered stream readers are
@@ -21,6 +22,7 @@ public class TestFilteredReader
      * construct an instance with dummy filter that accepts everything,
      * and that we can traverse through all the events as usual.
      */
+    @Test
     public void testCreation()
         throws XMLStreamException
     {

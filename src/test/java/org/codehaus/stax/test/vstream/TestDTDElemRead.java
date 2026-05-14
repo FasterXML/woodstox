@@ -1,6 +1,7 @@
 package org.codehaus.stax.test.vstream;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests handling of DTD element declarations.
@@ -14,6 +15,7 @@ public class TestDTDElemRead
     ///////////////////////////////////////////////////////////
      */
 
+    @Test
     public void testValidElementDecl()
         throws XMLStreamException
     {
@@ -27,6 +29,7 @@ public class TestDTDElemRead
         streamThrough(getVReader(XML));
     }
 
+    @Test
     public void testInvalidElementDecl()
         throws XMLStreamException
     {
@@ -52,6 +55,7 @@ public class TestDTDElemRead
      * Let's ensure basic simple notation declarations are parsed
      * succesfully.
      */
+    @Test
     public void testValidNotationDecl()
         throws XMLStreamException
     {
@@ -67,6 +71,7 @@ public class TestDTDElemRead
     /**
      * This unit test checks that there are no duplicate notation declarations
      */
+    @Test
     public void testInvalidDupNotationDecl()
         throws XMLStreamException
     {

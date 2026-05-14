@@ -7,6 +7,7 @@ import javax.xml.transform.dom.DOMResult;
 import org.w3c.dom.*;
 
 import stax2.wstream.BaseWriterTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests initially written to verify [WSTX-183], problems with
@@ -18,12 +19,14 @@ import stax2.wstream.BaseWriterTest;
 public class TestDomResultHandling
     extends BaseWriterTest
 {
+    @Test
     public void testWriteToDocument() throws Exception
     {
         // First: write to a regular DOM document
         createXMLEventWriter(createDomDoc(true));
     }
 
+    @Test
     public void testWriteToRootElementNotInDOM() throws Exception
     {
         // let's try outputting under specified element
@@ -36,6 +39,7 @@ public class TestDomResultHandling
         assertNull(doc.getDocumentElement());
     }
 
+    @Test
     public void testWriteToRootElementInDOM() throws Exception
     {
         Document doc = createDomDoc(true);
@@ -44,6 +48,7 @@ public class TestDomResultHandling
         createXMLEventWriter(root);
     }
 
+    @Test
     public void testWriteBeforeSibling() throws Exception
     {
         Document doc = createDomDoc(true);

@@ -2,16 +2,17 @@ package wstxtest.util;
 
 import java.util.*;
 
-import junit.framework.TestCase;
 
 import com.ctc.wstx.util.BijectiveNsMap;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test to verify problem [WSTX-202].
  */
 public class TestBijectiveNsMap
-    extends TestCase
+    extends wstxtest.BaseJUnit4Test
 {
+    @Test
     public void testMaskingForFindPrefix() throws Exception
     {
         BijectiveNsMap nsMap = BijectiveNsMap.createEmpty();
@@ -26,6 +27,7 @@ public class TestBijectiveNsMap
         }
     }
 
+    @Test
     public void testMaskingForGetBoundPrefixes() throws Exception
     {
         BijectiveNsMap nsMap = BijectiveNsMap.createEmpty();

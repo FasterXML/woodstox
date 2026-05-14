@@ -13,12 +13,14 @@ import wstxtest.BaseWstxTest;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.net.URL;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests that verify handling of entity references during parsing.
  */
 public class TestLexicalHandler extends BaseWstxTest {
 
+    @Test
     public void testReplaceEntityRefs() throws Exception {
         WstxInputFactory staxFactory = new WstxInputFactory();
         SAXParserFactory spf = new WstxSAXParserFactory(staxFactory);
@@ -32,6 +34,7 @@ public class TestLexicalHandler extends BaseWstxTest {
         orderVerifier.verify(listener).endElement("prodname");
     }
 
+    @Test
     public void testWithoutReplaceEntityRefs() throws Exception {
         SAXParserFactory spf = new WstxSAXParserFactory();
         SAXParser sp = spf.newSAXParser();
@@ -46,6 +49,7 @@ public class TestLexicalHandler extends BaseWstxTest {
         orderVerifier.verify(listener).endElement("prodname");
     }
 
+    @Test
     public void testWithoutReplaceEntityRefsAndWithLexicalHandler() throws Exception {
         SAXParserFactory spf = new WstxSAXParserFactory();
         SAXParser sp = spf.newSAXParser();

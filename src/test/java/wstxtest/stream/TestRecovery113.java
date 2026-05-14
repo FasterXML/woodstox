@@ -6,6 +6,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import com.ctc.wstx.stax.WstxInputFactory;
+import org.junit.jupiter.api.Test;
 
 /**
  * Regression test for [woodstox-core#113]: parsing should be able to
@@ -17,6 +18,7 @@ public class TestRecovery113
     extends BaseStreamTest
 {
     // Unbalanced close tag preceded by whitespace
+    @Test
     public void testRecoveryFromUnbalancedCloseTagWithWS()
         throws XMLStreamException
     {
@@ -31,6 +33,7 @@ public class TestRecovery113
 
     // Unbalanced close tag with no preceding whitespace (the originally
     // unrecoverable case in the bug report).
+    @Test
     public void testRecoveryFromAdjacentUnbalancedCloseTag()
         throws XMLStreamException
     {

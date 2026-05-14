@@ -1,6 +1,7 @@
 package org.codehaus.stax.test.stream;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests related to handling of attributes that depend on DTD subsets.
@@ -22,6 +23,7 @@ public class TestAttributeDTD
         + "<tree attr='&val1;' attr2=\"&val1;\" "
         +" attr3='&val2;' attr4=\"&val2;\" />";
 
+    @Test
     public void testQuotesViaEntities()
         throws XMLStreamException
     {

@@ -7,6 +7,7 @@ import javax.xml.stream.*;
 
 import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.validation.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * This test suite should really be part of wstx-tools package, but since
@@ -37,6 +38,7 @@ public class TestDTD
     /**
      * Test to show how [WSTX-190] occurs.
      */
+    @Test
     public void testMissingAttrWithReporter()
         throws XMLStreamException
     {
@@ -53,6 +55,7 @@ public class TestDTD
         assertEquals(1, rep.count);
     }
 
+    @Test
     public void testFullValidationOk() throws XMLStreamException
     {
         String XML = "<root attr='123'><leaf /></root>";
@@ -63,6 +66,7 @@ public class TestDTD
     }
 
     // [woodstox#23]
+    @Test
     public void testFullValidationIssue23() throws XMLStreamException
     {
         final String INPUT_DTD = "<!ELEMENT FreeFormText (#PCDATA) >\n"
@@ -92,6 +96,7 @@ public class TestDTD
     // would produce {@code (prefix=null, localName="xml:lang")} for an attribute
     // whose declaration in the DTD (parsed namespace-aware by default) is
     // stored as {@code (prefix="xml", localName="lang")}.
+    @Test
     public void testFullValidationIssue33NonNsAware() throws XMLStreamException
     {
         final String INPUT_DTD = "<!ELEMENT FreeFormText (#PCDATA)>\n"
@@ -115,6 +120,7 @@ public class TestDTD
     // [woodstox#33]: still report an error for genuinely undeclared attributes
     // when running in non-namespace-aware mode (the fallback added for #33
     // must not mask real validation problems).
+    @Test
     public void testFullValidationIssue33UnknownAttrStillFails() throws XMLStreamException
     {
         final String INPUT_DTD = "<!ELEMENT FreeFormText (#PCDATA)>\n"
@@ -142,6 +148,7 @@ public class TestDTD
     // attached to a namespace-aware document reader that produces
     // {@code (prefix="xml", localName="lang")}. Exercises the second branch
     // of {@code DTDValidatorBase.findAttrDef}.
+    @Test
     public void testFullValidationIssue33ReverseMismatch() throws XMLStreamException
     {
         // Parse a tiny doc with an inline DOCTYPE through a non-NS-aware
@@ -176,6 +183,7 @@ public class TestDTD
      * And then a test for validating starting when stream points
      * to START_ELEMENT
      */
+    @Test
     public void testPartialValidationOk()
         throws XMLStreamException
     {
@@ -195,6 +203,7 @@ public class TestDTD
      *   sub-tree...
      */
     /*
+    @Test
     public void testPartialValidationFollowedBy()
         throws XMLStreamException
     {
@@ -214,6 +223,7 @@ public class TestDTD
     /**
      * Test to verify [WSTX-207]
      */
+    @Test
     public void testSchemaWithFunnyFilename()
         throws Exception
     {
@@ -233,6 +243,7 @@ public class TestDTD
     }
 
     // Verify that EMPTY content model uses the correct error message (not #PCDATA message)
+    @Test
     public void testEmptyContentModelErrorMessage()
         throws XMLStreamException
     {
@@ -251,6 +262,7 @@ public class TestDTD
     // for BitSet.nextSetBit(), skipping token at bit index 0. This could cause
     // incorrect validation of content models where multiple elements share
     // the same position in a choice/sequence group.
+    @Test
     public void testContentModelWithMultipleChoiceElements()
         throws XMLStreamException
     {

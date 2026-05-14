@@ -5,10 +5,11 @@ import java.util.Iterator;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.ctc.wstx.util.BijectiveNsMap;
+import org.junit.jupiter.api.Timeout;
 
 // note: does NOT extend base class (if it did, timeout wouldn't work for some reason)
 //
@@ -34,13 +35,14 @@ public class TestNamespaceImpl
     }
 
     // [woodstox-core#74]
-    @Test(timeout = 2000)
+    @Test
+    @Timeout(value = 2000, unit = java.util.concurrent.TimeUnit.MILLISECONDS)
     public void testAddGeneratedMappingWithDefaultNsPrefix() {
 
         BijectiveNsMap map = BijectiveNsMap.createEmpty();
 
         // it should not get into an infinite loop
         String prefix = map.addGeneratedMapping("prefix", new BadNDContext(), "http://some.url", new int[1]);
-        Assert.assertEquals("prefix0", prefix);
+        Assertions.assertEquals("prefix0", prefix);
     }
 }

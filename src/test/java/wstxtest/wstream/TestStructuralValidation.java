@@ -5,6 +5,7 @@ import java.io.*;
 import javax.xml.stream.*;
 
 import org.codehaus.stax2.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * This unit test suite verifies that output-side content validation
@@ -23,6 +24,7 @@ public class TestStructuralValidation
      * Unit test suite for testing violations of structural checks, when
      * trying to output things in prolog/epilog.
      */
+    @Test
     public void testPrologChecks()
         throws Exception
     {
@@ -86,6 +88,7 @@ public class TestStructuralValidation
      * Unit test that verifies that root element structural problems (no root,
      * that is, an empty doc; more than one root element) are caught.
      */
+    @Test
     public void testRootElementChecks()
         throws XMLStreamException
     {
@@ -123,6 +126,7 @@ public class TestStructuralValidation
         }
     }
 
+    @Test
     public void testWriteElementChecks()
         throws XMLStreamException
     {

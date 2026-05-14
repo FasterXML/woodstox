@@ -3,10 +3,12 @@ package stax2.stream;
 import javax.xml.stream.*;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 public class TestAttrBasic
     extends BaseStax2Test
 {
+    @Test
     public void testNormalization()
         throws XMLStreamException
     {

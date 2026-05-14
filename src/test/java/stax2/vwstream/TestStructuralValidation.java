@@ -6,6 +6,7 @@ import javax.xml.stream.*;
 
 import org.codehaus.stax2.XMLStreamWriter2;
 import org.codehaus.stax2.validation.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for testing structural validation (except for test for
@@ -30,6 +31,7 @@ public class TestStructuralValidation
         +"<!ELEMENT branch (#PCDATA)>\n"
         ;
 
+    @Test
     public void testInvalidRootElem()
         throws XMLStreamException
     {
@@ -90,6 +92,7 @@ public class TestStructuralValidation
         }
     }
 
+    @Test
     public void testValidStructure()
         throws XMLStreamException
     {
@@ -115,6 +118,7 @@ public class TestStructuralValidation
         }
     }
 
+    @Test
     public void testInvalidStructure()
         throws XMLStreamException
     {
@@ -176,6 +180,7 @@ public class TestStructuralValidation
         }
     }
 
+    @Test
     public void testValidNsElem()
         throws XMLStreamException
     {
@@ -208,6 +213,7 @@ public class TestStructuralValidation
      * Let's also do quick testing on structure that would be ok but
      * where namespace prefix is not what dtd expects...
      */
+    @Test
     public void testInvalidNsElem()
         throws XMLStreamException
     {

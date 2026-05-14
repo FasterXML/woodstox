@@ -3,6 +3,7 @@ package org.codehaus.stax.test.vstream;
 import javax.xml.stream.*;
 
 import org.codehaus.stax.test.SimpleResolver;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests how implementation handles combining of
@@ -18,6 +19,7 @@ public class TestSubsetCombination
      * between subsets will be properly combined, and results in a usable
      * definition for validation.
      */
+    @Test
     public void testValidSubsets()
         throws XMLStreamException
     {
@@ -46,6 +48,7 @@ public class TestSubsetCombination
      * times, but the first one sticks, and internal subset is considered
      * to come before external subset
      */
+    @Test
     public void testAttributePrecedence()
         throws XMLStreamException
     {

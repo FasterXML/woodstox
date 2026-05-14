@@ -15,6 +15,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.codehaus.stax2.XMLStreamReader2;
 
 import com.ctc.wstx.stax.WstxInputFactory;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for testing Woodstox-specific features of location
@@ -23,6 +24,7 @@ import com.ctc.wstx.stax.WstxInputFactory;
 public class TestLocation
     extends BaseStreamTest
 {
+    @Test
     public void testSimpleLocation()
         throws XMLStreamException
     {
@@ -60,6 +62,7 @@ public class TestLocation
      * Existing callers (e.g. Apache Camel) rely on the start-of-event
      * behavior.
      */
+    @Test
     public void testGetLocationReturnsStartLocation()
         throws XMLStreamException
     {
@@ -100,6 +103,7 @@ public class TestLocation
                 expectedStartOffset, stax.getCharacterOffset());
     }
 
+    @Test
     public void testLineNumbers()
         throws XMLStreamException
     {
@@ -203,6 +207,7 @@ public class TestLocation
      * verify exact offset calculation, it is quite straight-forward
      * to verify that it's monotonically increasing, at least.
      */
+    @Test
     public void testOffsetIncrementing()
         throws XMLStreamException
     {
@@ -264,6 +269,7 @@ public class TestLocation
      * location in elements following comment with no spaces, split across 
      * multiple lines.
      */
+    @Test
     public void testLocationAfterComment()
     	throws XMLStreamException
     {

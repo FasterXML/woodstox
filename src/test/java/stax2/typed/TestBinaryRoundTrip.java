@@ -9,6 +9,7 @@ import org.codehaus.stax2.*;
 import org.codehaus.stax2.typed.*;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 public class TestBinaryRoundTrip
     extends BaseStax2Test
@@ -17,6 +18,7 @@ public class TestBinaryRoundTrip
      * Test to verify [WSTX-224]. Note that problems occur only when
      * in coalescing mode.
      */
+    @Test
     public void testWstx224() throws Exception
     {
         Base64Variant bv = Base64Variants.MIME;

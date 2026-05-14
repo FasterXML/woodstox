@@ -8,6 +8,7 @@ import javax.xml.stream.*;
 
 import com.ctc.wstx.api.WstxInputProperties;
 import com.ctc.wstx.sr.BasicStreamReader;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests handling of limits for elements in
@@ -18,6 +19,7 @@ import com.ctc.wstx.sr.BasicStreamReader;
 @SuppressWarnings("resource")
 public class TestElementLimits extends BaseStreamTest
 {
+    @Test
     public void testSuperDeep() throws Exception 
     {
         final int max = Integer.MAX_VALUE;
@@ -56,6 +58,7 @@ public class TestElementLimits extends BaseStreamTest
             verifyException(ex, "Maximum Element Depth limit");
         }
     }      
+    @Test
     public void testManyChildren() throws Exception 
     {
         final int max = Integer.MAX_VALUE;
@@ -94,6 +97,7 @@ public class TestElementLimits extends BaseStreamTest
         }
     }  
 
+    @Test
     public void testManyElements() throws Exception 
     {
         
@@ -119,6 +123,7 @@ public class TestElementLimits extends BaseStreamTest
         }
     }
     
+    @Test
     public void testCharacterLimit() throws Exception {
         try {
             XMLInputFactory factory = getNewInputFactory();

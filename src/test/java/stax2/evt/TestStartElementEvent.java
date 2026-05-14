@@ -10,6 +10,7 @@ import javax.xml.stream.events.*;
 import com.ctc.wstx.evt.DefaultEventAllocator;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Set of unit tests that checks that {@link StartElement}
@@ -20,6 +21,7 @@ public class TestStartElementEvent
 {
     private final XMLInputFactory XML_F = getNewInputFactory();
 
+    @Test
     public void testStartEventAttrs() throws Exception
     {
         final String DOC = "<a>"
@@ -55,6 +57,7 @@ public class TestStartElementEvent
     }
 
     // From [woodstox-core#43]
+    @Test
     public void testIsDefaultAttr() throws Exception
     {
         String DOC = "<a b='c'></a>";

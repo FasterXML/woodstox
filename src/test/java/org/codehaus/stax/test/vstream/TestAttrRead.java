@@ -1,6 +1,7 @@
 package org.codehaus.stax.test.vstream;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests basic handling of attributes; aspects
@@ -20,6 +21,7 @@ public class TestAttrRead
      * some constructs that can be warned about, but that are not
      * erroneous.
      */
+    @Test
     public void testValidAttrDecl()
         throws XMLStreamException
     {
@@ -49,6 +51,7 @@ public class TestAttrRead
      * Unit test that verifies that the attribute type declaration information
      * is properly parsed and accessible via stream reader.
      */
+    @Test
     public void testAttributeTypes()
         throws XMLStreamException
     {
@@ -86,6 +89,7 @@ public class TestAttrRead
         assertTokenType(END_ELEMENT, sr.next());
     }
 
+    @Test
     public void testValidRequiredAttr()
         throws XMLStreamException
     {
@@ -103,6 +107,7 @@ public class TestAttrRead
         assertEquals("value", sr.getAttributeValue(0));
     }
 
+    @Test
     public void testInvalidRequiredAttr()
         throws XMLStreamException
     {
@@ -115,6 +120,7 @@ public class TestAttrRead
                              "Missing required attribute value");
     }
 
+    @Test
     public void testOkFixedAttr()
         throws XMLStreamException
     {
@@ -147,6 +153,7 @@ public class TestAttrRead
         assertTokenType(END_ELEMENT, sr.next());
     }
 
+    @Test
     public void testInvalidFixedAttr()
         throws XMLStreamException
     {
@@ -171,6 +178,7 @@ public class TestAttrRead
      * Unit test that verifies that the default attribute values are properly
      * used on validating mode.
      */
+    @Test
     public void testDefaultAttr()
         throws XMLStreamException
     {
@@ -194,6 +202,7 @@ public class TestAttrRead
      * can issue a non-fatal warning): but if used, the first definition
      * should stick. Let's test for both default values and types.
      */
+    @Test
     public void testMultipleDeclForSingleAttr()
         throws XMLStreamException
     {

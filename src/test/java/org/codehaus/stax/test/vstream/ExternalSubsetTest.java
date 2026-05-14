@@ -3,6 +3,7 @@ package org.codehaus.stax.test.vstream;
 import javax.xml.stream.*;
 
 import org.codehaus.stax.test.SimpleResolver;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that verifies that external subsets can be used, and
@@ -14,6 +15,7 @@ import org.codehaus.stax.test.SimpleResolver;
 public class ExternalSubsetTest
     extends BaseVStreamTest
 {
+    @Test
     public void testSimpleValidExternalSubset()
         throws XMLStreamException
     {
@@ -35,6 +37,7 @@ public class ExternalSubsetTest
         sr.close();
     }
 
+    @Test
     public void testEntityInExternalSubset()
         throws XMLStreamException
     {
@@ -63,6 +66,7 @@ public class ExternalSubsetTest
      * <em>before</em> the external subset, so order of declarations does
      * not constrain resolution).
      */
+    @Test
     public void testNotationReferenceInInternalSubset()
             throws XMLStreamException
     {
@@ -88,6 +92,7 @@ public class ExternalSubsetTest
         sr.close();
     }
 
+    @Test
     public void testParameterEntityOverrideInInternalSubset()
             throws XMLStreamException
     {

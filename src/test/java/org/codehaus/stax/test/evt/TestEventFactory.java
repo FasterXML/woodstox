@@ -5,6 +5,7 @@ import java.util.*;
 import javax.xml.namespace.QName;
 import javax.xml.stream.*;
 import javax.xml.stream.events.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Class that contains simple tests for making sure that event objets
@@ -15,6 +16,7 @@ import javax.xml.stream.events.*;
 public class TestEventFactory
     extends BaseEventTest
 {
+    @Test
     public void testAttribute()
         throws XMLStreamException
     {
@@ -70,6 +72,7 @@ public class TestEventFactory
         assertTrue(str == null || str.length() == 0);
     }
 
+    @Test
     public void testCData()
         throws XMLStreamException
     {
@@ -85,6 +88,7 @@ public class TestEventFactory
         assertFalse(c.isWhiteSpace());
     }
 
+    @Test
     public void testCharacters()
         throws XMLStreamException
     {
@@ -101,6 +105,7 @@ public class TestEventFactory
         assertFalse(c.isWhiteSpace());
     }
 
+    @Test
     public void testComment()
         throws XMLStreamException
     {
@@ -115,6 +120,7 @@ public class TestEventFactory
         assertEquals(content, c.getText());
     }
 
+    @Test
     public void testDTD()
         throws XMLStreamException
     {
@@ -127,6 +133,7 @@ public class TestEventFactory
         // !!! TBI
     }
 
+    @Test
     public void testEndDocument()
         throws XMLStreamException
     {
@@ -138,6 +145,7 @@ public class TestEventFactory
         testEventWritability(ed);
     }
 
+    @Test
     public void testEndElement()
         throws XMLStreamException
     {
@@ -154,6 +162,7 @@ public class TestEventFactory
         assertEquals(LOCALNAME, n.getLocalPart());
     }
 
+    @Test
     public void testEntityReference()
         throws XMLStreamException
     {
@@ -167,6 +176,7 @@ public class TestEventFactory
         //testEventWritability(ref);
     }
 
+    @Test
     public void testIgnorableSpace()
         throws XMLStreamException
     {
@@ -183,6 +193,7 @@ public class TestEventFactory
         assertTrue(c.isWhiteSpace());
     }
 
+    @Test
     public void testNamespace()
         throws XMLStreamException
     {
@@ -212,6 +223,7 @@ public class TestEventFactory
         assertFalse(ns.isDefaultNamespaceDeclaration());
     }
 
+    @Test
     public void testProcInstr()
         throws XMLStreamException
     {
@@ -225,6 +237,7 @@ public class TestEventFactory
 
     }
 
+    @Test
     public void testSpace()
         throws XMLStreamException
     {
@@ -241,6 +254,7 @@ public class TestEventFactory
         assertTrue(c.isWhiteSpace());
     }
 
+    @Test
     public void testStartDocument()
         throws XMLStreamException
     {
@@ -262,6 +276,7 @@ public class TestEventFactory
         assertEquals(VERSION, sd.getVersion());
     }
 
+    @Test
     public void testStartElement()
         throws XMLStreamException
     {
@@ -288,6 +303,7 @@ public class TestEventFactory
         assertEquals(URI, n.getNamespaceURI());
     }
 
+    @Test
     public void testStartElementWithAttrs()
         throws XMLStreamException
     {
