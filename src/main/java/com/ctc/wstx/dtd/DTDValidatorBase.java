@@ -212,18 +212,11 @@ public abstract class DTDValidatorBase
                 }
             }
         } else {
+            String target = prefix + ":" + localName;
             for (Map.Entry<PrefixedName,DTDAttribute> e : mCurrAttrDefs.entrySet()) {
                 PrefixedName n = e.getKey();
-                if (n.getPrefix() == null && n.getLocalName() != null) {
-                    String stored = n.getLocalName();
-                    int sl = stored.length();
-                    int pl = prefix.length();
-                    if (sl == pl + 1 + localName.length()
-                            && stored.charAt(pl) == ':'
-                            && stored.startsWith(prefix)
-                            && stored.endsWith(localName)) {
-                        return e.getValue();
-                    }
+                if (n.getPrefix() == null && target.equals(n.getLocalName())) {
+                    return e.getValue();
                 }
             }
         }
