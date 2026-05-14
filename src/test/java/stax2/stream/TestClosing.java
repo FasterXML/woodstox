@@ -9,6 +9,7 @@ import org.codehaus.stax2.*;
 import org.codehaus.stax2.io.Stax2StringSource;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * This unit test suite verifies that the auto-closing feature works
@@ -27,6 +28,7 @@ public class TestClosing
      * automatic closing should occur, nor explicit one unless specific
      * forcing method is used.
      */
+    @Test
     public void testNoAutoCloseReader()
         throws XMLStreamException
     {
@@ -59,6 +61,7 @@ public class TestClosing
         assertTrue(input.isClosed());
     }
 
+    @Test
     public void testNoAutoCloseStream()
         throws XMLStreamException, IOException
     {
@@ -95,6 +98,7 @@ public class TestClosing
      * passed in input stream does get properly closed both when EOF
      * is hit, and when we call close() prior to EOF.
      */
+    @Test
     public void testAutoCloseEnabled()
         throws XMLStreamException
     {
@@ -136,6 +140,7 @@ public class TestClosing
      * on whether caller is considered to have access to the underlying
      * physical object or not.
      */
+    @Test
     public void testAutoCloseImplicit()
         throws XMLStreamException
     {

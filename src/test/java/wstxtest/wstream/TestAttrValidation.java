@@ -5,6 +5,7 @@ import java.io.*;
 import javax.xml.stream.*;
 
 import org.codehaus.stax2.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * This unit test suite verifies that output-side content validation
@@ -17,6 +18,7 @@ public class TestAttrValidation
      * Unit test suite for testing violations of structural checks, when
      * trying to output things in prolog/epilog.
      */
+    @Test
     public void testSimpleAttrs()
         throws Exception
     {

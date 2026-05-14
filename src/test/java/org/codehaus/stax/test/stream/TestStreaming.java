@@ -3,6 +3,7 @@ package org.codehaus.stax.test.stream;
 import java.io.*;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests that the stream is really fully streaming:
@@ -21,18 +22,21 @@ import javax.xml.stream.*;
 public class TestStreaming
     extends BaseStreamTest
 {
+    @Test
     public void testAscii()
         throws XMLStreamException, UnsupportedEncodingException
     {
         testWith("US-ASCII");
     }
 
+    @Test
     public void testISOLatin()
         throws XMLStreamException, UnsupportedEncodingException
     {
         testWith("ISO-8859-1");
     }
 
+    @Test
     public void testUTF8()
         throws XMLStreamException, UnsupportedEncodingException
     {
@@ -45,6 +49,7 @@ public class TestStreaming
     ////////////////////////////////////////
      */
 
+    @Test
     private void testWith(String enc)
         throws XMLStreamException, UnsupportedEncodingException
     {

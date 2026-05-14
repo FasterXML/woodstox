@@ -1,6 +1,7 @@
 package wstxtest.io;
 
 import com.ctc.wstx.io.WstxInputLocation;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link WstxInputLocation}, the {@link javax.xml.stream.Location}
@@ -10,6 +11,7 @@ public class TestWstxInputLocation extends wstxtest.BaseWstxTest
 {
     // ---------- basic getters ----------
 
+    @Test
     public void testGetters()
     {
         WstxInputLocation loc = new WstxInputLocation(null,
@@ -23,6 +25,7 @@ public class TestWstxInputLocation extends wstxtest.BaseWstxTest
         assertNull("no context expected", loc.getContext());
     }
 
+    @Test
     public void testCharacterOffsetTruncatedToInt()
     {
         // Long offset that doesn't fit in int — getCharacterOffset() truncates,
@@ -38,6 +41,7 @@ public class TestWstxInputLocation extends wstxtest.BaseWstxTest
 
     // ---------- empty location singleton ----------
 
+    @Test
     public void testEmptyLocationSingleton()
     {
         WstxInputLocation empty = WstxInputLocation.getEmptyLocation();
@@ -52,6 +56,7 @@ public class TestWstxInputLocation extends wstxtest.BaseWstxTest
 
     // ---------- equals / hashCode ----------
 
+    @Test
     public void testEqualsSameOffsetAndIds()
     {
         WstxInputLocation a = new WstxInputLocation(null, "p", "s", 100L, 1, 2);
@@ -67,6 +72,7 @@ public class TestWstxInputLocation extends wstxtest.BaseWstxTest
         assertEquals(a.hashCode(), c.hashCode());
     }
 
+    @Test
     public void testEqualsDifferentOffset()
     {
         WstxInputLocation a = new WstxInputLocation(null, "p", "s", 100L, 1, 2);
@@ -74,6 +80,7 @@ public class TestWstxInputLocation extends wstxtest.BaseWstxTest
         assertFalse(a.equals(b));
     }
 
+    @Test
     public void testEqualsDifferentPublicOrSystemId()
     {
         WstxInputLocation base = new WstxInputLocation(null, "p", "s", 100L, 1, 2);
@@ -83,6 +90,7 @@ public class TestWstxInputLocation extends wstxtest.BaseWstxTest
         assertFalse(base.equals(diffSys));
     }
 
+    @Test
     public void testEqualsHandlesNullIdsOnOtherInstance()
     {
         // equals() normalizes null public/system ids on the OTHER side to "",
@@ -104,6 +112,7 @@ public class TestWstxInputLocation extends wstxtest.BaseWstxTest
                 nulls.equals(empty));
     }
 
+    @Test
     public void testEqualsRejectsNonLocation()
     {
         WstxInputLocation a = new WstxInputLocation(null, "p", "s", 0L, 0, 0);
@@ -113,6 +122,7 @@ public class TestWstxInputLocation extends wstxtest.BaseWstxTest
 
     // ---------- toString / context ----------
 
+    @Test
     public void testToStringIncludesRowColAndSystemId()
     {
         WstxInputLocation loc = new WstxInputLocation(null, "pub", "sys", 0L, 5, 12);
@@ -126,6 +136,7 @@ public class TestWstxInputLocation extends wstxtest.BaseWstxTest
         assertSame(s, loc.toString());
     }
 
+    @Test
     public void testToStringWithContextChain()
     {
         WstxInputLocation parent = new WstxInputLocation(null, "p1", "sys1", 0L, 1, 1);
@@ -137,6 +148,7 @@ public class TestWstxInputLocation extends wstxtest.BaseWstxTest
         assertTrue("expected parent system id in '" + s + "'", s.contains("\"sys1\""));
     }
 
+    @Test
     public void testGetContextReturnsParent()
     {
         WstxInputLocation parent = new WstxInputLocation(null, "p1", "sys1", 0L, 1, 1);

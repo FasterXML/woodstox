@@ -1,12 +1,11 @@
 package com.ctc.wstx.io;
 
 import com.ctc.wstx.util.XmlChars;
-import junit.framework.TestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.stream.IntStream;
 
-public class WstxInputDataTest extends TestCase {
+public class WstxInputDataTest extends wstxtest.BaseJUnit4Test {
 
     @Test
     public void testIsNameStartCharBehavesSameAsBranchyVersion() {

@@ -6,10 +6,12 @@ import javax.xml.stream.*;
 
 import org.codehaus.stax2.XMLOutputFactory2;
 import org.codehaus.stax2.io.EscapingWriterFactory;
+import org.junit.jupiter.api.Test;
 
 public class CharacterEscapingTest
     extends BaseWriterTest
 {
+    @Test
     public void testSimpleCdataEscaping() throws Exception
     {
         XMLOutputFactory outF = getNewOutputFactory();
@@ -23,6 +25,7 @@ public class CharacterEscapingTest
                 "<root attr=\"'donald'\">'duck'</root>");
     }
 
+    @Test
     public void testSimpleAttributeEscaping() throws Exception
     {
         XMLOutputFactory outF = getNewOutputFactory();

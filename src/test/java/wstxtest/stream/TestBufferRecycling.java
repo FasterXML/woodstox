@@ -3,6 +3,7 @@ package wstxtest.stream;
 import java.io.StringReader;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Simple unit tests to try to verify that underlying buffers are
@@ -21,6 +22,7 @@ public class TestBufferRecycling
      * Test that verifies that the underlying character buffer should
      * be reused between two parsing rounds
      */
+    @Test
     public void testCharBufferRecycling()
 	throws Exception
     {
@@ -38,6 +40,7 @@ public class TestBufferRecycling
      * Inverted test to verify that the buffers are NOT shared when they
      * can not be.
      */
+    @Test
     public void testCharBufferNonRecycling()
 	throws Exception
     {

@@ -5,6 +5,7 @@ import java.util.*;
 
 import javax.xml.stream.*;
 import javax.xml.stream.events.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Class that contains simple tests for making sure that event objects
@@ -15,6 +16,7 @@ import javax.xml.stream.events.*;
 public class TestEventWriter
     extends BaseEventTest
 {
+    @Test
     public void testNonRepairingNsWrite()
         throws XMLStreamException
     {
@@ -70,6 +72,7 @@ public class TestEventWriter
      * doing some simple sanity checks).
      */
     @SuppressWarnings("unchecked")
+    @Test
     public void testPassThrough()
         throws XMLStreamException
     {

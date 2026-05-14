@@ -6,6 +6,7 @@ import javax.xml.stream.*;
 
 import org.codehaus.stax2.XMLStreamWriter2;
 import org.codehaus.stax2.validation.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for testing handling of attribute value validation, mostly
@@ -26,6 +27,7 @@ public class TestAttributeValidation
     final String IMPLIED_NS_DTD_STR = "<!ELEMENT root EMPTY>\n"
         +"<!ATTLIST root "+NS_PREFIX+":attr CDATA #REQUIRED>\n";
 
+    @Test
     public void testValidFixedAttr() throws XMLStreamException
     {
         if (HAS_NON_NS_MODE) { // only test non-ns mode if supported
@@ -60,6 +62,7 @@ public class TestAttributeValidation
         sw.close();
     }
 
+    @Test
     public void testInvalidFixedAttr() throws XMLStreamException
     {
         for (WriterValidationTrigger trigger : WriterValidationTrigger.values()) {
@@ -116,6 +119,7 @@ public class TestAttributeValidation
         }
     }
 
+    @Test
     public void testValidRequiredAttr() throws XMLStreamException
     {
         if (HAS_NON_NS_MODE) { // only test non-ns mode if supported
@@ -156,6 +160,7 @@ public class TestAttributeValidation
         }
     }
 
+    @Test
     public void testInvalidRequiredAttr() throws XMLStreamException
     {
         for (WriterValidationTrigger trigger : WriterValidationTrigger.values()) {
@@ -189,6 +194,7 @@ public class TestAttributeValidation
      * Test to ensure that the namespace-prefix mapping works (to the degree
      * it can... wrt dtd-non-ns-awareness) with attributes.
      */
+    @Test
     public void testValidNsAttr() throws XMLStreamException
     {
         _testValidNsAttr(false);
@@ -213,6 +219,7 @@ public class TestAttributeValidation
         sw.close();
     }
 
+    @Test
     public void testInvalidNsAttr() throws XMLStreamException
     {
         for (WriterValidationTrigger trigger : WriterValidationTrigger.values()) {

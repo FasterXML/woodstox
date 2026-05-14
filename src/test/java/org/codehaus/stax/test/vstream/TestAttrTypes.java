@@ -3,6 +3,7 @@ package org.codehaus.stax.test.vstream;
 import java.util.HashMap;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests that attribute type information returned
@@ -11,6 +12,7 @@ import javax.xml.stream.*;
 public class TestAttrTypes
     extends BaseVStreamTest
 {
+    @Test
     public void testAttrTypes()
         throws XMLStreamException
     {

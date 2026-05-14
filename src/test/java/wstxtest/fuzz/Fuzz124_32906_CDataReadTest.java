@@ -10,6 +10,7 @@ import wstxtest.stream.BaseStreamTest;
 
 import com.ctc.wstx.exc.WstxEOFException;
 import com.ctc.wstx.stax.WstxInputFactory;
+import org.junit.jupiter.api.Test;
 
 //[woodstox-core#124]: UTF-8/Surrogate handling at the end of CDATA (and
 //document)
@@ -20,6 +21,7 @@ public class Fuzz124_32906_CDataReadTest extends BaseStreamTest
     private final WstxInputFactory STAX_F = getWstxInputFactory();
 
     //[woodstox-core#124] with InputStream
+    @Test
     public void testIssue124InputStream() throws Exception
     {
         XMLStreamReader sr = STAX_F.createXMLStreamReader(new ByteArrayInputStream(DOC));
@@ -33,6 +35,7 @@ public class Fuzz124_32906_CDataReadTest extends BaseStreamTest
     }
     
     //[woodstox-core#124] with Reader
+    @Test
     public void testIssue124Reader() throws Exception
     {
         Reader r = new InputStreamReader(new ByteArrayInputStream(DOC),
@@ -48,6 +51,7 @@ public class Fuzz124_32906_CDataReadTest extends BaseStreamTest
     }
 
     //[woodstox-core#124] with Stax2 byte array source
+    @Test
     public void testIssue465Stax2ByteARray() throws Exception
     {
         // Then "native" Byte array

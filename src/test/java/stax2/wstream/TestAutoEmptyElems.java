@@ -9,21 +9,25 @@ import javax.xml.stream.XMLStreamWriter;
 import org.codehaus.stax2.XMLOutputFactory2;
 
 import com.ctc.wstx.api.WstxOutputProperties;
+import org.junit.jupiter.api.Test;
 
 public class TestAutoEmptyElems extends BaseWriterTest
 {
+    @Test
     public void testDefaultSetting() throws Exception
     {
         final XMLOutputFactory f = getOutputFactory();
         assertEquals(Boolean.TRUE, f.getProperty(XMLOutputFactory2.P_AUTOMATIC_EMPTY_ELEMENTS));
     }
 
+    @Test
     public void testAutoEmptyElemDisabled() throws Exception
     {
         assertEquals("<root><leaf></leaf></root>", _writeDoc(getFactory(false, false)));
         assertEquals("<root><leaf></leaf></root>", _writeDoc(getFactory(false, true)));
     }
     
+    @Test
     public void testAutoEmptyElemEnabled() throws Exception
     {
         assertEquals("<root><leaf/></root>", _writeDoc(getFactory(true, false)));

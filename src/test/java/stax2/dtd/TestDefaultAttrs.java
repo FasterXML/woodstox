@@ -5,6 +5,7 @@ import javax.xml.stream.XMLStreamException;
 import org.codehaus.stax2.*;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test class that checks whether namespace declarations gained via
@@ -13,6 +14,7 @@ import stax2.BaseStax2Test;
 public class TestDefaultAttrs
     extends BaseStax2Test
 {
+    @Test
     public void testValidNsFromDefaultAttrs()
         throws XMLStreamException
     {

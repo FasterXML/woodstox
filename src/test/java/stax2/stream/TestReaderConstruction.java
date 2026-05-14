@@ -7,6 +7,7 @@ import javax.xml.stream.*;
 
 import org.codehaus.stax2.*;
 import org.codehaus.stax2.io.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests additional StAX2 stream reader construction
@@ -15,6 +16,7 @@ import org.codehaus.stax2.io.*;
 public class TestReaderConstruction
     extends stax2.BaseStax2Test
 {
+    @Test
     public void testCreateWithFile()
         throws IOException, XMLStreamException
     {
@@ -25,6 +27,7 @@ public class TestReaderConstruction
     }
 
     @SuppressWarnings("deprecation")
+	@Test
 	public void testCreateWithURL()
         throws IOException, XMLStreamException
     {
@@ -35,6 +38,7 @@ public class TestReaderConstruction
         verifyXML(ifact.createXMLStreamReader(url), "URL");
     }
 
+    @Test
     public void testCreateWithFileSource()
         throws IOException, XMLStreamException
     {
@@ -46,6 +50,7 @@ public class TestReaderConstruction
     }
 
     @SuppressWarnings("deprecation")
+	@Test
 	public void testCreateWithURLSource()
         throws IOException, XMLStreamException
     {
@@ -56,6 +61,7 @@ public class TestReaderConstruction
                   "URLSource");
     }
 
+    @Test
     public void testCreateWithStringSource()
         throws XMLStreamException
     {
@@ -66,6 +72,7 @@ public class TestReaderConstruction
                   "Stringsource");
     }
 
+    @Test
     public void testCreateWithCharArraySource()
         throws XMLStreamException
     {
@@ -76,6 +83,7 @@ public class TestReaderConstruction
         verifyXML(ifact.createXMLStreamReader(new Stax2CharArraySource(ch, 0, ch.length)), "CharArraySource");
     }
 
+    @Test
     public void testCreateWithByteArraySource()
         throws XMLStreamException, IOException
     {

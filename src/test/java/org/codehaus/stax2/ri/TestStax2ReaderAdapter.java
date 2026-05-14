@@ -5,6 +5,7 @@ import java.io.*;
 import javax.xml.stream.*;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author tsaloranta
@@ -13,6 +14,7 @@ import stax2.BaseStax2Test;
  */
 public class TestStax2ReaderAdapter extends BaseStax2Test
 {
+    @Test
     public void testSimple() throws Exception
     {
         final String XML = "<root><a>xyz</a><b>abc</b></root>";
@@ -54,6 +56,7 @@ public class TestStax2ReaderAdapter extends BaseStax2Test
         assertEquals(0, adapter.getDepth());
     }
 
+    @Test
     public void testSimpleWithTypedText() throws Exception
     {
         final String XML = "<root><a>xyz</a><b>abc</b></root>";
@@ -94,6 +97,7 @@ public class TestStax2ReaderAdapter extends BaseStax2Test
     /**
      * Test actually copied from 'stax2.stream.TestXMLStreamReader2'
      */
+    @Test
     public void testWithDepthAndStuff() throws Exception
     {
         final String XML = "<root><child attr='123' /><child2>xxx</child2></root>";

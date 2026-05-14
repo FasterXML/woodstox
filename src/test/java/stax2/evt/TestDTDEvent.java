@@ -10,6 +10,7 @@ import org.codehaus.stax2.*;
 import org.codehaus.stax2.evt.*;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Set of unit tests that checks that {@linkAttributeInfo}
@@ -18,6 +19,7 @@ import stax2.BaseStax2Test;
 public class TestDTDEvent
     extends BaseStax2Test
 {
+    @Test
     public void testDTDCreation()
         throws XMLStreamException
     {

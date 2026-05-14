@@ -1,6 +1,8 @@
 
 package wstxtest;
 
+
+import org.junit.jupiter.api.Test;
 import java.io.StringReader;
 
 import javax.xml.stream.XMLInputFactory;
@@ -13,6 +15,7 @@ import com.ctc.wstx.api.WstxInputProperties;
  */
 public class TestDefaultNamespacePrefix extends BaseWstxTest
 {
+    @Test
     public void testDefaultNamespacePrefixAsNull() throws Exception
     {
         String XML = "<blah xmlns=\"http://blah.org\"><foo>foo</foo></blah>";
@@ -31,6 +34,7 @@ public class TestDefaultNamespacePrefix extends BaseWstxTest
         }
     }
 
+    @Test
     public void testDefaultNamespacePrefixAsEmptyString() throws Exception
     {
         String XML = "<blah xmlns=\"http://blah.org\"><foo>foo</foo></blah>";

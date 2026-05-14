@@ -2,6 +2,7 @@ package org.codehaus.stax.test.stream;
 
 import javax.xml.XMLConstants;
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests that verify handling of XMLInputFactory properties.
@@ -19,6 +20,7 @@ public class TestFactoryProperties
 {
     private final XMLInputFactory DEFAULT_FACTORY = getNewInputFactory();
 
+    @Test
     public void testDefaultEntitySettings()
     {
         assertEquals(Boolean.TRUE, DEFAULT_FACTORY.getProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES));
@@ -28,6 +30,7 @@ public class TestFactoryProperties
         }
     }
 
+    @Test
     public void testDefaultValidationSettings()
     {
         assertEquals(Boolean.FALSE, DEFAULT_FACTORY.getProperty(XMLInputFactory.IS_VALIDATING));
@@ -35,6 +38,7 @@ public class TestFactoryProperties
         assertEquals(Boolean.TRUE, DEFAULT_FACTORY.getProperty(XMLInputFactory.SUPPORT_DTD));
     }
 
+    @Test
     public void testDefaultMiscSettings()
     {
         assertEquals(Boolean.TRUE, DEFAULT_FACTORY.getProperty(XMLInputFactory.IS_NAMESPACE_AWARE));
@@ -46,6 +50,7 @@ public class TestFactoryProperties
     }
 
     // JEP-185, add nominal support for "secure processing"
+    @Test
     public void testFeatureSecureProcessing()
     {
         // should probably return `null` for "indeterminate" but...

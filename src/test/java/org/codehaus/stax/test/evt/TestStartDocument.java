@@ -3,6 +3,7 @@ package org.codehaus.stax.test.evt;
 import javax.xml.namespace.QName;
 import javax.xml.stream.*;
 import javax.xml.stream.events.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Class that tests basic dealing of the StartDocument event (skipping,
@@ -16,6 +17,7 @@ public class TestStartDocument
     /**
      * First, let's see what happens when there's no decl
      */
+    @Test
     public void testTrivialValid()
         throws XMLStreamException
     {
@@ -58,6 +60,7 @@ public class TestStartDocument
         }
     }
 
+    @Test
     public void testNormalValid()
         throws XMLStreamException
     {
@@ -108,6 +111,7 @@ public class TestStartDocument
      * Let's also quickly verify that we can skip xml declaration (actual
      * or virtual) to the root element -- should work ok.
      */
+    @Test
     public void testNextEvent()
         throws XMLStreamException
     {

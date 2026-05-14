@@ -1,8 +1,8 @@
 package wstxtest.util;
 
-import junit.framework.TestCase;
 
 import com.ctc.wstx.util.TextAccumulator;
+import org.junit.jupiter.api.Test;
 
 /**
  * Simple unit tests for testing {@link TextAccumulator}. That class
@@ -11,8 +11,9 @@ import com.ctc.wstx.util.TextAccumulator;
  * instance is passed, before a String is needed.
  */
 public class TestTextAccumulator
-    extends TestCase
+    extends wstxtest.BaseJUnit4Test
 {
+    @Test
     public void testBasic()
     {
         TextAccumulator acc = new TextAccumulator();
@@ -26,6 +27,7 @@ public class TestTextAccumulator
     }
 
     // as per [WSTX-349]
+    @Test
     public void testBasicWithCharArray()
     {
         TextAccumulator acc = new TextAccumulator();

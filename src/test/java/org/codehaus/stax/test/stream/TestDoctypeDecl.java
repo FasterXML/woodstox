@@ -5,6 +5,7 @@ import java.util.List;
 import javax.xml.stream.*;
 import javax.xml.stream.events.EntityDeclaration;
 import javax.xml.stream.events.NotationDeclaration;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests handling of the DOCTYPE declaration event
@@ -24,6 +25,7 @@ public class TestDoctypeDecl
      * Method that verifies properties that should be active when
      * DTD is the current event.
      */
+    @Test
     public void testProperties()
         throws XMLStreamException
     {
@@ -31,6 +33,7 @@ public class TestDoctypeDecl
         doTestProperties(true);
     }
 
+    @Test
     public void testMinimalValidDecl() 
         throws XMLStreamException
     {
@@ -38,6 +41,7 @@ public class TestDoctypeDecl
         doTestMinimalValid(true);
     }
 
+    @Test
     public void testSimpleValidDecl() 
         throws XMLStreamException
     {
@@ -45,6 +49,7 @@ public class TestDoctypeDecl
         doTestSimpleValid(true);
     }
 
+    @Test
     public void testTypicalValid()
         throws XMLStreamException
     {
@@ -52,6 +57,7 @@ public class TestDoctypeDecl
         doTestTypicalValid(true);
     }
 
+    @Test
     public void testSimpleInvalidDecl() 
         throws XMLStreamException
     {
@@ -66,6 +72,7 @@ public class TestDoctypeDecl
         +"]><root />";
 
 
+    @Test
     public void testSimpleEntity()
         throws XMLStreamException
     {
@@ -81,6 +88,7 @@ public class TestDoctypeDecl
         sr.close();
     }
 
+    @Test
     public void testSimpleNotation()
         throws XMLStreamException
     {
@@ -98,6 +106,7 @@ public class TestDoctypeDecl
      * only to be done when enabled; not just because DTD-awareness
      * is enabled.
      */
+    @Test
     public void testNonVldWithEmptyContentModel()
         throws XMLStreamException
     {
@@ -134,6 +143,7 @@ public class TestDoctypeDecl
         sr.close();
     }
 
+    @Test
     public void testNonVldWithNonMixedContentModel()
         throws XMLStreamException
     {

@@ -3,6 +3,7 @@ package wstxtest.util;
 import java.util.*;
 
 import com.ctc.wstx.util.ArgUtil;
+import org.junit.jupiter.api.Test;
 
 /**
  * Simple unit tests for testing methods in {@link ArgUtil}.
@@ -10,6 +11,7 @@ import com.ctc.wstx.util.ArgUtil;
 public class TestArgUtil
     extends wstxtest.BaseWstxTest
 {
+    @Test
     public void testBoolean()
     {
         assertFalse(ArgUtil.convertToBoolean("test", "false"));
@@ -32,12 +34,14 @@ public class TestArgUtil
         } catch (IllegalArgumentException iae) { }
     }
 
+    @Test
     public void testBooleanFromBoolean()
     {
         assertTrue(ArgUtil.convertToBoolean("test", Boolean.TRUE));
         assertFalse(ArgUtil.convertToBoolean("test", Boolean.FALSE));
     }
 
+    @Test
     public void testInt()
     {
         assertEquals(14, ArgUtil.convertToInt("test", "14", 0));
@@ -62,6 +66,7 @@ public class TestArgUtil
         } catch (IllegalArgumentException iae) { }
     }
 
+    @Test
     public void testIntBelowMinimum()
     {
         // Value below minValue should throw IllegalArgumentException
@@ -81,6 +86,7 @@ public class TestArgUtil
         }
     }
 
+    @Test
     public void testLong()
     {
         assertEquals(99L, ArgUtil.convertToLong("test", "99", 0L));
@@ -110,6 +116,7 @@ public class TestArgUtil
         }
     }
 
+    @Test
     public void testLongBelowMinimum()
     {
         try {

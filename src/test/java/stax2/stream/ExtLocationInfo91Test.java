@@ -7,6 +7,7 @@ import stax2.BaseStax2Test;
 import javax.xml.stream.*;
 import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
+import org.junit.jupiter.api.Test;
 
 /**
  * Set of unit tests that checks that the {@link LocationInfo} implementation
@@ -39,6 +40,7 @@ public class ExtLocationInfo91Test
     // EOF, fc: 19; row 1
 
     // For [woodstox-core#91]
+    @Test
     public void testLocationsWithExtEntity()
             throws XMLStreamException
     {
@@ -74,6 +76,7 @@ public class ExtLocationInfo91Test
 
     // [woodstox-core#91] Text content inside an external entity must report
     // the external entity's system id, not the parent document's.
+    @Test
     public void testCharactersInExtEntity()
         throws XMLStreamException
     {
@@ -116,6 +119,7 @@ public class ExtLocationInfo91Test
 
     // [woodstox-core#91] A comment inside an external entity must report the
     // external entity's system id, not the parent document's.
+    @Test
     public void testCommentInExtEntity()
         throws XMLStreamException
     {
@@ -158,6 +162,7 @@ public class ExtLocationInfo91Test
     // track the innermost source on entry and the correct outer source on each
     // pop. Both entities are declared in the main document DTD (XML rules
     // prohibit DOCTYPE inside external parsed entities).
+    @Test
     public void testNestedExternalEntities()
         throws XMLStreamException
     {
@@ -220,6 +225,7 @@ public class ExtLocationInfo91Test
     // [woodstox-core#91] Verify row/column tracking on entry into a
     // multi-line external entity, and that row counting in the parent
     // is unaffected when we return from it.
+    @Test
     public void testMultiLineExtEntity()
         throws XMLStreamException
     {
@@ -275,6 +281,7 @@ public class ExtLocationInfo91Test
     // [woodstox-core#91] Exit case where the first char in the parent after
     // the external entity is a newline. Verifies that re-anchored token-start
     // (row, col) is correct.
+    @Test
     public void testNewlineAfterExtEntityInParent()
         throws XMLStreamException
     {
@@ -333,6 +340,7 @@ public class ExtLocationInfo91Test
     // before-entity / entity content / after-entity text. The event
     // straddles a boundary; verify start is anchored at the first parent
     // char and end at the last parent char, both with the parent system id.
+    @Test
     public void testCoalescingAcrossExtEntity()
         throws XMLStreamException
     {

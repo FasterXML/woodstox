@@ -3,6 +3,7 @@ package wstxtest.stream;
 import javax.xml.stream.*;
 
 import wstxtest.cfg.*;
+import org.junit.jupiter.api.Test;
 
 public class TestComments
     extends BaseStreamTest
@@ -16,6 +17,7 @@ public class TestComments
         Configs.addAll(mConfigs);
     }
 
+    @Test
     public void testValid()
         throws Exception
     {

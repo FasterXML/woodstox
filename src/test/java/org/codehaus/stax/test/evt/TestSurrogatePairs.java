@@ -4,10 +4,12 @@ import java.io.*;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
+import org.junit.jupiter.api.Test;
 
 public class TestSurrogatePairs
     extends wstxtest.BaseWstxTest
 {
+    @Test
     public void testIssue280() throws Exception
     {
         XMLInputFactory xif = getInputFactory();

@@ -3,6 +3,7 @@ package failing;
 import org.codehaus.stax2.validation.XMLValidationSchema;
 
 import wstxtest.vstream.BaseValidationTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Reproducer for Woodstox issue #87: parsing a W3C Schema that declares a
@@ -48,6 +49,7 @@ public class W3CSchemaMaxOccursStackOverflow87Test
 
     // Sanity check: maxOccurs="unbounded" compiles fine — MSV models it as a
     // single OneOrMore node, so the AttributeWildcardComputer walk stays shallow.
+    @Test
     public void testUnboundedCompiles() throws Exception
     {
         final String schema = SCHEMA_LARGE_MAX_OCCURS.replace("'25000'", "'unbounded'");
@@ -58,6 +60,7 @@ public class W3CSchemaMaxOccursStackOverflow87Test
 
     // The failing case from issue #87: large numeric maxOccurs overflows the
     // stack inside MSV's AttributeWildcardComputer during schema compilation.
+    @Test
     public void testLargeMaxOccursCompiles() throws Exception
     {
         XMLValidationSchema vs = parseW3CSchema(SCHEMA_LARGE_MAX_OCCURS);

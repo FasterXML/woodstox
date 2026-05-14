@@ -9,6 +9,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.codehaus.stax2.*;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests that verify that external DTD subsets are properly
@@ -41,6 +42,7 @@ public class TestExternalDTD
      * and system id (to use for figuring out the base); basic Stax 1.0
      * feature
      */
+    @Test
     public void testStreamWithSystemId()
         throws IOException, XMLStreamException
     {
@@ -73,6 +75,7 @@ public class TestExternalDTD
      * and system id (to use for figuring out the base); basic Stax 1.0
      * feature
      */
+    @Test
     public void testReaderWithSystemId()
         throws IOException, XMLStreamException
     {
@@ -104,6 +107,7 @@ public class TestExternalDTD
      * This tests the basic dereferencing when giving an stream source
      * with both system id and input source; Stax 1.0 feature.
      */
+    @Test
     public void testStreamWithStreamSource()
         throws IOException, XMLStreamException
     {
@@ -160,6 +164,7 @@ public class TestExternalDTD
     /**
      * Deref'ing with Stax2 factory method that takes a {@link java.net.URL}.
      */
+    @Test
     public void testURL()
         throws IOException, XMLStreamException
     {
@@ -186,6 +191,7 @@ public class TestExternalDTD
     /**
      * Deref'ing with Stax2 factory method that takes a {@link java.io.File}
      */
+    @Test
     public void testFile()
         throws IOException, XMLStreamException
     {

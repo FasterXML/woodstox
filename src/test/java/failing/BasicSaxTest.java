@@ -10,6 +10,7 @@ import org.xml.sax.ext.DefaultHandler2;
 import com.ctc.wstx.sax.*;
 
 import wstxtest.BaseWstxTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Simple unit tests to verify that most fundamental parsing functionality
@@ -21,6 +22,7 @@ public class BasicSaxTest
     /**
      * Test for [WSTX_227]
      */
+    @Test
     public void testCData() throws Exception
     {
         SAXParser parser = new WstxSAXParser();

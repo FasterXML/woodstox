@@ -8,6 +8,7 @@ import org.codehaus.stax2.*;
 import org.codehaus.stax2.evt.*;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Set of unit tests that checks that new Stax2 features work (generically)
@@ -21,6 +22,7 @@ public class TestEventTypes
      * events can be output to the specified writer. Events are here
      * constructed using event factory.
      */
+    @Test
     public void testEventObjectOutput()
         throws XMLStreamException
     {

@@ -13,6 +13,7 @@ import wstxtest.cfg.*;
  * prolog and/or epilog.
  */
 import com.ctc.wstx.api.ReaderConfig;
+import org.junit.jupiter.api.Test;
 
 public class TestPrologWS
     extends BaseStreamTest
@@ -20,6 +21,7 @@ public class TestPrologWS
     final static String XML1 = "<?xml version='1.0'?>   <root />\n";
     final static String XML2 = "\n \n<root />   ";
 
+    @Test
     public void testReportPrologWS()
         throws IOException, XMLStreamException
     {
@@ -56,6 +58,7 @@ public class TestPrologWS
         }
     }
 
+    @Test
     public void testIgnorePrologWS()
         throws XMLStreamException
     {

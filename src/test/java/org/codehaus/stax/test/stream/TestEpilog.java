@@ -1,6 +1,7 @@
 package org.codehaus.stax.test.stream;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests that events from prolog and epilog are
@@ -9,6 +10,7 @@ import javax.xml.stream.*;
 public class TestEpilog
     extends BaseStreamTest
 {
+    @Test
     public void testValidEpilog()
         throws XMLStreamException
     {
@@ -47,6 +49,7 @@ public class TestEpilog
         assertTokenType(END_DOCUMENT, type);
     }
 
+    @Test
     public void testInvalidEpilog()
         throws XMLStreamException
     {

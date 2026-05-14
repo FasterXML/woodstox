@@ -5,6 +5,7 @@ import java.io.*;
 import javax.xml.stream.*;
 
 import com.ctc.wstx.api.WstxOutputProperties;
+import org.junit.jupiter.api.Test;
 
 /**
  * This unit test suite verifies Woodstox-specific writer-side options
@@ -12,6 +13,7 @@ import com.ctc.wstx.api.WstxOutputProperties;
 public class TestOptions
     extends BaseWriterTest
 {
+    @Test
     public void testEmptyElemSpaces()
         throws IOException, XMLStreamException
     {

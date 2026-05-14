@@ -2,6 +2,7 @@ package org.codehaus.stax.test.stream;
 
 import javax.xml.namespace.*;
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests handling of XML elements, both in namespace
@@ -16,12 +17,14 @@ public class TestElements
      * Method that checks properties of START_ELEMENT and END_ELEMENT
      * returned by the stream reader are correct according to StAX specs.
      */
+    @Test
     public void testNsProperties()
         throws XMLStreamException
     {
         testProperties(true, "testNsProperties");
     }
 
+    @Test
     public void testNonNsProperties()
         throws XMLStreamException
     {
@@ -31,30 +34,35 @@ public class TestElements
     /**
      * Does test for simple element structure in namespace aware mode
      */
+    @Test
     public void testValidNsElems()
         throws XMLStreamException
     {
         testValid(true, "testValidNsElems");
     }
 
+    @Test
     public void testValidNonNsElems()
         throws XMLStreamException
     {
         testValid(false, "testValidNonNsElems");
     }
 
+    @Test
     public void testInvalidNsElems()
         throws XMLStreamException
     {
         testInvalid(true, "testInvalidNsElems");
     }
 
+    @Test
     public void testInvalidNonNsElems()
         throws XMLStreamException
     {
         testInvalid(false, "testInvalidNonNsElems");
     }
 
+    @Test
     public void testEmptyDocument()
         throws XMLStreamException
     {
@@ -72,6 +80,7 @@ public class TestElements
         }
     }
 
+    @Test
     public void testNoRootDocument()
         throws XMLStreamException
     {
@@ -88,6 +97,7 @@ public class TestElements
         }
     }
     
+    @Test
     public void testInvalidEmptyElem()
         throws XMLStreamException
     {
@@ -108,6 +118,7 @@ public class TestElements
     ///////////////////////////////////////////////////////////
      */
 
+    @Test
     private void testProperties(boolean nsAware, String method)
         throws XMLStreamException
     {
@@ -124,6 +135,7 @@ public class TestElements
         testStartOrEnd(nsAware, sr, false);
     }
 
+    @Test
     private void testStartOrEnd(boolean nsAware, XMLStreamReader sr,
                                 boolean isStart)
         throws XMLStreamException
@@ -203,6 +215,7 @@ public class TestElements
         }
     }
 
+    @Test
     private void testValid(boolean nsAware, String method)
         throws XMLStreamException
     {
@@ -315,6 +328,7 @@ public class TestElements
     /**
      * Simple tests to check for incorrect nesting
      */
+    @Test
     private void testInvalid(boolean nsAware, String method)
         throws XMLStreamException
     {

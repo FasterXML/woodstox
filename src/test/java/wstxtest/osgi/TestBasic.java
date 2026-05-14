@@ -9,10 +9,12 @@ import wstxtest.BaseWstxTest;
 import org.osgi.framework.*;
 
 import com.ctc.wstx.osgi.*;
+import org.junit.jupiter.api.Test;
 
 public class TestBasic
     extends BaseWstxTest
 {
+    @Test
     public void testBundleActivation()
     {
         // Hmmh. Context is a beastly class... let's just proxy it

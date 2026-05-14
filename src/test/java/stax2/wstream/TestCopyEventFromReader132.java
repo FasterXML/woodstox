@@ -6,11 +6,13 @@ import org.codehaus.stax2.XMLInputFactory2;
 import org.codehaus.stax2.XMLOutputFactory2;
 import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.XMLStreamWriter2;
+import org.junit.jupiter.api.Test;
 
 public class TestCopyEventFromReader132
     extends BaseWriterTest
 {
     // [woodstox-core#132]
+    @Test
     public void testCopyPIEvent() throws Exception {
         _testCopyPIEvent(true);
         _testCopyPIEvent(false);

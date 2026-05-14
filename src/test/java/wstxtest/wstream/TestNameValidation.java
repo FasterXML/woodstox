@@ -5,6 +5,7 @@ import java.io.*;
 import javax.xml.stream.*;
 
 import org.codehaus.stax2.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Woodstox-specific stream writer test suite that will ensure that the
@@ -57,6 +58,7 @@ public class TestNameValidation
     ////////////////////////////////////////////////////
      */
 
+    @Test
     public void testValidElemNames()
         throws XMLStreamException
     {
@@ -95,6 +97,7 @@ public class TestNameValidation
         }
     }
 
+    @Test
     public void testInvalidElemNames()
         throws XMLStreamException
     {
@@ -154,6 +157,7 @@ public class TestNameValidation
     }
 
     // [woodstox-core#107]: need to include more info
+    @Test
     public void testInvalidElemNameExceptionMessage() throws XMLStreamException
     {
         // First, empty "name":
@@ -218,6 +222,7 @@ public class TestNameValidation
         }
     }
 
+    @Test
     public void testValidAttrNames()
         throws Exception
     {
@@ -247,6 +252,7 @@ public class TestNameValidation
         }
     }
 
+    @Test
     public void testInvalidAttrNames()
         throws Exception
     {
@@ -293,6 +299,7 @@ public class TestNameValidation
      * According to XML Namespaces 1.1 specification, PI targets
      * can not contain colons either...
      */
+    @Test
     public void testValidPiNames()
         throws Exception
     {
@@ -317,6 +324,7 @@ public class TestNameValidation
         }
     }
 
+    @Test
     public void testInvalidPiNames()
         throws Exception
     {
@@ -352,6 +360,7 @@ public class TestNameValidation
      * never dealt with as a scoped name), we can only check if that it has
      * zero or one colons (in NS-awre) mode, but nothing further
      */
+    @Test
     public void testValidRootNames()
         throws Exception
     {
@@ -382,6 +391,7 @@ public class TestNameValidation
         }
     }
 
+    @Test
     public void testInvalidRootNames()
         throws Exception
     {
@@ -413,6 +423,7 @@ public class TestNameValidation
      * does not (and actually, can not!) verify whether the entity 
      * has been properly declared.
      */
+    @Test
     public void testValidEntityNames()
         throws Exception
     {
@@ -436,6 +447,7 @@ public class TestNameValidation
         }
     }
 
+    @Test
     public void testInvalidEntityNames()
         throws XMLStreamException
     {

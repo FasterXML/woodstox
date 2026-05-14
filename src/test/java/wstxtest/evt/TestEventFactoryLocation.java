@@ -10,8 +10,8 @@ import javax.xml.stream.events.XMLEvent;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.ctc.wstx.io.WstxInputLocation;
 import com.ctc.wstx.stax.WstxEventFactory;
@@ -20,7 +20,7 @@ public class TestEventFactoryLocation {
 
     private WstxEventFactory eventFactory;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         eventFactory = new WstxEventFactory();
     }

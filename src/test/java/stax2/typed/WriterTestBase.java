@@ -13,6 +13,7 @@ import org.codehaus.stax2.*;
 import org.codehaus.stax2.typed.*;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Base class that contains set of simple unit tests to verify implementation
@@ -36,6 +37,7 @@ public abstract class WriterTestBase
     ////////////////////////////////////////
      */
 
+    @Test
     public void testSimpleBooleanElem()
         throws XMLStreamException
     {
@@ -51,6 +53,7 @@ public abstract class WriterTestBase
         checkBooleanElem(data, false);
     }
 
+    @Test
     public void testSimpleBooleanAttr()
         throws XMLStreamException
     {
@@ -66,6 +69,7 @@ public abstract class WriterTestBase
         checkBooleanAttr(data, false);
     }
 
+    @Test
     public void testMultipleBooleanAttr()
         throws XMLStreamException
     {
@@ -98,6 +102,7 @@ public abstract class WriterTestBase
         sr.close();
     }
 
+    @Test
     public void testSimpleIntElem()
         throws XMLStreamException
     {
@@ -110,6 +115,7 @@ public abstract class WriterTestBase
         }
     }
 
+    @Test
     public void testSimpleIntAttr()
         throws XMLStreamException
     {
@@ -122,6 +128,7 @@ public abstract class WriterTestBase
         }
     }
 
+    @Test
     public void testMultipleIntAttr()
         throws XMLStreamException
     {
@@ -154,6 +161,7 @@ public abstract class WriterTestBase
         sr.close();
     }
 
+    @Test
     public void testSimpleLongElem()
         throws XMLStreamException
     {
@@ -168,6 +176,7 @@ public abstract class WriterTestBase
         }
     }
 
+    @Test
     public void testSimpleLongAttr()
         throws XMLStreamException
     {
@@ -182,6 +191,7 @@ public abstract class WriterTestBase
         }
     }
 
+    @Test
     public void testMultipleLongAttr()
         throws XMLStreamException
     {
@@ -214,6 +224,7 @@ public abstract class WriterTestBase
         sr.close();
     }
 
+    @Test
     public void testSimpleFloatElem()
         throws XMLStreamException
     {
@@ -227,6 +238,7 @@ public abstract class WriterTestBase
         }
     }
 
+    @Test
     public void testSimpleFloatAttr()
         throws XMLStreamException
     {
@@ -240,6 +252,7 @@ public abstract class WriterTestBase
         }
     }
 
+    @Test
     public void testSimpleDoubleElem()
         throws XMLStreamException
     {
@@ -253,6 +266,7 @@ public abstract class WriterTestBase
         }
     }
 
+    @Test
     public void testSimpleDoubleAttr()
         throws XMLStreamException
     {
@@ -266,6 +280,7 @@ public abstract class WriterTestBase
         }
     }
 
+    @Test
     public void testBigInteger()
         throws XMLStreamException
     {
@@ -278,6 +293,7 @@ public abstract class WriterTestBase
         }
     }
 
+    @Test
     public void testBigDecimal()
         throws XMLStreamException
     {
@@ -291,12 +307,14 @@ public abstract class WriterTestBase
         }
     }
 
+    @Test
     public void testQNameNonRepairing()
         throws XMLStreamException
     {
         doTestQName(false);
     }
 
+    @Test
     public void testQNameRepairing()
         throws XMLStreamException
     {
@@ -314,12 +332,14 @@ public abstract class WriterTestBase
                      writeQNameAttrDoc("root", "attr", n, repairing));
     }
 
+    @Test
     public void testIntArraysElem()
         throws XMLStreamException
     {
         doTestIntArrays(false);
     }
 
+    @Test
     public void testIntArraysAttr()
         throws XMLStreamException
     {
@@ -363,12 +383,14 @@ public abstract class WriterTestBase
         }
     }
 
+    @Test
     public void testLongArraysElem()
         throws XMLStreamException
     {
         doTestLongArrays(false);
     }
 
+    @Test
     public void testLongArraysAttr()
         throws XMLStreamException
     {
@@ -412,12 +434,14 @@ public abstract class WriterTestBase
         }
     }
 
+    @Test
     public void testFloatArraysElem()
         throws XMLStreamException
     {
         doTestFloatArrays(false);
     }
 
+    @Test
     public void testFloatArraysAttr()
         throws XMLStreamException
     {
@@ -470,12 +494,14 @@ public abstract class WriterTestBase
         }
     }
 
+    @Test
     public void testDoubleArraysElem()
         throws XMLStreamException
     {
         doTestDoubleArrays(false);
     }
 
+    @Test
     public void testDoubleArraysAttr()
         throws XMLStreamException
     {

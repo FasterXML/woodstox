@@ -4,6 +4,7 @@ import java.io.StringReader;
 import java.util.*;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests various aspects of parameter entity resolution
@@ -17,6 +18,7 @@ public class TestParamEntities
     /**
      * Test similar to one in xmltest (valid/not-sa/003.xml, specifically)
      */
+    @Test
     public void testExternalParamDeclViaPE()
         throws XMLStreamException
     {

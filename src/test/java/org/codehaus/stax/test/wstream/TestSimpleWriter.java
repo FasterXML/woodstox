@@ -3,6 +3,7 @@ package org.codehaus.stax.test.wstream;
 import javax.xml.stream.*;
 
 import java.io.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Set of unit tests for verifying operation of {@link XMLStreamWriter}
@@ -17,6 +18,7 @@ public class TestSimpleWriter
 {
     final String ISO_LATIN_ENCODING = "ISO-8859-1";
 
+    @Test
     public void testProlog()
         throws IOException, XMLStreamException
     {
@@ -54,6 +56,7 @@ public class TestSimpleWriter
         }
     }
 
+    @Test
     public void testCData()
         throws IOException, XMLStreamException
     {
@@ -86,6 +89,7 @@ public class TestSimpleWriter
         assertTokenType(END_DOCUMENT, sr.next());
     }
 
+    @Test
     public void testCharacters()
         throws IOException, XMLStreamException
     {
@@ -124,6 +128,7 @@ public class TestSimpleWriter
         assertTokenType(END_DOCUMENT, sr.next());
     }
 
+    @Test
     public void testComment()
         throws IOException, XMLStreamException
     {
@@ -202,6 +207,7 @@ public class TestSimpleWriter
         assertTokenType(END_DOCUMENT, sr.next());
     }
 
+    @Test
     public void testDTD()
         throws IOException, XMLStreamException
     {
@@ -212,6 +218,7 @@ public class TestSimpleWriter
      * Unit test that tests how element writing works, including
      * checks for the namespace output.
      */
+    @Test
     public void testElements()
         throws IOException, XMLStreamException
     {
@@ -317,6 +324,7 @@ public class TestSimpleWriter
      * Unit tests for documents that just do not use namespaces (independent
      * of whether namespace support is enabled for the writer or not)
      */
+    @Test
     public void testNonNsElements()
         throws IOException, XMLStreamException
     {
@@ -394,6 +402,7 @@ public class TestSimpleWriter
         assertTokenType(END_DOCUMENT, sr.next());
     }
 
+    @Test
     public void testEmptyElements()
         throws IOException, XMLStreamException
     {
@@ -439,12 +448,14 @@ public class TestSimpleWriter
         assertTokenType(END_DOCUMENT, sr.next());
     }
 
+    @Test
     public void testEntityRef()
         throws IOException, XMLStreamException
     {
         // !!! TBI
     }
 
+    @Test
     public void testProcInstr()
         throws IOException, XMLStreamException
     {
@@ -526,24 +537,28 @@ public class TestSimpleWriter
     }
 
 
+    @Test
     public void testXmlDeclImplicit()
         throws IOException, XMLStreamException
     {
         doTextXmlDecl(3);
     }
 
+    @Test
     public void testXmlDecl0args()
         throws IOException, XMLStreamException
     {
         doTextXmlDecl(0);
     }
 
+    @Test
     public void testXmlDecl1arg()
         throws IOException, XMLStreamException
     {
         doTextXmlDecl(1);
     }
 
+    @Test
     public void testXmlDecl2args()
         throws IOException, XMLStreamException
     {
@@ -555,6 +570,7 @@ public class TestSimpleWriter
      * information in non-repairing mode, wrt explictly defined
      * bindings.
      */
+    @Test
     public void testExplicitNsPrefixes()
         throws XMLStreamException
     {
@@ -598,6 +614,7 @@ public class TestSimpleWriter
      * on consensus on stax_builders list, as well as information
      * from Stax TCK unit tests.
      */
+    @Test
     public void testImplicitNsPrefixes()
         throws XMLStreamException
     {

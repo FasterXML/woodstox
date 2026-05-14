@@ -4,8 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
 
 /**
  * Unit tests for {@link CharsetNames}. Originally a regression test for a
@@ -13,10 +13,11 @@ import junit.framework.TestCase;
  * the {@link CharsetNames#normalize(String)} branches as well as
  * {@link CharsetNames#findEncodingFor(Writer)}.
  */
-public class TestCharsetNames extends TestCase
+public class TestCharsetNames extends wstxtest.BaseJUnit4Test
 {
     // ---------- Original regression tests ----------
 
+    @Test
     public void testCsUnicodeAsciiNormalization()
     {
         // "csUnicodeAscii" should normalize to US-ASCII
@@ -24,6 +25,7 @@ public class TestCharsetNames extends TestCase
                 CharsetNames.normalize("csUnicodeAscii"));
     }
 
+    @Test
     public void testCsUnicodeLatin1Normalization()
     {
         // "csUnicodeLatin1" should normalize to ISO-8859-1
@@ -31,6 +33,7 @@ public class TestCharsetNames extends TestCase
                 CharsetNames.normalize("csUnicodeLatin1"));
     }
 
+    @Test
     public void testCsUnicodeNormalization()
     {
         // "csUnicode" should normalize to UTF-16
@@ -40,6 +43,7 @@ public class TestCharsetNames extends TestCase
 
     // ---------- normalize(): degenerate input ----------
 
+    @Test
     public void testNullOrShortReturnedAsIs()
     {
         assertNull(CharsetNames.normalize(null));
@@ -47,6 +51,7 @@ public class TestCharsetNames extends TestCase
         assertEquals("ab", CharsetNames.normalize("ab"));
     }
 
+    @Test
     public void testUnknownReturnedAsIs()
     {
         assertEquals("not-a-real-encoding",
@@ -55,6 +60,7 @@ public class TestCharsetNames extends TestCase
 
     // ---------- normalize(): UTF/Unicode family ----------
 
+    @Test
     public void testUtf8Variants()
     {
         assertEquals(CharsetNames.CS_UTF8, CharsetNames.normalize("UTF-8"));
@@ -64,6 +70,7 @@ public class TestCharsetNames extends TestCase
         assertEquals(CharsetNames.CS_UTF8, CharsetNames.normalize("utf_8"));
     }
 
+    @Test
     public void testUtf16Variants()
     {
         assertEquals(CharsetNames.CS_UTF16, CharsetNames.normalize("UTF-16"));
@@ -73,6 +80,7 @@ public class TestCharsetNames extends TestCase
         assertEquals(CharsetNames.CS_UTF16, CharsetNames.normalize("UTF"));
     }
 
+    @Test
     public void testUtf32Variants()
     {
         assertEquals(CharsetNames.CS_UTF32, CharsetNames.normalize("UTF-32"));
@@ -80,6 +88,7 @@ public class TestCharsetNames extends TestCase
         assertEquals(CharsetNames.CS_UTF32LE, CharsetNames.normalize("UTF-32LE"));
     }
 
+    @Test
     public void testUcsVariants()
     {
         // UCS-2 -> UTF-16, UCS-4 -> UTF-32 (and via ISO-10646 prefixed form)
@@ -91,6 +100,7 @@ public class TestCharsetNames extends TestCase
                 CharsetNames.normalize("ISO-10646-UCS-4"));
     }
 
+    @Test
     public void testIso10646SubtypeAliases()
     {
         assertEquals(CharsetNames.CS_US_ASCII,
@@ -107,6 +117,7 @@ public class TestCharsetNames extends TestCase
 
     // ---------- normalize(): ASCII / Latin1 / JIS ----------
 
+    @Test
     public void testAsciiVariants()
     {
         assertEquals(CharsetNames.CS_US_ASCII, CharsetNames.normalize("ASCII"));
@@ -114,6 +125,7 @@ public class TestCharsetNames extends TestCase
         assertEquals(CharsetNames.CS_US_ASCII, CharsetNames.normalize("US-ASCII"));
     }
 
+    @Test
     public void testIsoLatin1Variants()
     {
         assertEquals(CharsetNames.CS_ISO_LATIN1,
@@ -125,6 +137,7 @@ public class TestCharsetNames extends TestCase
                 CharsetNames.normalize("iso_8859_1"));
     }
 
+    @Test
     public void testJisVariants()
     {
         assertEquals(CharsetNames.CS_SHIFT_JIS,
@@ -135,6 +148,7 @@ public class TestCharsetNames extends TestCase
 
     // ---------- normalize(): EBCDIC / IBM / Cp ----------
 
+    @Test
     public void testEbcdicCpAliases()
     {
         assertEquals("IBM037", CharsetNames.normalize("EBCDIC-CP-US"));
@@ -163,6 +177,7 @@ public class TestCharsetNames extends TestCase
         assertEquals("IBM037", CharsetNames.normalize("ebcdic-cp-us"));
     }
 
+    @Test
     public void testCpAndIbmAliases()
     {
         // "cpXXX" is treated as EBCDIC alias "IBMXXX"
@@ -176,6 +191,7 @@ public class TestCharsetNames extends TestCase
 
     // ---------- findEncodingFor(Writer) ----------
 
+    @Test
     public void testFindEncodingForOutputStreamWriter() throws Exception
     {
         // Whatever the JDK reports (legacy "UTF8" or canonical "UTF-8") must
@@ -188,6 +204,7 @@ public class TestCharsetNames extends TestCase
         }
     }
 
+    @Test
     public void testFindEncodingForNonOutputStreamWriter()
     {
         // For non-OutputStreamWriter writers (e.g. StringWriter) we have no

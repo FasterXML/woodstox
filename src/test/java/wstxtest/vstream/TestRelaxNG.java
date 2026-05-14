@@ -10,6 +10,7 @@ import org.codehaus.stax2.validation.*;
 import com.ctc.wstx.sw.NonNsStreamWriter;
 import com.ctc.wstx.sw.RepairingNsStreamWriter;
 import com.ctc.wstx.sw.SimpleNsStreamWriter;
+import org.junit.jupiter.api.Test;
 
 /**
  * This is a simple base-line "smoke test" that checks that RelaxNG
@@ -58,6 +59,7 @@ public class TestRelaxNG
      * Test validation against a simple document valid according
      * to a simple RNG schema.
      */
+    @Test
     public void testSimpleNonNs()
         throws XMLStreamException
     {
@@ -86,6 +88,7 @@ public class TestRelaxNG
      * against the simple rng schema. It does not use namespaces
      * (a separate test is needed for ns handling).
      */
+    @Test
     public void testInvalidNonNs()
         throws XMLStreamException
     {
@@ -154,6 +157,7 @@ public class TestRelaxNG
                          "unexpected attribute \"type\"");
     }
 
+    @Test
     public void testSimpleNs()
         throws XMLStreamException
     {
@@ -173,6 +177,7 @@ public class TestRelaxNG
      * Unit test checks that the namespace matching works as
      * expected.
      */
+    @Test
     public void testInvalidNs()
         throws XMLStreamException
     {
@@ -208,6 +213,7 @@ public class TestRelaxNG
      * is (or may) still be valid, stop validation, and then continue
      * reading. This should not result in an exception.
      */
+    @Test
     public void testSimplePartialNonNs()
         throws XMLStreamException
     {
@@ -297,6 +303,7 @@ public class TestRelaxNG
         assertEquals(XML, writer.toString());
     }
 
+    @Test
     public void testSimpleEnumAttr()
         throws XMLStreamException
     {
@@ -329,6 +336,7 @@ public class TestRelaxNG
      * Test case for testing handling ID/IDREF/IDREF attributes, using
      * schema datatype library.
      */
+    @Test
     public void testSimpleIdAttrs()
         throws XMLStreamException
     {
@@ -394,6 +402,7 @@ public class TestRelaxNG
                          "Undefined ID", true);
     }
 
+    @Test
     public void testSimpleIntAttr()
         throws XMLStreamException
     {
@@ -432,6 +441,7 @@ public class TestRelaxNG
                          "does not satisfy the \"integer\" type");
     }
 
+    @Test
     public void testSimpleBooleanElem() throws XMLStreamException
     {
         final String schemaDef =
@@ -476,6 +486,7 @@ public class TestRelaxNG
      * works when the data type is wrapped in a composite expression
      * ({@code <choice>}, {@code <list>}) rather than being the bare content model.
      */
+    @Test
     public void testEmptyContentForCompositeTypedModels() throws XMLStreamException
     {
         // <choice> nests two DataExps under a BinaryExp
@@ -507,6 +518,7 @@ public class TestRelaxNG
      * Another test, but one that verifies that empty tags do not
      * cause problems with validation
      */
+    @Test
     public void testSimpleBooleanElem2()
         throws XMLStreamException
     {
@@ -544,6 +556,7 @@ public class TestRelaxNG
      * And then a test for validating starting when stream points
      * to START_ELEMENT
      */
+    @Test
     public void testPartialValidationOk()
         throws XMLStreamException
     {

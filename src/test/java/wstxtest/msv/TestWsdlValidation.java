@@ -3,6 +3,8 @@
  */
 package wstxtest.msv;
 
+
+import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.net.URL;
 
@@ -85,6 +87,7 @@ public class TestWsdlValidation extends BaseStax2Test
         schema = new W3CSchema(wsdlgrammar);
 	}
 	
+	@Test
 	public void testWsdlValidation() throws Exception {
 		String runMe = System.getProperty("testWsdlValidation");
 		if (runMe == null || "".equals(runMe)) {

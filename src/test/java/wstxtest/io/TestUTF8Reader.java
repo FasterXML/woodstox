@@ -3,10 +3,10 @@ package wstxtest.io;
 import java.io.*;
 import java.util.Arrays;
 
-import junit.framework.TestCase;
 
 import com.ctc.wstx.api.ReaderConfig;
 import com.ctc.wstx.io.UTF8Reader;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test created to verify fix to
@@ -14,9 +14,10 @@ import com.ctc.wstx.io.UTF8Reader;
  *
  * @author Matt Gormley
  */
-public class TestUTF8Reader extends TestCase
+public class TestUTF8Reader extends wstxtest.BaseJUnit4Test
 {
     @SuppressWarnings("resource")
+    @Test
     public void testDelAtBufferBoundary() throws IOException
     {
 	final int BYTE_BUFFER_SIZE = 4;

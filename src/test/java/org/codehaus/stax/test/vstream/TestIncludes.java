@@ -5,6 +5,7 @@ import java.io.StringReader;
 import javax.xml.stream.*;
 
 import org.codehaus.stax.test.SimpleResolver;
+import org.junit.jupiter.api.Test;
 
 /**
  * Simple unit tests to check and verify that DTD handler properly deals
@@ -15,6 +16,7 @@ import org.codehaus.stax.test.SimpleResolver;
 public class TestIncludes
     extends BaseVStreamTest
 {
+    @Test
     public void testSimpleInclude()
         throws XMLStreamException
     {
@@ -38,6 +40,7 @@ public class TestIncludes
         assertTokenType(END_ELEMENT, sr.next());
     }
 
+    @Test
     public void testSimpleIgnore()
         throws XMLStreamException
     {
@@ -69,6 +72,7 @@ public class TestIncludes
      * Conditional sections can NOT be used in the internal subset --
      * let's quickly verify this.
      */
+    @Test
     public void testFailingInIntSubset()
         throws XMLStreamException
     {
@@ -101,6 +105,7 @@ public class TestIncludes
      * of INCLUDE/IGNORE directives (see example under XML 1.0.3 section 3.4
      * for a sample)
      */
+    @Test
     public void testPEIncludeAndIgnore()
         throws XMLStreamException
     {

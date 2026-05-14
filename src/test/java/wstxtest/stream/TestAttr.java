@@ -3,6 +3,7 @@ package wstxtest.stream;
 import javax.xml.stream.*;
 
 import com.ctc.wstx.stax.WstxInputFactory;
+import org.junit.jupiter.api.Test;
 
 public class TestAttr
     extends BaseStreamTest
@@ -17,6 +18,7 @@ public class TestAttr
      * only occurs when many attributes were spilled from main hash area....
      * and that's why exact attribute names do matter.
      */
+    @Test
     public void testManyAttrs()
         throws Exception
     {
@@ -32,6 +34,7 @@ public class TestAttr
      * Tests that the attributes are returned in the document order;
      * an invariant Woodstox honors (even though not mandated by StAX 1.0).
      */
+    @Test
     public void testAttributeOrder()
         throws XMLStreamException
     {
@@ -125,6 +128,7 @@ public class TestAttr
      * Latter always come after explicit ones, and in the same order as
      * they were declared in DTD.
      */
+    @Test
     public void testNestedAttrsNs()
         throws Exception
     {
@@ -200,6 +204,7 @@ public class TestAttr
      * (most notably, XHTML dtd) do this, and Woodstox had some problems with
      * this concept...
      */
+    @Test
     public void testNsAttr()
         throws XMLStreamException
     {

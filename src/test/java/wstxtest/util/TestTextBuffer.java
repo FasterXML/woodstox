@@ -1,15 +1,16 @@
 package wstxtest.util;
 
-import junit.framework.TestCase;
 
 import com.ctc.wstx.util.TextBuffer;
+import org.junit.jupiter.api.Test;
 
 /**
  * Simple unit tests for testing {@link TextBuffer}.
  */
 public class TestTextBuffer
-    extends TestCase
+    extends wstxtest.BaseJUnit4Test
 {
+    @Test
     public void testBasic()
     {
         String INPUT = "Whatever input text doesn't really matter but should have some content "

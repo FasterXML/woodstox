@@ -3,6 +3,7 @@ package stax2.wstream;
 import javax.xml.stream.*;
 
 import org.codehaus.stax2.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Set of unit tests that checks that configuring of
@@ -14,6 +15,7 @@ import org.codehaus.stax2.*;
 public class TestConfig
     extends BaseWriterTest
 {
+    @Test
     public void testProfiles()
         throws XMLStreamException
     {

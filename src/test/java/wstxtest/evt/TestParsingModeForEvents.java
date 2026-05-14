@@ -9,6 +9,7 @@ import org.codehaus.stax2.XMLEventReader2;
 import com.ctc.wstx.api.WstxInputProperties;
 
 import wstxtest.stream.BaseStreamTest;
+import org.junit.jupiter.api.Test;
 
 public class TestParsingModeForEvents
     extends BaseStreamTest
@@ -21,6 +22,7 @@ public class TestParsingModeForEvents
             ;
 
     // [woodstox-core#42]
+    @Test
     public void testMultiDocumentWithEventReader() throws XMLStreamException
     {
         XMLInputFactory f = getInputFactory();

@@ -6,6 +6,7 @@ import org.codehaus.stax2.*;
 import org.codehaus.stax2.validation.*;
 
 import wstxtest.vstream.BaseValidationTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for XML Schema value constraints (default, required) for
@@ -30,6 +31,7 @@ public class W3CDefaultValuesTest
 
     final static String SCHEMA_WITH_REQUIRED = "";
     
+    @Test
     public void testAttributeDefault() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(SCHEMA_WITH_DEFAULTS);
@@ -53,6 +55,7 @@ public class W3CDefaultValuesTest
         sr.close();
     }
 
+    @Test
     public void testElementDefault() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(SCHEMA_WITH_DEFAULTS);

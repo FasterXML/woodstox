@@ -3,6 +3,7 @@ package org.codehaus.stax.test.wstream;
 import java.io.*;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Set of unit tests for verifying operation of {@link XMLStreamWriter}
@@ -16,6 +17,7 @@ public class TestRepairingWriter
     /**
      * Test similar to the one in {@link TestSimpleWriter}.
      */
+    @Test
     public void testElements()
         throws IOException, XMLStreamException
     {
@@ -123,6 +125,7 @@ public class TestRepairingWriter
         assertTokenType(END_DOCUMENT, sr.next(), sr);
     }
 
+    @Test
     public void testAttributeSimple()
         throws IOException, XMLStreamException
     {
@@ -161,6 +164,7 @@ public class TestRepairingWriter
         assertTokenType(END_DOCUMENT, sr.next(), sr);
     }
 
+    @Test
     public void testAttributes()
         throws IOException, XMLStreamException
     {
@@ -260,6 +264,7 @@ public class TestRepairingWriter
      * sub-trees do not "leak" into following sibling elements or
      * trees.
      */
+    @Test
     public void testSiblingNsBinding()
         throws IOException, XMLStreamException
     {
@@ -316,6 +321,7 @@ public class TestRepairingWriter
         assertTokenType(END_DOCUMENT, sr.next(), sr);
     }
 
+    @Test
     public void testSiblingNs2()
         throws IOException, XMLStreamException
     {
@@ -368,6 +374,7 @@ public class TestRepairingWriter
      * that is not strictly an error, it seems reasonable fail the
      * test, to let implementors know about sub-optimal behavior.
      */
+    @Test
     public void testOptimalDefaultNsDecls()
         throws IOException, XMLStreamException
     {
@@ -406,6 +413,7 @@ public class TestRepairingWriter
         sr.close();
     }
 
+    @Test
     public void testOptimalNonDefaultNsDecls()
         throws IOException, XMLStreamException
     {
@@ -441,6 +449,7 @@ public class TestRepairingWriter
         sr.close();
     }
 
+    @Test
     public void testPreBoundXmlNamespaceAsAttribute()
         throws IOException, XMLStreamException
     {
@@ -456,6 +465,7 @@ public class TestRepairingWriter
         assertEquals("<?xml version='1.0' encoding='UTF-8'?><test xml:lang=\"en-US\"/>", XML);
     }
 
+    @Test
     public void testPreBoundXmlNamespaceAsElement()
         throws IOException, XMLStreamException
     {

@@ -7,6 +7,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.codehaus.stax2.*;
 import org.codehaus.stax2.io.Stax2BlockResult;
+import org.junit.jupiter.api.Test;
 
 /**
  * This unit test suite verifies that the auto-closing feature works
@@ -21,6 +22,7 @@ public class TestClosing
      * automatic closing should occur, nor explicit one unless specific
      * forcing method is used.
      */
+    @Test
     public void testNoAutoCloseWriter()
         throws XMLStreamException
     {
@@ -46,6 +48,7 @@ public class TestClosing
         assertTrue(output.isClosed());
     }
 
+    @Test
     public void testNoAutoCloseStream()
         throws XMLStreamException
     {
@@ -76,6 +79,7 @@ public class TestClosing
      * passed in output stream does get properly closed
      * when we call close(), as well as when do writeEndDocument().
      */
+    @Test
     public void testEnabledAutoClose()
         throws XMLStreamException
     {
@@ -108,6 +112,7 @@ public class TestClosing
      * on whether caller is considered to have access to the underlying
      * physical object or not.
      */
+    @Test
     public void testAutoCloseImplicit()
         throws XMLStreamException
     {

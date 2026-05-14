@@ -3,6 +3,7 @@ package wstxtest.stream;
 import javax.xml.stream.*;
 
 import com.ctc.wstx.api.WstxInputProperties;
+import org.junit.jupiter.api.Test;
 
 /**
  * This unit tests verifies that different input parsing modes
@@ -36,6 +37,7 @@ public class TestParsingModeForTokens
         "<branch><leaf>text</leaf>"
         ;
 
+    @Test
     public void testSingleDocumentMode()
         throws XMLStreamException
     {
@@ -61,6 +63,7 @@ public class TestParsingModeForTokens
                              "Expected an exception for unbalanced xml content");
     }
 
+    @Test
     public void testMultiDocumentMode() throws XMLStreamException
     {
         // First the main valid case:
@@ -88,6 +91,7 @@ public class TestParsingModeForTokens
                              "Expected an exception for unbalanced xml content");
     }
 
+    @Test
     public void testFragmentMode()
         throws XMLStreamException
     {

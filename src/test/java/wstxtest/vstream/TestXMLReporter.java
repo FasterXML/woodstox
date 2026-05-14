@@ -6,6 +6,7 @@ import org.codehaus.stax2.XMLReporter2;
 import org.codehaus.stax2.validation.XMLValidationProblem;
 
 import wstxtest.stream.BaseStreamTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Simple testing to ensure that {@link XMLReporter} works as
@@ -22,6 +23,7 @@ public class TestXMLReporter
      * Basic unit test for verifying that XMLReporter gets validation
      * errors reported.
      */
+    @Test
     public void testValidationError()
         throws XMLStreamException
     {
@@ -47,6 +49,7 @@ public class TestXMLReporter
      * Test for specific validation error, mostly to verify
      * fix to [WSTX-155] (and guard against regression)
      */
+    @Test
     public void testMissingAttrError()
         throws XMLStreamException
     {
@@ -60,6 +63,7 @@ public class TestXMLReporter
         testNewReporterProblems(XML, "Required attribute");
     }
 
+    @Test
     public void testInvalidFixedAttr()
         throws XMLStreamException
     {
@@ -80,6 +84,7 @@ public class TestXMLReporter
         testNewReporterProblems(XML, "FIXED attribute");
     }
 
+    @Test
     public void testInvalidIdAttr()
         throws XMLStreamException
     {
@@ -102,6 +107,7 @@ public class TestXMLReporter
         testNewReporterProblems(XML, "IDREF value");
     }
 
+    @Test
     public void testInvalidSimpleChoiceStructure()
         throws XMLStreamException
     {
@@ -119,6 +125,7 @@ public class TestXMLReporter
      * This test verifies that exception XMLReporter rethrows gets
      * properly propagated.
      */
+    @Test
     public void testErrorRethrow()
         throws XMLStreamException
     {
@@ -158,6 +165,7 @@ public class TestXMLReporter
         return constructStreamReader(f, xml);
     }
 
+    @Test
     private void testOldReporterProblems(String XML, int expFails)
         throws XMLStreamException
     {
@@ -171,6 +179,7 @@ public class TestXMLReporter
                      expFails, actFails);
     }
 
+    @Test
     private void testNewReporterProblems(String XML, String expMsg)
         throws XMLStreamException
     {

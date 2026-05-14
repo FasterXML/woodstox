@@ -5,6 +5,7 @@ import java.util.Iterator;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.*;
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests handling of the namespace declarations,
@@ -22,6 +23,7 @@ public class TestNamespaces
         +"</a:branch>"
         +"</root>";
 
+    @Test
     public void testValidNs()
         throws XMLStreamException
     {
@@ -126,6 +128,7 @@ public class TestNamespaces
      * Another unit test that checks that valid namespace declarations
      * are handled properly.
      */
+    @Test
     public void testMultipleValidNs()
         throws XMLStreamException
     {
@@ -178,6 +181,7 @@ public class TestNamespaces
      * Since not all implementations (like the ref. impl.) support non-ns
      * aware mode, this unit test is skipped if not applicable.
      */
+    @Test
     public void testValidNonNs()
         throws XMLStreamException
     {
@@ -245,12 +249,14 @@ public class TestNamespaces
         assertFalse(sr.hasNext());
     }
 
+    @Test
     public void testInvalidNs()
         throws XMLStreamException
     {
         testPotentiallyInvalid(true, "testInvalidNs");
     }
 
+    @Test
     public void testInvalidNonNs()
         throws XMLStreamException
     {
@@ -258,6 +264,7 @@ public class TestNamespaces
         testPotentiallyInvalid(false, "testInvalidNonNs");
     }
 
+    @Test
     public void testInvalidStandardBindings()
         throws XMLStreamException
     {
@@ -265,6 +272,7 @@ public class TestNamespaces
         doTestXmlnsBinding(true, "testInvalidStandardBindings");
     }
 
+    @Test
     public void testInvalidStandardBindingsNonNs()
         throws XMLStreamException
     {
@@ -272,6 +280,7 @@ public class TestNamespaces
         doTestXmlnsBinding(false, "testInvalidStandardBindingsNonNs");
     }
 
+    @Test
     public void testDefaultNs()
         throws XMLStreamException
     {
@@ -310,6 +319,7 @@ public class TestNamespaces
      * inner definitions (ns in child element) can mask outer
      * definitions (ns in parent element)
      */
+    @Test
     public void testMaskingNs()
         throws XMLStreamException
     {
@@ -351,6 +361,7 @@ public class TestNamespaces
      * Unit test that verifies that the default namespace masking works
      * as expected.
      */
+    @Test
     public void testMaskingDefaultNs()
         throws XMLStreamException
     {
@@ -402,6 +413,7 @@ public class TestNamespaces
      * documents. While namespaces 1.1 (and hence, xml 1.0)
      * makes such use legal, xml 1.0 does not allow it.
      */
+    @Test
     public void testUnbindingInvalindInXml10()
         throws XMLStreamException
     {
@@ -427,6 +439,7 @@ public class TestNamespaces
      * Unit test that verifies that the namespace with prefix 'xml' is
      * always predefined without further work.
      */
+    @Test
     public void testPredefinedXmlNs()
         throws XMLStreamException
     {
@@ -450,6 +463,7 @@ public class TestNamespaces
      * this point definition of correct handling is not complete, so
      * it'll only test cases for which there is clear consensus.
      */
+    @Test
     public void testNoNamespace()
         throws XMLStreamException
     {
@@ -509,6 +523,7 @@ public class TestNamespaces
         } catch (Exception e) { }
     }
 
+    @Test
     private void testPotentiallyInvalid(boolean nsAware, String method)
         throws XMLStreamException
     {

@@ -1,15 +1,16 @@
 package com.ctc.wstx.dtd;
 
-import junit.framework.TestCase;
 
 import com.ctc.wstx.util.PrefixedName;
+import org.junit.jupiter.api.Test;
 
 /**
  * Regression test: ChoiceModel.toString() was missing the opening '('
  * while ConcatModel.toString() had it, producing "a | b)" instead of "(a | b)".
  */
-public class TestChoiceModelToString extends TestCase
+public class TestChoiceModelToString extends wstxtest.BaseJUnit4Test
 {
+    @Test
     public void testToStringHasBalancedParens()
     {
         TokenModel a = new TokenModel(new PrefixedName(null, "a"));

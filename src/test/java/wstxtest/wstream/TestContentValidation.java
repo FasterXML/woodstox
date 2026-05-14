@@ -5,6 +5,7 @@ import java.io.*;
 import javax.xml.stream.*;
 
 import org.codehaus.stax2.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * This unit test suite verifies that output-side content validation
@@ -28,6 +29,7 @@ public class TestContentValidation
     ////////////////////////////////////////////////////
     */
 
+    @Test
     public void testCommentChecking()
         throws XMLStreamException
     {
@@ -58,6 +60,7 @@ public class TestContentValidation
         }
     }
 
+    @Test
     public void testCommentFixing()
         throws Exception
     {
@@ -128,6 +131,7 @@ public class TestContentValidation
         }
     }
 
+    @Test
     public void testCDataChecking()
         throws Exception
     {
@@ -169,6 +173,7 @@ public class TestContentValidation
         }
     }
 
+    @Test
     public void testCDataFixing()
         throws Exception
     {
@@ -241,6 +246,7 @@ public class TestContentValidation
         }
     }
 
+    @Test
     public void testPIChecking()
         throws Exception
     {

@@ -4,10 +4,12 @@ import java.io.*;
 
 import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.XMLStreamWriter2;
+import org.junit.jupiter.api.Test;
 
 public class W3CSchemaWrite23Test
     extends BaseOutputTest
 {
+    @Test
     public void testSchemaValidatingCopy23() throws Exception
     {
         final String SCHEMA = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +

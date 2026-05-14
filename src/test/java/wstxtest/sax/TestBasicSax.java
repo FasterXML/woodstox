@@ -11,6 +11,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.ctc.wstx.sax.*;
 
 import wstxtest.BaseWstxTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Simple unit tests to verify that most fundamental parsing functionality
@@ -25,6 +26,7 @@ public class TestBasicSax
         +"<leaf attr='a&amp;b!'>rock&apos;n <![CDATA[roll]]></leaf><?proc instr?></root>  ";
     final static String DOCUMENT_SYSTEMID = "document.xml";
 
+    @Test
     public void testSimpleNs()
         throws Exception
     {
@@ -32,6 +34,7 @@ public class TestBasicSax
         doTestSimple(true, true);
     }
 
+    @Test
     public void testSimpleNonNs()
         throws Exception
     {
@@ -43,6 +46,7 @@ public class TestBasicSax
      * Test for [WSTX-226]: ensure that given encoding is used
      * as specified
      */
+    @Test
     public void testEncoding() throws Exception
     {
         SAXParser parser = new WstxSAXParser();

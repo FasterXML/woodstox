@@ -6,10 +6,12 @@ import javax.xml.stream.*;
 import org.codehaus.stax2.*;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 public class TestXMLStreamReader2
     extends BaseStax2Test
 {
+    @Test
     public void testPropertiesNative()
         throws XMLStreamException
     {
@@ -17,6 +19,7 @@ public class TestXMLStreamReader2
         doTestProperties(true, false);
     }
 
+    @Test
     public void testPropertiesWrapped()
         throws XMLStreamException
     {
@@ -24,6 +27,7 @@ public class TestXMLStreamReader2
         doTestProperties(true, true);
     }
 
+    @Test
     public void testSkipElement()
         throws XMLStreamException
     {
@@ -31,6 +35,7 @@ public class TestXMLStreamReader2
         doTestSkipElement(true);
     }
 
+    @Test
     public void testGetPrefixedName()
         throws XMLStreamException
     {
@@ -38,6 +43,7 @@ public class TestXMLStreamReader2
         doTestGetPrefixedName(true);
     }
 
+    @Test
     public void testReportCData() throws XMLStreamException
     {
         _testCData(false, false);
@@ -49,6 +55,7 @@ public class TestXMLStreamReader2
     /**
      * Test inspired by [WSTX-211]
      */
+    @Test
     public void testLongerCData() throws Exception
     {
 	String SRC_TEXT =

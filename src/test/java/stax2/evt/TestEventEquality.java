@@ -4,6 +4,7 @@ import javax.xml.stream.*;
 import javax.xml.stream.events.XMLEvent;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * As of Stax2 v3 (~= Woodstox 4.0), XMLEvent instances are expected
@@ -14,6 +15,7 @@ import stax2.BaseStax2Test;
 public class TestEventEquality
     extends BaseStax2Test
 {
+    @Test
     public void testSimple()
         throws XMLStreamException
     {

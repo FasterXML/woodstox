@@ -11,6 +11,8 @@
 
 package wstxtest.stream;
 
+
+import org.junit.jupiter.api.Test;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -33,6 +35,7 @@ public class TestTreatCharRefAsEnts
                       state ? Boolean.TRUE : Boolean.FALSE);
     }
 
+    @Test
     public void testReturnEntityForCharReference() throws Exception
     {
         
@@ -63,6 +66,7 @@ public class TestTreatCharRefAsEnts
         assertEquals(16, loc.getCharacterOffset());
     }
     
+    @Test
     public void testReturnCharsReference() throws Exception
     {
         String XML = "<root>text &amp; more</root>";
@@ -80,6 +84,7 @@ public class TestTreatCharRefAsEnts
         assertEquals("& more", sr.getText());
     }
 
+    @Test
     public void testReturnEntityForCharReferenceWithHighMinTextSegment() throws Exception
     {
         String XML = "<root>text &amp; more</root>";
@@ -95,6 +100,7 @@ public class TestTreatCharRefAsEnts
         assertEquals("text & more", sr.getText());
     }
     
+    @Test
     public void testReturnCharsReferenceWithHighMinTextSegment() throws Exception
     {
         String XML = "<root>text &amp; more</root>";
@@ -110,6 +116,7 @@ public class TestTreatCharRefAsEnts
         assertEquals("text & more", sr.getText());
     }
 
+    @Test
     public void testNoReplEntitiesAndReturnEntityForCharReference() throws Exception
     {
 
@@ -140,6 +147,7 @@ public class TestTreatCharRefAsEnts
         assertEquals(16, loc.getCharacterOffset());
     }
 
+    @Test
     public void testNoReplEntitiesAndReturnCharsReference() throws Exception
     {
         String XML = "<root>text &amp; more</root>";
@@ -157,6 +165,7 @@ public class TestTreatCharRefAsEnts
         assertEquals("& more", sr.getText());
     }
 
+    @Test
     public void testNoReplEntitiesAndReturnEntityForCharReferenceWithHighMinTextSegment() throws Exception
     {
         String XML = "<root>text &amp; more</root>";
@@ -172,6 +181,7 @@ public class TestTreatCharRefAsEnts
         assertEquals("text & more", sr.getText());
     }
 
+    @Test
     public void testNoReplEntitiesAndReturnCharsReferenceWithHighMinTextSegment() throws Exception
     {
         String XML = "<root>text &amp; more</root>";

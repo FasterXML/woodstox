@@ -6,6 +6,7 @@ import javax.xml.stream.*;
 
 import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.XMLStreamWriter2;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests to verify expected handling of property accessors and
@@ -18,6 +19,7 @@ public class TestFactories extends BaseStax2Test
     private final String NO_SUCH_PROPERTY = "noSuchProperty";
 
     // [WSTX-243]; verify exception for input factory
+    @Test
     public void testPropertiesInputFactory() throws XMLStreamException
     {
         XMLInputFactory f = getInputFactory();
@@ -41,6 +43,7 @@ public class TestFactories extends BaseStax2Test
         }
     }
 
+    @Test
     public void testPropertiesStreamReader() throws XMLStreamException
     {
         XMLInputFactory f = getInputFactory();
@@ -76,6 +79,7 @@ public class TestFactories extends BaseStax2Test
     }
 
     // [WSTX-243]; verify exception for input factory
+    @Test
     public void testPropertiesOutputFactory() throws XMLStreamException
     {
         XMLOutputFactory f = getOutputFactory();
@@ -99,6 +103,7 @@ public class TestFactories extends BaseStax2Test
         }
     }
 
+    @Test
     public void testPropertiesStreamWriter() throws XMLStreamException
     {
         XMLOutputFactory f = getOutputFactory();

@@ -1,6 +1,7 @@
 package org.codehaus.stax.test.wstream;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests that verify handling of XMLOutputFactory properties.
@@ -13,6 +14,7 @@ import javax.xml.stream.*;
  */
 public class TestProperties extends BaseWriterTest
 {
+    @Test
     public void testDefaultSettings()
     {
         XMLOutputFactory f = getNewOutputFactory();

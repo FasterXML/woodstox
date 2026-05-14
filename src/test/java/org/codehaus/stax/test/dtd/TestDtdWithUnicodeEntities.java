@@ -1,6 +1,7 @@
 package org.codehaus.stax.test.dtd;
 
 import javax.xml.stream.XMLStreamReader;
+import org.junit.jupiter.api.Test;
 
 public class TestDtdWithUnicodeEntities extends BaseTestForDTD
 {
@@ -8,6 +9,7 @@ public class TestDtdWithUnicodeEntities extends BaseTestForDTD
      * Test to verify [WSTX-256], issues with character entities for DTD-declared
      * entities.
      */
+    @Test
     public void testEntitiesEmbedded() throws Exception
     {
         final String XML = "<!DOCTYPE component [\n"

@@ -7,6 +7,7 @@ import org.codehaus.stax2.*;
 import com.ctc.wstx.cfg.ErrorConsts;
 import com.ctc.wstx.api.ReaderConfig;
 import com.ctc.wstx.stax.WstxInputFactory;
+import org.junit.jupiter.api.Test;
 
 /**
  * Simple test-driver that tries to exercise some of basic input factory
@@ -16,6 +17,7 @@ import com.ctc.wstx.stax.WstxInputFactory;
 public class TestInputFactory
     extends BaseWstxTest
 {
+    @Test
     public void testConfig()
         throws XMLStreamException
     {
@@ -35,6 +37,7 @@ public class TestInputFactory
         assertFalse(f.isPropertySupported("foobar"));
     }
 
+    @Test
     public void testMisc()
         throws XMLStreamException
     {

@@ -18,19 +18,20 @@ import javax.xml.stream.events.Namespace;
 
 import com.ctc.wstx.evt.MergedNsContext;
 import com.ctc.wstx.util.BaseNsContext;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
 
 /**
  * Unit tests for {@link MergedNsContext}, the hierarchical
  * {@link NamespaceContext} used by the event-construction API.
  */
-public class TestMergedNsContext extends TestCase
+public class TestMergedNsContext extends wstxtest.BaseJUnit4Test
 {
     private final XMLEventFactory eventFactory = XMLEventFactory.newInstance();
 
     // ---------- basic prefix/URI lookup ----------
 
+    @Test
     public void testLookupNullParent()
     {
         BaseNsContext ctxt = MergedNsContext.construct(null, ns("a", "uri-a", "b", "uri-b"));
@@ -44,6 +45,7 @@ public class TestMergedNsContext extends TestCase
         assertNull(ctxt.getPrefix("uri-missing"));
     }
 
+    @Test
     public void testEmptyLocalListWithNullParent()
     {
         // construct(null, null) should be safe and yield an empty context
@@ -54,6 +56,7 @@ public class TestMergedNsContext extends TestCase
         assertFalse(ctxt.getNamespaces().hasNext());
     }
 
+    @Test
     public void testDefaultNamespace()
     {
         // Default namespace is represented by empty-string prefix
@@ -65,6 +68,7 @@ public class TestMergedNsContext extends TestCase
 
     // ---------- parent fallback ----------
 
+    @Test
     public void testParentFallbackForUnknownPrefix()
     {
         BaseNsContext parent = MergedNsContext.construct(null, ns("p", "parent-uri"));
@@ -79,6 +83,7 @@ public class TestMergedNsContext extends TestCase
         assertEquals("c", child.getPrefix("child-uri"));
     }
 
+    @Test
     public void testGetPrefixesCombinesLocalAndParent()
     {
         // Same URI mapped to two different prefixes — local AND parent
@@ -90,6 +95,7 @@ public class TestMergedNsContext extends TestCase
         assertEquals(new HashSet<>(Arrays.asList("p1", "p2")), prefixes);
     }
 
+    @Test
     public void testChildPrefixShadowsParent()
     {
         // When the SAME prefix is declared in both child and parent, child wins
@@ -101,6 +107,7 @@ public class TestMergedNsContext extends TestCase
         assertEquals("x", child.getPrefix("child-uri"));
     }
 
+    @Test
     public void testGetPrefixesOnlyInParent()
     {
         BaseNsContext parent = MergedNsContext.construct(null, ns("only", "parent-only"));
@@ -110,6 +117,7 @@ public class TestMergedNsContext extends TestCase
         assertEquals(Collections.singleton("only"), prefixes);
     }
 
+    @Test
     public void testGetPrefixesUnknown()
     {
         BaseNsContext ctxt = MergedNsContext.construct(null, ns("a", "uri-a"));
@@ -118,6 +126,7 @@ public class TestMergedNsContext extends TestCase
 
     // ---------- predefined prefixes handled by BaseNsContext ----------
 
+    @Test
     public void testPredefinedXmlPrefix()
     {
         BaseNsContext ctxt = MergedNsContext.construct(null, ns("a", "uri-a"));
@@ -132,6 +141,7 @@ public class TestMergedNsContext extends TestCase
                 ctxt.getPrefix(XMLConstants.XMLNS_ATTRIBUTE_NS_URI));
     }
 
+    @Test
     public void testNullPrefixThrows()
     {
         BaseNsContext ctxt = MergedNsContext.construct(null, ns("a", "uri-a"));
@@ -143,6 +153,7 @@ public class TestMergedNsContext extends TestCase
         }
     }
 
+    @Test
     public void testNullOrEmptyUriThrows()
     {
         BaseNsContext ctxt = MergedNsContext.construct(null, ns("a", "uri-a"));
@@ -162,6 +173,7 @@ public class TestMergedNsContext extends TestCase
 
     // ---------- getNamespaces() ----------
 
+    @Test
     public void testGetNamespacesReturnsLocalOnly()
     {
         BaseNsContext parent = MergedNsContext.construct(null, ns("p", "parent-uri"));
@@ -177,6 +189,7 @@ public class TestMergedNsContext extends TestCase
 
     // ---------- outputNamespaceDeclarations(Writer) ----------
 
+    @Test
     public void testOutputNamespaceDeclarationsToWriter() throws IOException
     {
         // Mix of default namespace and a prefixed one to cover both branches
@@ -199,6 +212,7 @@ public class TestMergedNsContext extends TestCase
 
     // ---------- outputNamespaceDeclarations(XMLStreamWriter) ----------
 
+    @Test
     public void testOutputNamespaceDeclarationsToStreamWriter() throws Exception
     {
         List<Namespace> nsList = new ArrayList<>();

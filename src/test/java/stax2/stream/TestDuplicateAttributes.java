@@ -4,6 +4,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * This unit test exposes a bug in Woodstox's duplicate attribute detection logic.
@@ -15,6 +16,7 @@ public class TestDuplicateAttributes
 	/**
 	 * This test shows a scenario where Woodstox correctly complains about duplicate attributes.
 	 */
+	@Test
 	public void testDupAttrsMinimal() throws XMLStreamException {
 		final XMLStreamReader reader = constructNsStreamReader("<x a='a' a='b'/>", false);
 		try {
@@ -29,6 +31,7 @@ public class TestDuplicateAttributes
 	/**
 	 * This test shows a scenario where Woodstox fails to complain about duplicate attributes.
 	 */
+	@Test
 	public void testDupAttrsMultiple() throws XMLStreamException {
 	    final XMLStreamReader reader = constructNsStreamReader(
 	            "<a id='test' type='test' c123456789='1' c123456789='2'/>", false);

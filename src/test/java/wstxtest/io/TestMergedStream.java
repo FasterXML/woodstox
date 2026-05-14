@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.ctc.wstx.io.MergedStream;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link MergedStream}, the InputStream wrapper that serves
@@ -15,6 +16,7 @@ public class TestMergedStream extends wstxtest.BaseWstxTest
 {
     // ---------- construction ----------
 
+    @Test
     public void testNullUnderlyingRejected()
     {
         try {
@@ -27,6 +29,7 @@ public class TestMergedStream extends wstxtest.BaseWstxTest
 
     // ---------- single-byte read() ----------
 
+    @Test
     public void testReadDrainsBufferThenUnderlying() throws IOException
     {
         byte[] buf = "AB".getBytes("ISO-8859-1");
@@ -41,6 +44,7 @@ public class TestMergedStream extends wstxtest.BaseWstxTest
         }
     }
 
+    @Test
     public void testReadHonorsStartOffset() throws IOException
     {
         byte[] buf = "XXAB".getBytes("ISO-8859-1");
@@ -55,6 +59,7 @@ public class TestMergedStream extends wstxtest.BaseWstxTest
 
     // ---------- bulk read() ----------
 
+    @Test
     public void testReadIntoArrayFromBuffer() throws IOException
     {
         byte[] buf = "ABCDE".getBytes("ISO-8859-1");
@@ -70,6 +75,7 @@ public class TestMergedStream extends wstxtest.BaseWstxTest
         }
     }
 
+    @Test
     public void testReadIntoArrayPartialThenUnderlying() throws IOException
     {
         byte[] buf = "ABCDE".getBytes("ISO-8859-1");
@@ -91,6 +97,7 @@ public class TestMergedStream extends wstxtest.BaseWstxTest
 
     // ---------- available() ----------
 
+    @Test
     public void testAvailableReportsBufferedThenUnderlying() throws IOException
     {
         byte[] buf = "ABC".getBytes("ISO-8859-1");
@@ -109,6 +116,7 @@ public class TestMergedStream extends wstxtest.BaseWstxTest
 
     // ---------- skip() ----------
 
+    @Test
     public void testSkipWithinBuffer() throws IOException
     {
         byte[] buf = "ABCDEFGH".getBytes("ISO-8859-1");
@@ -120,6 +128,7 @@ public class TestMergedStream extends wstxtest.BaseWstxTest
         }
     }
 
+    @Test
     public void testSkipCrossesBufferIntoUnderlying() throws IOException
     {
         byte[] buf = "ABCD".getBytes("ISO-8859-1");
@@ -132,6 +141,7 @@ public class TestMergedStream extends wstxtest.BaseWstxTest
         }
     }
 
+    @Test
     public void testSkipPastBufferOnlyUnderlying() throws IOException
     {
         byte[] buf = "AB".getBytes("ISO-8859-1");
@@ -148,6 +158,7 @@ public class TestMergedStream extends wstxtest.BaseWstxTest
 
     // ---------- mark / markSupported / reset ----------
 
+    @Test
     public void testMarkSupportedFalseWhileBuffered() throws IOException
     {
         byte[] buf = "AB".getBytes("ISO-8859-1");
@@ -163,6 +174,7 @@ public class TestMergedStream extends wstxtest.BaseWstxTest
         }
     }
 
+    @Test
     public void testMarkNoOpWhileBuffered() throws IOException
     {
         byte[] buf = "AB".getBytes("ISO-8859-1");
@@ -179,6 +191,7 @@ public class TestMergedStream extends wstxtest.BaseWstxTest
         }
     }
 
+    @Test
     public void testMarkAndResetDelegatedAfterBufferDrained() throws IOException
     {
         byte[] buf = "AB".getBytes("ISO-8859-1");
@@ -197,6 +210,7 @@ public class TestMergedStream extends wstxtest.BaseWstxTest
 
     // ---------- close() ----------
 
+    @Test
     public void testCloseClosesUnderlying() throws IOException
     {
         final boolean[] closed = { false };

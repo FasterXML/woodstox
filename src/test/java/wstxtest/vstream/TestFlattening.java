@@ -12,6 +12,7 @@ import com.ctc.wstx.io.DefaultInputResolver;
 import com.ctc.wstx.io.WstxInputSource;
 
 import wstxtest.stream.BaseStreamTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * This test suite should really be part of wstx-tools package, but since
@@ -22,6 +23,7 @@ import wstxtest.stream.BaseStreamTest;
 public class TestFlattening
     extends BaseStreamTest
 {
+    @Test
     public void testFlatteningInclusive()
         throws IOException, XMLStreamException
     {

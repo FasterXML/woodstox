@@ -5,6 +5,7 @@ import javax.xml.stream.*;
 import org.codehaus.stax2.*;
  
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Set of unit tests that checks that the {@link LocationInfo} implementation
@@ -40,6 +41,7 @@ public class TestLocationInfo
         +"</root>"; // row6
         ;
 
+    @Test
     public void testInitialLocationNoDecl()
         throws XMLStreamException
     {
@@ -55,6 +57,7 @@ public class TestLocationInfo
         sr.close();
     }
 
+    @Test
     public void testInitialLocationWithDecl()
         throws XMLStreamException
     {
@@ -70,6 +73,7 @@ public class TestLocationInfo
         sr.close();
     }
 
+    @Test
     public void testRowAccuracy()
         throws XMLStreamException
     {
@@ -127,6 +131,7 @@ public class TestLocationInfo
      * Test that uses a document with internal DTD subset, to verify that
      * location info is still valid.
      */
+    @Test
     public void testLocationsWithDTD()
         throws XMLStreamException
     {

@@ -10,6 +10,7 @@ import javax.xml.transform.dom.DOMResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests that namespaces are written to the output stream in namespace
@@ -32,6 +33,7 @@ public class TestNamespaceCopying
       _inputFactory = getInputFactory();
   }
 
+  @Test
   public void testStreamXMLNSDeclaration() throws Exception {
     final StringWriter stringWriter = new StringWriter();
     XMLEventWriter xmlWriter = _outputFactory.createXMLEventWriter(stringWriter);

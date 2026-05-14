@@ -3,12 +3,12 @@ package org.codehaus.stax.test;
 import java.io.*;
 import java.util.HashMap;
 
-import junit.framework.TestCase;
-
 import javax.xml.stream.*;
 import javax.xml.stream.events.XMLEvent;
 
 import com.ctc.wstx.api.WstxInputProperties;
+
+import wstxtest.BaseJUnit4Test;
 
 /* Latest updates:
  *
@@ -25,7 +25,7 @@ import com.ctc.wstx.api.WstxInputProperties;
  * @author Tatu Saloranta
  */
 public abstract class BaseStaxTest
-    extends TestCase
+    extends BaseJUnit4Test
     implements XMLStreamConstants
 {
     /**

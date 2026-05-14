@@ -3,6 +3,7 @@ package org.codehaus.stax.test.stream;
 import java.io.InputStream;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests handling of XML comments (except for the
@@ -14,6 +15,7 @@ import javax.xml.stream.*;
 public class TestCommentRead
     extends BaseStreamTest
 {
+    @Test
     public void testValidComments()
         throws XMLStreamException
     {
@@ -27,6 +29,7 @@ public class TestCommentRead
 
     // for [woodstox-58]: comment read outside main XML Ntree, after long (enough) CHARACTERS
     // (probably also affect PIs)
+    @Test
     public void testIssue58CommentRead() throws Exception
     {
         XMLInputFactory f = getNewInputFactory();
@@ -47,6 +50,7 @@ public class TestCommentRead
      * Method that checks properties of COMMENT
      * returned by the stream reader are correct according to StAX specs.
      */
+    @Test
     public void testCommentProperties()
         throws XMLStreamException
     {
@@ -59,6 +63,7 @@ public class TestCommentRead
         doTestProperties(false, false);
     }
 
+    @Test
     public void testInvalidComment()
         throws XMLStreamException
     {
@@ -78,6 +83,7 @@ public class TestCommentRead
         }
     }
 
+    @Test
     public void testUnfinishedComment()
         throws XMLStreamException
     {
@@ -100,6 +106,7 @@ public class TestCommentRead
      * Note: if entity expansion does not work, we will have to skip the
      * test...
      */
+    @Test
     public void testRunawayComment()
         throws XMLStreamException
     {
@@ -128,6 +135,7 @@ public class TestCommentRead
         }
     }
 
+    @Test
     public void testLongComments()
         throws XMLStreamException
     {

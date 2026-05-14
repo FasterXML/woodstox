@@ -9,6 +9,7 @@ import org.w3c.dom.*;
 import org.codehaus.stax2.typed.TypedXMLStreamWriter;
 
 import stax2.wstream.BaseWriterTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that checks that output-side DOM-compatibility
@@ -21,6 +22,7 @@ public class TestDomWrite
     final static int TYPE_NS = 1;
     final static int TYPE_NS_REPAIRING = 2;
     
+    @Test
     public void testNonNsOutput() throws Exception
     {
         /* 23-Dec-2008, TSa: Not all Stax2 impls support non-namespace-aware
@@ -71,6 +73,7 @@ public class TestDomWrite
         assertEquals("text?<ok>", child.getNodeValue());
     }
 
+    @Test
     public void testMiscOutput() throws Exception
     {
         XMLOutputFactory of = getFactory(TYPE_NON_NS);
@@ -106,6 +109,7 @@ public class TestDomWrite
         assertNull(child.getNextSibling());
     }
     
+    @Test
     public void testNsOutput()
         throws Exception
     {
@@ -142,6 +146,7 @@ public class TestDomWrite
         assertEquals("...", child.getNodeValue());
     }
 
+    @Test
     public void testRepairingNsOutput()
         throws Exception
     {
@@ -201,6 +206,7 @@ public class TestDomWrite
         assertEquals("<value>", elem.getAttributeNS(URI2, "attr2"));
     }
 
+    @Test
     public void testTypedOutputInt()
         throws Exception
     {

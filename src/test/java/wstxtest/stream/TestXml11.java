@@ -1,6 +1,7 @@
 package wstxtest.stream;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * This is a small test suite has some checks for features of xml 1.1
@@ -13,6 +14,7 @@ public class TestXml11
      * This test checks that it is illegal to try to unbind a prefix;
      * only default namespace can be unbound.
      */
+    @Test
     public void testInvalidUnbinding()
         throws XMLStreamException
     {
@@ -37,6 +39,7 @@ public class TestXml11
      * Test case adapted from XMLTest (based on
      * xmlconf/eduni/namespaces/1.1/004.xml)
      */
+    @Test
     public void testValidRebinding()
         throws XMLStreamException
     {
@@ -70,6 +73,7 @@ public class TestXml11
      * Test case adapted from XMLTest (based on
      * xmlconf/eduni/namespaces/1.1/005.xml)
      */
+    @Test
     public void testInvalidUseOfUnbound()
         throws XMLStreamException
     {
