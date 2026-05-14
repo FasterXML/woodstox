@@ -165,7 +165,6 @@ public class TestXMLReporter
         return constructStreamReader(f, xml);
     }
 
-    @Test
     private void testOldReporterProblems(String XML, int expFails)
         throws XMLStreamException
     {
@@ -179,7 +178,6 @@ public class TestXMLReporter
                      expFails, actFails);
     }
 
-    @Test
     private void testNewReporterProblems(String XML, String expMsg)
         throws XMLStreamException
     {

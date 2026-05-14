@@ -118,7 +118,6 @@ public class TestElements
     ///////////////////////////////////////////////////////////
      */
 
-    @Test
     private void testProperties(boolean nsAware, String method)
         throws XMLStreamException
     {
@@ -135,7 +134,6 @@ public class TestElements
         testStartOrEnd(nsAware, sr, false);
     }
 
-    @Test
     private void testStartOrEnd(boolean nsAware, XMLStreamReader sr,
                                 boolean isStart)
         throws XMLStreamException
@@ -215,7 +213,6 @@ public class TestElements
         }
     }
 
-    @Test
     private void testValid(boolean nsAware, String method)
         throws XMLStreamException
     {
@@ -328,7 +325,6 @@ public class TestElements
     /**
      * Simple tests to check for incorrect nesting
      */
-    @Test
     private void testInvalid(boolean nsAware, String method)
         throws XMLStreamException
     {

@@ -523,7 +523,6 @@ public class TestNamespaces
         } catch (Exception e) { }
     }
 
-    @Test
     private void testPotentiallyInvalid(boolean nsAware, String method)
         throws XMLStreamException
     {

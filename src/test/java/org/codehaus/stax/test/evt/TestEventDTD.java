@@ -176,7 +176,6 @@ public class TestEventDTD
         return constructEventReader(f, contents);
     }
 
-    @Test
     private void testListElems(List<?> l, Class<?> expType)
     {
         for (Object o : l) {

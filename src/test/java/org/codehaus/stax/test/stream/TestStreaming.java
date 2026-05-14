@@ -49,7 +49,6 @@ public class TestStreaming
     ////////////////////////////////////////
      */
 
-    @Test
     private void testWith(String enc)
         throws XMLStreamException, UnsupportedEncodingException
     {
