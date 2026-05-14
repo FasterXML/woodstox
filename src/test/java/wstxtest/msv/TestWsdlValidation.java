@@ -69,9 +69,8 @@ public class TestWsdlValidation extends BaseStax2Test
 	private XMLSchemaGrammar wsdlgrammar;
 	private W3CSchema schema;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@BeforeEach
+	public void setUp() throws Exception {
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(true);
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
