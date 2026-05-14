@@ -55,6 +55,7 @@ Project: woodstox
 #254: Optimize locking on global `InternCache`
  (contributed by @winfriedgerlach)
 #266: Convert "new XMLStreamException()" calls with "throwOutputError()" for writers
+#279: Deprecate unused/unsupported property `WstxInputProperties.P_VALIDATE_TEXT_CHARS`
 - Branch "master" renamed as "main"
 - Update to `oss-parent` v79 for latest Maven plug-in versions
 
