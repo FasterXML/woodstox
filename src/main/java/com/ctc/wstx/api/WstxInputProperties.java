@@ -49,25 +49,19 @@ public final class WstxInputProperties
     // // // XML character validation:
 
     /**
-     * Whether readers will verify that characters in text content are fully
-     * valid XML characters (not just Unicode). If true, will check
-     * that they are valid (including white space); if false, will not
-     * check.
+     * Property that was originally intended to control whether readers
+     * verify that characters in text content are fully valid XML characters
+     * (not just Unicode), but support was never actually implemented.
      *<p>
-     * Note that this property will NOT have effect on all encoding problems,
-     * specifically:
-     *<ul>
-     * <li>UTF-8 decoder will still report invalid UTF-8 byte sequences (and same
-     *     for other character encodings).
-     *  </li>
-     * <li>XML Name character rules follow separate validation which will not be affected
-     *  </li>
-     *</ul>
-     *<p>
-     * Turning this option off may improve parsing performance; leaving
-     * it on guarantees compatibility with XML 1.0 specification regarding character
-     * validity rules.
+     * NOTE: trying to set this property has always failed with
+     * `IllegalArgumentException: Unrecognized property` (see issue #37).
+     * The constant is retained only to avoid breaking source compatibility
+     * for code that references it; it is scheduled for removal in a
+     * future major version.
+     *
+     * @deprecated Since 7.2 (never supported -- see [woodstox#279])
      */
+    @Deprecated
     public final static String P_VALIDATE_TEXT_CHARS = "com.ctc.wstx.validateTextChars";
 
 

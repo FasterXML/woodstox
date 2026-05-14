@@ -88,6 +88,90 @@ public class TestDTD
         }
     }
 
+    // [woodstox#33]: same as #23 but with a non-namespace-aware reader, which
+    // would produce {@code (prefix=null, localName="xml:lang")} for an attribute
+    // whose declaration in the DTD (parsed namespace-aware by default) is
+    // stored as {@code (prefix="xml", localName="lang")}.
+    public void testFullValidationIssue33NonNsAware() throws XMLStreamException
+    {
+        final String INPUT_DTD = "<!ELEMENT FreeFormText (#PCDATA)>\n"
+                +"<!ATTLIST FreeFormText xml:lang CDATA #IMPLIED>\n";
+        final String XML = "<FreeFormText xml:lang='en-US'>foobar</FreeFormText>";
+
+        XMLValidationSchema schema = parseDTDSchema(INPUT_DTD);
+
+        XMLInputFactory f = getInputFactory();
+        setNamespaceAware(f, false);
+        XMLStreamReader2 sr = (XMLStreamReader2) f.createXMLStreamReader(new StringReader(XML));
+        sr.validateAgainst(schema);
+
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals("FreeFormText", sr.getLocalName());
+        assertTokenType(CHARACTERS, sr.next());
+        assertTokenType(END_ELEMENT, sr.next());
+        sr.close();
+    }
+
+    // [woodstox#33]: still report an error for genuinely undeclared attributes
+    // when running in non-namespace-aware mode (the fallback added for #33
+    // must not mask real validation problems).
+    public void testFullValidationIssue33UnknownAttrStillFails() throws XMLStreamException
+    {
+        final String INPUT_DTD = "<!ELEMENT FreeFormText (#PCDATA)>\n"
+                +"<!ATTLIST FreeFormText xml:lang CDATA #IMPLIED>\n";
+        final String XML = "<FreeFormText xml:bogus='x'>foobar</FreeFormText>";
+
+        XMLValidationSchema schema = parseDTDSchema(INPUT_DTD);
+
+        XMLInputFactory f = getInputFactory();
+        setNamespaceAware(f, false);
+        XMLStreamReader2 sr = (XMLStreamReader2) f.createXMLStreamReader(new StringReader(XML));
+        sr.validateAgainst(schema);
+        try {
+            while (sr.hasNext()) sr.next();
+            fail("Expected validation failure for unknown 'xml:bogus' attribute");
+        } catch (XMLValidationException e) {
+            // expected
+        } finally {
+            sr.close();
+        }
+    }
+
+    // [woodstox#33]: reverse mismatch — schema parsed non-namespace-aware
+    // (so xml:lang is stored as {@code (prefix=null, localName="xml:lang")}),
+    // attached to a namespace-aware document reader that produces
+    // {@code (prefix="xml", localName="lang")}. Exercises the second branch
+    // of {@code DTDValidatorBase.findAttrDef}.
+    public void testFullValidationIssue33ReverseMismatch() throws XMLStreamException
+    {
+        // Parse a tiny doc with an inline DOCTYPE through a non-NS-aware
+        // factory, so the inline DTD records xml:lang as a one-piece local name.
+        final String SEED = "<!DOCTYPE FreeFormText [\n"
+                +"<!ELEMENT FreeFormText (#PCDATA)>\n"
+                +"<!ATTLIST FreeFormText xml:lang CDATA #IMPLIED>\n"
+                +"]><FreeFormText/>";
+        XMLInputFactory nonNsF = getNewInputFactory();
+        setNamespaceAware(nonNsF, false);
+        XMLStreamReader2 seed = (XMLStreamReader2) nonNsF.createXMLStreamReader(new StringReader(SEED));
+        assertTokenType(DTD, seed.next());
+        org.codehaus.stax2.validation.DTDValidationSchema schema =
+                seed.getDTDInfo().getProcessedDTDSchema();
+        seed.close();
+        assertNotNull("Expected inline DTD to be parsed into a schema", schema);
+
+        // Now validate a separate namespace-aware document against that schema.
+        final String XML = "<FreeFormText xml:lang='en-US'>foobar</FreeFormText>";
+        XMLInputFactory nsF = getNewInputFactory();
+        setNamespaceAware(nsF, true);
+        XMLStreamReader2 sr = (XMLStreamReader2) nsF.createXMLStreamReader(new StringReader(XML));
+        sr.validateAgainst(schema);
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals("FreeFormText", sr.getLocalName());
+        assertTokenType(CHARACTERS, sr.next());
+        assertTokenType(END_ELEMENT, sr.next());
+        sr.close();
+    }
+
     /**
      * And then a test for validating starting when stream points
      * to START_ELEMENT

@@ -190,7 +190,7 @@ public class DTDTypingNonValidator
          *     to explicit definition
          *   (2) If attribute is normalizable, normalize it without validation
          */
-        DTDAttribute attr = mCurrAttrDefs.get(mTmpKey.reset(prefix, localName));
+        DTDAttribute attr = findAttrDef(prefix, localName);
         int index = mAttrCount++;
         if (index >= mAttrSpecs.length) {
             mAttrSpecs = (DTDAttribute[]) DataUtil.growArrayBy50Pct(mAttrSpecs);
@@ -225,7 +225,7 @@ public class DTDTypingNonValidator
         throws XMLStreamException
     {
         // note: cut'n pasted from above...
-        DTDAttribute attr = mCurrAttrDefs.get(mTmpKey.reset(prefix, localName));
+        DTDAttribute attr = findAttrDef(prefix, localName);
         int index = mAttrCount++;
         if (index >= mAttrSpecs.length) {
             mAttrSpecs = (DTDAttribute[]) DataUtil.growArrayBy50Pct(mAttrSpecs);

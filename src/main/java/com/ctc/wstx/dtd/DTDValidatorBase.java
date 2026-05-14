@@ -178,6 +178,51 @@ public abstract class DTDValidatorBase
      */
     char[] mTmpAttrValueBuffer = null;
 
+    /**
+     * Helper method that does an attribute lookup with a fallback for the
+     * namespace-aware/non-namespace-aware mismatch case (see woodstox#33):
+     * when the schema was parsed namespace-aware (the default for
+     * {@code DTDSchemaFactory}) but the document reader is non-namespace-aware,
+     * a name like {@code xml:lang} comes in as {@code (prefix=null,
+     * localName="xml:lang")} but the schema has it stored as
+     * {@code (prefix="xml", localName="lang")}. The reverse mismatch is
+     * handled too.
+     *<p>
+     * Returns {@code null} if no matching attribute definition exists.
+     */
+    protected final DTDAttribute findAttrDef(String prefix, String localName)
+    {
+        DTDAttribute attr = mCurrAttrDefs.get(mTmpKey.reset(prefix, localName));
+        if (attr != null || mCurrAttrDefs.isEmpty()) {
+            return attr;
+        }
+        // Fallback by value-based comparison, since PrefixedName.equals()
+        // relies on identity comparison of interned names — which fails when
+        // the schema and the document reader disagree on namespace mode.
+        if (prefix == null) {
+            int ix = (localName == null) ? -1 : localName.indexOf(':');
+            if (ix > 0 && ix < localName.length() - 1) {
+                String pfx = localName.substring(0, ix);
+                String ln = localName.substring(ix + 1);
+                for (Map.Entry<PrefixedName,DTDAttribute> e : mCurrAttrDefs.entrySet()) {
+                    PrefixedName n = e.getKey();
+                    if (pfx.equals(n.getPrefix()) && ln.equals(n.getLocalName())) {
+                        return e.getValue();
+                    }
+                }
+            }
+        } else {
+            String target = prefix + ":" + localName;
+            for (Map.Entry<PrefixedName,DTDAttribute> e : mCurrAttrDefs.entrySet()) {
+                PrefixedName n = e.getKey();
+                if (n.getPrefix() == null && target.equals(n.getLocalName())) {
+                    return e.getValue();
+                }
+            }
+        }
+        return null;
+    }
+
     /*
     ///////////////////////////////////////
     // Life-cycle
