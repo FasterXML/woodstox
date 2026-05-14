@@ -25,7 +25,7 @@ public class BasicSaxTest
     {
         SAXParser parser = new WstxSAXParser();
         StringBuilder builder = new StringBuilder("<root><![CDATA[");
-        for (int i=0; i<100000; i++) {
+        for (int i = 0; i < 100_000; ++i) {
             builder.append('a');
         }
         builder.append("]]></root>");

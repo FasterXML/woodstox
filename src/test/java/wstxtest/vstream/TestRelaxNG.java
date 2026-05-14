@@ -432,6 +432,77 @@ public class TestRelaxNG
                          "does not satisfy the \"integer\" type");
     }
 
+    public void testSimpleBooleanElem() throws XMLStreamException
+    {
+        final String schemaDef =
+            "<element xmlns='http://relaxng.org/ns/structure/1.0'"
+            +"  datatypeLibrary='http://www.w3.org/2001/XMLSchema-datatypes' name='root'>\n"
+            +"  <element name='leaf'>\n"
+            +"   <data type='boolean' />\n"
+            +"  </element>\n"
+            +"</element>"
+        ;
+
+        XMLValidationSchema schema = parseRngSchema(schemaDef);
+
+        // First, a simple valid document
+        XMLStreamReader2 sr = getReader("<root><leaf>true</leaf></root>");
+        sr.validateAgainst(schema);
+        while (sr.next() != END_DOCUMENT) { }
+        sr.close();
+
+        // Then one with invalid element value
+        verifyFailure("<root><leaf>foobar</leaf></root>",
+                schema, "invalid boolean element value",
+                "does not satisfy the \"boolean\" type");
+
+        // And one with empty value
+        verifyFailure("<root><leaf>   </leaf></root>",
+                schema, "missing boolean element value",
+                "does not satisfy the \"boolean\" type");
+
+        // And then 2 variations of completely missing value
+        verifyFailure("<root><leaf></leaf></root>",
+                schema, "missing boolean element value",
+                "does not satisfy the \"boolean\" type");
+
+        verifyFailure("<root><leaf /></root>",
+                schema, "missing boolean element value",
+                "does not satisfy the \"boolean\" type");
+    }
+
+    /**
+     * Verify that the "empty content vs. typed value" diagnostic enrichment
+     * works when the data type is wrapped in a composite expression
+     * ({@code <choice>}, {@code <list>}) rather than being the bare content model.
+     */
+    public void testEmptyContentForCompositeTypedModels() throws XMLStreamException
+    {
+        // <choice> nests two DataExps under a BinaryExp
+        String choiceSchema =
+            "<element xmlns='http://relaxng.org/ns/structure/1.0'"
+            +"  datatypeLibrary='http://www.w3.org/2001/XMLSchema-datatypes' name='root'>\n"
+            +"  <element name='leaf'>\n"
+            +"   <choice><data type='int'/><data type='boolean'/></choice>\n"
+            +"  </element>\n"
+            +"</element>"
+        ;
+        verifyFailure("<root><leaf/></root>", parseRngSchema(choiceSchema),
+                "missing typed value in choice", "does not satisfy");
+
+        // <list> nests a DataExp under a UnaryExp
+        String listSchema =
+            "<element xmlns='http://relaxng.org/ns/structure/1.0'"
+            +"  datatypeLibrary='http://www.w3.org/2001/XMLSchema-datatypes' name='root'>\n"
+            +"  <element name='leaf'>\n"
+            +"   <list><data type='int'/></list>\n"
+            +"  </element>\n"
+            +"</element>"
+        ;
+        verifyFailure("<root><leaf/></root>", parseRngSchema(listSchema),
+                "missing typed value in list", "does not satisfy");
+    }
+
     /**
      * Another test, but one that verifies that empty tags do not
      * cause problems with validation
