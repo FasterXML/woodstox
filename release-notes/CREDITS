@@ -135,6 +135,12 @@ Winfried Gerlach (@winfriedgerlach)
 * Contributed #254: Optimize locking on global `InternCache`
  (7.2.0)
 
+Dennis Sosnoski (@dsosnoski)
+
+* Reported #33: `xml:lang` attribute not handled correctly by `XMLStreamReader2`
+  using DTD validation
+ (7.2.0)
+
 Nico Kutscherauer (@nkutsche)
 
 * Reported #91: `getStartLocation()` returns inconsistent system id / offset when

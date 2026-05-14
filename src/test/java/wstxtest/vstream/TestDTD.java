@@ -88,6 +88,55 @@ public class TestDTD
         }
     }
 
+    // [woodstox#33]: same as #23 but with a non-namespace-aware reader, which
+    // would produce {@code (prefix=null, localName="xml:lang")} for an attribute
+    // whose declaration in the DTD (parsed namespace-aware by default) is
+    // stored as {@code (prefix="xml", localName="lang")}.
+    public void testFullValidationIssue33NonNsAware() throws XMLStreamException
+    {
+        final String INPUT_DTD = "<!ELEMENT FreeFormText (#PCDATA)>\n"
+                +"<!ATTLIST FreeFormText xml:lang CDATA #IMPLIED>\n";
+        final String XML = "<FreeFormText xml:lang='en-US'>foobar</FreeFormText>";
+
+        XMLValidationSchema schema = parseDTDSchema(INPUT_DTD);
+
+        XMLInputFactory f = getInputFactory();
+        setNamespaceAware(f, false);
+        XMLStreamReader2 sr = (XMLStreamReader2) f.createXMLStreamReader(new StringReader(XML));
+        sr.validateAgainst(schema);
+
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals("FreeFormText", sr.getLocalName());
+        assertTokenType(CHARACTERS, sr.next());
+        assertTokenType(END_ELEMENT, sr.next());
+        sr.close();
+    }
+
+    // [woodstox#33]: still report an error for genuinely undeclared attributes
+    // when running in non-namespace-aware mode (the fallback added for #33
+    // must not mask real validation problems).
+    public void testFullValidationIssue33UnknownAttrStillFails() throws XMLStreamException
+    {
+        final String INPUT_DTD = "<!ELEMENT FreeFormText (#PCDATA)>\n"
+                +"<!ATTLIST FreeFormText xml:lang CDATA #IMPLIED>\n";
+        final String XML = "<FreeFormText xml:bogus='x'>foobar</FreeFormText>";
+
+        XMLValidationSchema schema = parseDTDSchema(INPUT_DTD);
+
+        XMLInputFactory f = getInputFactory();
+        setNamespaceAware(f, false);
+        XMLStreamReader2 sr = (XMLStreamReader2) f.createXMLStreamReader(new StringReader(XML));
+        sr.validateAgainst(schema);
+        try {
+            while (sr.hasNext()) sr.next();
+            fail("Expected validation failure for unknown 'xml:bogus' attribute");
+        } catch (XMLValidationException e) {
+            // expected
+        } finally {
+            sr.close();
+        }
+    }
+
     /**
      * And then a test for validating starting when stream points
      * to START_ELEMENT
