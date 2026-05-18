@@ -1667,7 +1667,7 @@ public final class ReaderConfig
             setDTDOverride((DTDValidationSchema) value);
             break;
 
-        // // // JAXB properties
+        // // // JAXP properties
 
         case PROP_JAXP_SECURE_PROCESSING:
             // 13-Jul-2019, tatu: This is an alias... 
