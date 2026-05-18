@@ -3,6 +3,7 @@ package failing;
 import wstxtest.vstream.BaseValidationTest;
 
 import org.codehaus.stax2.validation.XMLValidationSchema;
+import org.junit.jupiter.api.Test;
 
 /**
  * Reproducer for Woodstox issue #39: an element declared {@code nillable="true"}
@@ -49,6 +50,7 @@ public class W3CSchemaNillableAttr39Test
         +"</xsd:schema>";
 
     // Sanity check: a nilled element with no extra attributes should validate.
+    @Test
     public void testNilledNoAttributes() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(SCHEMA);
@@ -62,6 +64,7 @@ public class W3CSchemaNillableAttr39Test
     }
 
     // The failing case from issue #39: nilled element carries a declared attribute.
+    @Test
     public void testNilledWithDeclaredAttribute() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(SCHEMA);

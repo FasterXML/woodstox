@@ -13,6 +13,7 @@ import com.ctc.wstx.stax.WstxInputFactory;
 import com.ctc.wstx.stax.WstxOutputFactory;
 
 import wstxtest.vstream.BaseValidationTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * This is a simple base-line "smoke test" that checks that W3C Schema
@@ -94,6 +95,7 @@ public class TestW3CSchema
      * Test validation against a simple document valid according to a very
      * simple W3C schema.
      */
+    @Test
     public void testSimpleNonNs() throws XMLStreamException
     {
         XMLValidationSchema schema = parseW3CSchema(SIMPLE_NON_NS_SCHEMA);
@@ -122,6 +124,7 @@ public class TestW3CSchema
         assertEquals(XML.replace("'", "\""), writer.toString());
     }
     
+    @Test
     public void testSimplePartialNonNs() throws XMLStreamException
     {
         XMLValidationSchema schema = parseW3CSchema(SIMPLE_NON_NS_SCHEMA);
@@ -156,6 +159,7 @@ public class TestW3CSchema
      * Test validation of a simple document that is invalid according to the
      * simple test schema.
      */
+    @Test
     public void testSimpleNonNsMissingId() throws XMLStreamException
     {
         XMLValidationSchema schema = parseW3CSchema(SIMPLE_NON_NS_SCHEMA);
@@ -168,6 +172,7 @@ public class TestW3CSchema
     
     // [woodstox-core#189]: ensure undefined IDREF detection works on both
     // reader and writer validation paths.
+    @Test
     public void testSimpleNonNsUndefinedId() throws XMLStreamException
     {
         XMLValidationSchema schema = parseW3CSchema(SIMPLE_NON_NS_SCHEMA);
@@ -178,6 +183,7 @@ public class TestW3CSchema
                       "Undefined ID 'm3'", true);
     }
 
+    @Test
     public void testSimpleDataTypes() throws XMLStreamException
     {
         // Another sample schema, from
@@ -256,6 +262,7 @@ public class TestW3CSchema
         sr.close();
     }
 
+    @Test
     public void testSimpleText() throws XMLStreamException
     {
         String SCHEMA = "<?xml version='1.0' encoding='utf-8' ?>\n"
@@ -289,6 +296,7 @@ public class TestW3CSchema
     /**
      * Test for reproducing [WSTX-191]
      */
+    @Test
     public void testConstrainedText() throws XMLStreamException
     {
         String SCHEMA = "<?xml version='1.0' encoding='UTF-8'?>\n"
@@ -338,6 +346,7 @@ public class TestW3CSchema
         }
     }
 
+    @Test
     public void testValidationHandler() throws XMLStreamException
     {
         String SCHEMA = "<?xml version='1.0' encoding='utf-8' ?>\n"

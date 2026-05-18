@@ -7,6 +7,7 @@ import javax.xml.stream.*;
 import org.codehaus.stax2.*;
 
 import com.ctc.wstx.api.WstxOutputProperties;
+import org.junit.jupiter.api.Test;
 
 /**
  * This unit test suite verifies Woodstox-specific output-side
@@ -15,6 +16,7 @@ import com.ctc.wstx.api.WstxOutputProperties;
 public class TestEscaping
     extends BaseWriterTest
 {
+    @Test
     public void testCrHandlingEscaping()
         throws XMLStreamException
     {
@@ -22,6 +24,7 @@ public class TestEscaping
         doTestCrHandling(true, "CrLF: \r\n.", "CrLF: \r\n.", "CrLF: \r\n.");
     }
 
+    @Test
     public void testCrHandlingNonEscaping()
         throws XMLStreamException
     {

@@ -1,6 +1,7 @@
 package org.codehaus.stax.test.vstream;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests handling of attributes that are declared
@@ -20,6 +21,7 @@ public class TestNmTokenAttrRead
      * Test case that verifies behaviour of valid NMTOKEN/NMTOKENS
      * attribute declarations.
      */
+    @Test
     public void testValidNmTokenAttrDecl()
         throws XMLStreamException
     {
@@ -36,12 +38,14 @@ public class TestNmTokenAttrRead
      * Test case that verifies behaviour of invalid NMTOKEN/NMTOKENS
      * attribute declarations.
      */
+    @Test
     public void testInvalidNmTokenAttrDecl()
         throws XMLStreamException
     {
         // ??? Are there any such cases?
     }
 
+    @Test
     public void testValidNmTokenAttrUse()
         throws XMLStreamException
     {
@@ -53,6 +57,7 @@ public class TestNmTokenAttrRead
         streamThrough(getValidatingReader(XML));
     }
 
+    @Test
     public void testInvalidNmTokenAttrUse()
         throws XMLStreamException
     {
@@ -77,6 +82,7 @@ public class TestNmTokenAttrRead
      * Unit test that verifies that values of attributes of type NMTOKEN and
      * NMTOKENS will get properly normalized.
      */
+    @Test
     public void testNmTokenAttrNormalization()
         throws XMLStreamException
     {

@@ -2,20 +2,17 @@ package wstxtest.util;
 
 import java.util.*;
 
-import junit.framework.TestCase;
 
 import com.ctc.wstx.util.WordSet;
+import org.junit.jupiter.api.Test;
 
 /**
  * Simple unit tests for testing {@link WordSet}.
  */
 public class TestWordSet
-    extends TestCase
+    extends wstxtest.BaseJUnit4Test
 {
-    public TestWordSet(String name) {
-        super(name);
-    }
-
+    @Test
     public void testNormal()
     {
         TreeSet<String> set = new TreeSet<>();

@@ -2,22 +2,24 @@ package wstxtest.util;
 
 import java.util.*;
 
-import junit.framework.TestCase;
 
 import com.ctc.wstx.util.DataUtil;
+import org.junit.jupiter.api.Test;
 
 /**
  * Simple unit tests for testing methods in {@link DataUtil}.
  */
 public class TestDataUtil
-    extends TestCase
+    extends wstxtest.BaseJUnit4Test
 {
+    @Test
     public void testBasic()
     {
         char[] empty = DataUtil.getEmptyCharArray();
         assertEquals(0, empty.length);
     }
 
+    @Test
     public void testContainment()
     {
         // First, no match:
@@ -41,6 +43,7 @@ public class TestDataUtil
         assertTrue(DataUtil.anyValuesInCommon(c1, c2));
     }
 
+    @Test
     public void testExpansion()
     {
         final int MAGIC_INDEX = 1;

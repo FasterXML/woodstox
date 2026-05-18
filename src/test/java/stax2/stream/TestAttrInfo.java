@@ -5,6 +5,7 @@ import javax.xml.stream.*;
 import org.codehaus.stax2.*;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Set of unit tests that checks that the {@link AttributeInfo} implementation
@@ -46,6 +47,7 @@ public class TestAttrInfo
      * Baseline test case that does not use any information originating
      * from DTDs.
      */
+    @Test
     public void testAttrFindBasic()
         throws XMLStreamException
     {
@@ -119,6 +121,7 @@ public class TestAttrInfo
      * More complex test case, in which information from DTD
      * (like attribute default values, notations) are needed.
      */
+    @Test
     public void testAttrFindDTD()
         throws XMLStreamException
     {

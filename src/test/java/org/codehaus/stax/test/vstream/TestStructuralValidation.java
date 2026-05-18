@@ -1,6 +1,7 @@
 package org.codehaus.stax.test.vstream;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests structural validation using DTD.
@@ -14,6 +15,7 @@ public class TestStructuralValidation
         //PRINT_EXP_EXCEPTION = true;
     }
 
+    @Test
     public void testValidStructure()
         throws XMLStreamException
     {
@@ -28,6 +30,7 @@ public class TestStructuralValidation
         }
     }
 
+    @Test
     public void testValidStructure2()
         throws XMLStreamException
     {
@@ -55,6 +58,7 @@ public class TestStructuralValidation
         }
     }
 
+    @Test
     public void testValidSimpleSeqStructure()
         throws XMLStreamException
     {
@@ -74,6 +78,7 @@ public class TestStructuralValidation
         }
     }
 
+    @Test
     public void testInvalidSimpleSeqStructure()
         throws XMLStreamException
     {
@@ -107,6 +112,7 @@ public class TestStructuralValidation
         }
     }
 
+    @Test
     public void testValidSimpleChoiceStructure()
         throws XMLStreamException
     {
@@ -131,6 +137,7 @@ public class TestStructuralValidation
         }
     }
 
+    @Test
     public void testInvalidSimpleChoiceStructure()
         throws XMLStreamException
     {
@@ -173,6 +180,7 @@ public class TestStructuralValidation
         }
     }
 
+    @Test
     public void testValidFullChoiceStructure()
         throws XMLStreamException
     {
@@ -192,6 +200,7 @@ public class TestStructuralValidation
         }
     }
 
+    @Test
     public void testValidMixed()
         throws XMLStreamException
     {
@@ -205,6 +214,7 @@ public class TestStructuralValidation
         }
     }
 
+    @Test
     public void testInvalidWrongRoot()
         throws XMLStreamException
     {
@@ -215,6 +225,7 @@ public class TestStructuralValidation
         }
     }
 
+    @Test
     public void testInvalidMixed()
         throws XMLStreamException
     {
@@ -237,6 +248,7 @@ public class TestStructuralValidation
         }
     }
 
+    @Test
     public void testInvalidStructureRoot()
         throws XMLStreamException
     {
@@ -270,6 +282,7 @@ public class TestStructuralValidation
         }
     }
 
+    @Test
     public void testInvalidStructure()
         throws XMLStreamException
     {
@@ -325,6 +338,7 @@ public class TestStructuralValidation
         +"<!ELEMENT fourth (#PCDATA)>\n"
         ;
 
+    @Test
     public void testValidStructureComplex()
         throws XMLStreamException
     {
@@ -344,6 +358,7 @@ public class TestStructuralValidation
         }
     }
 
+    @Test
     public void testInvalidStructureComplex()
         throws XMLStreamException
     {
@@ -370,6 +385,7 @@ public class TestStructuralValidation
      * comment, processing instructions or white space) within an element that has
      * content declaration of EMPTY.
      */
+    @Test
     public void testInvalidEmpty()
         throws XMLStreamException
     {
@@ -402,6 +418,7 @@ public class TestStructuralValidation
         }
     }
 
+    @Test
     public void testValidAny()
         throws XMLStreamException
     {
@@ -416,6 +433,7 @@ public class TestStructuralValidation
         }
     }
 
+    @Test
     public void testInvalidAny()
         throws XMLStreamException
     {

@@ -15,6 +15,7 @@ import org.w3c.dom.DocumentFragment;
 import org.codehaus.stax2.*;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that checks that input-side DOM-compatibility
@@ -28,6 +29,7 @@ import stax2.BaseStax2Test;
 public class TestDomCompat
     extends BaseStax2Test
 {
+    @Test
     public void testSimpleDomInput() throws Exception
     {
         final String XML =
@@ -129,6 +131,7 @@ public class TestDomCompat
     /**
      * Test added to verify that [WSTX-134] is fixed properly
      */
+    @Test
     public void testDomWhitespace()
         throws Exception
     {
@@ -160,6 +163,7 @@ public class TestDomCompat
     /**
      * Test to verify that [WSTX-145] is properly fixed
      */
+    @Test
     public void testDomCoalescingText()
         throws Exception
     {
@@ -180,6 +184,7 @@ public class TestDomCompat
         assertTokenType(END_DOCUMENT, sr.next());
     }
 
+    @Test
     public void testDomCoalescingType()
         throws Exception
     {
@@ -205,6 +210,7 @@ public class TestDomCompat
      * actually enable/disable interning on reader instances
      * (independent of whether settings take effect or not)
      */
+    @Test
     public void testDomInternProperties()
         throws Exception
     {
@@ -231,6 +237,7 @@ public class TestDomCompat
      * Test for checking that [WSTX-162] has been addressed,
      * regarding names.
      */
+    @Test
     public void testDomInternNames()
         throws Exception
     {
@@ -284,6 +291,7 @@ public class TestDomCompat
      * Test for checking that [WSTX-162] has been addressed,
      * regarding names.
      */
+    @Test
     public void testDomInternNsURIs()
         throws Exception
     {
@@ -322,6 +330,7 @@ public class TestDomCompat
     }
 
     // [WSTX-244]
+    @Test
     public void testGetElementText() throws Exception
     {
         final String XML =
@@ -350,6 +359,7 @@ public class TestDomCompat
     }
 
     // [WSTX-259]
+    @Test
     public void testEmptyFragment() throws Exception
     {
         DocumentFragment fragment = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument().createDocumentFragment();

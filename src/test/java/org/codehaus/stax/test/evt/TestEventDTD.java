@@ -4,6 +4,7 @@ import javax.xml.stream.*;
 import javax.xml.stream.events.*;
 
 import java.util.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for verifying behavior of Event API implementation with events
@@ -18,6 +19,7 @@ public class TestEventDTD
      * Test that checks that entity objects are properly returned in
      * non-expanding mode.
      */
+    @Test
     public void testNonExpandingEntities()
         throws XMLStreamException
     {
@@ -102,6 +104,7 @@ public class TestEventDTD
      * a valid document, to the degree it is done without having to
      * validate anything
      */
+    @Test
     public void testValidDtdEvent()
         throws XMLStreamException
     {

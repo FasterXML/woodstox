@@ -7,11 +7,13 @@ import org.codehaus.stax2.XMLInputFactory2;
 import org.codehaus.stax2.XMLOutputFactory2;
 import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.XMLStreamWriter2;
+import org.junit.jupiter.api.Test;
 
 public class TestCopyEventFromReader97
     extends BaseWriterTest
 {
     // [woodstox-core#97]
+    @Test
     public void testUTF8MsLinefeedCopyEvent() throws Exception
     {
         final XMLInputFactory2 xmlIn = getInputFactory();

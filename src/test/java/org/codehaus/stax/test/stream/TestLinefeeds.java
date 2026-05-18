@@ -1,6 +1,7 @@
 package org.codehaus.stax.test.stream;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests linefeed normalization features of parsers.
@@ -24,6 +25,7 @@ public class TestLinefeeds
      * Test that checks that if ignorable whitespace is reported from
      * epilog and/or prolog, it will be properly normalized.
      */
+    @Test
     public void testLfInEpilog()
         throws XMLStreamException
     {
@@ -77,6 +79,7 @@ public class TestLinefeeds
         }
     }
 
+    @Test
     public void testLfInCData()
         throws XMLStreamException
     {
@@ -146,6 +149,7 @@ public class TestLinefeeds
         assertEquals(END_DOCUMENT, sr.next());
     }
 
+    @Test
     public void testLfInProcInstr()
         throws XMLStreamException
     {
@@ -201,6 +205,7 @@ public class TestLinefeeds
         }
     }
 
+    @Test
     public void testLfInComment()
         throws XMLStreamException
     {
@@ -248,6 +253,7 @@ public class TestLinefeeds
         }
     }
 
+    @Test
     public void testLfInText()
         throws XMLStreamException
     {

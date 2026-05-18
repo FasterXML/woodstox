@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import javax.xml.stream.*;
 import javax.xml.stream.events.XMLEvent;
 
@@ -19,12 +17,14 @@ import org.codehaus.stax2.validation.XMLValidationSchema;
 
 import com.ctc.wstx.stax.WstxOutputFactory;
 
+import wstxtest.BaseJUnit4Test;
+
 /**
  * Base unit test class to be inherited by all unit tests that test
  * StAX2 API compatibility.
  */
 public abstract class BaseStax2Test
-    extends TestCase
+    extends BaseJUnit4Test
     implements XMLStreamConstants
 {
     /**

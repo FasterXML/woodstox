@@ -5,6 +5,7 @@ import javax.xml.stream.*;
 import org.codehaus.stax2.validation.*;
 
 import wstxtest.stream.BaseStreamTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Simple test for ensuring handling of "xml:space" attribute. Not
@@ -15,6 +16,7 @@ import wstxtest.stream.BaseStreamTest;
 public class TestXmlSpace
     extends BaseStreamTest
 {
+    @Test
     public void testSimpleNonNs()
         throws XMLStreamException
     {

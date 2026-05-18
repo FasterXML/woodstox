@@ -8,6 +8,7 @@ import org.codehaus.stax2.XMLStreamWriter2;
 import org.codehaus.stax2.XMLOutputFactory2;
 import org.codehaus.stax2.XMLStreamProperties;
 import org.codehaus.stax2.validation.XMLValidationSchema;
+import org.junit.jupiter.api.Test;
 
 /**
  * Regression test: writing an element via the 1-argument
@@ -50,6 +51,7 @@ public class W3CSchemaWriteNoNsTest extends BaseOutputTest {
      * 1-arg writeStartElement(localName) must not inherit the parent's
      * default namespace for validation purposes.
      */
+    @Test
     public void testWriteStartElementNoNsWithDefaultNsBound() throws Exception {
         StringWriter strw = new StringWriter();
         XMLValidationSchema schema = parseW3CSchema(SCHEMA_UNQUALIFIED);
@@ -106,6 +108,7 @@ public class W3CSchemaWriteNoNsTest extends BaseOutputTest {
      * 1-arg writeEmptyElement(localName) must also pass the correct empty
      * URI to the validator when a default namespace is in scope on the parent.
      */
+    @Test
     public void testWriteEmptyElementNoNsWithDefaultNsBound() throws Exception {
         StringWriter strw = new StringWriter();
         XMLValidationSchema schema = parseW3CSchema(SCHEMA_WITH_EMPTY_LEAF);

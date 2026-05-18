@@ -6,6 +6,7 @@ import javax.xml.stream.*;
 
 import org.codehaus.stax2.XMLStreamWriter2;
 import org.codehaus.stax2.validation.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that test basic aspects of (DTD validation,
@@ -15,6 +16,7 @@ import org.codehaus.stax2.validation.*;
 public class TestOutputValidation
     extends BaseOutputTest
 {
+    @Test
     public void testValidMixedContent()
         throws XMLStreamException
     {
@@ -40,6 +42,7 @@ public class TestOutputValidation
         }
     }
 
+    @Test
     public void testInvalidMixedContent()
         throws XMLStreamException
     {
@@ -64,6 +67,7 @@ public class TestOutputValidation
         }
     }
 
+    @Test
     public void testValidEmptyContent()
         throws XMLStreamException
     {
@@ -110,6 +114,7 @@ public class TestOutputValidation
         }
     }
 
+    @Test
     public void testInvalidEmptyContent()
         throws XMLStreamException
     {
@@ -223,6 +228,7 @@ public class TestOutputValidation
         }
     }
 
+    @Test
     public void testValidAnyContent()
         throws XMLStreamException
     {
@@ -273,6 +279,7 @@ public class TestOutputValidation
         }
     }
 
+    @Test
     public void testInvalidAnyContent()
         throws XMLStreamException
     {

@@ -1,15 +1,16 @@
 package wstxtest.util;
 
-import junit.framework.TestCase;
 
 import com.ctc.wstx.util.StringVector;
+import org.junit.jupiter.api.Test;
 
 /**
  * Simple unit tests for testing {@link StringVector}.
  */
 public class TestStringVector
-    extends TestCase
+    extends wstxtest.BaseJUnit4Test
 {
+    @Test
     public void testConstructor()
     {
         try {
@@ -31,6 +32,7 @@ public class TestStringVector
         assertEquals(0, sv.size());
     }
 
+    @Test
     public void testBasic()
     {
         StringVector sv = new StringVector(2);
@@ -56,6 +58,7 @@ public class TestStringVector
         assertEquals(0, sv.size());
     }
 
+    @Test
     public void testGetString()
     {
         StringVector sv = new StringVector(2);
@@ -85,6 +88,7 @@ public class TestStringVector
         }
     }
 
+    @Test
     public void testGetLastString()
     {
         StringVector sv = new StringVector(2);
@@ -103,6 +107,7 @@ public class TestStringVector
         assertEquals("bar", sv.getLastString());
     }
 
+    @Test
     public void testGrowArray()
     {
         try {

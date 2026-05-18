@@ -12,6 +12,7 @@ import org.codehaus.stax2.validation.XMLValidationSchema;
 import com.ctc.wstx.sw.NonNsStreamWriter;
 import com.ctc.wstx.sw.RepairingNsStreamWriter;
 import com.ctc.wstx.sw.SimpleNsStreamWriter;
+import org.junit.jupiter.api.Test;
 
 public class TestW3CSchemaComplexTypes 
     extends BaseValidationTest
@@ -21,6 +22,7 @@ public class TestW3CSchemaComplexTypes
 	 *
 	 * 29-Mar-2018, tatu: Oddly enough, problem itself allegedly resolved...
 	 */
+    @Test
     public void testMSVGithubIssue2() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(

@@ -6,6 +6,7 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.*;
 import javax.xml.stream.events.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for testing that START_ELEMENT event object behaves
@@ -20,6 +21,7 @@ public class TestStartElem
      * Simple tests to ensure that the namespace declarations are properly
      * parsed and accessible via {@link StartElement}.
      */
+    @Test
     public void testStartElemNs()
         throws XMLStreamException
     {
@@ -68,6 +70,7 @@ public class TestStartElem
         assertFalse(er.hasNext());
     }
 
+    @Test
     public void testNestedStartElemNs()
         throws XMLStreamException
     {
@@ -144,6 +147,7 @@ public class TestStartElem
      * Another unit test, one that checks a special case of namespace
      * enclosures and namespace context objects.
      */
+    @Test
     public void testNestedStartElemNs2()
         throws XMLStreamException
     {
@@ -187,6 +191,7 @@ public class TestStartElem
      * Test to check that attributes can be accessed normally via
      * {@link StartElement} instances.
      */
+    @Test
     public void testStartElemAttrs()
         throws XMLStreamException
     {
@@ -229,6 +234,7 @@ public class TestStartElem
         assertTokenType(END_DOCUMENT, er.nextEvent().getEventType());
     }
 
+    @Test
     public void testStartElemManyAttrsNs()
         throws XMLStreamException
     {

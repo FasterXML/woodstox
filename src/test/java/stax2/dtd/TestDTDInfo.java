@@ -6,6 +6,7 @@ import org.codehaus.stax2.*;
 import org.codehaus.stax2.validation.DTDValidationSchema;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Set of unit tests that checks that the {@link AttributeInfo} implementation
@@ -28,6 +29,7 @@ public class TestDTDInfo
         +"<root />"
         ;
 
+    @Test
     public void testDTDInfo()
         throws XMLStreamException
     {
@@ -51,6 +53,7 @@ public class TestDTDInfo
     }
 
     // [woodstox-core#250]: getProcessedDTDSchema() should respect DTD override
+    @Test
     public void testGetProcessedDTDSchemaWithOverride()
         throws XMLStreamException
     {

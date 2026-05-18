@@ -11,6 +11,7 @@ import com.ctc.wstx.exc.WstxLazyException;
 import com.ctc.wstx.stax.WstxInputFactory;
 import org.codehaus.stax2.io.Stax2ByteArraySource;
 import wstxtest.stream.BaseStreamTest;
+import org.junit.jupiter.api.Test;
 
 public class Fuzz_DTDReadTest extends BaseStreamTest
 {
@@ -18,6 +19,7 @@ public class Fuzz_DTDReadTest extends BaseStreamTest
 
     private final WstxInputFactory STAX_F = getWstxInputFactory();
 
+    @Test
     public void testIssueInputStream() throws Exception
     {
         XMLStreamReader sr = STAX_F.createXMLStreamReader(new ByteArrayInputStream(DOC));
@@ -31,6 +33,7 @@ public class Fuzz_DTDReadTest extends BaseStreamTest
         sr.close();
     }
 
+    @Test
     public void testIssueInputStreamHigherRecursionLimit() throws Exception
     {
         final WstxInputFactory staxF = getWstxInputFactory();
@@ -47,6 +50,7 @@ public class Fuzz_DTDReadTest extends BaseStreamTest
         sr.close();
     }
     
+    @Test
     public void testIssueReader() throws Exception
     {
         Reader r = new InputStreamReader(new ByteArrayInputStream(DOC),
@@ -62,6 +66,7 @@ public class Fuzz_DTDReadTest extends BaseStreamTest
         sr.close();
     }
 
+    @Test
     public void testIssueStax2ByteArray() throws Exception
     {
         // Then "native" Byte array

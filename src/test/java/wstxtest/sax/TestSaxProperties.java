@@ -11,10 +11,12 @@ import com.ctc.wstx.sax.WstxSAXParserFactory;
 
 import wstxtest.BaseWstxTest;
 import wstxtest.sax.TestBasicSax.MyHandler;
+import org.junit.jupiter.api.Test;
 
 public class TestSaxProperties extends BaseWstxTest
 {
     // [woodstox-core#77]: Don't barf on "secure processing" setting
+    @Test
     public void testSecureProcessingFactory() throws Exception
     {
         WstxSAXParserFactory f = new WstxSAXParserFactory();        
@@ -31,6 +33,7 @@ public class TestSaxProperties extends BaseWstxTest
         assertFalse(f.getFeature(XMLConstants.FEATURE_SECURE_PROCESSING));
     }
 
+    @Test
     public void testSecureProcessingReader() throws Exception
     {
         WstxSAXParserFactory f = new WstxSAXParserFactory();        

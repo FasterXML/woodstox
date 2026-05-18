@@ -3,17 +3,18 @@ package wstxtest.util;
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.framework.TestCase;
 
 import com.ctc.wstx.util.SymbolTable;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link SymbolTable}, focused on the seeded hashing
  * introduced for woodstox issue #12 (hash-flooding defense).
  */
 public class TestSymbolTable
-    extends TestCase
+    extends wstxtest.BaseJUnit4Test
 {
+    @Test
     public void testSeedsDifferAcrossInstances()
     {
         // 32-bit random seeds should be effectively unique across a small
@@ -27,6 +28,7 @@ public class TestSymbolTable
                 seen.size() > 1);
     }
 
+    @Test
     public void testChildInheritsParentSeed()
     {
         SymbolTable master = new SymbolTable();
@@ -35,6 +37,7 @@ public class TestSymbolTable
                 master.getHashSeed(), child.getHashSeed());
     }
 
+    @Test
     public void testSeededHashMatchesInlineComputation()
     {
         SymbolTable table = new SymbolTable();
@@ -58,6 +61,7 @@ public class TestSymbolTable
                 inline, viaString);
     }
 
+    @Test
     public void testBucketIndexVariesWithSeed()
     {
         // Hash-flooding defense rests on the attacker not being able to predict
@@ -76,6 +80,7 @@ public class TestSymbolTable
                 indexes.size() > 1);
     }
 
+    @Test
     public void testSeedSeparatesLegacyCollisionPair()
     {
         // "Aa" and "BB" share the legacy multiply-31 hash. The XOR-with-seed
@@ -96,6 +101,7 @@ public class TestSymbolTable
                 + separated + " of " + trials + " did", separated > 1200);
     }
 
+    @Test
     public void testLookupRoundTripWithRandomSeed()
     {
         SymbolTable table = new SymbolTable(false);
@@ -120,6 +126,7 @@ public class TestSymbolTable
         }
     }
 
+    @Test
     public void testRehashPreservesLookups()
     {
         // Force well past the default fill threshold (96 entries) so rehash runs.

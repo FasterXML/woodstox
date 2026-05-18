@@ -5,16 +5,17 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.TestCase;
 
 import com.ctc.wstx.util.InternCache;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link InternCache}.
  */
 public class TestInternCache
-    extends TestCase
+    extends wstxtest.BaseJUnit4Test
 {
+    @Test
     public void testBasicIntern()
     {
         InternCache cache = InternCache.getInstance();
@@ -30,6 +31,7 @@ public class TestInternCache
         assertSame(result, cache.intern(input2));
     }
 
+    @Test
     public void testConcurrentIntern() throws Exception
     {
         final InternCache cache = InternCache.getInstance();

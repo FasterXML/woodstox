@@ -5,6 +5,7 @@ import java.io.*;
 import javax.xml.stream.*;
 
 import com.ctc.wstx.api.WstxOutputProperties;
+import org.junit.jupiter.api.Test;
 
 /**
  * This unit test suite checks that per-writer properties are
@@ -13,6 +14,7 @@ import com.ctc.wstx.api.WstxOutputProperties;
 public class TestWriterProperties
     extends BaseWriterTest
 {
+    @Test
     public void testAccessStream()
         throws XMLStreamException
     {
@@ -23,6 +25,7 @@ public class TestWriterProperties
         assertSame(bos, sw.getProperty(WstxOutputProperties.P_OUTPUT_UNDERLYING_STREAM));
     }
 
+    @Test
     public void testAccessWriter()
         throws XMLStreamException
     {
@@ -36,6 +39,7 @@ public class TestWriterProperties
     // Verify that both P_OUTPUT_UNDERLYING_STREAM and P_OUTPUT_UNDERLYING_WRITER
     // are recognized as supported properties (regression test for copy-paste bug
     // where P_OUTPUT_UNDERLYING_WRITER was never registered)
+    @Test
     public void testUnderlyingStreamAndWriterPropertySupported()
         throws XMLStreamException
     {

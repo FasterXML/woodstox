@@ -9,6 +9,7 @@ import org.codehaus.stax2.ri.typed.ValueEncoderFactory;
 import org.codehaus.stax2.typed.*;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Base class that contains set of simple unit tests to verify implementation
@@ -105,30 +106,35 @@ public abstract class ReaderBinaryTestBase
     ////////////////////////////////////////
      */
 
+    @Test
     public void testBinaryElemByteByByte() throws XMLStreamException
     {
         _testBinaryElem(METHOD_SINGLE, false);
         _testBinaryElem(METHOD_SINGLE, true);
     }
 
+    @Test
     public void testBinaryElemFull() throws XMLStreamException
     {
         _testBinaryElem(METHOD_FULL, false);
         _testBinaryElem(METHOD_FULL, true);
     }
 
+    @Test
     public void testBinaryElem2Bytes() throws XMLStreamException
     {
         _testBinaryElem(METHOD_2BYTES, false);
         _testBinaryElem(METHOD_2BYTES, true);
     }
 
+    @Test
     public void testBinaryElemSegmented() throws XMLStreamException
     {
         _testBinaryElem(METHOD_SEGMENTED, false);
         _testBinaryElem(METHOD_SEGMENTED, true);
     }
 
+    @Test
     public void testBinaryElemFullConvenient() throws XMLStreamException
     {
         _testBinaryElem(METHOD_FULL_CONVENIENT, false);
@@ -141,6 +147,7 @@ public abstract class ReaderBinaryTestBase
      * Access is done using supported method (i.e. starting with
      * 
      */
+    @Test
     public void testMultipleBinaryElems() throws XMLStreamException
     {
         /* Let's try couple of sizes here too, but only check partial
@@ -184,6 +191,7 @@ public abstract class ReaderBinaryTestBase
      * (it is likely that mixing would make sense whatsoever; but
      * at least additional spacing would have to be provided)
      */
+    @Test
     public void testBinaryMixedSegments() throws XMLStreamException
     {
         // We'll do just one long test
@@ -373,6 +381,7 @@ public abstract class ReaderBinaryTestBase
      * characters, which indicate 1 or 2 bytes instead full 3 for the
      * decode unit.
      */
+    @Test
     public void testInvalidElemPadding()
         throws XMLStreamException
     {
@@ -404,6 +413,7 @@ public abstract class ReaderBinaryTestBase
      * systems. So, we will just verify that white space can not be used
      * within 4 char units.
      */
+    @Test
     public void testInvalidWhitespace()
         throws XMLStreamException
     {
@@ -425,6 +435,7 @@ public abstract class ReaderBinaryTestBase
         }
     }
 
+    @Test
     public void testInvalidWeirdChars()
         throws XMLStreamException
     {
@@ -445,6 +456,7 @@ public abstract class ReaderBinaryTestBase
         }
     }
 
+    @Test
     public void testIncompleteInvalidElem()
         throws XMLStreamException
     {
@@ -491,6 +503,7 @@ public abstract class ReaderBinaryTestBase
      * API to access attribute values is much simpler; hence fewer
      * things need testing
      */
+    @Test
     public void testBinaryAttrValid() throws XMLStreamException
     {
         final int REPS = 3;
@@ -531,6 +544,7 @@ public abstract class ReaderBinaryTestBase
     ////////////////////////////////////////
      */
 
+    @Test
     public void testInvalidAttrPadding()
         throws XMLStreamException
     {
@@ -550,6 +564,7 @@ public abstract class ReaderBinaryTestBase
         }
     }
 
+    @Test
     public void testInvalidAttrWhitespace()
         throws XMLStreamException
     {
@@ -568,6 +583,7 @@ public abstract class ReaderBinaryTestBase
         }
     }
 
+    @Test
     public void testInvalidAttrWeirdChars()
         throws XMLStreamException
     {
@@ -586,6 +602,7 @@ public abstract class ReaderBinaryTestBase
         }
     }
 
+    @Test
     public void testInvalidAttrIncomplete()
         throws XMLStreamException
     {

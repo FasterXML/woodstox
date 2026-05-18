@@ -7,6 +7,7 @@ import org.codehaus.stax2.*;
 import org.codehaus.stax2.validation.XMLValidationSchema;
 
 import wstxtest.vstream.BaseValidationTest;
+import org.junit.jupiter.api.Test;
 
 // for [woodstox-core#16]
 public class W3CSchemaWrite16Test
@@ -33,6 +34,7 @@ public class W3CSchemaWrite16Test
 "</xs:schema>\n"+
 "";
 
+    @Test
     public void testSimpleWriteValidation() throws Exception
     {
         final String XML =

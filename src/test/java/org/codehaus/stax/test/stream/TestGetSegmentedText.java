@@ -3,6 +3,7 @@ package org.codehaus.stax.test.stream;
 import java.io.*;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that ensures that the 'segmented' text accessors
@@ -17,6 +18,7 @@ public class TestGetSegmentedText
     static String sXmlInput = null;
     static String sExpResult = null;
 
+    @Test
     public void testCoalescingAutoEntity()
         throws Exception
     {
@@ -24,6 +26,7 @@ public class TestGetSegmentedText
         doTest(true, true, true); // ns-aware
     }
 
+    @Test
     public void testNonCoalescingAutoEntity()
         throws Exception
     {
@@ -31,6 +34,7 @@ public class TestGetSegmentedText
         doTest(true, false, true); // ns-aware
     }
 
+    @Test
     public void testCoalescingNonAutoEntity()
         throws Exception
     {
@@ -38,6 +42,7 @@ public class TestGetSegmentedText
         doTest(true, true, false); // ns-aware
     }
 
+    @Test
     public void testNonCoalescingNonAutoEntity()
         throws Exception
     {
@@ -45,6 +50,7 @@ public class TestGetSegmentedText
         doTest(true, false, false); // ns-aware
     }
 
+    @Test
     public void testSegmentedGetCharacters()
         throws XMLStreamException
     {

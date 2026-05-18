@@ -8,6 +8,7 @@ import stax2.BaseStax2Test;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLResolver;
 import javax.xml.stream.XMLStreamException;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test entities in round-trip mode
@@ -22,6 +23,7 @@ public class TestExternalEntityRef
         "<name>&oelig;</name>" +
         "</project>";
 
+    @Test
     public void testEntityRef()
         throws XMLStreamException {
 
@@ -46,6 +48,7 @@ public class TestExternalEntityRef
         "&desc;" +
         "</project>";
 
+    @Test
     public void testWithDtd()
         throws XMLStreamException {
 
@@ -63,6 +66,7 @@ public class TestExternalEntityRef
         assertEquals("project", sr.getLocalName());
     }
 
+    @Test
     public void testWithDtdExpand()
         throws XMLStreamException {
 

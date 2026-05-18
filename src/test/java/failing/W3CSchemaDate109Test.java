@@ -6,6 +6,7 @@ import org.codehaus.stax2.validation.XMLValidationException;
 import org.codehaus.stax2.validation.XMLValidationSchema;
 
 import wstxtest.vstream.BaseValidationTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Reproducer for woodstox issue #109: xs:date validation should reject
@@ -26,12 +27,14 @@ public class W3CSchemaDate109Test
         +"<xsd:element name='MyDate' type='ISODate'/>\n"
         +"</xsd:schema>";
 
+    @Test
     public void testValidDate() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(SCHEMA_DATE);
         ValidationMode.reader.validate(schema, "<MyDate>2000-01-01</MyDate>");
     }
 
+    @Test
     public void testInvalidDate_AllZeros() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(SCHEMA_DATE);
@@ -46,6 +49,7 @@ public class W3CSchemaDate109Test
         }
     }
 
+    @Test
     public void testInvalidDate_Month00() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(SCHEMA_DATE);
@@ -57,6 +61,7 @@ public class W3CSchemaDate109Test
         }
     }
 
+    @Test
     public void testInvalidDate_Day00() throws Exception
     {
         XMLValidationSchema schema = parseW3CSchema(SCHEMA_DATE);

@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.Random;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that ensures that independent of combinations of settings
@@ -13,6 +14,7 @@ import javax.xml.stream.*;
 public class TestRandomStream
     extends BaseStreamTest
 {
+    @Test
     public void testCoalescingAutoEntity()
         throws Exception
     {
@@ -20,6 +22,7 @@ public class TestRandomStream
         doTest(true, true, true); // ns-aware
     }
 
+    @Test
     public void testNonCoalescingAutoEntity()
         throws Exception
     {
@@ -27,6 +30,7 @@ public class TestRandomStream
         doTest(true, false, true); // ns-aware
     }
 
+    @Test
     public void testCoalescingNonAutoEntity()
         throws Exception
     {
@@ -34,6 +38,7 @@ public class TestRandomStream
         doTest(true, true, false); // ns-aware
     }
 
+    @Test
     public void testNonCoalescingNonAutoEntity()
         throws Exception
     {

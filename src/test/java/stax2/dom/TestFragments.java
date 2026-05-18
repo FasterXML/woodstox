@@ -8,10 +8,12 @@ import javax.xml.transform.dom.DOMSource;
 import org.w3c.dom.DocumentFragment;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 public class TestFragments extends BaseStax2Test
 {
     // [WSTX-257]
+    @Test
     public void testFragmentIssue257() throws Exception
     {
         DocumentFragment fragment = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument().createDocumentFragment();

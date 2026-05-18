@@ -6,6 +6,7 @@ import java.util.*;
 import javax.xml.stream.*;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test(s) that verify correct functioning of
@@ -20,21 +21,25 @@ import stax2.BaseStax2Test;
 public class TestGetElement
     extends BaseStax2Test
 {
+    @Test
     public void testLargeDocCoalesce() throws XMLStreamException
     {
         _testLargeDoc(true);
     }
 
+    @Test
     public void testLargeDocNonCoalesce() throws XMLStreamException
     {
         _testLargeDoc(false);
     }
 
+    @Test
     public void testLongSegmentCoalesce() throws XMLStreamException
     {
         _testLongSegment(true);
     }
 
+    @Test
     public void testLongSegmentNonCoalesce() throws XMLStreamException
     {
         _testLongSegment(false);
@@ -122,6 +127,7 @@ public class TestGetElement
         assertTokenType(END_DOCUMENT, sr.next());
     }
 
+    @Test
     public void testGetMixedContentElementText() throws Exception
     {
         final String XML = "<root>foo<![CDATA[bar]]></root>";

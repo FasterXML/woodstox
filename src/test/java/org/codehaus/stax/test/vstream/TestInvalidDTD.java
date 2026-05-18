@@ -1,6 +1,7 @@
 package org.codehaus.stax.test.vstream;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Simple unit test suite that checks for set of well-formedness problems
@@ -11,6 +12,7 @@ import javax.xml.stream.*;
 public class TestInvalidDTD
     extends BaseVStreamTest
 {
+    @Test
     public void testInvalidDirectives()
         throws XMLStreamException
     {
@@ -26,6 +28,7 @@ public class TestInvalidDTD
         streamThroughFailing(getValidatingReader(XML), "invalid directive '<!ATRLIST ...>'");
     }
 
+    @Test
     public void testInvalidGE()
         throws XMLStreamException
     {
@@ -37,6 +40,7 @@ public class TestInvalidDTD
                              "missing space between general entity name and value");
     }
 
+    @Test
     public void testInvalidPE()
         throws XMLStreamException
     {
@@ -68,6 +72,7 @@ public class TestInvalidDTD
         streamThroughFailing(getValidatingReader(XML), "PEs can not be unparsed external (ie. have NDATA reference)");
     }
 
+    @Test
     public void testInvalidComment()
         throws XMLStreamException
     {
@@ -78,6 +83,7 @@ public class TestInvalidDTD
         streamThroughFailing(getValidatingReader(XML), "invalid directive '<!ELEM ...>'");
     }
 
+    @Test
     public void testInvalidPI()
         throws XMLStreamException
     {
@@ -91,6 +97,7 @@ public class TestInvalidDTD
     /**
      * CDATA directive not allowed in DTD subsets.
      */
+    @Test
     public void testInvalidCData()
         throws XMLStreamException
     {

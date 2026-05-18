@@ -16,6 +16,7 @@ import com.ctc.wstx.sax.WstxSAXParserFactory;
 import com.ctc.wstx.stax.WstxInputFactory;
 
 import wstxtest.BaseWstxTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Simple unit tests to verify that most fundamental parsing functionality
@@ -24,6 +25,7 @@ import wstxtest.BaseWstxTest;
 public class TestEntityResolver
     extends BaseWstxTest
 {
+    @Test
     public void testWithDummyExtSubset()
         throws Exception
     {
@@ -73,6 +75,7 @@ public class TestEntityResolver
      * underlying {@link WstxInputFactory} should be used by the SAX parser
      * when no SAX EntityResolver is explicitly set on the parser itself.
      */
+    @Test
     public void testFactoryXMLResolverIsInherited()
         throws Exception
     {
@@ -110,6 +113,7 @@ public class TestEntityResolver
      * underlying {@link WstxInputFactory}, the SAX parser should honor that
      * setting and not attempt to resolve the external DTD subset.
      */
+    @Test
     public void testFactorySupportDtdIsInherited()
         throws Exception
     {
@@ -137,6 +141,7 @@ public class TestEntityResolver
      * registered on the parser, it should win over the {@link XMLResolver}
      * configured on the factory (the factory resolver is only a fallback).
      */
+    @Test
     public void testSAXEntityResolverWinsOverFactoryResolver()
         throws Exception
     {

@@ -10,6 +10,8 @@ import javax.xml.transform.dom.DOMResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests that namespaces are written to the output stream in namespace
@@ -24,14 +26,15 @@ public class TestNamespaceCopying
     XMLOutputFactory _outputFactory;
     XMLEventFactory _eventFactory;
 
-  @Override
-  protected void setUp() throws Exception {
+  @BeforeEach
+  public void setUp() {
       _outputFactory = getOutputFactory();
       setRepairing(_outputFactory, true);
       _eventFactory = getEventFactory();
       _inputFactory = getInputFactory();
   }
 
+  @Test
   public void testStreamXMLNSDeclaration() throws Exception {
     final StringWriter stringWriter = new StringWriter();
     XMLEventWriter xmlWriter = _outputFactory.createXMLEventWriter(stringWriter);

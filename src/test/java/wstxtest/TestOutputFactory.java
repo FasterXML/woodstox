@@ -8,6 +8,7 @@ import com.ctc.wstx.api.WriterConfig;
 import com.ctc.wstx.api.WstxInputProperties;
 import com.ctc.wstx.api.WstxOutputProperties;
 import com.ctc.wstx.stax.WstxOutputFactory;
+import org.junit.jupiter.api.Test;
 
 /**
  * Simple test-driver that tries to exercise some of basic output factory
@@ -17,6 +18,7 @@ import com.ctc.wstx.stax.WstxOutputFactory;
 public class TestOutputFactory
     extends BaseWstxTest
 {
+    @Test
     public void testConfig()
         throws XMLStreamException
     {
@@ -65,6 +67,7 @@ public class TestOutputFactory
         assertEquals(Boolean.TRUE, f.getProperty(WstxOutputProperties.P_OUTPUT_VALIDATE_ATTR));
     }
 
+    @Test
     public void testMisc()
         throws XMLStreamException
     {

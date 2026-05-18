@@ -4,6 +4,7 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.*;
 
 import org.codehaus.stax2.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests additional StAX2 namespace information
@@ -12,6 +13,7 @@ import org.codehaus.stax2.*;
 public class TestNamespaces
     extends stax2.BaseStax2Test
 {
+    @Test
     public void testNonTransientNsCtxt()
         throws XMLStreamException
     {

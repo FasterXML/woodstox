@@ -23,11 +23,13 @@ import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 import com.ctc.wstx.stax.WstxOutputFactory;
 import com.ctc.wstx.sw.RepairingNsStreamWriter;
 import com.ctc.wstx.sw.SimpleNsStreamWriter;
+import org.junit.jupiter.api.Test;
 
 public class TestDTDErrorCollection104Test
     extends BaseStax2Test
 {
     // [woodstox-core#103]
+    @Test
     public void testValidationBeyondUnknownElement() throws Exception
     {
         final String DOC =

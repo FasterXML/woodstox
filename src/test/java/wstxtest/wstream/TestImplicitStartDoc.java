@@ -3,6 +3,7 @@ package wstxtest.wstream;
 import java.io.StringWriter;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * This test suite verifies that it is ok to omit writing of
@@ -15,6 +16,7 @@ import javax.xml.stream.*;
 public class TestImplicitStartDoc
     extends BaseWriterTest
 {
+    @Test
     public void testWriteImplicitStartDoc()
         throws XMLStreamException
     {

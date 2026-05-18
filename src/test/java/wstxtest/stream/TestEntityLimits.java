@@ -5,6 +5,7 @@ import java.io.StringReader;
 import javax.xml.stream.*;
 
 import com.ctc.wstx.api.WstxInputProperties;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests that verify that it is possible to limit aspects of general parsed
@@ -16,6 +17,7 @@ import com.ctc.wstx.api.WstxInputProperties;
 public class TestEntityLimits
     extends BaseStreamTest
 {
+    @Test
     public void testMaxEntityNesting() throws XMLStreamException
     {
         String XML = "<!DOCTYPE root [\n"
@@ -57,6 +59,7 @@ public class TestEntityLimits
         sr.close();
     }
 
+    @Test
     public void testMaxEntityExpansionCount() throws XMLStreamException
     {
         String XML = "<!DOCTYPE root [\n"

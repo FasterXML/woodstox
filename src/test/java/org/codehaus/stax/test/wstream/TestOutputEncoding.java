@@ -3,6 +3,7 @@ package org.codehaus.stax.test.wstream;
 import javax.xml.stream.*;
 
 import java.io.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Set of unit tests for verifying operation of {@link XMLStreamWriter}
@@ -17,6 +18,7 @@ public class TestOutputEncoding
     final String ISO_LATIN_ENCODING = "ISO-8859-1";
     final String UTF8_ENCODING = "UTF-8";
 
+    @Test
     public void testSimpleContentQuoting()
         throws IOException, XMLStreamException
     {
@@ -33,6 +35,7 @@ public class TestOutputEncoding
         _testSimpleQuoting(UTF8_ENCODING, TEXT);
     }
 
+    @Test
     public void testSimpleAttrQuoting()
         throws IOException, XMLStreamException
     {
@@ -51,6 +54,7 @@ public class TestOutputEncoding
         doTestSimpleAttr(UTF8_ENCODING, TEXT);
     }
 
+    @Test
     public void testXml11CharQuoting()
         throws IOException, XMLStreamException
     {

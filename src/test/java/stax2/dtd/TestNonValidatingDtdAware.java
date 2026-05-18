@@ -5,10 +5,12 @@ import javax.xml.stream.XMLStreamException;
 import org.codehaus.stax2.*;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 public class TestNonValidatingDtdAware
     extends BaseStax2Test
 {
+    @Test
     public void testSpaceNs()
         throws XMLStreamException
     {
@@ -16,6 +18,7 @@ public class TestNonValidatingDtdAware
         doTestWS(true, true);
     }
 
+    @Test
     public void testSpaceNonNs()
         throws XMLStreamException
     {
@@ -23,6 +26,7 @@ public class TestNonValidatingDtdAware
         doTestWS(false, true);
     }
 
+    @Test
     public void testFalseSpace()
         throws XMLStreamException
     {

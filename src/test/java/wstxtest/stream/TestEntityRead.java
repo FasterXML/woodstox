@@ -9,6 +9,7 @@ import com.ctc.wstx.api.WstxInputProperties;
 import com.ctc.wstx.ent.EntityDecl;
 import com.ctc.wstx.exc.WstxLazyException;
 import com.ctc.wstx.sr.BasicStreamReader;
+import org.junit.jupiter.api.Test;
 
 /**
  * This unit test suite checks to see that Woodstox implementation dependant
@@ -24,6 +25,7 @@ public class TestEntityRead
      * This unit test checks that the information received as part of the
      * event, in non-expanding mode, is as expected.
      */
+    @Test
     public void testDeclaredInNonExpandingMode()
         throws XMLStreamException
     {
@@ -75,6 +77,7 @@ public class TestEntityRead
      * This unit test checks that in non-expanding mode it is acceptable
      * to refer to undeclared entities.
      */
+    @Test
     public void testUndeclaredInNonExpandingMode()
         throws Exception
     {
@@ -119,6 +122,7 @@ public class TestEntityRead
      * This unit test verifies that it's possible to add a Map of
      * expansions from Entity names to 
      */
+	@Test
 	public void testUndeclaredUsingCustomMap()
         throws XMLStreamException
     {
@@ -165,6 +169,7 @@ public class TestEntityRead
      * entities in resolving mode too, as long as a special resolver
      * is used.
      */
+    @Test
     public void testUndeclaredButResolved()
         throws Exception
     {

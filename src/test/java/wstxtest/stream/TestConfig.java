@@ -5,6 +5,7 @@ import javax.xml.stream.*;
 import org.codehaus.stax2.XMLStreamProperties;
 
 import com.ctc.wstx.api.WstxInputProperties;
+import org.junit.jupiter.api.Test;
 
 /**
  * Set of unit tests that check how Woodstox handles white space in
@@ -20,6 +21,7 @@ public class TestConfig
      */
     final static String WSTX_VERSION = "5.0";
 
+    @Test
     public void testSettingResolvers()
         throws XMLStreamException
     {
@@ -57,6 +59,7 @@ public class TestConfig
      * Unit test that ensures that DTD resolver gets properly called
      * when configured
      */
+    @Test
     public void testUsingDTDResolver()
         throws XMLStreamException
     {
@@ -67,12 +70,14 @@ public class TestConfig
      * Unit test that ensures that entity resolver gets properly called
      * when configured
      */
+    @Test
     public void testUsingEntityResolver()
         throws XMLStreamException
     {
         // !!! TBI
     }
 
+    @Test
     public void testReaderProperties()
         throws XMLStreamException
     {
@@ -83,6 +88,7 @@ public class TestConfig
                      ifact.getProperty(XMLStreamProperties.XSP_SUPPORTS_XML11));
     }
 
+    @Test
     public void testWriterProperties()
         throws XMLStreamException
     {

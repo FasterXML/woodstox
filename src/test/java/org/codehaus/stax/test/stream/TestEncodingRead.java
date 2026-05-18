@@ -3,6 +3,7 @@ package org.codehaus.stax.test.stream;
 import java.io.*;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests handling of text encoding, as specified
@@ -34,6 +35,7 @@ public class TestEncodingRead
      * Test to check that UTF-8 stream with no leading BOM is succesfully
      * handled by parser.
      */
+    @Test
     public void testUTF8()
         throws Exception
     {
@@ -45,6 +47,7 @@ public class TestEncodingRead
      * Test to check that UTF-8 stream with leading BOM is succesfully
      * handled by parser.
      */
+    @Test
     public void testUTF8WithBOM()
         throws Exception
     {
@@ -52,6 +55,7 @@ public class TestEncodingRead
         doTestEncoding("UTF-8", null, UTF8_BOM);
     }
 
+    @Test
     public void testUTF8Surrogates()
         throws XMLStreamException, IOException
     {
@@ -80,6 +84,7 @@ public class TestEncodingRead
         assertTokenType(END_ELEMENT, sr.next());
     }
 
+    @Test
     public void testUTF16BEWithBOM()
         throws XMLStreamException,
                UnsupportedEncodingException
@@ -90,6 +95,7 @@ public class TestEncodingRead
         doTestEncoding2(true);
     }
 
+    @Test
     public void testUTF16LEWithBOM()
         throws XMLStreamException,
                UnsupportedEncodingException

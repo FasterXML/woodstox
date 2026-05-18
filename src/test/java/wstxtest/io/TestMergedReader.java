@@ -2,18 +2,19 @@ package wstxtest.io;
 
 import java.io.*;
 
-import junit.framework.TestCase;
 
 import com.ctc.wstx.io.MergedReader;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link MergedReader}, specifically verifying
  * that skip() returns the correct number of characters skipped.
  */
-public class TestMergedReader extends TestCase
+public class TestMergedReader extends wstxtest.BaseJUnit4Test
 {
     // Regression test: skip() returned 'amount' (total available) instead
     // of 'n' (requested) when skip fits entirely in the buffered segment
+    @Test
     public void testSkipReturnValue() throws IOException
     {
         char[] buf = "ABCDEFGHIJ".toCharArray();
@@ -30,6 +31,7 @@ public class TestMergedReader extends TestCase
         reader.close();
     }
 
+    @Test
     public void testSkipExactlyAvailable() throws IOException
     {
         char[] buf = "ABCDE".toCharArray();
@@ -46,6 +48,7 @@ public class TestMergedReader extends TestCase
         reader.close();
     }
 
+    @Test
     public void testSkipBeyondBuffer() throws IOException
     {
         char[] buf = "AB".toCharArray();

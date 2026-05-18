@@ -18,10 +18,12 @@ import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 
 import com.ctc.wstx.sw.RepairingNsStreamWriter;
 import com.ctc.wstx.sw.SimpleNsStreamWriter;
+import org.junit.jupiter.api.Test;
 
 public class TestInvalidAttributeValue 
     extends BaseStax2Test
 {
+    @Test
     public void testInvalidAttributeValue() throws Exception
     {
         final String DOC = "<root note=\"note\" verbose=\"yes\"/>";

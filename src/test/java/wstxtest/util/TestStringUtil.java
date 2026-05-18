@@ -3,6 +3,7 @@ package wstxtest.util;
 import java.util.*;
 
 import com.ctc.wstx.util.StringUtil;
+import org.junit.jupiter.api.Test;
 
 /**
  * Simple unit tests for testing methods of {@link StringUtil} utility
@@ -11,6 +12,7 @@ import com.ctc.wstx.util.StringUtil;
 public class TestStringUtil
     extends wstxtest.BaseWstxTest
 {
+    @Test
     public void testConcatEntries()
     {
         List<String> l = new ArrayList<>();
@@ -26,6 +28,7 @@ public class TestStringUtil
                      StringUtil.concatEntries(l, ", ", " and "));
     }
 
+    @Test
     public void testIsAllWhitespace()
     {
         assertTrue(StringUtil.isAllWhitespace("  \r   \r\n    \t"));
@@ -41,6 +44,7 @@ public class TestStringUtil
         assertFalse(StringUtil.isAllWhitespace("                      !"));
     }
 
+    @Test
     public void testNormalizeSpaces()
     {
         String str = " my   my";
@@ -71,6 +75,7 @@ public class TestStringUtil
         }
     }
 
+    @Test
     public void testEqualEncodings()
     {
         assertTrue(StringUtil.equalEncodings("utf-8", "utf-8"));
@@ -85,6 +90,7 @@ public class TestStringUtil
         assertFalse(StringUtil.equalEncodings("utf8", "utf"));
     }
 
+    @Test
     public void testMatches()
     {
         String STR = "fooBar!";

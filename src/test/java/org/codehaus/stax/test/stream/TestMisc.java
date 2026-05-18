@@ -3,6 +3,7 @@ package org.codehaus.stax.test.stream;
 import java.util.Random;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests miscellaneous stream reader methods, such
@@ -12,6 +13,7 @@ import javax.xml.stream.*;
 public class TestMisc
     extends BaseStreamTest
 {
+    @Test
     public void testRequire()
         throws XMLStreamException
     {
@@ -92,6 +94,7 @@ public class TestMisc
         sr.require(END_DOCUMENT, null, null);
     }
 
+    @Test
     public void testGetElementText()
         throws XMLStreamException
     {
@@ -131,6 +134,7 @@ public class TestMisc
         sr.close();
     }
 
+    @Test
     public void testGetElementTextInvalid()
         throws XMLStreamException
     {
@@ -152,6 +156,7 @@ public class TestMisc
      * Alternative test that tries to verify that handling of long
      * and non-contiguous text segment also works acceptably.
      */
+    @Test
     public void testGetElementTextLong()
         throws XMLStreamException
     {
@@ -225,6 +230,7 @@ public class TestMisc
      * Additional simple test that verifies that element text for
      * an empty element is returned as empty String.
      */
+    @Test
     public void testGetElementTextEmpty()
         throws XMLStreamException
     {
@@ -264,6 +270,7 @@ public class TestMisc
         assertTokenType(END_DOCUMENT, sr.next());
     }
 
+    @Test
     public void testNextTag()
         throws XMLStreamException
     {
@@ -305,6 +312,7 @@ public class TestMisc
         }
     }
 
+    @Test
     public void testNextTagWithCommentsAndPIs()
         throws XMLStreamException
     {
@@ -354,6 +362,7 @@ public class TestMisc
      * input is compliant. Specifically, an exception should be thrown
      * if one tries to access events beyond END_DOCUMENT.
      */
+    @Test
     public void testEndOfStream()
         throws XMLStreamException
     {
@@ -380,6 +389,7 @@ public class TestMisc
     /**
      * Simple test case to verify an edge case with isWhiteSpace().
      */
+    @Test
     public void testIsWhiteSpace()
         throws XMLStreamException
     {

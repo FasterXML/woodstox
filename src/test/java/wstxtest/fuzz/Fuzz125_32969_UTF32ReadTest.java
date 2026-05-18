@@ -10,6 +10,7 @@ import wstxtest.stream.BaseStreamTest;
 
 import com.ctc.wstx.exc.WstxIOException;
 import com.ctc.wstx.stax.WstxInputFactory;
+import org.junit.jupiter.api.Test;
 
 //[woodstox-core#125]: UTF-32 decoding issue
 public class Fuzz125_32969_UTF32ReadTest extends BaseStreamTest
@@ -26,6 +27,7 @@ public class Fuzz125_32969_UTF32ReadTest extends BaseStreamTest
     }
 
     //[woodstox-core#125]: InputStream
+    @Test
     public void testIssue125InputStream() throws Exception
     {
         XMLStreamReader sr = STAX_F.createXMLStreamReader(new ByteArrayInputStream(DOC));
@@ -39,6 +41,7 @@ public class Fuzz125_32969_UTF32ReadTest extends BaseStreamTest
     }
 
     //[woodstox-core#125]: byte[] input
+    @Test
     public void testIssue125Stax2ByteArray() throws Exception
     {
         // Then "native" Byte array

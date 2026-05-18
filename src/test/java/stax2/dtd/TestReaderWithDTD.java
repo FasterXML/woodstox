@@ -6,9 +6,11 @@ import org.codehaus.stax2.XMLInputFactory2;
 import org.codehaus.stax2.XMLStreamReader2;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 public class TestReaderWithDTD extends BaseStax2Test
 {
+    @Test
     public void testGetPrefixedName() throws XMLStreamException
     {
         doTestGetPrefixedName(false);

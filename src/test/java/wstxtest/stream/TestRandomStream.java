@@ -7,6 +7,7 @@ import wstxtest.cfg.*;
 
 import com.ctc.wstx.api.ReaderConfig;
 import com.ctc.wstx.stax.WstxInputFactory;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that ensures that independent of combinations of settings
@@ -28,6 +29,7 @@ public class TestRandomStream
             ;
     }
 
+    @Test
     public void testCoalescingAutoEntity()
         throws Exception
     {
@@ -36,6 +38,7 @@ public class TestRandomStream
         doTest(true, true, true); // ns-aware
     }
 
+    @Test
     public void testCoalescingAutoEntityStreaming()
         throws Exception
     {
@@ -43,6 +46,7 @@ public class TestRandomStream
         doTest(true, true, true); // ns-aware
     }
 
+    @Test
     public void testNonCoalescingAutoEntity()
         throws Exception
     {
@@ -51,6 +55,7 @@ public class TestRandomStream
         doTest(true, false, true); // ns-aware
     }
 
+    @Test
     public void testNonCoalescingAutoEntityStreaming()
         throws Exception
     {
@@ -58,6 +63,7 @@ public class TestRandomStream
         doTest(true, false, true); // ns-aware
     }
 
+    @Test
     public void testCoalescingNonAutoEntity()
         throws Exception
     {
@@ -66,6 +72,7 @@ public class TestRandomStream
         doTest(true, true, false); // ns-aware
     }
 
+    @Test
     public void testCoalescingNonAutoEntityStreaming()
         throws Exception
     {
@@ -73,6 +80,7 @@ public class TestRandomStream
         doTest(true, true, false); // ns-aware
     }
 
+    @Test
     public void testNonCoalescingNonAutoEntity()
         throws Exception
     {
@@ -81,6 +89,7 @@ public class TestRandomStream
         doTest(true, false, false); // ns-aware
     }
 
+    @Test
     public void testNonCoalescingNonAutoEntityStreaming()
         throws Exception
     {

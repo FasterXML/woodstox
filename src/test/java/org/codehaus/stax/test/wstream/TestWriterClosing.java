@@ -3,6 +3,7 @@ package org.codehaus.stax.test.wstream;
 import javax.xml.stream.*;
 
 import java.io.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Simple unit tests for ensuring that the Stax implementation does not
@@ -15,6 +16,7 @@ import java.io.*;
 public class TestWriterClosing
     extends BaseWriterTest
 {
+    @Test
     public void testClosing()
         throws IOException, XMLStreamException
     {

@@ -9,6 +9,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import com.ctc.wstx.api.WstxInputProperties;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("resource")
 public class TestCharacterLimits
@@ -16,6 +17,7 @@ public class TestCharacterLimits
 {
     public TestCharacterLimits() { }
 
+    @Test
     public void testLongGetElementText() throws Exception {
         try {
             Reader reader = createLongReader("", "", false);
@@ -31,6 +33,7 @@ public class TestCharacterLimits
         }
     }
     
+    @Test
     public void testLongElementText() throws Exception {
         try {
             Reader reader = createLongReader("", "", false);
@@ -47,6 +50,7 @@ public class TestCharacterLimits
             _verifyTextLimitException(ex);
         }
     }    
+    @Test
     public void testLongWhitespaceNextTag() throws Exception {
         try {
             Reader reader = createLongReader("", "", true);
@@ -62,6 +66,7 @@ public class TestCharacterLimits
         }
     }
         
+    @Test
     public void testLongWhitespace() throws Exception {
         try {
             Reader reader = createLongReader("", "", true);
@@ -79,6 +84,7 @@ public class TestCharacterLimits
         }
     }
     
+    @Test
     public void testLongCDATA() throws Exception {
         try {
             Reader reader = createLongReader("<![CDATA[", "]]>", true);
@@ -96,6 +102,7 @@ public class TestCharacterLimits
         }
     }
 
+    @Test
     public void testLongCDATANextTag() throws Exception {
         Reader reader = createLongReader("<![CDATA[", "]]>", true);
         XMLInputFactory factory = getNewInputFactory();
@@ -113,6 +120,7 @@ public class TestCharacterLimits
         }
     }
 
+    @Test
     public void testLongComment() throws Exception {
         try {
             Reader reader = createLongReader("<!--", "-->", true);
@@ -129,6 +137,7 @@ public class TestCharacterLimits
         }
     }
 
+    @Test
     public void testLongCommentNextTag() throws Exception {
         try {
             Reader reader = createLongReader("<!--", "-->", true);
@@ -144,6 +153,7 @@ public class TestCharacterLimits
         }
     }
     
+    @Test
     public void testLongCommentCoalescing() throws Exception {
         try {
             Reader reader = createLongReader("<!--", "-->", true);
@@ -160,6 +170,7 @@ public class TestCharacterLimits
         }
     }
 
+    @Test
     public void testLongWhitespaceCoalescing() throws Exception {
         try {
             Reader reader = createLongReader("", "", true);

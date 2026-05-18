@@ -1,6 +1,7 @@
 package org.codehaus.stax.test.stream;
 
 import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test suite that tests handling of XML processing instructions (except
@@ -14,6 +15,7 @@ public class TestProcInstrRead
      * Method that checks properties of PROCESSING_INSTRUCTION
      * returned by the stream reader are correct according to StAX specs.
      */
+    @Test
     public void testProcInstrProperties()
         throws XMLStreamException
     {
@@ -26,6 +28,7 @@ public class TestProcInstrRead
         doTestProperties(false, false);
     }
 
+    @Test
     public void testSpaceHandling()
         throws XMLStreamException
     {
@@ -56,6 +59,7 @@ public class TestProcInstrRead
         }
     }
 
+    @Test
     public void testInvalidProcInstr()
         throws XMLStreamException
     {
@@ -78,6 +82,7 @@ public class TestProcInstrRead
         }
     }
 
+    @Test
     public void testUnfinishedPI()
         throws XMLStreamException
     {
@@ -97,6 +102,7 @@ public class TestProcInstrRead
      * input source that referenced the entity.
      * Such markup is illegal according to XML specs.
      */
+    @Test
     public void testRunawayProcInstr()
         throws XMLStreamException
     {
@@ -129,6 +135,7 @@ public class TestProcInstrRead
     /**
      * Unit test based on a bug found in the Stax reference implementation.
      */
+    @Test
     public void testLongerProcInstr()
         throws XMLStreamException
     {

@@ -11,6 +11,7 @@ import org.codehaus.stax2.*;
 import org.codehaus.stax2.typed.*;
 
 import stax2.BaseStax2Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Base class that contains set of simple unit tests to verify implementation
@@ -34,6 +35,7 @@ public abstract class ReaderTestBase
     ////////////////////////////////////////
      */
 
+    @Test
     public void testSimpleBooleanElem()
         throws Exception
     {
@@ -54,6 +56,7 @@ public abstract class ReaderTestBase
         checkBooleanElemException("<root>01</root>");
     }
 
+    @Test
     public void testSimpleBooleanAttr()
         throws Exception
     {
@@ -66,6 +69,7 @@ public abstract class ReaderTestBase
         checkBooleanAttrException("<root attr='01' />");
     }
 
+    @Test
     public void testMultipleBooleanAttr()
         throws Exception
     {
@@ -84,6 +88,7 @@ public abstract class ReaderTestBase
         sr.close();
     }
 
+    @Test
     public void testSimpleIntElem()
         throws Exception
     {
@@ -124,6 +129,7 @@ public abstract class ReaderTestBase
         checkIntElemException("<root> -</root>");
     }
 
+    @Test
     public void testSimpleIntAttr()
         throws Exception
     {
@@ -145,6 +151,7 @@ public abstract class ReaderTestBase
         checkIntAttrException("<root attr='  + ' />");
     }
 
+    @Test
     public void testMultipleIntAttr()
         throws Exception
     {
@@ -163,6 +170,7 @@ public abstract class ReaderTestBase
         sr.close();
     }
 
+    @Test
     public void testSimpleLongElem()
         throws Exception
     {
@@ -200,6 +208,7 @@ public abstract class ReaderTestBase
         checkLongElemException("<root> -</root>");
     }
 
+    @Test
     public void testSimpleLongAttr()
         throws Exception
     {
@@ -221,6 +230,7 @@ public abstract class ReaderTestBase
         checkLongAttrException("<root attr='  + ' />");
     }
 
+    @Test
     public void testMultipleLongAttr()
         throws Exception
     {
@@ -245,6 +255,7 @@ public abstract class ReaderTestBase
     ////////////////////////////////////////
      */
 
+    @Test
     public void testSimpleFloatElem()
         throws Exception
     {
@@ -270,6 +281,7 @@ public abstract class ReaderTestBase
         checkFloatElemException("<root>1e</root>");
     }
 
+    @Test
     public void testSimpleFloatAttr()
         throws Exception
     {
@@ -292,6 +304,7 @@ public abstract class ReaderTestBase
         checkFloatAttrException("<root attr='  + ' />");
     }
 
+    @Test
     public void testMultipleFloatAttr()
         throws Exception
     {
@@ -310,6 +323,7 @@ public abstract class ReaderTestBase
         sr.close();
     }
 
+    @Test
     public void testSimpleDoubleElem()
         throws Exception
     {
@@ -335,6 +349,7 @@ public abstract class ReaderTestBase
         checkDoubleElemException("<root>1e</root>");
     }
 
+    @Test
     public void testSimpleDoubleAttr()
         throws Exception
     {
@@ -357,6 +372,7 @@ public abstract class ReaderTestBase
         checkDoubleAttrException("<root attr='  + ' />");
     }
 
+    @Test
     public void testMultipleDoubleAttr()
         throws Exception
     {
@@ -385,6 +401,7 @@ public abstract class ReaderTestBase
      * With unlimited length BigInteger, it's easier to just generate
      * very big (long) numbers, and test variability that way.
      */
+    @Test
     public void testBigInteger()
         throws Exception
     {
@@ -463,6 +480,7 @@ public abstract class ReaderTestBase
      * As with BigInteger, we better use number generation with
      * BigDecimal.
      */
+    @Test
     public void testBigDecimal()
         throws Exception
     {
@@ -541,6 +559,7 @@ public abstract class ReaderTestBase
     ////////////////////////////////////////
      */
 
+    @Test
     public void testValidQNameElem()
         throws Exception
     {
@@ -555,6 +574,7 @@ public abstract class ReaderTestBase
         sr.close();
     }
 
+    @Test
     public void testInvalidQNameElemUnbound()
         throws Exception
     {
@@ -567,6 +587,7 @@ public abstract class ReaderTestBase
         sr.close();
     }
 
+    @Test
     public void testInvalidQNameElemBadChars()
         throws Exception
     {
@@ -578,6 +599,7 @@ public abstract class ReaderTestBase
         sr.close();
     }
 
+    @Test
     public void testValidQNameAttr()
         throws Exception
     {
@@ -592,6 +614,7 @@ public abstract class ReaderTestBase
         sr.close();
     }
 
+    @Test
     public void testInvalidQNameAttrUnbound()
         throws Exception
     {
@@ -604,6 +627,7 @@ public abstract class ReaderTestBase
         sr.close();
     }
 
+    @Test
     public void testInvalidQNameAttrBadChars()
         throws Exception
     {

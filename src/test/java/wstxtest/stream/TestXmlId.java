@@ -5,6 +5,7 @@ import javax.xml.stream.*;
 import org.codehaus.stax2.XMLInputFactory2;
 import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.validation.XMLValidationException;
+import org.junit.jupiter.api.Test;
 
 /**
  * Set of unit tests that check that Woodstox support for Xml:id works
@@ -28,6 +29,7 @@ public class TestXmlId
         +"]><root />"
         ;
 
+    @Test
     public void testXmlIdEnabledNs()
         throws XMLStreamException
     {
@@ -35,6 +37,7 @@ public class TestXmlId
         doTestXmlId(true, true, true);  // xmlid enabled, coal
     }
 
+    @Test
     public void testXmlIdDisabledNs()
         throws XMLStreamException
     {
@@ -42,6 +45,7 @@ public class TestXmlId
         doTestXmlId(false, true, true); // xmlid disabled, coal
     }
 
+    @Test
     public void testXmlIdEnabledNonNs()
         throws XMLStreamException
     {
@@ -49,6 +53,7 @@ public class TestXmlId
         doTestXmlId(true, false, true);  // xmlid enabled, coal
     }
 
+    @Test
     public void testXmlIdDisabledNonNs()
         throws XMLStreamException
     {
@@ -60,6 +65,7 @@ public class TestXmlId
      * This unit test verifies that incorrect DTD attribute type for
      * xml:id causes a validation exception
      */ 
+    @Test
     public void testInvalidXmlIdNs()
         throws XMLStreamException
     {
@@ -67,6 +73,7 @@ public class TestXmlId
         doTestInvalid(true, true);
     }
 
+    @Test
     public void testInvalidXmlIdNonNs()
         throws XMLStreamException
     {
@@ -74,6 +81,7 @@ public class TestXmlId
         doTestInvalid(false, true);
     }
 
+    @Test
     public void testInvalidXmlIdDisabledNs()
         throws XMLStreamException
     {
@@ -81,6 +89,7 @@ public class TestXmlId
         doTestInvalidDisabled(true, true);
     }
 
+    @Test
     public void testInvalidXmlIdDisabledNonNs()
         throws XMLStreamException
     {
