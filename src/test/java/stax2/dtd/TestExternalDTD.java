@@ -230,7 +230,9 @@ public class TestExternalDTD
             }
             fail("Expected external DTD access to be denied");
         } catch (XMLStreamException e) {
-            assertTrue(e.getMessage().contains(XMLConstants.ACCESS_EXTERNAL_DTD));
+            verifyException(e, DTD1);
+            verifyException(e, "not allowed");
+            verifyException(e, XMLConstants.ACCESS_EXTERNAL_DTD);
         }
     }
 
@@ -240,6 +242,63 @@ public class TestExternalDTD
     {
         XMLInputFactory2 f = getFactory();
         f.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, " \nfile\t ");
+
+        String sysId = constructSystemId(resolveFile(EXTERNAL_FILENAME1));
+        XMLStreamReader sr = f.createXMLStreamReader(sysId, utf8StreamFromString(EXTERNAL_XML1));
+        assertTokenType(DTD, sr.next());
+        assertTokenType(START_ELEMENT, sr.next());
+        assertTokenType(CHARACTERS, sr.next());
+        assertEquals(SIMPLE_EXT_ENTITY_TEXT, getAndVerifyText(sr));
+        assertTokenType(END_ELEMENT, sr.next());
+    }
+
+    // Allow-list contains a different protocol than the URL Woodstox is
+    // about to fetch — access should be denied.
+    @Test
+    public void testAccessExternalDtdDeniesProtocolMismatch()
+        throws IOException, XMLStreamException
+    {
+        XMLInputFactory2 f = getFactory();
+        f.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "http");
+
+        String sysId = constructSystemId(resolveFile(EXTERNAL_FILENAME1));
+        XMLStreamReader sr = f.createXMLStreamReader(sysId, utf8StreamFromString(EXTERNAL_XML1));
+        try {
+            while (sr.hasNext()) {
+                sr.next();
+            }
+            fail("Expected external DTD access to be denied for protocol-mismatch allow-list");
+        } catch (XMLStreamException e) {
+            verifyException(e, DTD1);
+            verifyException(e, "not allowed");
+            verifyException(e, XMLConstants.ACCESS_EXTERNAL_DTD);
+        }
+    }
+
+    // Allow-list tokens are case-insensitive vs. URL protocols.
+    @Test
+    public void testAccessExternalDtdIsCaseInsensitive()
+        throws IOException, XMLStreamException
+    {
+        XMLInputFactory2 f = getFactory();
+        f.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "FILE");
+
+        String sysId = constructSystemId(resolveFile(EXTERNAL_FILENAME1));
+        XMLStreamReader sr = f.createXMLStreamReader(sysId, utf8StreamFromString(EXTERNAL_XML1));
+        assertTokenType(DTD, sr.next());
+        assertTokenType(START_ELEMENT, sr.next());
+        assertTokenType(CHARACTERS, sr.next());
+        assertEquals(SIMPLE_EXT_ENTITY_TEXT, getAndVerifyText(sr));
+        assertTokenType(END_ELEMENT, sr.next());
+    }
+
+    // The "all" token short-circuits regardless of other entries in the list.
+    @Test
+    public void testAccessExternalDtdAllTokenShortCircuits()
+        throws IOException, XMLStreamException
+    {
+        XMLInputFactory2 f = getFactory();
+        f.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "bogus, all");
 
         String sysId = constructSystemId(resolveFile(EXTERNAL_FILENAME1));
         XMLStreamReader sr = f.createXMLStreamReader(sysId, utf8StreamFromString(EXTERNAL_XML1));

@@ -77,4 +77,18 @@ public class TestFactoryProperties
         f.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, " file , http,\njar:file\t");
         assertEquals(" file , http,\njar:file\t", f.getProperty(XMLConstants.ACCESS_EXTERNAL_DTD));
     }
+
+    @Test
+    public void testAccessExternalDTDRejectsNonStringValue()
+    {
+        XMLInputFactory f = getNewInputFactory();
+        try {
+            f.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, Boolean.TRUE);
+            fail("Expected IllegalArgumentException for non-String value of " + XMLConstants.ACCESS_EXTERNAL_DTD);
+        } catch (IllegalArgumentException e) {
+            verifyException(e, Boolean.class.getName());
+            verifyException(e, XMLConstants.ACCESS_EXTERNAL_DTD);
+            verifyException(e, "String");
+        }
+    }
 }
