@@ -26,6 +26,9 @@ Project: woodstox
   is inconsistent with the implementation; document that Woodstox
   returns the start-of-event location
  (reported by @klease)
+#162: Add support for `XMLConstants.ACCESS_EXTERNAL_DTD`
+ (reported by @saurav1910)
+ (fix contributed by @GaoSSR)
 #179: `WstxValidationException`: Unknown reason (at end element </nl:nillableIntElement>)
   when validating a document with nillable elements
  (reported by Peter P)
