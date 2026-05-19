@@ -21,7 +21,7 @@ But in general usage follows standard Stax or SAX API usage.
 | Artifact | [![Maven Central](https://img.shields.io/maven-central/v/com.fasterxml.woodstox/woodstox-core.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/com.fasterxml.woodstox/woodstox-core) |
 | OSS Sponsorship | [![Tidelift](https://tidelift.com/badges/package/maven/com.fasterxml.woodstox:woodstox-core)](https://tidelift.com/subscription/pkg/maven-com-fasterxml-woodstox-woodstox-core?utm_source=maven-com-fasterxml-woodstox-woodstox-core&utm_medium=referral&utm_campaign=readme) |
 | Javadocs | [![Javadoc](https://javadoc.io/badge/com.fasterxml.woodstox/woodstox-core.svg)](http://www.javadoc.io/doc/com.fasterxml.woodstox/woodstox-core)
-| Code coverage (7.x) | [![codecov.io](https://codecov.io/github/FasterXML/woodstox/coverage.svg?branch=master)](https://codecov.io/github/FasterXML/woodstox?branch=master) |
+| Code coverage (7.x) | [![codecov.io](https://codecov.io/github/FasterXML/woodstox/coverage.svg?branch=main)](https://codecov.io/github/FasterXML/woodstox?branch=main) |
 | OpenSSF Score | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/FasterXML/woodstox/badge)](https://securityscorecards.dev/viewer/?uri=github.com/FasterXML/woodstox) |
 
 # Get it!
@@ -33,7 +33,7 @@ Coordinates for this are:
 
 * Group id: `com.fasterxml.woodstox`
 * Artifact id: `woodstox-core`
-* Latest published version: 7.1.1 (2025-05-29)
+* Latest published version: 7.2.0 (2026-05-19)
 
 Note that Maven id has changed since Woodstox 4.x but API is still compatible (despite nominal major version upgrade -- major version upgrades in this case were only due to package coordinate changes)
 
