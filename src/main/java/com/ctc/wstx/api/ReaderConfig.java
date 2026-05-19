@@ -84,8 +84,12 @@ public final class ReaderConfig
     final static int PROP_SUPPORT_XMLID = 26; // shared with WriterConfig
     final static int PROP_DTD_OVERRIDE = 27;
 
-    // And then JAXB feature(s) (since 5.3)
+    // // And then JAXP feature(s)
+
+    // @since 5.3
     final static int PROP_JAXP_SECURE_PROCESSING = 30;
+
+    // @since 7.2
     final static int PROP_JAXP_ACCESS_EXTERNAL_DTD = 31;
 
     // // // Constants for additional Wstx properties:

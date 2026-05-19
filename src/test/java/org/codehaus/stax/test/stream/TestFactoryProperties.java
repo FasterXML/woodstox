@@ -64,6 +64,7 @@ public class TestFactoryProperties
                 f.getProperty(XMLConstants.FEATURE_SECURE_PROCESSING));
     }
 
+    @Test
     public void testAccessExternalDTD()
     {
         assertTrue(DEFAULT_FACTORY.isPropertySupported(XMLConstants.ACCESS_EXTERNAL_DTD));

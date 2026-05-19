@@ -215,6 +215,7 @@ public class TestExternalDTD
         }
     }
 
+    @Test
     public void testAccessExternalDtdDeniesFileProtocol()
         throws IOException, XMLStreamException
     {
@@ -233,6 +234,7 @@ public class TestExternalDTD
         }
     }
 
+    @Test
     public void testAccessExternalDtdAllowsFileProtocol()
         throws IOException, XMLStreamException
     {
