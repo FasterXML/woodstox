@@ -135,7 +135,7 @@ public class TokenContentSpec
                 if (mCount > 0) {
                     return null;
                 }
-                return "Expected "+(mArity == '+' ? "at least one" : "")
+                return "Expected"+(mArity == '+' ? " at least one" : "")
                     +" element <"+mElemName+">";
             }
             // should never happen:

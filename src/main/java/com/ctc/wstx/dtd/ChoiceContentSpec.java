@@ -215,10 +215,10 @@ public class ChoiceContentSpec
             if (++mCount > 1 && (mArity == '?' || mArity == ' ')) {
                 if (mNames.hasMultiple()) {
                     return "Expected $END (already had one of ["
-                        +mNames.toString(" | ")+"]";
+                        +mNames.toString(" | ")+"])";
                 }
                 return "Expected $END (already had one <"
-                    +mNames.toString("")+">]";
+                    +mNames.toString("")+">)";
             }
             return null;
         }
@@ -235,7 +235,7 @@ public class ChoiceContentSpec
                 if (mCount > 0) {
                     return null;
                 }
-                return "Expected "+(mArity == '+' ? "at least" : "")
+                return "Expected"+(mArity == '+' ? " at least" : "")
                     +" one of elements ("+mNames+")";
             }
             // should never happen:
