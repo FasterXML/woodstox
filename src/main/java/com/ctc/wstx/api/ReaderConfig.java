@@ -467,6 +467,26 @@ public final class ReaderConfig
      */
     protected String mAccessExternalDTD = "all";
 
+    /**
+     * Precomputed flag for {@link #mAccessExternalDTD}: {@code true} when the
+     * allow-list resolves to "allow everything" (i.e. contains the
+     * {@code all} token). Kept in sync with {@link #mAccessExternalDTD}
+     * by {@link #setAccessExternalDTD}.
+     *
+     * @since 7.2
+     */
+    protected boolean mAccessAllowAll = true;
+
+    /**
+     * Precomputed lowercased protocol allow-list derived from
+     * {@link #mAccessExternalDTD}. Only consulted when
+     * {@link #mAccessAllowAll} is {@code false}; empty set means
+     * "deny everything".
+     *
+     * @since 7.2
+     */
+    protected Set<String> mAccessAllowedProtocols = Collections.emptySet();
+
     /*
     ///////////////////////////////////////////////////////////////////////
     // Common configuration objects
@@ -603,6 +623,8 @@ public final class ReaderConfig
         rc.mDtdResolver = mDtdResolver;
         rc.mEntityResolver = mEntityResolver;
         rc.mAccessExternalDTD = mAccessExternalDTD;
+        rc.mAccessAllowAll = mAccessAllowAll;
+        rc.mAccessAllowedProtocols = mAccessAllowedProtocols;
         rc.mBaseURL = mBaseURL;
         rc.mParsingMode = mParsingMode;
         rc.mMaxAttributesPerElement = mMaxAttributesPerElement;
@@ -956,6 +978,7 @@ public final class ReaderConfig
 
     public void setAccessExternalDTD(String value) {
         mAccessExternalDTD = (value == null) ? "" : value;
+        parseAccessExternalDTD(mAccessExternalDTD);
     }
 
     public void checkExternalDtdAccess(URL url) throws XMLStreamException {
@@ -967,37 +990,53 @@ public final class ReaderConfig
     }
 
     public boolean isExternalDtdAccessAllowed(URL url) {
-        if (url == null) {
+        if (url == null || mAccessAllowAll) {
             return true;
         }
-        String allowed = removeAccessExternalWhitespace(mAccessExternalDTD);
-        if (allowed.length() == 0) {
+        if (mAccessAllowedProtocols.isEmpty()) {
             return false;
         }
-        if ("all".equalsIgnoreCase(allowed)) {
+        String urlProtocol = url.getProtocol();
+        if (urlProtocol != null
+                && mAccessAllowedProtocols.contains(urlProtocol.toLowerCase(Locale.ROOT))) {
             return true;
         }
-
-        String protocol = externalDtdProtocol(url);
-        String urlProtocol = url.getProtocol();
-        StringTokenizer tokens = new StringTokenizer(allowed, ",");
-        while (tokens.hasMoreTokens()) {
-            String token = tokens.nextToken();
-            if ("all".equalsIgnoreCase(token)
-                    || token.equalsIgnoreCase(protocol)
-                    || token.equalsIgnoreCase(urlProtocol)) {
-                return true;
-            }
+        // For jar URLs, also accept allow-list tokens like "jar:file"
+        if ("jar".equalsIgnoreCase(urlProtocol)) {
+            String nestedToken = externalDtdProtocol(url);
+            return !nestedToken.equalsIgnoreCase(urlProtocol)
+                    && mAccessAllowedProtocols.contains(nestedToken.toLowerCase(Locale.ROOT));
         }
         return false;
+    }
+
+    private void parseAccessExternalDTD(String value) {
+        String normalized = removeAccessExternalWhitespace(value);
+        if (normalized.length() == 0) {
+            mAccessAllowAll = false;
+            mAccessAllowedProtocols = Collections.emptySet();
+            return;
+        }
+        Set<String> tokens = new HashSet<>();
+        StringTokenizer st = new StringTokenizer(normalized, ",");
+        while (st.hasMoreTokens()) {
+            String token = st.nextToken();
+            if ("all".equalsIgnoreCase(token)) {
+                mAccessAllowAll = true;
+                mAccessAllowedProtocols = Collections.emptySet();
+                return;
+            }
+            tokens.add(token.toLowerCase(Locale.ROOT));
+        }
+        mAccessAllowAll = false;
+        mAccessAllowedProtocols = tokens;
     }
 
     private static String removeAccessExternalWhitespace(String value) {
         if (value == null || value.length() == 0) {
             return "";
         }
-        /*
-         * JAXP ACCESS_EXTERNAL_DTD is a comma-separated protocol allow-list,
+        /* JAXP ACCESS_EXTERNAL_DTD is a comma-separated protocol allow-list,
          * and its value ignores whitespace. This only normalizes the property
          * value; URL parsing and validation remain handled by java.net.URL.
          */
@@ -1017,8 +1056,7 @@ public final class ReaderConfig
             return protocol;
         }
 
-        /*
-         * JAXP uses "jar[:scheme]" tokens for jar URLs, for example
+        /* JAXP uses "jar[:scheme]" tokens for jar URLs, for example
          * "jar:file". URL#getProtocol() only returns "jar", so inspect the
          * external form to recover the nested scheme for allow-list matching.
          */
