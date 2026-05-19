@@ -84,8 +84,13 @@ public final class ReaderConfig
     final static int PROP_SUPPORT_XMLID = 26; // shared with WriterConfig
     final static int PROP_DTD_OVERRIDE = 27;
 
-    // And then JAXB feature(s) (since 5.3)
+    // // And then JAXP feature(s)
+
+    // @since 5.3
     final static int PROP_JAXP_SECURE_PROCESSING = 30;
+
+    // @since 7.2
+    final static int PROP_JAXP_ACCESS_EXTERNAL_DTD = 31;
 
     // // // Constants for additional Wstx properties:
 
@@ -312,6 +317,8 @@ public final class ReaderConfig
         
         sProperties.put(XMLConstants.FEATURE_SECURE_PROCESSING,
                 PROP_JAXP_SECURE_PROCESSING);
+        sProperties.put(XMLConstants.ACCESS_EXTERNAL_DTD,
+                PROP_JAXP_ACCESS_EXTERNAL_DTD);
 
         // Non-standard ones, flags:
 
@@ -450,6 +457,36 @@ public final class ReaderConfig
      */
     protected boolean mXml11 = false;
 
+    /**
+     * Protocol allow-list for external DTD and external entity references
+     * configured through {@link XMLConstants#ACCESS_EXTERNAL_DTD}.
+     * Defaults to {@code "all"} to preserve existing Woodstox behavior unless
+     * users explicitly restrict access.
+     *
+     * @since 7.2
+     */
+    protected String mAccessExternalDTD = "all";
+
+    /**
+     * Precomputed flag for {@link #mAccessExternalDTD}: {@code true} when the
+     * allow-list resolves to "allow everything" (i.e. contains the
+     * {@code all} token). Kept in sync with {@link #mAccessExternalDTD}
+     * by {@link #setAccessExternalDTD}.
+     *
+     * @since 7.2
+     */
+    protected boolean mAccessAllowAll = true;
+
+    /**
+     * Precomputed lowercased protocol allow-list derived from
+     * {@link #mAccessExternalDTD}. Only consulted when
+     * {@link #mAccessAllowAll} is {@code false}; empty set means
+     * "deny everything".
+     *
+     * @since 7.2
+     */
+    protected Set<String> mAccessAllowedProtocols = Collections.emptySet();
+
     /*
     ///////////////////////////////////////////////////////////////////////
     // Common configuration objects
@@ -585,6 +622,9 @@ public final class ReaderConfig
         rc.mReporter = mReporter;
         rc.mDtdResolver = mDtdResolver;
         rc.mEntityResolver = mEntityResolver;
+        rc.mAccessExternalDTD = mAccessExternalDTD;
+        rc.mAccessAllowAll = mAccessAllowAll;
+        rc.mAccessAllowedProtocols = mAccessAllowedProtocols;
         rc.mBaseURL = mBaseURL;
         rc.mParsingMode = mParsingMode;
         rc.mMaxAttributesPerElement = mMaxAttributesPerElement;
@@ -804,6 +844,10 @@ public final class ReaderConfig
     public XMLResolver getUndeclaredEntityResolver() {
         return (XMLResolver) _getSpecialProperty(SP_IX_UNDECL_ENT_RESOLVER);
     }
+    /**
+     * @since 7.2
+     */
+    public String getAccessExternalDTD() { return mAccessExternalDTD; }
 
     public URL getBaseURL() { return mBaseURL; }
 
@@ -930,6 +974,99 @@ public final class ReaderConfig
         if (value) {
             doSupportExternalEntities(false);
         }
+    }
+
+    public void setAccessExternalDTD(String value) {
+        mAccessExternalDTD = (value == null) ? "" : value;
+        parseAccessExternalDTD(mAccessExternalDTD);
+    }
+
+    public void checkExternalDtdAccess(URL url) throws XMLStreamException {
+        if (!isExternalDtdAccessAllowed(url)) {
+            throw new XMLStreamException("External DTD access to '"
+                    + url + "' is not allowed due to restriction set by the "
+                    + XMLConstants.ACCESS_EXTERNAL_DTD + " property.");
+        }
+    }
+
+    public boolean isExternalDtdAccessAllowed(URL url) {
+        if (url == null || mAccessAllowAll) {
+            return true;
+        }
+        if (mAccessAllowedProtocols.isEmpty()) {
+            return false;
+        }
+        String urlProtocol = url.getProtocol();
+        if (urlProtocol != null
+                && mAccessAllowedProtocols.contains(urlProtocol.toLowerCase(Locale.ROOT))) {
+            return true;
+        }
+        // For jar URLs, also accept allow-list tokens like "jar:file"
+        if ("jar".equalsIgnoreCase(urlProtocol)) {
+            String nestedToken = externalDtdProtocol(url);
+            return !nestedToken.equalsIgnoreCase(urlProtocol)
+                    && mAccessAllowedProtocols.contains(nestedToken.toLowerCase(Locale.ROOT));
+        }
+        return false;
+    }
+
+    private void parseAccessExternalDTD(String value) {
+        String normalized = removeAccessExternalWhitespace(value);
+        if (normalized.length() == 0) {
+            mAccessAllowAll = false;
+            mAccessAllowedProtocols = Collections.emptySet();
+            return;
+        }
+        Set<String> tokens = new HashSet<>();
+        StringTokenizer st = new StringTokenizer(normalized, ",");
+        while (st.hasMoreTokens()) {
+            String token = st.nextToken();
+            if ("all".equalsIgnoreCase(token)) {
+                mAccessAllowAll = true;
+                mAccessAllowedProtocols = Collections.emptySet();
+                return;
+            }
+            tokens.add(token.toLowerCase(Locale.ROOT));
+        }
+        mAccessAllowAll = false;
+        mAccessAllowedProtocols = tokens;
+    }
+
+    private static String removeAccessExternalWhitespace(String value) {
+        if (value == null || value.length() == 0) {
+            return "";
+        }
+        /* JAXP ACCESS_EXTERNAL_DTD is a comma-separated protocol allow-list,
+         * and its value ignores whitespace. This only normalizes the property
+         * value; URL parsing and validation remain handled by java.net.URL.
+         */
+        StringBuilder result = new StringBuilder(value.length());
+        for (int i = 0, len = value.length(); i < len; ++i) {
+            char ch = value.charAt(i);
+            if (!Character.isWhitespace(ch) && !Character.isSpaceChar(ch)) {
+                result.append(ch);
+            }
+        }
+        return result.toString();
+    }
+
+    private static String externalDtdProtocol(URL url) {
+        String protocol = url.getProtocol();
+        if (!"jar".equalsIgnoreCase(protocol)) {
+            return protocol;
+        }
+
+        /* JAXP uses "jar[:scheme]" tokens for jar URLs, for example
+         * "jar:file". URL#getProtocol() only returns "jar", so inspect the
+         * external form to recover the nested scheme for allow-list matching.
+         */
+        String externalForm = url.toExternalForm();
+        int nestedStart = externalForm.indexOf(':') + 1;
+        int nestedEnd = externalForm.indexOf(':', nestedStart);
+        if (nestedStart > 0 && nestedEnd > nestedStart) {
+            return "jar:" + externalForm.substring(nestedStart, nestedEnd);
+        }
+        return protocol;
     }
     
     // // // Mutators for Woodstox-specific properties
@@ -1493,6 +1630,8 @@ public final class ReaderConfig
 
         case PROP_JAXP_SECURE_PROCESSING:
             return _hasConfigFlag(CFG_JAXP_FEATURE_SECURE_PROCESSING);
+        case PROP_JAXP_ACCESS_EXTERNAL_DTD:
+            return getAccessExternalDTD();
 
         // // // Then Woodstox custom properties:
 
@@ -1672,6 +1811,14 @@ public final class ReaderConfig
         case PROP_JAXP_SECURE_PROCESSING:
             // 13-Jul-2019, tatu: This is an alias... 
             doProcessSecurely(ArgUtil.convertToBoolean(propName, value));
+            break;
+        case PROP_JAXP_ACCESS_EXTERNAL_DTD:
+            if (!(value instanceof String)) {
+                throw new IllegalArgumentException("Invalid value type ("
+                        + ((value == null) ? "null" : value.getClass().getName())
+                        + ") for property '" + propName + "': expected String value.");
+            }
+            setAccessExternalDTD((String) value);
             break;
 
             // // // And then Woodstox specific, flags

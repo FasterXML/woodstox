@@ -153,6 +153,11 @@ Joshua Efiong (@Josh-ES)
   unbalanced close tag when it is not preceded by whitespace
  (7.2.0)
 
+高春晖 (@GaoSSR)
+
+* Contributed #162: Add support for `XMLConstants.ACCESS_EXTERNAL_DTD`
+ (7.2.0)
+
 Peter Palaga (@ppalaga)
 
 * Reported #179: `WstxValidationException`: Unknown reason (at end element </nl:nillableIntElement>)
