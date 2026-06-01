@@ -3,6 +3,8 @@ package wstxtest.io;
 import java.io.*;
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import com.ctc.wstx.api.ReaderConfig;
 import com.ctc.wstx.io.UTF8Reader;
@@ -39,6 +41,45 @@ public class TestUTF8Reader extends wstxtest.BaseJUnit4Test
 	
 	// Run the reader on the input
 	char[] charBuffer = new char[CHAR_BUFFER_SIZE];
-	reader.read(charBuffer, 0, charBuffer.length);		
+	reader.read(charBuffer, 0, charBuffer.length);
+    }
+
+    @Test
+    public void testOverlongEncodingsRejected() throws IOException
+    {
+        // Overlong forms decode to a codepoint below the minimum for their
+        // byte length; these must be rejected as malformed (RFC 3629)
+        assertRejected(new byte[]{(byte)0xC0,(byte)0xBC}); // overlong '<'
+        assertRejected(new byte[]{(byte)0xC0,(byte)0x80}); // overlong NUL
+        assertRejected(new byte[]{(byte)0xE0,(byte)0x80,(byte)0xAF}); // overlong '/'
+        assertRejected(new byte[]{(byte)0xF0,(byte)0x80,(byte)0x81,(byte)0x81}); // overlong 4-byte
+
+        // Shortest (valid) forms for the same boundaries must still decode
+        assertEquals("<", decode(new byte[]{(byte)0x3C}));
+        assertEquals("é", decode(new byte[]{(byte)0xC3,(byte)0xA9}));
+        assertEquals("€", decode(new byte[]{(byte)0xE2,(byte)0x82,(byte)0xAC}));
+        assertEquals(new String(Character.toChars(0x1F600)),
+                decode(new byte[]{(byte)0xF0,(byte)0x9F,(byte)0x98,(byte)0x80}));
+    }
+
+    @SuppressWarnings("resource")
+    private static String decode(byte[] input) throws IOException
+    {
+        ReaderConfig cfg = ReaderConfig.createFullDefaults();
+        UTF8Reader reader = new UTF8Reader(cfg, new ByteArrayInputStream(input),
+                new byte[16], 0, 0, false);
+        char[] cbuf = new char[16];
+        int count = reader.read(cbuf, 0, cbuf.length);
+        return new String(cbuf, 0, count);
+    }
+
+    private static void assertRejected(byte[] input) throws IOException
+    {
+        try {
+            decode(input);
+            fail("Expected CharConversionException for overlong UTF-8 sequence");
+        } catch (CharConversionException e) {
+            // expected
+        }
     }
 }

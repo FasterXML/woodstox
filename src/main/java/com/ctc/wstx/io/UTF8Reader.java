@@ -226,6 +226,10 @@ public final class UTF8Reader
                         reportInvalid(c, outPtr-start,
                                       "(above "+Integer.toHexString(XmlConsts.MAX_UNICODE_CHAR)+") ");
                     }
+                    // Reject overlong forms: 4-byte sequences must encode 0x10000 or higher
+                    if (c < 0x10000) {
+                        reportInvalid(c, outPtr-start, "(overlong 4-byte UTF-8 encoding) ");
+                    }
                     /* Ugh. Need to mess with surrogates. Ok; let's inline them
                      * there, then, if there's room: if only room for one,
                      * need to save the surrogate for the rainy day...
@@ -246,6 +250,10 @@ public final class UTF8Reader
                      * legal ones (should not expand to surrogates;
                      * 0xFFFE and 0xFFFF are illegal)
                      */
+                    // Reject overlong forms: 3-byte sequences must encode 0x800 or higher
+                    if (c < 0x800) {
+                        reportInvalid(c, outPtr-start, "(overlong 3-byte UTF-8 encoding) ");
+                    }
                     if (c >= 0xD800) {
                         // But first, let's check max chars:
                         if (c < 0xE000) {
@@ -267,6 +275,10 @@ public final class UTF8Reader
                     }
                 }
             } else { // (needed == 1)
+                // Reject overlong forms: 2-byte sequences must encode 0x80 or higher
+                if (c < 0x80) {
+                    reportInvalid(c, outPtr-start, "(overlong 2-byte UTF-8 encoding) ");
+                }
                 if (xml11) { // high-order ctrl char detection...
                     if (c <= 0x9F) {
                         if (c == 0x85) { // NEL, let's convert?
