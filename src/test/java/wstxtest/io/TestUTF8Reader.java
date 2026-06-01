@@ -3,16 +3,16 @@ package wstxtest.io;
 import java.io.*;
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Test;
 
 import com.ctc.wstx.api.ReaderConfig;
 import com.ctc.wstx.io.UTF8Reader;
-import org.junit.jupiter.api.Test;
 
 /**
  * Unit test created to verify fix to
- * <a href="http://jira.codehaus.org/browse/WSTX-143">WSTX-143</a>.
+ * <a href="http://jira.codehaus.org/browse/WSTX-143">WSTX-143</a>
+ * and
+ * <a href="https://github.com/FasterXML/woodstox/pull/291/">woodstox#291</a>.
  *
  * @author Matt Gormley
  */
@@ -20,32 +20,32 @@ public class TestUTF8Reader extends wstxtest.BaseJUnit4Test
 {
     @SuppressWarnings("resource")
     @Test
-    public void testDelAtBufferBoundary() throws IOException
+    public void testDelAtBufferBoundary() throws Exception
     {
-	final int BYTE_BUFFER_SIZE = 4;
-	final int CHAR_BUFFER_SIZE = 1 + BYTE_BUFFER_SIZE; 
-	final int INPUT_SIZE = 4 * BYTE_BUFFER_SIZE; // could be of arbitrary size
-	final byte CHAR_FILLER = 32; // doesn't even matter, just need an ascii char
-	final byte CHAR_DEL = 127;
-	
-	// Create input that will cause the array index out of bounds exception
-	byte[] inputBytes = new byte[INPUT_SIZE];
-	Arrays.fill(inputBytes, CHAR_FILLER);
-	inputBytes[BYTE_BUFFER_SIZE - 1] = CHAR_DEL;
-	InputStream in = new ByteArrayInputStream(inputBytes);
-	
-	// Create the UTF8Reader
-	ReaderConfig cfg = ReaderConfig.createFullDefaults();
-	byte[] byteBuffer = new byte[BYTE_BUFFER_SIZE];
-	UTF8Reader reader = new UTF8Reader(cfg,in, byteBuffer, 0, 0, false);
-	
-	// Run the reader on the input
-	char[] charBuffer = new char[CHAR_BUFFER_SIZE];
-	reader.read(charBuffer, 0, charBuffer.length);
+        final int BYTE_BUFFER_SIZE = 4;
+        final int CHAR_BUFFER_SIZE = 1 + BYTE_BUFFER_SIZE; 
+        final int INPUT_SIZE = 4 * BYTE_BUFFER_SIZE; // could be of arbitrary size
+        final byte CHAR_FILLER = 32; // doesn't even matter, just need an ascii char
+        final byte CHAR_DEL = 127;
+
+        // Create input that will cause the array index out of bounds exception
+        byte[] inputBytes = new byte[INPUT_SIZE];
+        Arrays.fill(inputBytes, CHAR_FILLER);
+        inputBytes[BYTE_BUFFER_SIZE - 1] = CHAR_DEL;
+        InputStream in = new ByteArrayInputStream(inputBytes);
+
+        // Create the UTF8Reader
+        ReaderConfig cfg = ReaderConfig.createFullDefaults();
+        byte[] byteBuffer = new byte[BYTE_BUFFER_SIZE];
+        UTF8Reader reader = new UTF8Reader(cfg,in, byteBuffer, 0, 0, false);
+
+        // Run the reader on the input
+        char[] charBuffer = new char[CHAR_BUFFER_SIZE];
+        reader.read(charBuffer, 0, charBuffer.length);
     }
 
     @Test
-    public void testOverlongEncodingsRejected() throws IOException
+    public void testOverlongEncodingsRejected() throws Exception
     {
         // Overlong forms decode to a codepoint below the minimum for their
         // byte length; these must be rejected as malformed (RFC 3629)
@@ -63,7 +63,7 @@ public class TestUTF8Reader extends wstxtest.BaseJUnit4Test
     }
 
     @SuppressWarnings("resource")
-    private static String decode(byte[] input) throws IOException
+    private static String decode(byte[] input) throws Exception
     {
         ReaderConfig cfg = ReaderConfig.createFullDefaults();
         UTF8Reader reader = new UTF8Reader(cfg, new ByteArrayInputStream(input),
@@ -73,7 +73,7 @@ public class TestUTF8Reader extends wstxtest.BaseJUnit4Test
         return new String(cbuf, 0, count);
     }
 
-    private static void assertRejected(byte[] input) throws IOException
+    private static void assertRejected(byte[] input) throws Exception
     {
         try {
             decode(input);
