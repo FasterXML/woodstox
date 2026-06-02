@@ -131,6 +131,14 @@ public final class UTF32Reader
             }
             mBytePtr += 4;
 
+            // Any code point above the Unicode max is illegal; note that a
+            // negative value here means the high byte's top bit was set, which
+            // sign-extends into an out-of-range value rather than a valid char.
+            if (ch < 0 || ch > XmlConsts.MAX_UNICODE_CHAR) {
+                reportInvalid(ch, outPtr-start,
+                              "(above "+Integer.toHexString(XmlConsts.MAX_UNICODE_CHAR)+") ");
+            }
+
             // Does it need to be split to surrogates?
             // (also, we can and need to verify illegal chars)
             if (ch >= 0x7F) {
@@ -142,11 +150,6 @@ public final class UTF32Reader
                         ch = CONVERT_NEL_TO;
                     }
                 } else if (ch >= 0xD800) {
-                    // Illegal?
-                    if (ch > XmlConsts.MAX_UNICODE_CHAR) {
-                        reportInvalid(ch, outPtr-start,
-                                      "(above "+Integer.toHexString(XmlConsts.MAX_UNICODE_CHAR)+") ");
-                    }
                     if (ch > 0xFFFF) { // need to split into surrogates?
                         ch -= 0x10000; // to normalize it starting with 0x0
                         cbuf[outPtr++] = (char) (0xD800 + (ch >> 10));
