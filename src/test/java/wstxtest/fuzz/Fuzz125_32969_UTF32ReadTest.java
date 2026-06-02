@@ -35,7 +35,10 @@ public class Fuzz125_32969_UTF32ReadTest extends BaseStreamTest
             streamThrough(sr);
             fail("Should not pass");
         } catch (WstxIOException e) {
-            verifyException(e, "Unexpected EOF in the middle of a 4-byte UTF-32 char");
+            // 02-Jun-2026, [woodstox-core#293]: out-of-range code point (high
+            //   byte top bit set, sign-extends negative) is now rejected up
+            //   front instead of being truncated and slipping through to EOF.
+            verifyException(e, "Invalid UTF-32 character");
         }
         sr.close();
     }
@@ -51,7 +54,8 @@ public class Fuzz125_32969_UTF32ReadTest extends BaseStreamTest
             streamThrough(sr);
             fail("Should not pass");
         } catch (WstxIOException e) {
-            verifyException(e, "Unexpected EOF in the middle of a 4-byte UTF-32 char");
+            // 02-Jun-2026, [woodstox-core#293]: see above
+            verifyException(e, "Invalid UTF-32 character");
         }
         sr.close();
     }
