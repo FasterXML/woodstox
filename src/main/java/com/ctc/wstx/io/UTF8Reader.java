@@ -226,7 +226,7 @@ public final class UTF8Reader
                         reportInvalid(c, outPtr-start,
                                       "(above "+Integer.toHexString(XmlConsts.MAX_UNICODE_CHAR)+") ");
                     }
-                    // 01-Jun-2026: [woodstox#291]) Reject overlong forms: 4-byte sequences
+                    // 01-Jun-2026: [woodstox#291] Reject overlong forms: 4-byte sequences
                     //  must encode 0x10000 or higher
                     if (c < 0x10000) {
                         reportInvalid(c, outPtr-start, "(overlong 4-byte UTF-8 encoding) ");
@@ -251,7 +251,7 @@ public final class UTF8Reader
                      * legal ones (should not expand to surrogates;
                      * 0xFFFE and 0xFFFF are illegal)
                      */
-                    // 01-Jun-2026: [woodstox#291]) Reject overlong forms: 3-byte sequences
+                    // 01-Jun-2026: [woodstox#291] Reject overlong forms: 3-byte sequences
                     //  must encode 0x800 or higher
                     if (c < 0x800) {
                         reportInvalid(c, outPtr-start, "(overlong 3-byte UTF-8 encoding) ");
@@ -277,7 +277,7 @@ public final class UTF8Reader
                     }
                 }
             } else { // (needed == 1)
-                // 01-Jun-2026: [woodstox#291]) Reject overlong forms: 2-byte sequences
+                // 01-Jun-2026: [woodstox#291] Reject overlong forms: 2-byte sequences
                 //  must encode 0x80 or higher
                 if (c < 0x80) {
                     reportInvalid(c, outPtr-start, "(overlong 2-byte UTF-8 encoding) ");

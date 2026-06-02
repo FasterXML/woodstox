@@ -23,7 +23,7 @@ public class TestUTF8Reader extends wstxtest.BaseJUnit4Test
     public void testDelAtBufferBoundary() throws Exception
     {
         final int BYTE_BUFFER_SIZE = 4;
-        final int CHAR_BUFFER_SIZE = 1 + BYTE_BUFFER_SIZE; 
+        final int CHAR_BUFFER_SIZE = 1 + BYTE_BUFFER_SIZE;
         final int INPUT_SIZE = 4 * BYTE_BUFFER_SIZE; // could be of arbitrary size
         final byte CHAR_FILLER = 32; // doesn't even matter, just need an ascii char
         final byte CHAR_DEL = 127;
@@ -62,6 +62,16 @@ public class TestUTF8Reader extends wstxtest.BaseJUnit4Test
                 decode(new byte[]{(byte)0xF0,(byte)0x9F,(byte)0x98,(byte)0x80}));
     }
 
+    private static void assertRejected(byte[] input) throws Exception
+    {
+        try {
+            decode(input);
+            fail("Expected CharConversionException for overlong UTF-8 sequence");
+        } catch (CharConversionException e) {
+            // expected
+        }
+    }
+
     @SuppressWarnings("resource")
     private static String decode(byte[] input) throws Exception
     {
@@ -71,15 +81,5 @@ public class TestUTF8Reader extends wstxtest.BaseJUnit4Test
         char[] cbuf = new char[16];
         int count = reader.read(cbuf, 0, cbuf.length);
         return new String(cbuf, 0, count);
-    }
-
-    private static void assertRejected(byte[] input) throws Exception
-    {
-        try {
-            decode(input);
-            fail("Expected CharConversionException for overlong UTF-8 sequence");
-        } catch (CharConversionException e) {
-            // expected
-        }
     }
 }
