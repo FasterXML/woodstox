@@ -49,9 +49,9 @@ public final class UTF32Reader
     protected int mByteCount = 0;
 
     /*
-    ////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
     // Life-cycle
-    ////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
     */
 
     public UTF32Reader(ReaderConfig cfg, InputStream in, byte[] buf, int ptr, int len,
@@ -67,9 +67,9 @@ public final class UTF32Reader
     }
 
     /*
-    ////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
     // Public API
-    ////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
     */
 
     @Override
@@ -140,7 +140,8 @@ public final class UTF32Reader
             }
 
             // Does it need to be split to surrogates?
-            // (also, we can and need to verify illegal chars)
+            // (also, we still verify remaining illegal chars here, such as
+            // surrogate code points and 0xFFFE/0xFFFF)
             if (ch >= 0x7F) {
                 if (ch <= 0x9F) {
                     if (mXml11) { // high-order ctrl char detection...
@@ -180,9 +181,9 @@ public final class UTF32Reader
     }
 
     /*
-    ////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
     // Internal methods
-    ////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
     */
 
     private void reportUnexpectedEOF(int gotBytes, int needed)
@@ -258,4 +259,3 @@ public final class UTF32Reader
         return true;
     }
 }
-

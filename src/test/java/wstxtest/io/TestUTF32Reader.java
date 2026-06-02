@@ -2,11 +2,10 @@ package wstxtest.io;
 
 import java.io.*;
 
-import com.ctc.wstx.api.ReaderConfig;
-import com.ctc.wstx.io.UTF32Reader;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import com.ctc.wstx.api.ReaderConfig;
+import com.ctc.wstx.io.UTF32Reader;
 
 public class TestUTF32Reader extends wstxtest.BaseJUnit4Test
 {
@@ -21,7 +20,7 @@ public class TestUTF32Reader extends wstxtest.BaseJUnit4Test
     // The high byte's top bit sign-extends the int negative, which previously
     // slipped past the range checks and decoded e.g. 80 00 00 3C to '<'.
     @Test
-    public void testOutOfRangeBigEndian() throws IOException {
+    public void testOutOfRangeBigEndian() throws Exception {
         try {
             int n = reader(new byte[]{(byte)0x80, 0x00, 0x00, 0x3C}, true)
                     .read(new char[8], 0, 8);
@@ -30,7 +29,7 @@ public class TestUTF32Reader extends wstxtest.BaseJUnit4Test
     }
 
     @Test
-    public void testOutOfRangeLittleEndian() throws IOException {
+    public void testOutOfRangeLittleEndian() throws Exception {
         try {
             int n = reader(new byte[]{0x3C, 0x00, 0x00, (byte)0x80}, false)
                     .read(new char[8], 0, 8);
@@ -40,7 +39,7 @@ public class TestUTF32Reader extends wstxtest.BaseJUnit4Test
 
     // Legal astral character (U+10000) still decodes to a surrogate pair.
     @Test
-    public void testValidAstral() throws IOException {
+    public void testValidAstral() throws Exception {
         char[] cbuf = new char[8];
         int n = reader(new byte[]{0x00, 0x01, 0x00, 0x00}, true).read(cbuf, 0, 8);
         assertEquals(2, n);
