@@ -2020,9 +2020,27 @@ public abstract class BasicStreamReader
                         // Ok, fine, c is whatever it is
                         ;
                     } else { // full entity just changes buffer...
+                        final WstxInputSource currInput = mInput;
                         ch = fullyResolveEntity(false);
                         if (ch == 0) {
-                            // need to skip output, thusly (expanded to new input source)
+                            // 02-Jun-2026, tatu: [woodstox-core#292] With
+                            //   `doTreatCharRefsAsEnts`, char refs and pre-defined
+                            //   entities resolve into an internal entity
+                            //   (`mCurrEntity`) and 0 is returned, WITHOUT pushing a
+                            //   new input source. Their replacement chars must be
+                            //   output here, or they would be silently dropped.
+                            if (mInput == currInput && mCurrEntity != null) {
+                                char[] repl = mCurrEntity.getReplacementChars();
+                                mCurrEntity = null;
+                                for (int i = 0, len = repl.length; i < len; ++i) {
+                                    if (outPtr >= outLimit) {
+                                        outBuf = _checkAttributeLimit(tb, outBuf, outPtr, outPtr - startingOffset, maxAttrSize);
+                                        outLimit = _outputLimit(outBuf, startingOffset, maxAttrSize);
+                                    }
+                                    outBuf[outPtr++] = repl[i];
+                                }
+                            }
+                            // expanded to new input source (or handled above): skip output
                             continue;
                         }
                     }
