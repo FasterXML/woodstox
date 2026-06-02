@@ -2020,18 +2020,14 @@ public abstract class BasicStreamReader
                         // Ok, fine, c is whatever it is
                         ;
                     } else { // full entity just changes buffer...
-                        final WstxInputSource currInput = mInput;
+                        final WstxInputSource preInput = mInput;
                         ch = fullyResolveEntity(false);
                         if (ch == 0) {
-                            // 02-Jun-2026, tatu: [woodstox-core#292] With
-                            //   `doTreatCharRefsAsEnts`, char refs and pre-defined
-                            //   entities resolve into an internal entity
-                            //   (`mCurrEntity`) and 0 is returned, WITHOUT pushing a
-                            //   new input source. Their replacement chars must be
-                            //   output here, or they would be silently dropped.
-                            if (mInput == currInput && mCurrEntity != null) {
-                                char[] repl = mCurrEntity.getReplacementChars();
-                                mCurrEntity = null;
+                            // [woodstox-core#292] char-ref-as-entity: output its
+                            // replacement chars inline (else expanded to new input
+                            // source, nothing to output here)
+                            char[] repl = takeInlineCharRefReplacement(preInput);
+                            if (repl != null) {
                                 for (int i = 0, len = repl.length; i < len; ++i) {
                                     if (outPtr >= outLimit) {
                                         outBuf = _checkAttributeLimit(tb, outBuf, outPtr, outPtr - startingOffset, maxAttrSize);
@@ -2040,7 +2036,6 @@ public abstract class BasicStreamReader
                                     outBuf[outPtr++] = repl[i];
                                 }
                             }
-                            // expanded to new input source (or handled above): skip output
                             continue;
                         }
                     }
@@ -4870,21 +4865,17 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                             && (ch = resolveSimpleEntity(true)) != 0) {
                             // Ok, it's fine then
                         } else {
-                            final WstxInputSource currInput = mInput;
+                            final WstxInputSource preInput = mInput;
                             ch = fullyResolveEntity(true);
                             if (ch == 0) {
-                                // 02-Jun-2026, tatu: [woodstox-core#292] With
-                                //   `doTreatCharRefsAsEnts`, char refs and pre-defined
-                                //   entities get resolved into an internal entity
-                                //   (`mCurrEntity`) and 0 returned, WITHOUT pushing a
-                                //   new input source. Mid-segment we can not emit a
-                                //   separate ENTITY_REFERENCE event, so the replacement
-                                //   text must be output here (as the in-buffer fast path
-                                //   above does); otherwise the character would be lost.
-                                if (mInput == currInput && mCurrEntity != null) {
+                                // [woodstox-core#292] char-ref-as-entity: output its
+                                // replacement chars inline (mid-segment we can not emit
+                                // a separate ENTITY_REFERENCE event), as the in-buffer
+                                // fast path above does
+                                char[] repl = takeInlineCharRefReplacement(preInput);
+                                if (repl != null) {
                                     mTextBuffer.setCurrentLength(outPtr);
-                                    mTextBuffer.append(mCurrEntity.getReplacementText());
-                                    mCurrEntity = null;
+                                    mTextBuffer.append(repl, 0, repl.length);
                                     outBuf = mTextBuffer.getCurrentSegment();
                                     outPtr = mTextBuffer.getCurrentSegmentSize();
                                 }
@@ -4990,7 +4981,38 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
         // If not, need more buffer space:
         return tb.finishCurrentSegment();
     }
-    
+
+    /**
+     * Helper called after {@link #fullyResolveEntity} has returned 0 from within
+     * text or attribute content, to support [woodstox-core#292]: when
+     * {@code doTreatCharRefsAsEnts} is enabled, character references and pre-defined
+     * entities are resolved into an internal entity ({@link #mCurrEntity}) and 0 is
+     * returned <b>without</b> pushing a new input source. In that case their
+     * replacement characters must still be output inline by the caller -- mid-content
+     * a separate {@code ENTITY_REFERENCE} event can not be emitted -- or the
+     * referenced character would be silently dropped.
+     *<p>
+     * This "resolved inline" case is told apart from the "entered a new input source"
+     * case (where 0 also means "nothing to output here") by checking whether the
+     * current input source still matches the one active just before the
+     * {@code fullyResolveEntity} call.
+     *
+     * @param preResolveInput Value of {@link #mInput} captured immediately
+     *   <b>before</b> the {@code fullyResolveEntity} call
+     *
+     * @return Replacement characters to output inline, or {@code null} if nothing
+     *   is to be output here (a new input source was entered instead)
+     */
+    protected final char[] takeInlineCharRefReplacement(WstxInputSource preResolveInput)
+    {
+        if (mInput == preResolveInput && mCurrEntity != null) {
+            char[] repl = mCurrEntity.getReplacementChars();
+            mCurrEntity = null;
+            return repl;
+        }
+        return null;
+    }
+
     /**
      * Method called to try to parse and canonicalize white space that
      * has a good chance of being white space with somewhat regular
@@ -5336,18 +5358,16 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                     if (mCfgReplaceEntities) { // can we expand all entities?
                         if ((mInputEnd - mInputPtr) < 3
                             || (ch = resolveSimpleEntity(true)) == 0) {
-                            final WstxInputSource currInput = mInput;
+                            final WstxInputSource preInput = mInput;
                             ch = fullyResolveEntity(true);
-                            // 02-Jun-2026, tatu: [woodstox-core#292] With
-                            //   `doTreatCharRefsAsEnts`, char refs / pre-defined
-                            //   entities resolve into an internal entity without
-                            //   pushing a new input source; output their replacement
-                            //   text directly so it does not get lost.
-                            if (ch == 0 && mInput == currInput && mCurrEntity != null) {
-                                String repl = mCurrEntity.getReplacementText();
-                                mCurrEntity = null;
-                                w.write(repl);
-                                count += repl.length();
+                            if (ch == 0) {
+                                // [woodstox-core#292] char-ref-as-entity: write its
+                                // replacement chars directly so they are not lost
+                                char[] repl = takeInlineCharRefReplacement(preInput);
+                                if (repl != null) {
+                                    w.write(repl, 0, repl.length);
+                                    count += repl.length;
+                                }
                             }
                         }
                     } else {
