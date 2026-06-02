@@ -174,3 +174,8 @@ Nektarios Kitsios (@nektarios-kitsios)
 * Reported, contributed fix for #184: Notations declared in external
   DTD subsets reported as undefined
  (7.2.0)
+
+Aizal Khan (@aizu-m)
+
+* Contributed fix #291: Reject overlong UTF-8 sequences in `UTF8Reader`
+ (7.2.1)
