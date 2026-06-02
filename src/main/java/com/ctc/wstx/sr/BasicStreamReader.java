@@ -4852,9 +4852,25 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                             && (ch = resolveSimpleEntity(true)) != 0) {
                             // Ok, it's fine then
                         } else {
+                            final WstxInputSource currInput = mInput;
                             ch = fullyResolveEntity(true);
                             if (ch == 0) {
-                                // Input buffer changed, nothing to output quite yet:
+                                // 02-Jun-2026, tatu: [woodstox-core#292] With
+                                //   `doTreatCharRefsAsEnts`, char refs and pre-defined
+                                //   entities get resolved into an internal entity
+                                //   (`mCurrEntity`) and 0 returned, WITHOUT pushing a
+                                //   new input source. Mid-segment we can not emit a
+                                //   separate ENTITY_REFERENCE event, so the replacement
+                                //   text must be output here (as the in-buffer fast path
+                                //   above does); otherwise the character would be lost.
+                                if (mInput == currInput && mCurrEntity != null) {
+                                    mTextBuffer.setCurrentLength(outPtr);
+                                    mTextBuffer.append(mCurrEntity.getReplacementText());
+                                    mCurrEntity = null;
+                                    outBuf = mTextBuffer.getCurrentSegment();
+                                    outPtr = mTextBuffer.getCurrentSegmentSize();
+                                }
+                                // Input buffer changed, nothing (more) to output quite yet:
                                 inputBuffer = mInputBuffer;
                                 inputLen = mInputEnd;
                                 inputPtr = mInputPtr;
@@ -5302,7 +5318,19 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                     if (mCfgReplaceEntities) { // can we expand all entities?
                         if ((mInputEnd - mInputPtr) < 3
                             || (ch = resolveSimpleEntity(true)) == 0) {
+                            final WstxInputSource currInput = mInput;
                             ch = fullyResolveEntity(true);
+                            // 02-Jun-2026, tatu: [woodstox-core#292] With
+                            //   `doTreatCharRefsAsEnts`, char refs / pre-defined
+                            //   entities resolve into an internal entity without
+                            //   pushing a new input source; output their replacement
+                            //   text directly so it does not get lost.
+                            if (ch == 0 && mInput == currInput && mCurrEntity != null) {
+                                String repl = mCurrEntity.getReplacementText();
+                                mCurrEntity = null;
+                                w.write(repl);
+                                count += repl.length();
+                            }
                         }
                     } else {
                         ch = resolveCharOnlyEntity(true);
