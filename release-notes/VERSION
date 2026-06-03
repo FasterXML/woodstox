@@ -8,6 +8,10 @@ Project: woodstox
 
 #291: Reject overlong UTF-8 sequences in `UTF8Reader`
  (contributed by @aizu-m)
+#292: Text corruption (in element content and attribute values) with
+  `doTreatCharRefsAsEnts` enabled when a character reference is split across
+  the internal input buffer boundary
+ (reported by @Skrethel)
 #293: Reject out-of-range code points in `UTF32Reader`
  (contributed by @aizu-m)
 
