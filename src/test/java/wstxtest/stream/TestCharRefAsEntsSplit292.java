@@ -31,46 +31,6 @@ public class TestCharRefAsEntsSplit292 extends BaseStreamTest
         "\"", "\"", "\"", "😀" // U+1F600
     };
 
-    private static String buildText(String ref) {
-        StringBuilder sb = new StringBuilder("<root>");
-        for (int i = 0; i < ENTITY_COUNT; i++) {
-            sb.append(i).append(ref);
-        }
-        return sb.append("</root>").toString();
-    }
-
-    private static String buildAttr(String ref) {
-        StringBuilder sb = new StringBuilder("<root a=\"");
-        for (int i = 0; i < ENTITY_COUNT; i++) {
-            sb.append(i).append(ref);
-        }
-        return sb.append("\"/>").toString();
-    }
-
-    private static String expected(String replacement) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < ENTITY_COUNT; i++) {
-            sb.append(i).append(replacement);
-        }
-        return sb.toString();
-    }
-
-    private XMLInputFactory factory(boolean coalescing) throws Exception {
-        // Tiny buffer to force splitting of references across reads:
-        return factory(coalescing, false, 32);
-    }
-
-    private XMLInputFactory factory(boolean coalescing, boolean supportDTD, int bufLen) throws Exception {
-        XMLInputFactory f = getInputFactory();
-        setCoalescing(f, coalescing);
-        setReplaceEntities(f, true);
-        setValidating(f, false);
-        setSupportDTD(f, supportDTD);
-        f.setProperty(WstxInputProperties.P_TREAT_CHAR_REFS_AS_ENTS, Boolean.TRUE);
-        f.setProperty(WstxInputProperties.P_INPUT_BUFFER_LENGTH, Integer.valueOf(bufLen));
-        return f;
-    }
-
     // getText() path, coalescing (single CHARACTERS event)
     @Test
     public void testNoCorruptionCoalescingGetText() throws Exception {
@@ -263,5 +223,51 @@ public class TestCharRefAsEntsSplit292 extends BaseStreamTest
             assertEquals(desc, "P" + geExpanded + "Q", content.toString());
             sr.close();
         }
+    }
+
+    /*
+    ///////////////////////////////////////////////////////////////////////
+    // Helper methods
+    ///////////////////////////////////////////////////////////////////////
+     */
+
+    private static String buildText(String ref) {
+        StringBuilder sb = new StringBuilder("<root>");
+        for (int i = 0; i < ENTITY_COUNT; i++) {
+            sb.append(i).append(ref);
+        }
+        return sb.append("</root>").toString();
+    }
+
+    private static String buildAttr(String ref) {
+        StringBuilder sb = new StringBuilder("<root a=\"");
+        for (int i = 0; i < ENTITY_COUNT; i++) {
+            sb.append(i).append(ref);
+        }
+        return sb.append("\"/>").toString();
+    }
+
+    private static String expected(String replacement) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < ENTITY_COUNT; i++) {
+            sb.append(i).append(replacement);
+        }
+        return sb.toString();
+    }
+
+    private XMLInputFactory factory(boolean coalescing) throws Exception {
+        // Tiny buffer to force splitting of references across reads:
+        return factory(coalescing, false, 32);
+    }
+
+    private XMLInputFactory factory(boolean coalescing, boolean supportDTD, int bufLen) throws Exception {
+        XMLInputFactory f = getInputFactory();
+        setCoalescing(f, coalescing);
+        setReplaceEntities(f, true);
+        setValidating(f, false);
+        setSupportDTD(f, supportDTD);
+        f.setProperty(WstxInputProperties.P_TREAT_CHAR_REFS_AS_ENTS, Boolean.TRUE);
+        f.setProperty(WstxInputProperties.P_INPUT_BUFFER_LENGTH, Integer.valueOf(bufLen));
+        return f;
     }
 }
