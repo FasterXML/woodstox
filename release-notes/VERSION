@@ -2,7 +2,6 @@ Project: woodstox
 
 ------------------------------------------------------------------------
 === Releases ===
-------------------------------------------------------------------------
 
 7.2.1 (not yet released)
 
@@ -17,7 +16,7 @@ Project: woodstox
 #290: Regression in 7.2.0: `writeRaw()` no longer closing an open start
   element (from #95) breaks emitting whitespace after start/end tags;
   reverted #95 so `writeRaw()` again closes an open start element
- (reported by @cnaroski)
+ (reported by Konrad W)
 
 7.2.0 (19-May-2026)
 
