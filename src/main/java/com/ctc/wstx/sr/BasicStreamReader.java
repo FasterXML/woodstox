@@ -4888,14 +4888,12 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                             // otherwise char is now fine...
                         }
                     } else {
-                        /* Nope, can only expand char entities; others need
-                         * to be separately handled.
-                         */
+                        // Nope, can only expand char entities; others need
+                        // to be separately handled.
                         ch = resolveCharOnlyEntity(true);
                         if (ch == 0) { // some other entity...
-                            /* can't expand; underlying pointer now points to
-                             * char after ampersand, need to rewind
-                             */
+                            // can't expand; underlying pointer now points to
+                            // char after ampersand, need to rewind
                             --mInputPtr;
                             break;
                         }
@@ -5002,6 +5000,8 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
      *
      * @return Replacement characters to output inline, or {@code null} if nothing
      *   is to be output here (a new input source was entered instead)
+     *
+     * @since 7.2.1
      */
     protected final char[] takeInlineCharRefReplacement(WstxInputSource preResolveInput)
     {
