@@ -144,6 +144,15 @@ public final class BufferingXmlWriter
      */
     final String mEncQuoteEntity;
 
+    /**
+     * When a supplementary character has to be output as a character entity
+     * (encoding can not represent it natively), the two halves of its
+     * surrogate pair must be combined into a single code point first. The
+     * first (high) half is held here when a text/attribute segment ends
+     * between the two halves.
+     */
+    private int mSurrogate = 0;
+
     /*
     ////////////////////////////////////////////////
     // Life-cycle
@@ -215,6 +224,11 @@ public final class BufferingXmlWriter
         flush();
         mTextWriter = null;
         mAttrValueWriter = null;
+        if (mSurrogate != 0) {
+            int surr = mSurrogate;
+            mSurrogate = 0;
+            throw new IOException("Unpaired surrogate character (0x"+Integer.toHexString(surr)+")");
+        }
 
         // Buffers to free?
         char[] buf = mOutputBuffer;
@@ -477,7 +491,17 @@ public final class BufferingXmlWriter
         final int[] QC = QUOTABLE_TEXT_CHARS;
         final int highChar = mEncHighChar;
         final int MAXQC = Math.min(QC.length, highChar);
-        
+
+        // Pending high surrogate from a previous segment?
+        if (mSurrogate != 0) {
+            if (len == 0) { // nothing to pair with yet
+                return;
+            }
+            int first = mSurrogate;
+            mSurrogate = 0;
+            writeAsEntity(calcSurrogate(first, text.charAt(inPtr++)));
+        }
+
         main_loop:
         while (true) {
             String ent = null;
@@ -534,11 +558,22 @@ public final class BufferingXmlWriter
             if (ent != null) {
                 writeRaw(ent);
             } else {
-                writeAsEntity(text.charAt(inPtr-1));
+                int ch = text.charAt(inPtr-1);
+                if (ch >= SURR1_FIRST && ch <= SURR2_LAST) { // supplementary char half
+                    if (ch > SURR1_LAST) { // lone low surrogate
+                        throw new IOException("Unpaired surrogate character (0x"+Integer.toHexString(ch)+")");
+                    }
+                    if (inPtr >= len) { // pair split across segments
+                        mSurrogate = ch;
+                        break main_loop;
+                    }
+                    ch = calcSurrogate(ch, text.charAt(inPtr++));
+                }
+                writeAsEntity(ch);
             }
         }
     }
-    
+
     @Override
     public void writeCharacters(char[] cbuf, int offset, int len) throws IOException
     {
@@ -554,6 +589,15 @@ public final class BufferingXmlWriter
         final int highChar = mEncHighChar;
         final int MAXQC = Math.min(QC.length, highChar);
         len += offset;
+        // Pending high surrogate from a previous segment?
+        if (mSurrogate != 0) {
+            if (offset >= len) { // nothing to pair with yet
+                return;
+            }
+            int first = mSurrogate;
+            mSurrogate = 0;
+            writeAsEntity(calcSurrogate(first, cbuf[offset++]));
+        }
         do {
             int c = 0;
             int start = offset;
@@ -611,10 +655,20 @@ public final class BufferingXmlWriter
                 writeRaw(ent);
                 ent = null;
             } else if (offset < len) {
+                if (c >= SURR1_FIRST && c <= SURR2_LAST) { // supplementary char half
+                    if (c > SURR1_LAST) { // lone low surrogate
+                        throw new IOException("Unpaired surrogate character (0x"+Integer.toHexString(c)+")");
+                    }
+                    if (offset+1 >= len) { // pair split across segments
+                        mSurrogate = c;
+                        break;
+                    }
+                    c = calcSurrogate(c, cbuf[++offset]);
+                }
                 writeAsEntity(c);
             }
         } while (++offset < len);
-    }    
+    }
 
     /**
      * Method that will try to output the content as specified. If
@@ -1072,11 +1126,21 @@ public final class BufferingXmlWriter
         int inPtr = 0;
         final char qchar = mEncQuoteChar;
         int highChar = mEncHighChar;
-        
+
+        // Pending high surrogate from a previous segment?
+        if (mSurrogate != 0) {
+            if (len == 0) { // nothing to pair with yet
+                return;
+            }
+            int first = mSurrogate;
+            mSurrogate = 0;
+            writeAsEntity(calcSurrogate(first, value.charAt(inPtr++)));
+        }
+
         main_loop:
         while (true) { // main_loop
             String ent = null;
-            
+
             inner_loop:
             while (true) {
                 if (inPtr >= len) {
@@ -1116,7 +1180,18 @@ public final class BufferingXmlWriter
             if (ent != null) {
                 writeRaw(ent);
             } else {
-                writeAsEntity(value.charAt(inPtr-1));
+                int ch = value.charAt(inPtr-1);
+                if (ch >= SURR1_FIRST && ch <= SURR2_LAST) { // supplementary char half
+                    if (ch > SURR1_LAST) { // lone low surrogate
+                        throw new IOException("Unpaired surrogate character (0x"+Integer.toHexString(ch)+")");
+                    }
+                    if (inPtr >= len) { // pair split across segments
+                        mSurrogate = ch;
+                        break main_loop;
+                    }
+                    ch = calcSurrogate(ch, value.charAt(inPtr++));
+                }
+                writeAsEntity(ch);
             }
         }
     }
@@ -1127,11 +1202,21 @@ public final class BufferingXmlWriter
         len += offset;
         final char qchar = mEncQuoteChar;
         int highChar = mEncHighChar;
-        
+
+        // Pending high surrogate from a previous segment?
+        if (mSurrogate != 0) {
+            if (offset >= len) { // nothing to pair with yet
+                return;
+            }
+            int first = mSurrogate;
+            mSurrogate = 0;
+            writeAsEntity(calcSurrogate(first, value[offset++]));
+        }
+
         main_loop:
         while (true) { // main_loop
             String ent = null;
-            
+
             inner_loop:
             while (true) {
                 if (offset >= len) {
@@ -1171,7 +1256,18 @@ public final class BufferingXmlWriter
             if (ent != null) {
                 writeRaw(ent);
             } else {
-                writeAsEntity(value[offset-1]);
+                int ch = value[offset-1];
+                if (ch >= SURR1_FIRST && ch <= SURR2_LAST) { // supplementary char half
+                    if (ch > SURR1_LAST) { // lone low surrogate
+                        throw new IOException("Unpaired surrogate character (0x"+Integer.toHexString(ch)+")");
+                    }
+                    if (offset >= len) { // pair split across segments
+                        mSurrogate = ch;
+                        break main_loop;
+                    }
+                    ch = calcSurrogate(ch, value[offset++]);
+                }
+                writeAsEntity(ch);
             }
         }
     }
@@ -1725,6 +1821,24 @@ public final class BufferingXmlWriter
          * even make it just 7, let's see how this works out)
          */
         return 8;
+    }
+
+    /**
+     * Combines a high/low surrogate pair into the supplementary code point
+     * it represents, so it can be output as a single character entity when
+     * the target encoding can not represent it natively. Throws for an
+     * unpaired or otherwise invalid surrogate.
+     */
+    private int calcSurrogate(int first, int second)
+        throws IOException
+    {
+        if (first < SURR1_FIRST || first > SURR1_LAST
+                || second < SURR2_FIRST || second > SURR2_LAST) {
+            throw new IOException("Unpaired surrogate character (first 0x"
+                    +Integer.toHexString(first)+", second 0x"
+                    +Integer.toHexString(second)+")");
+        }
+        return 0x10000 + ((first - SURR1_FIRST) << 10) + (second - SURR2_FIRST);
     }
 
     protected final void writeAsEntity(int c)
