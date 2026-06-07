@@ -649,8 +649,6 @@ public abstract class EncodingXmlWriter
             AsciiValueEncoder enc)
         throws IOException, XMLStreamException
     {
-System.err.println("DEBUG: write typed attr/0 '"+localName+"'");
-
         writeAscii(BYTE_SPACE);
         writeName(prefix);
         writeAscii(BYTE_COLON);
