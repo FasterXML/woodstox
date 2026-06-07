@@ -150,8 +150,10 @@ public final class BufferingXmlWriter
      * surrogate pair must be combined into a single code point first. The
      * first (high) half is held here when a text/attribute segment ends
      * between the two halves.
+     *
+     * @since 7.2.1
      */
-    private int mSurrogate = 0;
+    protected int mSurrogate = 0;
 
     /*
     ////////////////////////////////////////////////
