@@ -42,7 +42,22 @@ public class TestNmTokenAttrRead
     public void testInvalidNmTokenAttrDecl()
         throws XMLStreamException
     {
-        // ??? Are there any such cases?
+        // A default value whose FIRST character is not a valid NameChar must be
+        // rejected: an Nmtoken is (NameChar)+, with no start-char exception.
+        String XML = "<!DOCTYPE elem [\n"
+            +"<!ELEMENT elem EMPTY>\n"
+            +"<!ATTLIST elem name NMTOKEN '?foo'>\n"
+            +"]>\n<elem />";
+        streamThroughFailing(getValidatingReader(XML),
+                             "invalid NMTOKEN default with illegal first char ('?')");
+
+        // Same for NMTOKENS: first token's leading char illegal
+        XML = "<!DOCTYPE elem [\n"
+            +"<!ELEMENT elem EMPTY>\n"
+            +"<!ATTLIST elem names NMTOKENS '/foo bar'>\n"
+            +"]>\n<elem />";
+        streamThroughFailing(getValidatingReader(XML),
+                             "invalid NMTOKENS default with illegal first char ('/')");
     }
 
     @Test
