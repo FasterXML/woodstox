@@ -197,3 +197,5 @@ Javeed Khan (@jmestwa-coder)
 
 * Fixed #297: NMTOKEN default value validation skipping first character
  (7.2.1)
+* Fixed #299: NMTOKENS default value validation for single-character tokens
+ (7.2.1)

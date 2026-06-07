@@ -20,6 +20,8 @@ Project: woodstox
  (contributed by @aizu-m)
 #297: NMTOKEN default value validation skips first character
  (fix by @jmestwa-coder)
+#299: NMTOKENS default value validation for single-character tokens
+ (fix by @jmestwa-coder)
 
 7.2.0 (19-May-2026)
 
