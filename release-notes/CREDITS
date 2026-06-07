@@ -192,3 +192,8 @@ Skrethel (@Skrethel)
   with `doTreatCharRefsAsEnts` enabled when a character reference is split
   across the internal input buffer boundary
  (7.2.1)
+
+Javeed Khan (@jmestwa-coder)
+
+* Fixed #297: NMTOKEN default value validation skipping first character
+ (7.2.1)
