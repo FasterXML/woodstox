@@ -4,6 +4,11 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+7.2.2 (not yet released)
+
+#300: Combine surrogate pairs in `BufferingXmlWriter` entity escaping
+ (contributed by @aizu-m)
+
 7.2.1 (07-Jun-2026)
 
 #290: Regression in 7.2.0: `writeRaw()` no longer closing an open start
@@ -22,8 +27,6 @@ Project: woodstox
  (fix by @jmestwa-coder)
 #299: NMTOKENS default value validation for single-character tokens
  (fix by @jmestwa-coder)
-#300: Combine surrogate pairs in `BufferingXmlWriter` entity escaping
- (contributed by @aizu-m)
 
 7.2.0 (19-May-2026)
 
