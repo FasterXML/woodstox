@@ -6,6 +6,10 @@ Project: woodstox
 
 7.2.1 (not yet released)
 
+#290: Regression in 7.2.0: `writeRaw()` no longer closing an open start
+  element (from #95) breaks emitting whitespace after start/end tags;
+  reverted #95 so `writeRaw()` again closes an open start element
+ (reported by Konrad W)
 #291: Reject overlong UTF-8 sequences in `UTF8Reader`
  (contributed by @aizu-m)
 #292: Text corruption (in element content and attribute values) with
@@ -14,10 +18,10 @@ Project: woodstox
  (reported by @Skrethel)
 #293: Reject out-of-range code points in `UTF32Reader`
  (contributed by @aizu-m)
-#290: Regression in 7.2.0: `writeRaw()` no longer closing an open start
-  element (from #95) breaks emitting whitespace after start/end tags;
-  reverted #95 so `writeRaw()` again closes an open start element
- (reported by Konrad W)
+#297: NMTOKEN default value validation skips first character
+ (fix by @jmestwa-coder)
+#299: NMTOKENS default value validation for single-character tokens
+ (fix by @jmestwa-coder)
 
 7.2.0 (19-May-2026)
 
