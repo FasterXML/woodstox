@@ -325,7 +325,7 @@ public class WstxInputData
     public final static int findIllegalNmtokenChar(String nmtoken, boolean nsAware, boolean xml11)
     {
         int len = nmtoken.length();
-        // No special handling for the first char, just the loop: unlike a Name,
+        // No special handling for the first char: unlike a Name,
         // an Nmtoken has no distinct start-char rule, so EVERY character
         // (including the first, index 0) must be a valid NameChar.
         for (int i = 0; i < len; ++i) {
