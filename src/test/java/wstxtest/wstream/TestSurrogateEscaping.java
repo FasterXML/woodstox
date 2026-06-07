@@ -19,11 +19,15 @@ public class TestSurrogateEscaping
     // U+1D11E MUSICAL SYMBOL G CLEF, surrogate pair 0xD834 0xDD1E
     private final static String ASTRAL = "𝄞";
 
+    // Narrow encodings whose high char sits below the surrogate range, so a
+    // supplementary char must be escaped (and an unpaired half rejected)
+    private final static String[] NARROW_ENCODINGS = { "US-ASCII", "ISO-8859-1" };
+
     @Test
     public void testSupplementaryCharInTextAndAttr()
         throws Exception
     {
-        for (String enc : new String[] { "US-ASCII", "ISO-8859-1" }) {
+        for (String enc : NARROW_ENCODINGS) {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             Writer w = new OutputStreamWriter(bos, enc);
             XMLStreamWriter sw = getOutputFactory().createXMLStreamWriter(w);
@@ -72,16 +76,16 @@ public class TestSurrogateEscaping
     public void testUnpairedSurrogateRejected()
         throws Exception
     {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        Writer w = new OutputStreamWriter(bos, "US-ASCII");
-        XMLStreamWriter sw = getOutputFactory().createXMLStreamWriter(w);
-        sw.writeStartElement("root");
-        try {
-            sw.writeCharacters("\uDD1E"); // lone low surrogate
-            sw.writeEndElement();
-            sw.close();
-            fail("Expected failure on unpaired surrogate");
-        } catch (XMLStreamException expected) {
+        // lone low surrogate -- invalid regardless of narrow encoding
+        for (String enc : NARROW_ENCODINGS) {
+            XMLStreamWriter sw = startNarrowDoc(enc);
+            try {
+                sw.writeCharacters("\uDD1E");
+                sw.writeEndElement();
+                sw.close();
+                fail("Expected failure on unpaired surrogate ("+enc+")");
+            } catch (XMLStreamException expected) {
+            }
         }
     }
 
@@ -96,16 +100,18 @@ public class TestSurrogateEscaping
     public void testPendingSurrogateDoesNotLeakIntoAttribute()
         throws Exception
     {
-        XMLStreamWriter sw = startAsciiDoc();
-        try {
-            sw.writeCharacters("a\uD834"); // trailing high surrogate held
-            sw.writeStartElement("child");
-            sw.writeAttribute("k", "\uDD1Ez"); // low half of an unrelated value
-            sw.writeEndElement();
-            sw.writeEndElement();
-            sw.close();
-            fail("Expected failure: pending surrogate leaked into following attribute");
-        } catch (XMLStreamException expected) {
+        for (String enc : NARROW_ENCODINGS) {
+            XMLStreamWriter sw = startNarrowDoc(enc);
+            try {
+                sw.writeCharacters("a\uD834"); // trailing high surrogate held
+                sw.writeStartElement("child");
+                sw.writeAttribute("k", "\uDD1Ez"); // low half of an unrelated value
+                sw.writeEndElement();
+                sw.writeEndElement();
+                sw.close();
+                fail("Expected failure: pending surrogate leaked into following attribute ("+enc+")");
+            } catch (XMLStreamException expected) {
+            }
         }
     }
 
@@ -117,13 +123,15 @@ public class TestSurrogateEscaping
     public void testPendingSurrogateRejectedAtEndElement()
         throws Exception
     {
-        XMLStreamWriter sw = startAsciiDoc();
-        try {
-            sw.writeCharacters("a\uD834");
-            sw.writeEndElement();
-            sw.close();
-            fail("Expected failure: pending surrogate at end of element");
-        } catch (XMLStreamException expected) {
+        for (String enc : NARROW_ENCODINGS) {
+            XMLStreamWriter sw = startNarrowDoc(enc);
+            try {
+                sw.writeCharacters("a\uD834");
+                sw.writeEndElement();
+                sw.close();
+                fail("Expected failure: pending surrogate at end of element ("+enc+")");
+            } catch (XMLStreamException expected) {
+            }
         }
     }
 
@@ -135,20 +143,22 @@ public class TestSurrogateEscaping
     public void testTrailingHighSurrogateInAttributeRejected()
         throws Exception
     {
-        XMLStreamWriter sw = startAsciiDoc();
-        try {
-            sw.writeAttribute("k", "x\uD834");
-            sw.writeEndElement();
-            sw.close();
-            fail("Expected failure: trailing high surrogate in attribute value");
-        } catch (XMLStreamException expected) {
+        for (String enc : NARROW_ENCODINGS) {
+            XMLStreamWriter sw = startNarrowDoc(enc);
+            try {
+                sw.writeAttribute("k", "x\uD834");
+                sw.writeEndElement();
+                sw.close();
+                fail("Expected failure: trailing high surrogate in attribute value ("+enc+")");
+            } catch (XMLStreamException expected) {
+            }
         }
     }
 
-    private XMLStreamWriter startAsciiDoc()
+    private XMLStreamWriter startNarrowDoc(String enc)
         throws Exception
     {
-        Writer w = new OutputStreamWriter(new ByteArrayOutputStream(), "US-ASCII");
+        Writer w = new OutputStreamWriter(new ByteArrayOutputStream(), enc);
         XMLStreamWriter sw = getOutputFactory().createXMLStreamWriter(w);
         sw.writeStartElement("root");
         return sw;
