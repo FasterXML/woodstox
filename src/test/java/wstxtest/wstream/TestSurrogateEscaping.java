@@ -85,6 +85,75 @@ public class TestSurrogateEscaping
         }
     }
 
+    /**
+     * A high surrogate held for pairing at the end of a text segment must not
+     * leak into a following, unrelated write. Previously the held half was
+     * silently combined with the next escaped content (e.g. a different
+     * element's attribute), moving the character and corrupting output; it now
+     * must be rejected, matching the byte-backed writers.
+     */
+    @Test
+    public void testPendingSurrogateDoesNotLeakIntoAttribute()
+        throws Exception
+    {
+        XMLStreamWriter sw = startAsciiDoc();
+        try {
+            sw.writeCharacters("a\uD834"); // trailing high surrogate held
+            sw.writeStartElement("child");
+            sw.writeAttribute("k", "\uDD1Ez"); // low half of an unrelated value
+            sw.writeEndElement();
+            sw.writeEndElement();
+            sw.close();
+            fail("Expected failure: pending surrogate leaked into following attribute");
+        } catch (XMLStreamException expected) {
+        }
+    }
+
+    /**
+     * A high surrogate left pending by a text write must be rejected when the
+     * next operation ends the element rather than continuing character data.
+     */
+    @Test
+    public void testPendingSurrogateRejectedAtEndElement()
+        throws Exception
+    {
+        XMLStreamWriter sw = startAsciiDoc();
+        try {
+            sw.writeCharacters("a\uD834");
+            sw.writeEndElement();
+            sw.close();
+            fail("Expected failure: pending surrogate at end of element");
+        } catch (XMLStreamException expected) {
+        }
+    }
+
+    /**
+     * An attribute value is atomic, so a high surrogate as its final char can
+     * never be completed and must be rejected immediately (not held).
+     */
+    @Test
+    public void testTrailingHighSurrogateInAttributeRejected()
+        throws Exception
+    {
+        XMLStreamWriter sw = startAsciiDoc();
+        try {
+            sw.writeAttribute("k", "x\uD834");
+            sw.writeEndElement();
+            sw.close();
+            fail("Expected failure: trailing high surrogate in attribute value");
+        } catch (XMLStreamException expected) {
+        }
+    }
+
+    private XMLStreamWriter startAsciiDoc()
+        throws Exception
+    {
+        Writer w = new OutputStreamWriter(new ByteArrayOutputStream(), "US-ASCII");
+        XMLStreamWriter sw = getOutputFactory().createXMLStreamWriter(w);
+        sw.writeStartElement("root");
+        return sw;
+    }
+
     private void verifyRoundtrip(String xml, String expAttr, String expText)
         throws XMLStreamException
     {
