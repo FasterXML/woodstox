@@ -678,8 +678,6 @@ public abstract class EncodingXmlWriter
         if (nsURI == null) {
             nsURI = "";
         }
-System.err.println("DEBUG: write typed attr/1 '"+localName+"', vld == "+validator);
-
         //validator.validateAttribute(localName, nsURI, (hasPrefix ? prefix: ""), buf, offset, len);
 
         writeAscii(BYTE_SPACE);
