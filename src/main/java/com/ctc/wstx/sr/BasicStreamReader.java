@@ -4782,8 +4782,35 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
     }
 
     /**
+     * Called right after a new input buffer has been loaded while reading
+     * textual content, when the buffer that was just replaced ended with one
+     * or two {@code ']'} characters. Those trailing brackets are no longer
+     * accessible to the in-buffer look-back that normally detects {@code "]]>"}
+     * in content, so without this check a {@code "]]>"} split across the buffer
+     * boundary would be accepted (it is not allowed in content, XML 1.0/1.1 #2.4).
      *
-     * @param deferErrors Flag to enable storing an exception to a 
+     * @param prevBrackets Number of trailing {@code ']'} (1 or 2) the previous buffer ended with
+     * @param scanPtr Index of the first character of the freshly loaded content
+     */
+    private void checkBracketBoundary(int prevBrackets, int scanPtr)
+        throws XMLStreamException
+    {
+        final char[] buf = mInputBuffer;
+        final int end = mInputEnd;
+        int ptr = scanPtr;
+        int brackets = prevBrackets;
+        while (brackets < 2 && ptr < end && buf[ptr] == ']') {
+            ++brackets;
+            ++ptr;
+        }
+        if (brackets >= 2 && ptr < end && buf[ptr] == '>') {
+            throwWfcException(ErrorConsts.ERR_BRACKET_IN_TEXT, false);
+        }
+    }
+
+    /**
+     *
+     * @param deferErrors Flag to enable storing an exception to a
      *   variable, instead of immediately throwing it. If true, will
      *   just store the exception; if false, will not store, just throw.
      *
@@ -4811,12 +4838,25 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                  *   then throw an exception: no need to do that yet.
                  */
                 mInputPtr = inputPtr;
+                // Number of ']' the buffer about to be discarded ends with; needed
+                // so a "]]>" split across the boundary is still caught below.
+                int prevBrackets = 0;
+                if (inputLen > 0 && inputBuffer[inputLen-1] == ']') {
+                    prevBrackets = (inputLen > 1 && inputBuffer[inputLen-2] == ']') ? 2 : 1;
+                }
+                WstxInputSource srcBefore = mInput;
                 if (!loadMore()) {
                     break;
                 }
                 inputPtr = mInputPtr;
                 inputBuffer = mInputBuffer;
                 inputLen = mInputEnd;
+                // Only a plain refill of the same source can split a literal "]]>";
+                // ']]' pulled in from an entity is legitimately quoted, so skip the
+                // check when loadMore() crossed an input-source (entity) boundary.
+                if (prevBrackets > 0 && mInput == srcBefore) {
+                    checkBracketBoundary(prevBrackets, inputPtr);
+                }
             }
             char c = inputBuffer[inputPtr++];
 
@@ -4942,10 +4982,9 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                             break;
                         }
                     } else {
-                        /* 21-Apr-2005, TSa: No good way to verify it,
-                         *   at this point. Should come back and think of how
-                         *   to properly handle this (rare) possibility.
-                         */
+                        // '>' is among the first chars of the buffer: a ']]'
+                        // ending the previous buffer is handled at load time by
+                        // checkBracketBoundary(), so nothing to do here.
                         ;
                     }
                 }
@@ -5282,8 +5321,20 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                     w.write(mInputBuffer, start, len);
                     count += len;
                 }
+                // Number of ']' the buffer about to be discarded ends with; needed
+                // so a "]]>" split across the boundary is still caught below.
+                int prevBrackets = 0;
+                if (mInputEnd > 0 && mInputBuffer[mInputEnd-1] == ']') {
+                    prevBrackets = (mInputEnd > 1 && mInputBuffer[mInputEnd-2] == ']') ? 2 : 1;
+                }
+                WstxInputSource srcBefore = mInput;
                 c = getNextChar(SUFFIX_IN_TEXT);
                 start = mInputPtr-1; // needs to be prior to char we got
+                // ']]' pulled in from an entity is legitimately quoted: only flag a
+                // split "]]>" when the buffer was refilled from the same source.
+                if (prevBrackets > 0 && mInput == srcBefore) {
+                    checkBracketBoundary(prevBrackets, mInputPtr-1);
+                }
             } else {
                 c = mInputBuffer[mInputPtr++];
             }
@@ -5409,7 +5460,9 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                             throwParseError(ErrorConsts.ERR_BRACKET_IN_TEXT);
                         }
                     } else {
-                        ; // !!! TBI: how to check past boundary?
+                        // Past-boundary ']]' is handled at load time by
+                        // checkBracketBoundary(), so nothing to do here.
+                        ;
                     }
                 }
             }
