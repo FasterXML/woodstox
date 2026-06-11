@@ -534,11 +534,16 @@ public final class BufferingXmlWriter
             if (ent != null) {
                 writeRaw(ent);
             } else {
-                writeAsEntity(text.charAt(inPtr-1));
+                int cp = surrogateAwareCodePoint(text.charAt(inPtr-1),
+                        (inPtr < len) ? text.charAt(inPtr) : -1);
+                writeAsEntity(cp);
+                if (cp > 0xFFFF) { // consumed trailing low surrogate too
+                    ++inPtr;
+                }
             }
         }
     }
-    
+
     @Override
     public void writeCharacters(char[] cbuf, int offset, int len) throws IOException
     {
@@ -611,10 +616,15 @@ public final class BufferingXmlWriter
                 writeRaw(ent);
                 ent = null;
             } else if (offset < len) {
-                writeAsEntity(c);
+                int cp = surrogateAwareCodePoint((char) c,
+                        (offset+1 < len) ? cbuf[offset+1] : -1);
+                writeAsEntity(cp);
+                if (cp > 0xFFFF) { // consumed trailing low surrogate too
+                    ++offset;
+                }
             }
         } while (++offset < len);
-    }    
+    }
 
     /**
      * Method that will try to output the content as specified. If
@@ -1116,7 +1126,12 @@ public final class BufferingXmlWriter
             if (ent != null) {
                 writeRaw(ent);
             } else {
-                writeAsEntity(value.charAt(inPtr-1));
+                int cp = surrogateAwareCodePoint(value.charAt(inPtr-1),
+                        (inPtr < len) ? value.charAt(inPtr) : -1);
+                writeAsEntity(cp);
+                if (cp > 0xFFFF) { // consumed trailing low surrogate too
+                    ++inPtr;
+                }
             }
         }
     }
@@ -1171,7 +1186,12 @@ public final class BufferingXmlWriter
             if (ent != null) {
                 writeRaw(ent);
             } else {
-                writeAsEntity(value[offset-1]);
+                int cp = surrogateAwareCodePoint(value[offset-1],
+                        (offset < len) ? value[offset] : -1);
+                writeAsEntity(cp);
+                if (cp > 0xFFFF) { // consumed trailing low surrogate too
+                    ++offset;
+                }
             }
         }
     }
@@ -1794,5 +1814,47 @@ public final class BufferingXmlWriter
         }
         buf[ptr++] = ';';
         mOutputPtr = ptr;
+    }
+
+    /**
+     * Resolve a character that has to be emitted as a numeric character
+     * reference (because the output encoding can not represent it natively)
+     * into the code point that {@link #writeAsEntity} should output.
+     *<p>
+     * The complication is supplementary characters: in a Java {@code String}
+     * they are stored as a high/low surrogate pair. Emitting each half as its
+     * own reference would produce {@code &#xd83d;&#xde00;} style output, i.e.
+     * references to surrogate code points, which are <b>not</b> legal XML
+     * characters (XML 1.0 [2], 1.1 [2]) and which this very library's reader
+     * rejects. Instead we recombine the pair into the single supplementary
+     * code point so a single, well-formed reference is written. Unpaired or
+     * mis-ordered surrogates are rejected, matching the byte-backed writers
+     * ({@code EncodingXmlWriter#calcSurrogate}).
+     *
+     * @param first the character that needs escaping
+     * @param next the following character if one is available, otherwise -1
+     * @return code point to pass to {@link #writeAsEntity}; the caller must
+     *   skip the following character iff the result is a supplementary code
+     *   point (i.e. greater than {@code 0xFFFF})
+     */
+    private int surrogateAwareCodePoint(char first, int next) throws IOException
+    {
+        if (!Character.isSurrogate(first)) {
+            return first;
+        }
+        if (Character.isHighSurrogate(first)
+                && next >= 0 && Character.isLowSurrogate((char) next)) {
+            return Character.toCodePoint(first, (char) next);
+        }
+        // either a lone low surrogate, or a high surrogate not followed by a
+        // low one: can not be represented as a legal character reference
+        throwUnpairedSurrogate(first);
+        return first; // never reached
+    }
+
+    private void throwUnpairedSurrogate(int code) throws IOException
+    {
+        throw new IOException("Unpaired surrogate character (0x"
+                +Integer.toHexString(code)+") in content to write out");
     }
 }
