@@ -8,6 +8,8 @@ Project: woodstox
 
 #300: Combine surrogate pairs in `BufferingXmlWriter` entity escaping
  (contributed by @aizu-m)
+#301: Reject U+00D7 and U+00F7 in `is11NameChar()`
+ (contributed by @aizu-m)
 
 7.2.1 (07-Jun-2026)
 

@@ -186,7 +186,9 @@ Aizal Khan (@aizu-m)
 * Contributed fix #293: Reject out-of-range code points in `UTF32Reader`
  (7.2.1)
 * Contributed #300: Combine surrogate pairs in `BufferingXmlWriter` entity escaping
- (7.2.1)
+ (7.2.2)
+* Contributed #301: Reject U+00D7 and U+00F7 in `is11NameChar()`
+ (7.2.2)
 
 Skrethel (@Skrethel)
 

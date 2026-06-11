@@ -72,4 +72,28 @@ public class TestXmlChars
         assertFalse(WstxInputData.isNameStartChar(':', true, true));
         assertFalse(WstxInputData.isNameStartChar((char) 0x3000, true, true));
     }
+
+    // U+00D7 (MULTIPLICATION SIGN) and U+00F7 (DIVISION SIGN) sit in the gaps of
+    // the XML 1.1 NameStartChar ranges ([#xC0-#xD6], [#xD8-#xF6], [#xF8-#x2FF])
+    // and are not added back by NameChar, so neither is a legal name char.
+    @Test
+    public void testXml11MultiplicationDivisionNotNameChars()
+    {
+        // already rejected as name-start chars...
+        assertFalse(WstxInputData.isNameStartChar((char) 0xD7, true, true));
+        assertFalse(WstxInputData.isNameStartChar((char) 0xF7, true, true));
+        // ...and must be rejected as later name chars too
+        assertFalse(WstxInputData.isNameChar((char) 0xD7, true, true));
+        assertFalse(WstxInputData.isNameChar((char) 0xF7, true, true));
+
+        // neighbours stay legal
+        assertTrue(WstxInputData.isNameChar((char) 0xD6, true, true));
+        assertTrue(WstxInputData.isNameChar((char) 0xD8, true, true));
+        assertTrue(WstxInputData.isNameChar((char) 0xF6, true, true));
+        assertTrue(WstxInputData.isNameChar((char) 0xF8, true, true));
+
+        // middle dot is a name char but not a name-start char
+        assertTrue(WstxInputData.isNameChar((char) 0xB7, true, true));
+        assertFalse(WstxInputData.isNameStartChar((char) 0xB7, true, true));
+    }
 }
