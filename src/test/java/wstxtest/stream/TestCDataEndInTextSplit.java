@@ -27,13 +27,18 @@ public class TestCDataEndInTextSplit extends BaseStreamTest
     // small enough that the pad sweep below straddles the boundary at every offset
     private final static int BUF_LEN = 11;
 
-    // Illegal literal "]]>" in element content, swept across all buffer alignments
+    // Illegal literal "]]>" in element content, swept across all buffer alignments.
+    // Includes longer bracket runs ("]]]>", "]]]]>") whose trailing "]]>" must be
+    // caught even when two or more brackets end one buffer and "]>" opens the next.
     @Test
     public void testSplitBracketEndContent() throws Exception {
-        for (int pad = 0; pad <= 3 * BUF_LEN + 8; ++pad) {
-            String xml = "<root>" + pad(pad) + "]]></root>";
-            assertRejected("content pad="+pad, factory(false, false), xml);
-            assertRejected("content-coalescing pad="+pad, factory(true, false), xml);
+        String[] tails = { "]]>", "]]]>", "]]]]>", "x]]]>" };
+        for (String tail : tails) {
+            for (int pad = 0; pad <= 3 * BUF_LEN + 8; ++pad) {
+                String xml = "<root>" + pad(pad) + tail + "</root>";
+                assertRejected("content tail="+tail+" pad="+pad, factory(false, false), xml);
+                assertRejected("content-coalescing tail="+tail+" pad="+pad, factory(true, false), xml);
+            }
         }
     }
 

@@ -4799,7 +4799,10 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
         final int end = mInputEnd;
         int ptr = scanPtr;
         int brackets = prevBrackets;
-        while (brackets < 2 && ptr < end && buf[ptr] == ']') {
+        // Skip ALL leading ']' (not just up to two): a run like "]]]>" straddling
+        // the boundary still ends in "]]>" and must be rejected. Stopping at two
+        // would leave ptr on a ']' and miss the following '>'.
+        while (ptr < end && buf[ptr] == ']') {
             ++brackets;
             ++ptr;
         }
