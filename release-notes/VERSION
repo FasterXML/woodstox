@@ -4,6 +4,11 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+7.2.2 (not yet released)
+
+#301: Reject U+00D7 and U+00F7 in `is11NameChar()`
+ (contributed by @aizu-m)
+
 7.2.1 (07-Jun-2026)
 
 #290: Regression in 7.2.0: `writeRaw()` no longer closing an open start
