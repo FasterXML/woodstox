@@ -27,8 +27,6 @@ Project: woodstox
  (fix by @jmestwa-coder)
 #299: NMTOKENS default value validation for single-character tokens
  (fix by @jmestwa-coder)
-#301: Reject U+00D7 and U+00F7 in `is11NameChar()`
- (contributed by @aizu-m)
 
 7.2.0 (19-May-2026)
 
