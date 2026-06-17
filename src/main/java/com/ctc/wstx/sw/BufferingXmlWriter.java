@@ -154,7 +154,7 @@ public final class BufferingXmlWriter
      * write while a half is held is rejected via {@link #verifyNoPendingSurrogate}.
      * Attribute values are atomic and never leave a half pending here.
      *
-     * @since 7.2.1
+     * @since 7.2.2
      */
     private int mSurrogate = 0;
 
@@ -170,8 +170,7 @@ public final class BufferingXmlWriter
      *    (optional) access to the underlying stream
      */
     public BufferingXmlWriter(Writer out, WriterConfig cfg, String enc,
-                              boolean autoclose,
-                              OutputStream outs, int bitsize)
+            boolean autoclose, OutputStream outs, int bitsize)
         throws IOException
     {
         super(cfg, enc, autoclose);
@@ -563,18 +562,12 @@ public final class BufferingXmlWriter
             if (ent != null) {
                 writeRaw(ent);
             } else {
-                int ch = text.charAt(inPtr-1);
-                if (ch >= SURR1_FIRST && ch <= SURR2_LAST) { // supplementary char half
-                    if (ch > SURR1_LAST) { // lone low surrogate
-                        throw new IOException("Unpaired surrogate character (0x"+Integer.toHexString(ch)+")");
-                    }
-                    if (inPtr >= len) { // pair split across segments
-                        mSurrogate = ch;
-                        break main_loop;
-                    }
-                    ch = calcSurrogate(ch, text.charAt(inPtr++));
+                int next = (inPtr < len) ? text.charAt(inPtr) : -1;
+                int adv = writeAsEntityCombined(text.charAt(inPtr-1), next, false);
+                if (adv < 0) { // high half held to pair with the next segment
+                    break main_loop;
                 }
-                writeAsEntity(ch);
+                inPtr += adv;
             }
         }
     }
@@ -660,17 +653,12 @@ public final class BufferingXmlWriter
                 writeRaw(ent);
                 ent = null;
             } else if (offset < len) {
-                if (c >= SURR1_FIRST && c <= SURR2_LAST) { // supplementary char half
-                    if (c > SURR1_LAST) { // lone low surrogate
-                        throw new IOException("Unpaired surrogate character (0x"+Integer.toHexString(c)+")");
-                    }
-                    if (offset+1 >= len) { // pair split across segments
-                        mSurrogate = c;
-                        break;
-                    }
-                    c = calcSurrogate(c, cbuf[++offset]);
+                int next = (offset+1 < len) ? cbuf[offset+1] : -1;
+                int adv = writeAsEntityCombined(c, next, false);
+                if (adv < 0) { // high half held to pair with the next segment
+                    break;
                 }
-                writeAsEntity(c);
+                offset += adv;
             }
         } while (++offset < len);
     }
@@ -1184,16 +1172,8 @@ public final class BufferingXmlWriter
             if (ent != null) {
                 writeRaw(ent);
             } else {
-                int ch = value.charAt(inPtr-1);
-                if (ch >= SURR1_FIRST && ch <= SURR2_LAST) { // supplementary char half
-                    // An attribute value is atomic, so both halves must be
-                    // present here; a lone or trailing surrogate is invalid.
-                    if (ch > SURR1_LAST || inPtr >= len) {
-                        throw new IOException("Unpaired surrogate character (0x"+Integer.toHexString(ch)+")");
-                    }
-                    ch = calcSurrogate(ch, value.charAt(inPtr++));
-                }
-                writeAsEntity(ch);
+                int next = (inPtr < len) ? value.charAt(inPtr) : -1;
+                inPtr += writeAsEntityCombined(value.charAt(inPtr-1), next, true);
             }
         }
     }
@@ -1248,16 +1228,8 @@ public final class BufferingXmlWriter
             if (ent != null) {
                 writeRaw(ent);
             } else {
-                int ch = value[offset-1];
-                if (ch >= SURR1_FIRST && ch <= SURR2_LAST) { // supplementary char half
-                    // An attribute value is atomic, so both halves must be
-                    // present here; a lone or trailing surrogate is invalid.
-                    if (ch > SURR1_LAST || offset >= len) {
-                        throw new IOException("Unpaired surrogate character (0x"+Integer.toHexString(ch)+")");
-                    }
-                    ch = calcSurrogate(ch, value[offset++]);
-                }
-                writeAsEntity(ch);
+                int next = (offset < len) ? value[offset] : -1;
+                offset += writeAsEntityCombined(value[offset-1], next, true);
             }
         }
     }
@@ -1822,6 +1794,44 @@ public final class BufferingXmlWriter
     }
 
     /**
+     * Outputs a single character of text or attribute content as a character
+     * entity, first combining the two halves of a supplementary character into
+     * the single code point they represent (needed when the target encoding can
+     * not represent it natively). A non-surrogate character is output as-is.
+     *<p>
+     * When {@code ch} is the high half of a pair but its low half is not yet
+     * available ({@code next < 0}), behavior depends on {@code atomic}: an
+     * attribute value is indivisible, so the dangling half is rejected;
+     * character content holds it in {@link #mSurrogate} to pair with the next
+     * {@code writeCharacters} call, returning -1 so the caller can stop. A lone
+     * low surrogate is always rejected.
+     *
+     * @param ch character to output (possibly a high surrogate)
+     * @param next following character, or -1 if none is available yet
+     * @param atomic true for attribute values (reject a split pair), false for
+     *    character content (hold the high half for the next call)
+     * @return 1 if {@code next} was consumed to complete a pair, 0 if a single
+     *    character was written, or -1 if a high half was held for a later call
+     */
+    private int writeAsEntityCombined(int ch, int next, boolean atomic)
+        throws IOException
+    {
+        if (ch >= SURR1_FIRST && ch <= SURR2_LAST) { // supplementary char half
+            if (ch > SURR1_LAST || next < 0) { // lone low half, or high half lacking its low half
+                if (atomic || ch > SURR1_LAST) {
+                    throwUnpairedSurrogate(ch);
+                }
+                mSurrogate = ch; // hold high half to pair with the next segment
+                return -1;
+            }
+            writeAsEntity(calcSurrogate(ch, next));
+            return 1;
+        }
+        writeAsEntity(ch);
+        return 0;
+    }
+
+    /**
      * Combines a high/low surrogate pair into the supplementary code point
      * it represents, so it can be output as a single character entity when
      * the target encoding can not represent it natively. Throws for an
@@ -1839,6 +1849,11 @@ public final class BufferingXmlWriter
         return 0x10000 + ((first - SURR1_FIRST) << 10) + (second - SURR2_FIRST);
     }
 
+    private void throwUnpairedSurrogate(int code) throws IOException
+    {
+        throw new IOException("Unpaired surrogate character (0x"+Integer.toHexString(code)+")");
+    }
+
     /**
      * Verifies that no high surrogate is being held for pairing before content
      * other than continuing character data is emitted. A held surrogate at such
@@ -1851,7 +1866,7 @@ public final class BufferingXmlWriter
         if (mSurrogate != 0) {
             int surr = mSurrogate;
             mSurrogate = 0;
-            throw new IOException("Unpaired surrogate character (0x"+Integer.toHexString(surr)+")");
+            throwUnpairedSurrogate(surr);
         }
     }
 
