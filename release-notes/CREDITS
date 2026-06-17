@@ -189,6 +189,8 @@ Aizal Khan (@aizu-m)
  (7.2.2)
 * Contributed #301: Reject U+00D7 and U+00F7 in `is11NameChar()`
  (7.2.2)
+* Contributed #303: Check for `]]>` in content split across input buffer boundary
+ (7.2.2)
 
 Skrethel (@Skrethel)
 
