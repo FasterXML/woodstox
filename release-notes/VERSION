@@ -6,6 +6,8 @@ Project: woodstox
 
 7.2.2 (not yet released)
 
+#300: Combine surrogate pairs in `BufferingXmlWriter` entity escaping
+ (contributed by @aizu-m)
 #301: Reject U+00D7 and U+00F7 in `is11NameChar()`
  (contributed by @aizu-m)
 #303: Check for `]]>` in content split across input buffer boundary
