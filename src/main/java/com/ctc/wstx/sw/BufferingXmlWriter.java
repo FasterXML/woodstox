@@ -144,6 +144,20 @@ public final class BufferingXmlWriter
      */
     final String mEncQuoteEntity;
 
+    /**
+     * When a supplementary character has to be output as a character entity
+     * (encoding can not represent it natively), the two halves of its
+     * surrogate pair must be combined into a single code point first. The
+     * first (high) half is held here when a text segment (a
+     * {@code writeCharacters} call) ends between the two halves, so it can be
+     * paired with the low half delivered by the next text segment. Any other
+     * write while a half is held is rejected via {@link #verifyNoPendingSurrogate}.
+     * Attribute values are atomic and never leave a half pending here.
+     *
+     * @since 7.2.2
+     */
+    private int mSurrogate = 0;
+
     /*
     ////////////////////////////////////////////////
     // Life-cycle
@@ -156,8 +170,7 @@ public final class BufferingXmlWriter
      *    (optional) access to the underlying stream
      */
     public BufferingXmlWriter(Writer out, WriterConfig cfg, String enc,
-                              boolean autoclose,
-                              OutputStream outs, int bitsize)
+            boolean autoclose, OutputStream outs, int bitsize)
         throws IOException
     {
         super(cfg, enc, autoclose);
@@ -215,6 +228,8 @@ public final class BufferingXmlWriter
         flush();
         mTextWriter = null;
         mAttrValueWriter = null;
+        // A high surrogate held for pairing must not be left dangling at the end
+        verifyNoPendingSurrogate();
 
         // Buffers to free?
         char[] buf = mOutputBuffer;
@@ -248,6 +263,7 @@ public final class BufferingXmlWriter
         if (mOut == null) {
             return;
         }
+        verifyNoPendingSurrogate();
 
         // First; is the new request small or not? If yes, needs to be buffered
         if (len < mSmallWriteSize) { // yup
@@ -305,6 +321,7 @@ public final class BufferingXmlWriter
         if (mOut == null) {
             return;
         }
+        verifyNoPendingSurrogate();
         final int len = str.length();
 
         // First; is the new request small or not? If yes, needs to be buffered
@@ -327,6 +344,7 @@ public final class BufferingXmlWriter
         if (mOut == null) {
             return;
         }
+        verifyNoPendingSurrogate();
 
         // First; is the new request small or not? If yes, needs to be buffered
         if (len < mSmallWriteSize) { // yup
@@ -477,7 +495,17 @@ public final class BufferingXmlWriter
         final int[] QC = QUOTABLE_TEXT_CHARS;
         final int highChar = mEncHighChar;
         final int MAXQC = Math.min(QC.length, highChar);
-        
+
+        // Pending high surrogate from a previous segment?
+        if (mSurrogate != 0) {
+            if (len == 0) { // nothing to pair with yet
+                return;
+            }
+            int first = mSurrogate;
+            mSurrogate = 0;
+            writeAsEntity(calcSurrogate(first, text.charAt(inPtr++)));
+        }
+
         main_loop:
         while (true) {
             String ent = null;
@@ -534,11 +562,16 @@ public final class BufferingXmlWriter
             if (ent != null) {
                 writeRaw(ent);
             } else {
-                writeAsEntity(text.charAt(inPtr-1));
+                int next = (inPtr < len) ? text.charAt(inPtr) : -1;
+                int adv = writeAsEntityCombined(text.charAt(inPtr-1), next, false);
+                if (adv < 0) { // high half held to pair with the next segment
+                    break main_loop;
+                }
+                inPtr += adv;
             }
         }
     }
-    
+
     @Override
     public void writeCharacters(char[] cbuf, int offset, int len) throws IOException
     {
@@ -554,6 +587,15 @@ public final class BufferingXmlWriter
         final int highChar = mEncHighChar;
         final int MAXQC = Math.min(QC.length, highChar);
         len += offset;
+        // Pending high surrogate from a previous segment?
+        if (mSurrogate != 0) {
+            if (offset >= len) { // nothing to pair with yet
+                return;
+            }
+            int first = mSurrogate;
+            mSurrogate = 0;
+            writeAsEntity(calcSurrogate(first, cbuf[offset++]));
+        }
         do {
             int c = 0;
             int start = offset;
@@ -611,10 +653,15 @@ public final class BufferingXmlWriter
                 writeRaw(ent);
                 ent = null;
             } else if (offset < len) {
-                writeAsEntity(c);
+                int next = (offset+1 < len) ? cbuf[offset+1] : -1;
+                int adv = writeAsEntityCombined(c, next, false);
+                if (adv < 0) { // high half held to pair with the next segment
+                    break;
+                }
+                offset += adv;
             }
         } while (++offset < len);
-    }    
+    }
 
     /**
      * Method that will try to output the content as specified. If
@@ -764,6 +811,7 @@ public final class BufferingXmlWriter
     public void writeStartTagStart(String localName)
         throws IOException, XMLStreamException
     {
+        verifyNoPendingSurrogate();
         if (mCheckNames) {
             verifyNameValidity(localName, mNsAware);
         }
@@ -786,6 +834,7 @@ public final class BufferingXmlWriter
     public void writeStartTagStart(String prefix, String localName)
         throws IOException, XMLStreamException
     {
+        verifyNoPendingSurrogate();
         if (prefix == null || prefix.length() == 0) { // shouldn't happen
             writeStartTagStart(localName);
             return;
@@ -824,6 +873,7 @@ public final class BufferingXmlWriter
     @Override
     public void writeStartTagEmptyEnd() throws IOException
     {
+        verifyNoPendingSurrogate();
         int ptr = mOutputPtr;
         if ((ptr + 3) >= mOutputBufLen) {
             if (mOut == null) {
@@ -844,6 +894,7 @@ public final class BufferingXmlWriter
     @Override
     public void writeEndTag(String localName) throws IOException
     {
+        verifyNoPendingSurrogate();
         int ptr = mOutputPtr;
         int extra = (mOutputBufLen - ptr) - (3 + localName.length());
         if (extra < 0) {
@@ -865,6 +916,7 @@ public final class BufferingXmlWriter
     @Override
     public void writeEndTag(String prefix, String localName) throws IOException
     {
+        verifyNoPendingSurrogate();
         if (prefix == null || prefix.length() == 0) {
             writeEndTag(localName);
             return;
@@ -910,6 +962,7 @@ public final class BufferingXmlWriter
         if (mOut == null) {
             return;
         }
+        verifyNoPendingSurrogate();
         if (mCheckNames) {
             verifyNameValidity(localName, mNsAware);
         }
@@ -947,6 +1000,7 @@ public final class BufferingXmlWriter
         if (mOut == null) {
             return;
         }
+        verifyNoPendingSurrogate();
         if (mCheckNames) {
             verifyNameValidity(localName, mNsAware);
         }
@@ -983,6 +1037,7 @@ public final class BufferingXmlWriter
         if (mOut == null) {
             return;
         }
+        verifyNoPendingSurrogate();
         if (mCheckNames) {
             verifyNameValidity(prefix, mNsAware);
             verifyNameValidity(localName, mNsAware);
@@ -1029,6 +1084,7 @@ public final class BufferingXmlWriter
         if (mOut == null) {
             return;
         }
+        verifyNoPendingSurrogate();
         if (mCheckNames) {
             verifyNameValidity(prefix, mNsAware);
             verifyNameValidity(localName, mNsAware);
@@ -1072,11 +1128,11 @@ public final class BufferingXmlWriter
         int inPtr = 0;
         final char qchar = mEncQuoteChar;
         int highChar = mEncHighChar;
-        
+
         main_loop:
         while (true) { // main_loop
             String ent = null;
-            
+
             inner_loop:
             while (true) {
                 if (inPtr >= len) {
@@ -1116,7 +1172,8 @@ public final class BufferingXmlWriter
             if (ent != null) {
                 writeRaw(ent);
             } else {
-                writeAsEntity(value.charAt(inPtr-1));
+                int next = (inPtr < len) ? value.charAt(inPtr) : -1;
+                inPtr += writeAsEntityCombined(value.charAt(inPtr-1), next, true);
             }
         }
     }
@@ -1127,11 +1184,11 @@ public final class BufferingXmlWriter
         len += offset;
         final char qchar = mEncQuoteChar;
         int highChar = mEncHighChar;
-        
+
         main_loop:
         while (true) { // main_loop
             String ent = null;
-            
+
             inner_loop:
             while (true) {
                 if (offset >= len) {
@@ -1171,7 +1228,8 @@ public final class BufferingXmlWriter
             if (ent != null) {
                 writeRaw(ent);
             } else {
-                writeAsEntity(value[offset-1]);
+                int next = (offset < len) ? value[offset] : -1;
+                offset += writeAsEntityCombined(value[offset-1], next, true);
             }
         }
     }
@@ -1189,6 +1247,7 @@ public final class BufferingXmlWriter
         if (mOut == null) {
             return;
         }
+        verifyNoPendingSurrogate();
 
         int free = mOutputBufLen - mOutputPtr;
         if (enc.bufferNeedsFlush(free)) {
@@ -1212,6 +1271,7 @@ public final class BufferingXmlWriter
         if (mOut == null) {
             return;
         }
+        verifyNoPendingSurrogate();
         int free = mOutputBufLen - mOutputPtr;
         if (enc.bufferNeedsFlush(free)) {
             flush();
@@ -1236,6 +1296,7 @@ public final class BufferingXmlWriter
         if (mOut == null) {
             return;
         }
+        verifyNoPendingSurrogate();
         if (mCheckNames) {
             verifyNameValidity(localName, mNsAware);
         }
@@ -1277,6 +1338,7 @@ public final class BufferingXmlWriter
         if (mOut == null) {
             return;
         }
+        verifyNoPendingSurrogate();
         if (mCheckNames) {
             verifyNameValidity(prefix, mNsAware);
             verifyNameValidity(localName, mNsAware);
@@ -1328,6 +1390,7 @@ public final class BufferingXmlWriter
         if (mOut == null) {
             return;
         }
+        verifyNoPendingSurrogate();
         if (prefix == null) {
             prefix = "";
         }
@@ -1433,6 +1496,7 @@ public final class BufferingXmlWriter
     private final void fastWriteRaw(char c)
         throws IOException
     {
+        verifyNoPendingSurrogate();
         if (mOutputPtr >= mOutputBufLen) {
             if (mOut == null) {
                 return;
@@ -1445,6 +1509,7 @@ public final class BufferingXmlWriter
     private final void fastWriteRaw(char c1, char c2)
         throws IOException
     {
+        verifyNoPendingSurrogate();
         if ((mOutputPtr + 1) >= mOutputBufLen) {
             if (mOut == null) {
                 return;
@@ -1458,6 +1523,7 @@ public final class BufferingXmlWriter
     private final void fastWriteRaw(String str)
         throws IOException
     {
+        verifyNoPendingSurrogate();
         int len = str.length();
         int ptr = mOutputPtr;
         if ((ptr + len) >= mOutputBufLen) {
@@ -1725,6 +1791,89 @@ public final class BufferingXmlWriter
          * even make it just 7, let's see how this works out)
          */
         return 8;
+    }
+
+    /**
+     * Outputs a single character of text or attribute content as a character
+     * entity, first combining the two halves of a supplementary character into
+     * the single code point they represent (needed when the target encoding can
+     * not represent it natively). A non-surrogate character is output as-is.
+     *<p>
+     * When {@code ch} is the high half of a pair but its low half is not yet
+     * available ({@code next < 0}), behavior depends on {@code atomic}: an
+     * attribute value is indivisible, so the dangling half is rejected;
+     * character content holds it in {@link #mSurrogate} to pair with the next
+     * {@code writeCharacters} call, returning -1 so the caller can stop. A lone
+     * low surrogate is always rejected.
+     *
+     * @param ch character to output (possibly a high surrogate)
+     * @param next following character, or -1 if none is available yet
+     * @param atomic true for attribute values (reject a split pair), false for
+     *    character content (hold the high half for the next call)
+     *
+     * @return 1 if {@code next} was consumed to complete a pair, 0 if a single
+     *    character was written, or -1 if a high half was held for a later call
+     *
+     * @since 7.2.2
+     */
+    private int writeAsEntityCombined(int ch, int next, boolean atomic)
+        throws IOException
+    {
+        if (ch >= SURR1_FIRST && ch <= SURR2_LAST) { // supplementary char half
+            if (ch > SURR1_LAST || next < 0) { // lone low half, or high half lacking its low half
+                if (atomic || ch > SURR1_LAST) {
+                    throwUnpairedSurrogate(ch);
+                }
+                mSurrogate = ch; // hold high half to pair with the next segment
+                return -1;
+            }
+            writeAsEntity(calcSurrogate(ch, next));
+            return 1;
+        }
+        writeAsEntity(ch);
+        return 0;
+    }
+
+    /**
+     * Combines a high/low surrogate pair into the supplementary code point
+     * it represents, so it can be output as a single character entity when
+     * the target encoding can not represent it natively. Throws for an
+     * unpaired or otherwise invalid surrogate.
+     *
+     * @since 7.2.2
+     */
+    private int calcSurrogate(int first, int second)
+        throws IOException
+    {
+        if (first < SURR1_FIRST || first > SURR1_LAST
+                || second < SURR2_FIRST || second > SURR2_LAST) {
+            throw new IOException("Unpaired surrogate character (first 0x"
+                    +Integer.toHexString(first)+", second 0x"
+                    +Integer.toHexString(second)+")");
+        }
+        return 0x10000 + ((first - SURR1_FIRST) << 10) + (second - SURR2_FIRST);
+    }
+
+    // @since 7.2.2
+    private void throwUnpairedSurrogate(int code) throws IOException
+    {
+        throw new IOException("Unpaired surrogate character (0x"+Integer.toHexString(code)+")");
+    }
+
+    /**
+     * Verifies that no high surrogate is being held for pairing before content
+     * other than continuing character data is emitted. A held surrogate at such
+     * a point can never be completed, so it is rejected (mirrors the guarding
+     * done by the byte-backed {@code EncodingXmlWriter} at its output choke
+     * points). Resets the held value so a caught failure does not keep throwing.
+     */
+    private void verifyNoPendingSurrogate() throws IOException
+    {
+        if (mSurrogate != 0) {
+            int surr = mSurrogate;
+            mSurrogate = 0;
+            throwUnpairedSurrogate(surr);
+        }
     }
 
     protected final void writeAsEntity(int c)
