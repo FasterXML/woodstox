@@ -1810,8 +1810,11 @@ public final class BufferingXmlWriter
      * @param next following character, or -1 if none is available yet
      * @param atomic true for attribute values (reject a split pair), false for
      *    character content (hold the high half for the next call)
+     *
      * @return 1 if {@code next} was consumed to complete a pair, 0 if a single
      *    character was written, or -1 if a high half was held for a later call
+     *
+     * @since 7.2.2
      */
     private int writeAsEntityCombined(int ch, int next, boolean atomic)
         throws IOException
@@ -1836,6 +1839,8 @@ public final class BufferingXmlWriter
      * it represents, so it can be output as a single character entity when
      * the target encoding can not represent it natively. Throws for an
      * unpaired or otherwise invalid surrogate.
+     *
+     * @since 7.2.2
      */
     private int calcSurrogate(int first, int second)
         throws IOException
@@ -1849,6 +1854,7 @@ public final class BufferingXmlWriter
         return 0x10000 + ((first - SURR1_FIRST) << 10) + (second - SURR2_FIRST);
     }
 
+    // @since 7.2.2
     private void throwUnpairedSurrogate(int code) throws IOException
     {
         throw new IOException("Unpaired surrogate character (0x"+Integer.toHexString(code)+")");
