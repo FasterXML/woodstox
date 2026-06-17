@@ -4964,13 +4964,7 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                     // not quite sure why this is needed... but it is:
                     inputLen = mInputEnd;
                 } else if (c == '>') {
-                    // Let's see if we got ']]>'?
-                    /* 21-Apr-2005, TSa: But we can NOT check the output buffer
-                     *  as it contains _expanded_ stuff... only input side.
-                     *  For now, 98% accuracy has to do, as we may not be able
-                     *  to access previous buffer's contents. But at least we
-                     *  won't produce false positives from entity expansion
-                     */
+                    // Let's see if we got ']]>'? First: fully in-buffer case
                     if (inputPtr > 2) { // can we do it here?
                         // Since mInputPtr has been advanced, -1 refers to '>'
                         if (inputBuffer[inputPtr-3] == ']'
@@ -4984,12 +4978,11 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                             mPendingException = throwWfcException(ErrorConsts.ERR_BRACKET_IN_TEXT, deferErrors);
                             break;
                         }
-                    } else {
-                        // '>' is among the first chars of the buffer: a ']]'
-                        // ending the previous buffer is handled at load time by
-                        // checkBracketBoundary(), so nothing to do here.
-                        ;
                     }
+                    /* else { */
+                    // 16-Jun-2026, tatu: [woodstox#303] Split-buffer case
+                    //   handled by checking for ']' or ']]' ending the previous buffer
+                    //   at load time by checkBracketBoundary(), so nothing to do here.
                 }
             }
             // Ok, let's add char to output:
@@ -5449,9 +5442,8 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                     }
                     start = mInputPtr;
                 } else if (c == '>') { // did we get ']]>'?
-                    /* 21-Apr-2005, TSa: But we can NOT check the output buffer
-                     *  (see comments in readTextSecondary() for details)
-                     */
+                    // 21-Apr-2005, TSa: But we can NOT check the output buffer
+                    //  (see comments in readTextSecondary() for details)
                     if (mInputPtr >= 3) { // can we do it here?
                         if (mInputBuffer[mInputPtr-3] == ']'
                             && mInputBuffer[mInputPtr-2] == ']') {
@@ -5462,18 +5454,15 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                             }
                             throwParseError(ErrorConsts.ERR_BRACKET_IN_TEXT);
                         }
-                    } else {
-                        // Past-boundary ']]' is handled at load time by
-                        // checkBracketBoundary(), so nothing to do here.
-                        ;
-                    }
+                    } // else {
+                    // 16-Jun-2026, tatu: [woodstox#303] Split-buffer case
+                    //   handled by checking for ']' or ']]' ending the previous buffer
+                    //   at load time by checkBracketBoundary(), so nothing to do here.
                 }
             }
         } // while (true)
 
-        /* Need to push back '<' or '&', whichever caused us to
-         * get out...
-         */
+        // Need to push back '<' or '&', whichever caused us to get out...
         --mInputPtr;
 
         // Anything left to flush?
