@@ -23,7 +23,8 @@ public final class TextEscaper
 
             for (; i < len; ++i) {
                 c = value.charAt(i);
-                if (c == '<' || c == '&' || c == '"') {
+                if (c == '<' || c == '&' || c == '"'
+                    || c == '\t' || c == '\n' || c == '\r') {
                     break;
                 }
             }
@@ -38,7 +39,14 @@ public final class TextEscaper
                     w.write("&amp;");
                 } else if (c == '"') {
                     w.write("&quot;");
-
+                } else if (c == '\t') {
+                    // Whitespace chars must be escaped, or attribute-value
+                    // normalization (XML 1.0 #3.3.3) collapses them to spaces
+                    w.write("&#x9;");
+                } else if (c == '\n') {
+                    w.write("&#xA;");
+                } else if (c == '\r') {
+                    w.write("&#xD;");
                 }
             }
         } while (++i < len);
