@@ -12,6 +12,8 @@ Project: woodstox
  (contributed by @aizu-m)
 #303: Check for `]]>` in content split across input buffer boundary
  (contributed by @aizu-m)
+#306: Escape tab, newline and CR in `TextEscaper.writeEscapedAttrValue()`
+ (contributed by @aizu-m)
 
 7.2.1 (07-Jun-2026)
 
