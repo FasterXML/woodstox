@@ -207,3 +207,9 @@ Javeed Khan (@jmestwa-coder)
  (7.2.1)
 * Fixed #299: NMTOKENS default value validation for single-character tokens
  (7.2.1)
+
+Joe Jensen (@joejensen)
+
+* Reported #308: Regression in `NonNsStreamWriter` which causes erroneous `WstxOutputException`
+   ("trying to write attribute '***' twice")
+ (7.2.2)

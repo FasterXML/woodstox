@@ -14,6 +14,9 @@ Project: woodstox
  (contributed by @aizu-m)
 #306: Escape tab, newline and CR in `TextEscaper.writeEscapedAttrValue()`
  (contributed by @aizu-m)
+#308: Regression in `NonNsStreamWriter` which causes erroneous `WstxOutputException`
+   ("trying to write attribute '***' twice")
+ (reported by Joe J)
 
 7.2.1 (07-Jun-2026)
 
