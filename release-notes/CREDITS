@@ -191,6 +191,8 @@ Aizal Khan (@aizu-m)
  (7.2.2)
 * Contributed #303: Check for `]]>` in content split across input buffer boundary
  (7.2.2)
+* Contributed #306: Escape tab, newline and CR in `TextEscaper.writeEscapedAttrValue()`
+ (7.2.2)
 
 Skrethel (@Skrethel)
 
@@ -205,3 +207,8 @@ Javeed Khan (@jmestwa-coder)
  (7.2.1)
 * Fixed #299: NMTOKENS default value validation for single-character tokens
  (7.2.1)
+
+@metsw24-max
+
+* Contributed#305: Fix XML 1.1 Restricted Character Validation for Reader Inputs
+ (7.2.2)

@@ -12,11 +12,10 @@ Project: woodstox
  (contributed by @aizu-m)
 #303: Check for `]]>` in content split across input buffer boundary
  (contributed by @aizu-m)
-* Enforce XML 1.1 "restricted characters" (C1 control range U+007F-U+009F,
-  except U+0085 NEL) for `Reader`-based input as well. Previously these were
-  only rejected while decoding bytes (`InputStream` input), so the same document
-  was accepted or rejected depending solely on whether it was supplied as a
-  `Reader` or an `InputStream`; now `ReaderSource` applies the same check.
+#306: Escape tab, newline and CR in `TextEscaper.writeEscapedAttrValue()`
+ (contributed by @aizu-m)
+#305: Fix XML 1.1 Restricted Character Validation for Reader Inputs
+ (contributed by @ metsw24-max)
 
 7.2.1 (07-Jun-2026)
 
