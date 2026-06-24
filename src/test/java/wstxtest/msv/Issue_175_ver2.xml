@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<main:Issue175 xmlns:main="http://www.example.org/issue_175_main"
+			   xmlns:imprt="http://www.example.org/issue_175_import"
+			   main:XmlVersion="2"
+			   imprt:XmlVersion="1" >
+	<main:Data imprt:Attrib1="Attribute #1 - Ver1"
+			   imprt:Attrib2="Attribute #2 - Ver1" >
+		<main:Element1>Element #1 from Version 2</main:Element1>
+		<main:Element2>12345</main:Element2>
+		<main:Element3 imprt:Attrib3="false">Element #2 from Version 2</main:Element3>
+		<main:Element4>ENUM1</main:Element4>
+		<main:Element5>Element #2 from Version 2</main:Element5>
+	</main:Data>
+</main:Issue175>
