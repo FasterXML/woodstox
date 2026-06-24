@@ -212,3 +212,9 @@ Javeed Khan (@jmestwa-coder)
 
 * Contributed#305: Fix XML 1.1 Restricted Character Validation for Reader Inputs
  (7.2.2)
+
+Joe Jensen (@joejensen)
+
+* Reported #308: Regression in `NonNsStreamWriter` which causes erroneous `WstxOutputException`
+   ("trying to write attribute '***' twice")
+ (7.2.2)
