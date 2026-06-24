@@ -601,6 +601,9 @@ public class NonNsStreamWriter
                             mVldException = e;
                             throw e;
                         }
+                    } else if (mCheckAttrs) {
+                        mAttrMap = null;
+                        mAttrList = null;
                     }
                     return;
                 }
