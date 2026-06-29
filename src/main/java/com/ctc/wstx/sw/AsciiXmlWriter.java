@@ -527,6 +527,21 @@ public final class AsciiXmlWriter
             }
             len -= max;
         }
+        // A comment may not end with '-' either: the appended "-->" would
+        // otherwise form the illegal "--->" end marker. BufferingXmlWriter
+        // (used for the other encodings) already guards this case.
+        if (data.length() > 0 && data.charAt(data.length()-1) == '-') {
+            if (!mFixContent) {
+                mOutputPtr = ptr;
+                return data.length()-1;
+            }
+            if (ptr >= mOutputBuffer.length) {
+                mOutputPtr = ptr;
+                flushBuffer();
+                ptr = 0;
+            }
+            mOutputBuffer[ptr++] = BYTE_SPACE;
+        }
         mOutputPtr = ptr;
         return -1;
     }
