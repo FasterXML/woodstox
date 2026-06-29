@@ -48,6 +48,7 @@ import com.ctc.wstx.exc.WstxException;
 import com.ctc.wstx.io.*;
 import com.ctc.wstx.util.DefaultXmlSymbolTable;
 import com.ctc.wstx.util.ExceptionUtil;
+import com.ctc.wstx.util.StringUtil;
 import com.ctc.wstx.util.TextBuffer;
 import com.ctc.wstx.util.TextBuilder;
 
@@ -2385,10 +2386,13 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                 tb.resetWithEmpty();
                 parseQuoted(XmlConsts.XML_DECL_KW_ENCODING, c, tb);
                 mDocXmlEncoding = tb.toString();
-                /* should we verify encoding at this point? let's not, for now;
-                 * since it's for information only, first declaration from
-                 * bootstrapper is used for the whole stream.
-                 */
+                // Value is for information only, but still has to match the
+                // XML EncName production (XML 1.0 #4.3.3), like the bootstrapper
+                // checks the first declaration.
+                if (!StringUtil.isValidEncodingName(mDocXmlEncoding)) {
+                    throwParseError("Invalid xml '"+XmlConsts.XML_DECL_KW_ENCODING
+                            +"' pseudo-attribute value '"+mDocXmlEncoding+"'");
+                }
                 c = getNextInCurrAfterWS(SUFFIX_IN_XML_DECL);
             } else if (c != 's') {
                 throwUnexpectedChar(c, " in xml declaration; expected either 'encoding' or 'standalone' pseudo-attribute");
