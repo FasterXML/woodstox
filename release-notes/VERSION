@@ -12,6 +12,8 @@ Project: woodstox
  (contributed by @aizu-m)
 #303: Check for `]]>` in content split across input buffer boundary
  (contributed by @aizu-m)
+#305: Fix XML 1.1 Restricted Character Validation for Reader Inputs
+ (contributed by @metsw24-max)
 #306: Escape tab, newline and CR in `TextEscaper.writeEscapedAttrValue()`
  (contributed by @aizu-m)
 #308: Regression in `NonNsStreamWriter` which causes erroneous `WstxOutputException`
