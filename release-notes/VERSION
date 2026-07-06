@@ -19,6 +19,8 @@ Project: woodstox
  (reported by Joe J)
 #310: Reject xml-decl encoding name not matching EncName
  (contributed by @aizu-m)
+#311: Reject/fix comment ending in '-' in byte-backed XML writers
+ (contributed by @aizu-m)
 
 7.2.1 (07-Jun-2026)
 

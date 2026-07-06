@@ -195,6 +195,8 @@ Aizal Khan (@aizu-m)
  (7.2.2)
 * Contributed #310: Reject xml-decl encoding name not matching EncName
  (7.2.2)
+* Contributed #311: Reject/fix comment ending in '-' in byte-backed XML writers
+ (7.2.2)
 
 Skrethel (@Skrethel)
 
