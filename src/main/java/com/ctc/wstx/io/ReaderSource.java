@@ -129,7 +129,7 @@ public class ReaderSource
             return -1;
         }
         if (mCheckXml11Chars) {
-            verifyXml11Chars(mBuffer, 0, count);
+            verifyXml11Chars(mBuffer, 0, count, reader.mCurrInputProcessed);
         }
         reader.mInputBuffer = mBuffer;
         reader.mInputPtr = 0;
@@ -182,7 +182,7 @@ public class ReaderSource
                 return false;
             }
             if (mCheckXml11Chars) {
-                verifyXml11Chars(mBuffer, currAmount, currAmount + actual);
+                verifyXml11Chars(mBuffer, currAmount, currAmount + actual, reader.mCurrInputProcessed);
             }
             currAmount += actual;
             minAmount -= actual;
@@ -201,19 +201,24 @@ public class ReaderSource
      * Mirrors the check performed by {@link UTF8Reader} (and the other
      * {@link BaseReader} subclasses) for {@code InputStream}-based input, so
      * that {@code Reader}-based input is validated identically.
+     *
+     * @param baseProcessed Number of characters processed before
+     *   {@code buf[0]} (i.e. {@code reader.mCurrInputProcessed}); used so the
+     *   reported character position is the absolute document offset rather than
+     *   a buffer-local one.
      */
-    private void verifyXml11Chars(char[] buf, int start, int end)
+    private void verifyXml11Chars(char[] buf, int start, int end, long baseProcessed)
         throws IOException
     {
         for (int i = start; i < end; ++i) {
             char c = buf[i];
             if (c >= 0x7F && c <= 0x9F && c != 0x85) {
-                reportInvalidXml11(c, mInputProcessed + i);
+                reportInvalidXml11(c, baseProcessed + i);
             }
         }
     }
 
-    private void reportInvalidXml11(int value, int charPos)
+    private void reportInvalidXml11(int value, long charPos)
         throws IOException
     {
         // Matches BaseReader.reportInvalidXml11 so behavior is the same whether
