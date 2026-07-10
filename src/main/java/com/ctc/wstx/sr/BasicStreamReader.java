@@ -4616,6 +4616,33 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
     }
 
     /**
+     * Scans a run of XML text content and returns the index in {@code [from, end)}
+     * of the first character that requires per-character handling while reading
+     * character data, or {@code end} if the whole range is "pure" text that can be
+     * copied verbatim.
+     *<p>
+     * The characters that need handling are exactly those the scalar text loop
+     * branches on: control characters ({@code c < 0x20}, which includes
+     * {@code \n}, {@code \r} and {@code \t}), {@code '<'} (segment end),
+     * {@code '&'} (entity) and {@code '>'} (possible {@code ]]>}). Everything else
+     * -- including printable characters below {@link #CHAR_FIRST_PURE_TEXT} such as
+     * space, digits or {@code '='} -- is plain text the loop copies unchanged, so
+     * it is safe to skip here. This lets {@link #readTextSecondary} bulk-copy the
+     * plain run with a single {@link System#arraycopy} instead of one char at a
+     * time.
+     */
+    private static int firstSpecialTextChar(char[] buf, int from, int end)
+    {
+        for (int i = from; i < end; ++i) {
+            char c = buf[i];
+            if (c < CHAR_SPACE || c == '<' || c == '&' || c == '>') {
+                return i;
+            }
+        }
+        return end;
+    }
+
+    /**
      * Method called to read in consecutive beginning parts of a text
      * segment, up to either end of the segment (lt char) or until
      * first 'hole' in text (buffer end, 2-char lf to convert, entity).
@@ -4804,6 +4831,36 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                 inputPtr = mInputPtr;
                 inputBuffer = mInputBuffer;
                 inputLen = mInputEnd;
+            }
+
+            /* Bulk-copy the run of "pure" text characters (those needing no
+             * per-character handling) up to the next special char, honouring
+             * output-segment boundaries exactly as the per-char loop below would.
+             * A single System.arraycopy replaces the per-character copy for the
+             * common case of long runs of plain text (large text/CDATA nodes).
+             */
+            {
+                int runEnd = firstSpecialTextChar(inputBuffer, inputPtr, inputLen);
+                while (inputPtr < runEnd) {
+                    int n = runEnd - inputPtr;
+                    int room = outBuf.length - outPtr;
+                    if (n > room) {
+                        n = room;
+                    }
+                    System.arraycopy(inputBuffer, inputPtr, outBuf, outPtr, n);
+                    inputPtr += n;
+                    outPtr += n;
+                    if (outPtr >= outBuf.length) { // filled the segment
+                        if ((outBuf = _expandOutputForText(inputPtr, outBuf, shortestSegment)) == null) {
+                            return false;
+                        }
+                        verifyLimit("Text size", mConfig.getMaxTextLength(), mTextBuffer.size());
+                        outPtr = 0;
+                    }
+                }
+                if (inputPtr >= inputLen) { // consumed all buffered input; reload
+                    continue;
+                }
             }
             char c = inputBuffer[inputPtr++];
 
