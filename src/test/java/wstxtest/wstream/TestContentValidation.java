@@ -349,6 +349,84 @@ public class TestContentValidation
         }
     }
 
+    /**
+     * U+009F is a restricted character in XML 1.1 (like the rest of the C1
+     * range 0x7F-0x9F, bar NEL 0x85). In comment/CDATA/PI content it can not
+     * be escaped, so the ISO-8859-1 writer must reject it. The C1 rejection
+     * range in ISOLatin1XmlWriter used '<' where the reader (ISOLatinReader)
+     * and every sibling check use '<=', so 0x9F alone slipped through and was
+     * emitted as a raw byte, which the reader then refuses.
+     */
+    @Test
+    public void testXml11RestrictedC1InIsoLatin1()
+        throws XMLStreamException
+    {
+        // 0x9F must be rejected; 0x9E is the adjacent already-rejected control
+        for (int c1 = 0x9E; c1 <= 0x9F; ++c1) {
+            for (int i = 0; i <= 2; ++i) {
+                XMLOutputFactory2 f = getFactory(i, true, false);
+                for (int kind = 0; kind < 4; ++kind) {
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    XMLStreamWriter2 sw = (XMLStreamWriter2) f.createXMLStreamWriter(bos, "ISO-8859-1");
+                    sw.writeStartDocument("ISO-8859-1", "1.1");
+                    sw.writeStartElement("root");
+                    String content = "x" + ((char) c1) + "y";
+                    try {
+                        switch (kind) {
+                        case 0:
+                            sw.writeComment(content);
+                            break;
+                        case 1:
+                            sw.writeCData(content);
+                            break;
+                        case 2:
+                            char[] ch = content.toCharArray();
+                            sw.writeCData(ch, 0, ch.length);
+                            break;
+                        default:
+                            sw.writeProcessingInstruction("target", content);
+                            break;
+                        }
+                        fail("Expected an XMLStreamException for restricted XML 1.1 char U+00"
+                                +Integer.toHexString(c1).toUpperCase()
+                                +" in unescapable ISO-8859-1 content (type "+i+", kind "+kind+")");
+                    } catch (XMLStreamException sex) {
+                        // good
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * The fix above must not touch valid ISO-8859-1 chars (0xA0-0xFF), which
+     * remain legal literal XML 1.1 content.
+     */
+    @Test
+    public void testXml11ValidHighLatin1Unaffected()
+        throws Exception
+    {
+        for (int i = 0; i <= 2; ++i) {
+            XMLOutputFactory2 f = getFactory(i, true, false);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            XMLStreamWriter2 sw = (XMLStreamWriter2) f.createXMLStreamWriter(bos, "ISO-8859-1");
+            sw.writeStartDocument("ISO-8859-1", "1.1");
+            sw.writeStartElement("root");
+            String content = "x éÿy"; // NBSP, e-acute, y-diaeresis
+            sw.writeCData(content);
+            sw.writeEndElement();
+            sw.writeEndDocument();
+            sw.close();
+
+            XMLStreamReader sr = getReader(new String(bos.toByteArray(), "ISO-8859-1"));
+            assertTokenType(START_ELEMENT, sr.next());
+            assertTokenType(CDATA, sr.next());
+            if (!content.equals(getAndVerifyText(sr))) {
+                fail("Valid high ISO-8859-1 CDATA content was altered (type "+i+")");
+            }
+        }
+    }
+
     /*
 ////////////////////////////////////////////////////
 // Internal methods
