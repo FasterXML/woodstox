@@ -77,7 +77,7 @@ public final class ISOLatin1XmlWriter
                             mOutputPtr = ptr;
                             handleInvalidLatinChar(c);
                         } else if (mXml11) {
-                            if (c < 0x9F && c != 0x85) {
+                            if (c <= 0x9F && c != 0x85) {
                                 mOutputPtr = ptr;
                                 c = handleInvalidChar(c);
                             }
@@ -132,7 +132,7 @@ public final class ISOLatin1XmlWriter
                             mOutputPtr = ptr;
                             handleInvalidLatinChar(c);
                         } else if (mXml11) {
-                            if (c < 0x9F && c != 0x85) {
+                            if (c <= 0x9F && c != 0x85) {
                                 mOutputPtr = ptr;
                                 c = handleInvalidChar(c);
                             }
@@ -363,7 +363,7 @@ public final class ISOLatin1XmlWriter
                         mOutputPtr = ptr;
                         handleInvalidLatinChar(c);
                     } else if (mXml11) {
-                        if (c < 0x9F && c != 0x85) {
+                        if (c <= 0x9F && c != 0x85) {
                             mOutputPtr = ptr;
                             c = handleInvalidChar(c);
                         }
@@ -440,7 +440,7 @@ public final class ISOLatin1XmlWriter
                         mOutputPtr = ptr;
                         handleInvalidLatinChar(c);
                     } else if (mXml11) {
-                        if (c < 0x9F && c != 0x85) {
+                        if (c <= 0x9F && c != 0x85) {
                             mOutputPtr = ptr;
                             c = handleInvalidChar(c);
                         }
@@ -518,7 +518,7 @@ public final class ISOLatin1XmlWriter
                         mOutputPtr = ptr;
                         handleInvalidLatinChar(c);
                     } else if (mXml11) {
-                        if (c < 0x9F && c != 0x85) {
+                        if (c <= 0x9F && c != 0x85) {
                             mOutputPtr = ptr;
                             c = handleInvalidChar(c);
                         }
@@ -601,7 +601,7 @@ public final class ISOLatin1XmlWriter
                         mOutputPtr = ptr;
                         handleInvalidLatinChar(c);
                     } else if (mXml11) {
-                        if (c < 0x9F && c != 0x85) {
+                        if (c <= 0x9F && c != 0x85) {
                             mOutputPtr = ptr;
                             c = handleInvalidChar(c);
                         }
