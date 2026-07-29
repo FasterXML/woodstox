@@ -18,11 +18,15 @@ package com.ctc.wstx.msv;
 import java.io.*;
 import java.net.URL;
 
+import javax.xml.XMLConstants;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.*;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 import org.codehaus.stax2.validation.*;
 
 import com.ctc.wstx.api.ValidatorConfig;
@@ -150,8 +154,36 @@ public abstract class BaseSchemaFactory
         if (sSaxFactory == null) {
             sSaxFactory = SAXParserFactory.newInstance();
             sSaxFactory.setNamespaceAware(true); 
+            disableExternalEntities(sSaxFactory);
         }
         return sSaxFactory;
+    }
+
+    /**
+     * Method for disabling resolution of external entities referenced from
+     * schema documents. Neither this factory nor MSV exposes the underlying
+     * SAX parser, so callers have no way of doing this themselves.
+     *<p>
+     * Does not affect {@code xs:include} / {@code xs:import} or RELAX NG
+     * {@code externalRef}: those are resolved by MSV itself, not through
+     * entity resolution.
+     *
+     * @since 7.2.2
+     */
+    protected static void disableExternalEntities(SAXParserFactory f)
+    {
+        setFeature(f, XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        setFeature(f, "http://xml.org/sax/features/external-general-entities", false);
+        setFeature(f, "http://xml.org/sax/features/external-parameter-entities", false);
+    }
+
+    private static void setFeature(SAXParserFactory f, String feature, boolean state)
+    {
+        try {
+            f.setFeature(feature, state);
+        } catch (ParserConfigurationException | SAXNotRecognizedException | SAXNotSupportedException e) {
+            // Not every SAX implementation knows every feature; nothing to do
+        }
     }
 
     /*
