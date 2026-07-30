@@ -42,7 +42,22 @@ public class TestNmTokenAttrRead
     public void testInvalidNmTokenAttrDecl()
         throws XMLStreamException
     {
-        // ??? Are there any such cases?
+        // A default value whose FIRST character is not a valid NameChar must be
+        // rejected: an Nmtoken is (NameChar)+, with no start-char exception.
+        String XML = "<!DOCTYPE elem [\n"
+            +"<!ELEMENT elem EMPTY>\n"
+            +"<!ATTLIST elem name NMTOKEN '?foo'>\n"
+            +"]>\n<elem />";
+        streamThroughFailing(getValidatingReader(XML),
+                             "invalid NMTOKEN default with illegal first char ('?')");
+
+        // Same for NMTOKENS: first token's leading char illegal
+        XML = "<!DOCTYPE elem [\n"
+            +"<!ELEMENT elem EMPTY>\n"
+            +"<!ATTLIST elem names NMTOKENS '/foo bar'>\n"
+            +"]>\n<elem />";
+        streamThroughFailing(getValidatingReader(XML),
+                             "invalid NMTOKENS default with illegal first char ('/')");
     }
 
     @Test
@@ -76,6 +91,52 @@ public class TestNmTokenAttrRead
             +"]>\n<elem name='foo foo/bar'/>";
         streamThroughFailing(getValidatingReader(XML),
                              "invalid char ('/') in NMTOKENS");
+    }
+
+    /**
+     * Unit test for a declared NMTOKENS default value whose tokens are a
+     * single character long. The token-scanning loop in the NMTOKENS default
+     * validator used to skip the char right after a token start and could let
+     * its index run past the value length, throwing a raw
+     * StringIndexOutOfBoundsException (e.g. for default "x") instead of
+     * accepting the perfectly valid value -- and falsely rejecting values
+     * like "a b" whose first token is a single char.
+     */
+    @Test
+    public void testNmTokensDefaultWithSingleCharTokens()
+        throws XMLStreamException
+    {
+        // Default with a single-char token (last token single char), plus
+        // extra spaces, to also exercise normalization/tokenization:
+        String XML = "<!DOCTYPE root [\n"
+            +"<!ELEMENT root (child)>\n"
+            +"<!ELEMENT child EMPTY>\n"
+            +"<!ATTLIST child a NMTOKENS 'x  y z'>\n"
+            +"]>\n<root><child/></root>";
+        XMLStreamReader sr = getValidatingReader(XML);
+        assertTokenType(DTD, sr.next());
+        assertTokenType(START_ELEMENT, sr.next()); // root
+        assertTokenType(START_ELEMENT, sr.next()); // child (gets default)
+        assertEquals("child", sr.getLocalName());
+        assertEquals(1, sr.getAttributeCount());
+        assertEquals("a", sr.getAttributeLocalName(0));
+        // Single-char tokens must be preserved and space-normalized:
+        assertEquals("x y z", sr.getAttributeValue(0));
+        sr.close();
+
+        // A single-char-only default must be accepted (used to throw):
+        streamThrough(getValidatingReader("<!DOCTYPE root [\n"
+            +"<!ELEMENT root EMPTY>\n"
+            +"<!ATTLIST root a NMTOKENS 'x'>\n"
+            +"]>\n<root/>"));
+
+        // ...but an invalid token (illegal char, non-first position) is still
+        // rejected cleanly rather than crashing or being accepted:
+        streamThroughFailing(getValidatingReader("<!DOCTYPE root [\n"
+            +"<!ELEMENT root EMPTY>\n"
+            +"<!ATTLIST root a NMTOKENS 'ok bad/tok'>\n"
+            +"]>\n<root/>"),
+            "invalid NMTOKENS default value (illegal char '/')");
     }
 
     /**

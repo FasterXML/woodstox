@@ -226,6 +226,11 @@ public final class UTF8Reader
                         reportInvalid(c, outPtr-start,
                                       "(above "+Integer.toHexString(XmlConsts.MAX_UNICODE_CHAR)+") ");
                     }
+                    // 01-Jun-2026: [woodstox#291] Reject overlong forms: 4-byte sequences
+                    //  must encode 0x10000 or higher
+                    if (c < 0x10000) {
+                        reportInvalid(c, outPtr-start, "(overlong 4-byte UTF-8 encoding) ");
+                    }
                     /* Ugh. Need to mess with surrogates. Ok; let's inline them
                      * there, then, if there's room: if only room for one,
                      * need to save the surrogate for the rainy day...
@@ -246,6 +251,11 @@ public final class UTF8Reader
                      * legal ones (should not expand to surrogates;
                      * 0xFFFE and 0xFFFF are illegal)
                      */
+                    // 01-Jun-2026: [woodstox#291] Reject overlong forms: 3-byte sequences
+                    //  must encode 0x800 or higher
+                    if (c < 0x800) {
+                        reportInvalid(c, outPtr-start, "(overlong 3-byte UTF-8 encoding) ");
+                    }
                     if (c >= 0xD800) {
                         // But first, let's check max chars:
                         if (c < 0xE000) {
@@ -267,6 +277,11 @@ public final class UTF8Reader
                     }
                 }
             } else { // (needed == 1)
+                // 01-Jun-2026: [woodstox#291] Reject overlong forms: 2-byte sequences
+                //  must encode 0x80 or higher
+                if (c < 0x80) {
+                    reportInvalid(c, outPtr-start, "(overlong 2-byte UTF-8 encoding) ");
+                }
                 if (xml11) { // high-order ctrl char detection...
                     if (c <= 0x9F) {
                         if (c == 0x85) { // NEL, let's convert?
@@ -305,8 +320,8 @@ public final class UTF8Reader
         int charPos = mCharCount + offset + 1;
 
         throw new CharConversionException("Invalid UTF-8 start byte 0x"
-                                          +Integer.toHexString(mask)
-                                          +" (at char #"+charPos+", byte #"+bytePos+")");
+                +Integer.toHexString(mask)
+                +" (at char #"+charPos+", byte #"+bytePos+")");
     }
 
     private void reportInvalidOther(int mask, int offset)
@@ -316,8 +331,8 @@ public final class UTF8Reader
         int charPos = mCharCount + offset;
 
         throw new CharConversionException("Invalid UTF-8 middle byte 0x"
-                                          +Integer.toHexString(mask)
-                                          +" (at char #"+charPos+", byte #"+bytePos+")");
+                +Integer.toHexString(mask)
+                +" (at char #"+charPos+", byte #"+bytePos+")");
     }
 
     private void reportUnexpectedEOF(int gotBytes, int needed)
@@ -327,8 +342,8 @@ public final class UTF8Reader
         int charPos = mCharCount;
 
         throw new CharConversionException("Unexpected EOF in the middle of a multi-byte char: got "
-                                          +gotBytes+", needed "+needed
-                                          +", at char #"+charPos+", byte #"+bytePos+")");
+                +gotBytes+", needed "+needed
+                +", at char #"+charPos+", byte #"+bytePos+")");
     }
 
     private void reportInvalid(int value, int offset, String msg)
@@ -338,8 +353,8 @@ public final class UTF8Reader
         int charPos = mCharCount + offset;
 
         throw new CharConversionException("Invalid UTF-8 character 0x"
-                                          +Integer.toHexString(value)+msg
-                                          +" at char #"+charPos+", byte #"+bytePos+")");
+                +Integer.toHexString(value)+msg
+                +" at char #"+charPos+", byte #"+bytePos+")");
     }
 
     /**

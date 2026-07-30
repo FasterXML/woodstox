@@ -48,6 +48,7 @@ import com.ctc.wstx.exc.WstxException;
 import com.ctc.wstx.io.*;
 import com.ctc.wstx.util.DefaultXmlSymbolTable;
 import com.ctc.wstx.util.ExceptionUtil;
+import com.ctc.wstx.util.StringUtil;
 import com.ctc.wstx.util.TextBuffer;
 import com.ctc.wstx.util.TextBuilder;
 
@@ -2020,9 +2021,22 @@ public abstract class BasicStreamReader
                         // Ok, fine, c is whatever it is
                         ;
                     } else { // full entity just changes buffer...
+                        final WstxInputSource preInput = mInput;
                         ch = fullyResolveEntity(false);
                         if (ch == 0) {
-                            // need to skip output, thusly (expanded to new input source)
+                            // [woodstox-core#292] char-ref-as-entity: output its
+                            // replacement chars inline (else expanded to new input
+                            // source, nothing to output here)
+                            char[] repl = takeInlineCharRefReplacement(preInput);
+                            if (repl != null) {
+                                for (int i = 0, len = repl.length; i < len; ++i) {
+                                    if (outPtr >= outLimit) {
+                                        outBuf = _checkAttributeLimit(tb, outBuf, outPtr, outPtr - startingOffset, maxAttrSize);
+                                        outLimit = _outputLimit(outBuf, startingOffset, maxAttrSize);
+                                    }
+                                    outBuf[outPtr++] = repl[i];
+                                }
+                            }
                             continue;
                         }
                     }
@@ -2372,10 +2386,13 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                 tb.resetWithEmpty();
                 parseQuoted(XmlConsts.XML_DECL_KW_ENCODING, c, tb);
                 mDocXmlEncoding = tb.toString();
-                /* should we verify encoding at this point? let's not, for now;
-                 * since it's for information only, first declaration from
-                 * bootstrapper is used for the whole stream.
-                 */
+                // Value is for information only, but still has to match the
+                // XML EncName production (XML 1.0 #4.3.3), like the bootstrapper
+                // checks the first declaration.
+                if (!StringUtil.isValidEncodingName(mDocXmlEncoding)) {
+                    throwParseError("Invalid xml '"+XmlConsts.XML_DECL_KW_ENCODING
+                            +"' pseudo-attribute value '"+mDocXmlEncoding+"'");
+                }
                 c = getNextInCurrAfterWS(SUFFIX_IN_XML_DECL);
             } else if (c != 's') {
                 throwUnexpectedChar(c, " in xml declaration; expected either 'encoding' or 'standalone' pseudo-attribute");
@@ -4796,8 +4813,38 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
     }
 
     /**
+     * Called right after a new input buffer has been loaded while reading
+     * textual content, when the buffer that was just replaced ended with one
+     * or two {@code ']'} characters. Those trailing brackets are no longer
+     * accessible to the in-buffer look-back that normally detects {@code "]]>"}
+     * in content, so without this check a {@code "]]>"} split across the buffer
+     * boundary would be accepted (it is not allowed in content, XML 1.0/1.1 #2.4).
      *
-     * @param deferErrors Flag to enable storing an exception to a 
+     * @param prevBrackets Number of trailing {@code ']'} (1 or 2) the previous buffer ended with
+     * @param scanPtr Index of the first character of the freshly loaded content
+     */
+    private void checkBracketBoundary(int prevBrackets, int scanPtr)
+        throws XMLStreamException
+    {
+        final char[] buf = mInputBuffer;
+        final int end = mInputEnd;
+        int ptr = scanPtr;
+        int brackets = prevBrackets;
+        // Skip ALL leading ']' (not just up to two): a run like "]]]>" straddling
+        // the boundary still ends in "]]>" and must be rejected. Stopping at two
+        // would leave ptr on a ']' and miss the following '>'.
+        while (ptr < end && buf[ptr] == ']') {
+            ++brackets;
+            ++ptr;
+        }
+        if (brackets >= 2 && ptr < end && buf[ptr] == '>') {
+            throwWfcException(ErrorConsts.ERR_BRACKET_IN_TEXT, false);
+        }
+    }
+
+    /**
+     *
+     * @param deferErrors Flag to enable storing an exception to a
      *   variable, instead of immediately throwing it. If true, will
      *   just store the exception; if false, will not store, just throw.
      *
@@ -4825,12 +4872,25 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                  *   then throw an exception: no need to do that yet.
                  */
                 mInputPtr = inputPtr;
+                // Number of ']' the buffer about to be discarded ends with; needed
+                // so a "]]>" split across the boundary is still caught below.
+                int prevBrackets = 0;
+                if (inputLen > 0 && inputBuffer[inputLen-1] == ']') {
+                    prevBrackets = (inputLen > 1 && inputBuffer[inputLen-2] == ']') ? 2 : 1;
+                }
+                WstxInputSource srcBefore = mInput;
                 if (!loadMore()) {
                     break;
                 }
                 inputPtr = mInputPtr;
                 inputBuffer = mInputBuffer;
                 inputLen = mInputEnd;
+                // Only a plain refill of the same source can split a literal "]]>";
+                // ']]' pulled in from an entity is legitimately quoted, so skip the
+                // check when loadMore() crossed an input-source (entity) boundary.
+                if (prevBrackets > 0 && mInput == srcBefore) {
+                    checkBracketBoundary(prevBrackets, inputPtr);
+                }
             }
 
             /* Bulk-copy the run of "pure" text characters (those needing no
@@ -4909,9 +4969,21 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                             && (ch = resolveSimpleEntity(true)) != 0) {
                             // Ok, it's fine then
                         } else {
+                            final WstxInputSource preInput = mInput;
                             ch = fullyResolveEntity(true);
                             if (ch == 0) {
-                                // Input buffer changed, nothing to output quite yet:
+                                // [woodstox-core#292] char-ref-as-entity: output its
+                                // replacement chars inline (mid-segment we can not emit
+                                // a separate ENTITY_REFERENCE event), as the in-buffer
+                                // fast path above does
+                                char[] repl = takeInlineCharRefReplacement(preInput);
+                                if (repl != null) {
+                                    mTextBuffer.setCurrentLength(outPtr);
+                                    mTextBuffer.append(repl, 0, repl.length);
+                                    outBuf = mTextBuffer.getCurrentSegment();
+                                    outPtr = mTextBuffer.getCurrentSegmentSize();
+                                }
+                                // Input buffer changed, nothing (more) to output quite yet:
                                 inputBuffer = mInputBuffer;
                                 inputLen = mInputEnd;
                                 inputPtr = mInputPtr;
@@ -4920,14 +4992,12 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                             // otherwise char is now fine...
                         }
                     } else {
-                        /* Nope, can only expand char entities; others need
-                         * to be separately handled.
-                         */
+                        // Nope, can only expand char entities; others need
+                        // to be separately handled.
                         ch = resolveCharOnlyEntity(true);
                         if (ch == 0) { // some other entity...
-                            /* can't expand; underlying pointer now points to
-                             * char after ampersand, need to rewind
-                             */
+                            // can't expand; underlying pointer now points to
+                            // char after ampersand, need to rewind
                             --mInputPtr;
                             break;
                         }
@@ -4955,13 +5025,7 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                     // not quite sure why this is needed... but it is:
                     inputLen = mInputEnd;
                 } else if (c == '>') {
-                    // Let's see if we got ']]>'?
-                    /* 21-Apr-2005, TSa: But we can NOT check the output buffer
-                     *  as it contains _expanded_ stuff... only input side.
-                     *  For now, 98% accuracy has to do, as we may not be able
-                     *  to access previous buffer's contents. But at least we
-                     *  won't produce false positives from entity expansion
-                     */
+                    // Let's see if we got ']]>'? First: fully in-buffer case
                     if (inputPtr > 2) { // can we do it here?
                         // Since mInputPtr has been advanced, -1 refers to '>'
                         if (inputBuffer[inputPtr-3] == ']'
@@ -4975,13 +5039,11 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                             mPendingException = throwWfcException(ErrorConsts.ERR_BRACKET_IN_TEXT, deferErrors);
                             break;
                         }
-                    } else {
-                        /* 21-Apr-2005, TSa: No good way to verify it,
-                         *   at this point. Should come back and think of how
-                         *   to properly handle this (rare) possibility.
-                         */
-                        ;
                     }
+                    /* else { */
+                    // 16-Jun-2026, tatu: [woodstox#303] Split-buffer case
+                    //   handled by checking for ']' or ']]' ending the previous buffer
+                    //   at load time by checkBracketBoundary(), so nothing to do here.
                 }
             }
             // Ok, let's add char to output:
@@ -5013,7 +5075,40 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
         // If not, need more buffer space:
         return tb.finishCurrentSegment();
     }
-    
+
+    /**
+     * Helper called after {@link #fullyResolveEntity} has returned 0 from within
+     * text or attribute content, to support [woodstox-core#292]: when
+     * {@code doTreatCharRefsAsEnts} is enabled, character references and pre-defined
+     * entities are resolved into an internal entity ({@link #mCurrEntity}) and 0 is
+     * returned <b>without</b> pushing a new input source. In that case their
+     * replacement characters must still be output inline by the caller -- mid-content
+     * a separate {@code ENTITY_REFERENCE} event can not be emitted -- or the
+     * referenced character would be silently dropped.
+     *<p>
+     * This "resolved inline" case is told apart from the "entered a new input source"
+     * case (where 0 also means "nothing to output here") by checking whether the
+     * current input source still matches the one active just before the
+     * {@code fullyResolveEntity} call.
+     *
+     * @param preResolveInput Value of {@link #mInput} captured immediately
+     *   <b>before</b> the {@code fullyResolveEntity} call
+     *
+     * @return Replacement characters to output inline, or {@code null} if nothing
+     *   is to be output here (a new input source was entered instead)
+     *
+     * @since 7.2.1
+     */
+    protected final char[] takeInlineCharRefReplacement(WstxInputSource preResolveInput)
+    {
+        if (mInput == preResolveInput && mCurrEntity != null) {
+            char[] repl = mCurrEntity.getReplacementChars();
+            mCurrEntity = null;
+            return repl;
+        }
+        return null;
+    }
+
     /**
      * Method called to try to parse and canonicalize white space that
      * has a good chance of being white space with somewhat regular
@@ -5283,8 +5378,20 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                     w.write(mInputBuffer, start, len);
                     count += len;
                 }
+                // Number of ']' the buffer about to be discarded ends with; needed
+                // so a "]]>" split across the boundary is still caught below.
+                int prevBrackets = 0;
+                if (mInputEnd > 0 && mInputBuffer[mInputEnd-1] == ']') {
+                    prevBrackets = (mInputEnd > 1 && mInputBuffer[mInputEnd-2] == ']') ? 2 : 1;
+                }
+                WstxInputSource srcBefore = mInput;
                 c = getNextChar(SUFFIX_IN_TEXT);
                 start = mInputPtr-1; // needs to be prior to char we got
+                // ']]' pulled in from an entity is legitimately quoted: only flag a
+                // split "]]>" when the buffer was refilled from the same source.
+                if (prevBrackets > 0 && mInput == srcBefore) {
+                    checkBracketBoundary(prevBrackets, mInputPtr-1);
+                }
             } else {
                 c = mInputBuffer[mInputPtr++];
             }
@@ -5359,7 +5466,17 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                     if (mCfgReplaceEntities) { // can we expand all entities?
                         if ((mInputEnd - mInputPtr) < 3
                             || (ch = resolveSimpleEntity(true)) == 0) {
+                            final WstxInputSource preInput = mInput;
                             ch = fullyResolveEntity(true);
+                            if (ch == 0) {
+                                // [woodstox-core#292] char-ref-as-entity: write its
+                                // replacement chars directly so they are not lost
+                                char[] repl = takeInlineCharRefReplacement(preInput);
+                                if (repl != null) {
+                                    w.write(repl, 0, repl.length);
+                                    count += repl.length;
+                                }
+                            }
                         }
                     } else {
                         ch = resolveCharOnlyEntity(true);
@@ -5386,9 +5503,8 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                     }
                     start = mInputPtr;
                 } else if (c == '>') { // did we get ']]>'?
-                    /* 21-Apr-2005, TSa: But we can NOT check the output buffer
-                     *  (see comments in readTextSecondary() for details)
-                     */
+                    // 21-Apr-2005, TSa: But we can NOT check the output buffer
+                    //  (see comments in readTextSecondary() for details)
                     if (mInputPtr >= 3) { // can we do it here?
                         if (mInputBuffer[mInputPtr-3] == ']'
                             && mInputBuffer[mInputPtr-2] == ']') {
@@ -5399,16 +5515,15 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                             }
                             throwParseError(ErrorConsts.ERR_BRACKET_IN_TEXT);
                         }
-                    } else {
-                        ; // !!! TBI: how to check past boundary?
-                    }
+                    } // else {
+                    // 16-Jun-2026, tatu: [woodstox#303] Split-buffer case
+                    //   handled by checking for ']' or ']]' ending the previous buffer
+                    //   at load time by checkBracketBoundary(), so nothing to do here.
                 }
             }
         } // while (true)
 
-        /* Need to push back '<' or '&', whichever caused us to
-         * get out...
-         */
+        // Need to push back '<' or '&', whichever caused us to get out...
         --mInputPtr;
 
         // Anything left to flush?

@@ -4,6 +4,43 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+7.2.2 (not yet released)
+
+#300: Combine surrogate pairs in `BufferingXmlWriter` entity escaping
+ (contributed by @aizu-m)
+#301: Reject U+00D7 and U+00F7 in `is11NameChar()`
+ (contributed by @aizu-m)
+#303: Check for `]]>` in content split across input buffer boundary
+ (contributed by @aizu-m)
+#306: Escape tab, newline and CR in `TextEscaper.writeEscapedAttrValue()`
+ (contributed by @aizu-m)
+#308: Regression in `NonNsStreamWriter` which causes erroneous `WstxOutputException`
+   ("trying to write attribute '***' twice")
+ (reported by Joe J)
+#310: Reject xml-decl encoding name not matching EncName
+ (contributed by @aizu-m)
+#311: Reject/fix comment ending in '-' in byte-backed XML writers
+ (contributed by @aizu-m)
+
+7.2.1 (07-Jun-2026)
+
+#290: Regression in 7.2.0: `writeRaw()` no longer closing an open start
+  element (from #95) breaks emitting whitespace after start/end tags;
+  reverted #95 so `writeRaw()` again closes an open start element
+ (reported by Konrad W)
+#291: Reject overlong UTF-8 sequences in `UTF8Reader`
+ (contributed by @aizu-m)
+#292: Text corruption (in element content and attribute values) with
+  `doTreatCharRefsAsEnts` enabled when a character reference is split across
+  the internal input buffer boundary
+ (reported by @Skrethel)
+#293: Reject out-of-range code points in `UTF32Reader`
+ (contributed by @aizu-m)
+#297: NMTOKEN default value validation skips first character
+ (fix by @jmestwa-coder)
+#299: NMTOKENS default value validation for single-character tokens
+ (fix by @jmestwa-coder)
+
 7.2.0 (19-May-2026)
 
 #12: Improve hashing implementation used for symbol tables for element

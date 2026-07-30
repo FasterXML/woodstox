@@ -649,8 +649,6 @@ public abstract class EncodingXmlWriter
             AsciiValueEncoder enc)
         throws IOException, XMLStreamException
     {
-System.err.println("DEBUG: write typed attr/0 '"+localName+"'");
-
         writeAscii(BYTE_SPACE);
         writeName(prefix);
         writeAscii(BYTE_COLON);
@@ -680,8 +678,6 @@ System.err.println("DEBUG: write typed attr/0 '"+localName+"'");
         if (nsURI == null) {
             nsURI = "";
         }
-System.err.println("DEBUG: write typed attr/1 '"+localName+"', vld == "+validator);
-
         //validator.validateAttribute(localName, nsURI, (hasPrefix ? prefix: ""), buf, offset, len);
 
         writeAscii(BYTE_SPACE);
@@ -968,6 +964,35 @@ System.err.println("DEBUG: write typed attr/1 '"+localName+"', vld == "+validato
 
     protected abstract int writeCommentContent(String data)
         throws IOException;
+
+    /**
+     * Helper method called at the end of {@link #writeCommentContent} to handle
+     * the case where the comment content ends with a hyphen: the trailing '-'
+     * would merge with the appended "-->" to form the illegal "--->" end marker.
+     * Assumes {@link #mOutputPtr} has already been updated to point past the
+     * content written so far.
+     *
+     * @return -1 if the content is valid (or was fixed in place); otherwise the
+     *   index of the illegal trailing hyphen (when not in content-fixing mode)
+     *
+     * @since 7.2.2
+     */
+    protected int verifyCommentEnd(String data)
+        throws IOException
+    {
+        final int ix = data.length() - 1;
+        if (ix >= 0 && data.charAt(ix) == '-') {
+            if (!mFixContent) {
+                return ix;
+            }
+            // Fixable: just pad a single space so "-->" no longer forms "--->"
+            if (mOutputPtr >= mOutputBuffer.length) {
+                flushBuffer();
+            }
+            mOutputBuffer[mOutputPtr++] = BYTE_SPACE;
+        }
+        return -1;
+    }
 
     protected abstract int writePIData(String data)
         throws IOException, XMLStreamException;

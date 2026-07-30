@@ -283,12 +283,99 @@ public class TestContentValidation
     
     // // Note: no way (currently?) to fix PI content; thus, no test:
 
+    final String COMMENT_TRAILING_HYPHEN_IN = "comment ends with-";
+    final String COMMENT_TRAILING_HYPHEN_OUT = "comment ends with- ";
+
+    /**
+     * A comment must not end with a hyphen either: the trailing '-' merges
+     * with the appended "-->" to form the illegal "--->" end marker. This is
+     * checked for the StringWriter/UTF-8 paths, but the ISO-8859-1 and
+     * US-ASCII paths use different writer classes.
+     */
+    @Test
+    public void testCommentTrailingHyphenChecking()
+        throws XMLStreamException
+    {
+        for (int i = 0; i <= 2; ++i) {
+            XMLOutputFactory2 f = getFactory(i, true, false);
+            for (int enc = 0; enc < 4; ++enc) {
+                XMLStreamWriter2 sw = createWriter(f, enc, null);
+                sw.writeStartDocument();
+                sw.writeStartElement("root");
+                try {
+                    sw.writeComment(COMMENT_TRAILING_HYPHEN_IN);
+                    fail("Expected an XMLStreamException for comment ending in '-' in checking + non-fixing mode (type "+i+", enc "+enc+")");
+                } catch (XMLStreamException sex) {
+                    // good
+                } catch (Throwable t) {
+                    fail("Expected an XMLStreamException for comment ending in '-' in checking + non-fixing mode; got: "+t);
+                }
+            }
+        }
+    }
+
+    @Test
+    public void testCommentTrailingHyphenFixing()
+        throws Exception
+    {
+        for (int i = 0; i <= 2; ++i) {
+            XMLOutputFactory2 f = getFactory(i, true, true);
+            for (int enc = 0; enc < 4; ++enc) {
+                ByteArrayOutputStream bos = (enc == 0) ? null : new ByteArrayOutputStream();
+                String encStr = encodingFor(enc);
+                StringWriter strw = (enc == 0) ? new StringWriter() : null;
+                XMLStreamWriter2 sw = createWriter(f, enc, new Object[] { strw, bos });
+                sw.writeStartDocument();
+                sw.writeStartElement("root");
+                sw.writeComment(COMMENT_TRAILING_HYPHEN_IN);
+                sw.writeEndElement();
+                sw.writeEndDocument();
+                sw.close();
+
+                String output = (strw != null) ? strw.toString()
+                    : new String(bos.toByteArray(), encStr);
+
+                // The fixed output must round-trip as a single comment:
+                XMLStreamReader sr = getReader(output);
+                assertTokenType(START_ELEMENT, sr.next());
+                assertTokenType(COMMENT, sr.next());
+                String act = getAndVerifyText(sr);
+                if (!COMMENT_TRAILING_HYPHEN_OUT.equals(act)) {
+                    failStrings("Failed to properly pad comment ending in '-' (type "+i+", enc "+enc+")",
+                                COMMENT_TRAILING_HYPHEN_OUT, act);
+                }
+                assertTokenType(END_ELEMENT, sr.next());
+            }
+        }
+    }
 
     /*
 ////////////////////////////////////////////////////
 // Internal methods
 ////////////////////////////////////////////////////
 */
+
+    // enc: 0 -> StringWriter, 1 -> UTF-8, 2 -> ISO-8859-1, 3 -> US-ASCII
+    private String encodingFor(int enc)
+    {
+        switch (enc) {
+        case 1: return "UTF-8";
+        case 2: return "ISO-8859-1";
+        case 3: return "US-ASCII";
+        default: return null;
+        }
+    }
+
+    private XMLStreamWriter2 createWriter(XMLOutputFactory2 f, int enc, Object[] sinks)
+        throws XMLStreamException
+    {
+        if (enc == 0) {
+            StringWriter strw = (sinks == null) ? new StringWriter() : (StringWriter) sinks[0];
+            return (XMLStreamWriter2) f.createXMLStreamWriter(strw);
+        }
+        ByteArrayOutputStream bos = (sinks == null) ? new ByteArrayOutputStream() : (ByteArrayOutputStream) sinks[1];
+        return (XMLStreamWriter2) f.createXMLStreamWriter(bos, encodingFor(enc));
+    }
 
     private XMLOutputFactory2 getFactory(int type, boolean checkAll, boolean fixAll)
         throws XMLStreamException

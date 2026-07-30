@@ -9,6 +9,7 @@ import com.ctc.wstx.api.ReaderConfig;
 import com.ctc.wstx.cfg.ErrorConsts;
 import com.ctc.wstx.cfg.XmlConsts;
 import com.ctc.wstx.exc.*;
+import com.ctc.wstx.util.StringUtil;
 
 /**
  * Abstract base class that defines common API used with both stream and
@@ -364,10 +365,15 @@ public abstract class InputBootstrapper
                                     null, null);
         }
 
-        if (len < 0) { // will be truncated...
-            return new String(mKeywordBuffer);
+        String enc = (len < 0) // will be truncated...
+            ? new String(mKeywordBuffer) : new String(mKeywordBuffer, 0, len);
+        // 18-Jun-2026: encoding name has to match the XML EncName production
+        //   (XML 1.0 #4.3.3); unlike 'version'/'standalone' it was accepted as-is.
+        if (!StringUtil.isValidEncodingName(enc)) {
+            reportPseudoAttrProblem(XmlConsts.XML_DECL_KW_ENCODING, "'"+enc+"'",
+                                    null, null);
         }
-        return new String(mKeywordBuffer, 0, len);
+        return enc;
     }
 
     private final String readXmlStandalone()

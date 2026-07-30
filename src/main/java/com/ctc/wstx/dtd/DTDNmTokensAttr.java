@@ -165,14 +165,18 @@ public final class DTDNmTokensAttr
                 c = defValue.charAt(start);
             }
 
+            // Then need to find the end of the token: scan from the char
+            // right after the (known non-space) start char. Note: must check
+            // index `start+1` itself, and must not let `i` run past `len`
+            // (the earlier do/while form skipped start+1 and could overshoot
+            // `len`, throwing StringIndexOutOfBoundsException on the substring
+            // below for single-char tokens). Mirrors DTDAttribute.validateDefaultNames.
             int i = start+1;
-
-            do {
-                if (++i >= len) {
+            for (; i < len; ++i) {
+                if (WstxInputData.isSpaceChar(defValue.charAt(i))) {
                     break;
                 }
-                c = defValue.charAt(i);
-            } while (!WstxInputData.isSpaceChar(c));
+            }
             ++count;
             String token = defValue.substring(start, i);
             int illegalIx = WstxInputData.findIllegalNmtokenChar(token, mCfgNsAware, mCfgXml11);

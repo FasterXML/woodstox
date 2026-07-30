@@ -312,6 +312,37 @@ public final class StringUtil
         return sb.toString();
     }
 
+    /**
+     * Method that verifies that given encoding name matches the XML
+     * <code>EncName</code> production (XML 1.0, section 4.3.3, production
+     * [81]): a Latin letter, optionally followed by Latin letters, ASCII
+     * digits and the characters '.', '_' and '-'.
+     *
+     * @return True if name is a syntactically legal encoding name; false
+     *   if it is empty or contains any character not allowed by EncName
+     */
+    public static boolean isValidEncodingName(String enc)
+    {
+        final int len = enc.length();
+        if (len == 0) {
+            return false;
+        }
+        char c = enc.charAt(0);
+        if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))) {
+            return false;
+        }
+        for (int i = 1; i < len; ++i) {
+            c = enc.charAt(i);
+            if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')
+                    || (c >= '0' && c <= '9')
+                    || c == '.' || c == '_' || c == '-') {
+                continue;
+            }
+            return false;
+        }
+        return true;
+    }
+
     public static boolean matches(String str, char[] cbuf, int offset, int len)
     {
         if (str.length() != len) {
