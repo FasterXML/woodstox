@@ -459,6 +459,8 @@ public class WstxSAXParser
             return true;
         } else if (stdFeat == SAXFeature.XML_1_1) {
             return true;
+        } else if (stdFeat == SAXFeature.JDK_SECURE_PROCESSING) {
+            return mConfig.willProcessSecurely();
         }
 
         throw new SAXNotRecognizedException("Feature '"+name+"' not recognized");
@@ -504,7 +506,9 @@ public class WstxSAXParser
         if (stdFeat == SAXFeature.EXTERNAL_GENERAL_ENTITIES) {
             mConfig.doSupportExternalEntities(value);
         } else if (stdFeat == SAXFeature.EXTERNAL_PARAMETER_ENTITIES) {
-            // !!! TODO
+            // Woodstox has a single setting for external entities, covering both
+            // general and parameter entities; getFeature() already reports it for both
+            mConfig.doSupportExternalEntities(value);
         } else if (stdFeat == SAXFeature.IS_STANDALONE) {
             readOnly = true;
         } else if (stdFeat == SAXFeature.LEXICAL_HANDLER_PARAMETER_ENTITIES) {
@@ -531,6 +535,8 @@ public class WstxSAXParser
             invalidValue = !value;
         } else if (stdFeat == SAXFeature.XML_1_1) {
             readOnly = true;
+        } else if (stdFeat == SAXFeature.JDK_SECURE_PROCESSING) {
+            mConfig.doProcessSecurely(value);
         } else {
             throw new SAXNotRecognizedException("Feature '"+name+"' not recognized");
         }

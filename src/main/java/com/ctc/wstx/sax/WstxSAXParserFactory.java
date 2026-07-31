@@ -133,7 +133,9 @@ public class WstxSAXParserFactory
         if (stdFeat == SAXFeature.EXTERNAL_GENERAL_ENTITIES) {
             mStaxFactory.getConfig().doSupportExternalEntities(value);
         } else if (stdFeat == SAXFeature.EXTERNAL_PARAMETER_ENTITIES) {
-            // !!! TODO
+            // Woodstox has a single setting for external entities, covering both
+            // general and parameter entities; getFeature() already reports it for both
+            mStaxFactory.getConfig().doSupportExternalEntities(value);
         } else if (stdFeat == SAXFeature.IS_STANDALONE) {
             readOnly = true;
         } else if (stdFeat == SAXFeature.LEXICAL_HANDLER_PARAMETER_ENTITIES) {
