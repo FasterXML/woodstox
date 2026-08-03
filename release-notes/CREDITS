@@ -201,6 +201,8 @@ Aizal Khan (@aizu-m)
  (7.2.2)
 * Contributed #318: Encode DOCTYPE root name in `EncodingXmlWriter.writeDTD()`
  (7.2.2)
+* Contributed #320: Disable external entity resolution in MSV schema factories
+ (7.2.2)
 
 Skrethel (@Skrethel)
 
