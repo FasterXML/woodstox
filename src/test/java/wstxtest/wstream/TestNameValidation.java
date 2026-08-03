@@ -420,6 +420,10 @@ public class TestNameValidation
      * element names: with the byte-backed writers (US-ASCII, ISO-8859-1)
      * a character the encoding can not represent must be reported, not
      * silently truncated to its low byte.
+     *<p>
+     * Note: the check is on the encoding, not on name well-formedness, so
+     * it has to apply with name validation disabled too (which is the
+     * default setting).
      */
     @Test
     public void testRootNameNotInEncoding()
@@ -428,17 +432,20 @@ public class TestNameValidation
         // 0x13E would truncate to 0x3E ('>'), 0x13C to 0x3C ('<')
         final String rootName = "rľļ";
 
-        for (String enc : new String[] { "US-ASCII", "ISO-8859-1" }) {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            XMLStreamWriter2 sw = (XMLStreamWriter2) getFactory(true, true)
-                .createXMLStreamWriter(bos, enc);
-            try {
-                sw.writeDTD(rootName, null, null, null);
-                sw.flush();
-                fail("Expected failure for root name not representable in "+enc
-                     +"; instead got output '"+new String(bos.toByteArray(), "ISO-8859-1")+"'");
-            } catch (XMLStreamException sex) {
-                verifyException(sex, "Invalid XML character");
+        for (boolean validateNames : new boolean[] { false, true }) {
+            for (String enc : new String[] { "US-ASCII", "ISO-8859-1" }) {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                XMLStreamWriter2 sw = (XMLStreamWriter2) getFactory(validateNames, true)
+                    .createXMLStreamWriter(bos, enc);
+                try {
+                    sw.writeDTD(rootName, null, null, null);
+                    sw.flush();
+                    fail("Expected failure for root name not representable in "+enc
+                         +" (validate-names "+validateNames+"); instead got output '"
+                         +new String(bos.toByteArray(), "ISO-8859-1")+"'");
+                } catch (XMLStreamException sex) {
+                    verifyException(sex, "Invalid XML character");
+                }
             }
         }
     }
@@ -452,14 +459,18 @@ public class TestNameValidation
         throws Exception
     {
         final String rootName = "ré";
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        XMLStreamWriter2 sw = (XMLStreamWriter2) getFactory(true, true)
-            .createXMLStreamWriter(bos, "ISO-8859-1");
-        sw.writeDTD(rootName, null, null, null);
-        sw.writeEmptyElement(rootName);
-        sw.close();
-        assertEquals("<!DOCTYPE "+rootName+"><"+rootName+"/>",
-                     new String(bos.toByteArray(), "ISO-8859-1"));
+
+        for (boolean validateNames : new boolean[] { false, true }) {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            XMLStreamWriter2 sw = (XMLStreamWriter2) getFactory(validateNames, true)
+                .createXMLStreamWriter(bos, "ISO-8859-1");
+            sw.writeDTD(rootName, null, null, null);
+            sw.writeEmptyElement(rootName);
+            sw.close();
+            assertEquals("validate-names "+validateNames,
+                         "<!DOCTYPE "+rootName+"><"+rootName+"/>",
+                         new String(bos.toByteArray(), "ISO-8859-1"));
+        }
     }
 
     /**
