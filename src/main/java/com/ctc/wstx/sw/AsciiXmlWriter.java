@@ -67,6 +67,7 @@ public final class AsciiXmlWriter
                         } else if (c != '\t') {
                             mOutputPtr = ptr;
                             c = handleInvalidChar(c);
+                            ptr = mOutputPtr;
                         }
                     } else if (c > 0x7E) {
                         mOutputPtr = ptr;
@@ -74,6 +75,7 @@ public final class AsciiXmlWriter
                             handleInvalidAsciiChar(c);
                         } else if (mXml11) {
                             c = handleInvalidChar(c);
+                            ptr = mOutputPtr;
                         }
                     }
                     mOutputBuffer[ptr++] = (byte) c;
@@ -119,6 +121,7 @@ public final class AsciiXmlWriter
                         } else if (c != '\t') {
                             mOutputPtr = ptr;
                             c = handleInvalidChar(c);
+                            ptr = mOutputPtr;
                         }
                     } else if (c > 0x7E) {
                         mOutputPtr = ptr;
@@ -126,6 +129,7 @@ public final class AsciiXmlWriter
                             handleInvalidAsciiChar(c);
                         } else if (mXml11) {
                             c = handleInvalidChar(c);
+                            ptr = mOutputPtr;
                         }
                     }
                     mOutputBuffer[ptr++] = (byte) c;
@@ -185,7 +189,9 @@ public final class AsciiXmlWriter
                     } else if (c != '\n' && c != '\t') {
                         if (mCheckContent) {
                             if (!mXml11 || c == 0) {
+                                mOutputPtr = ptr;
                                 c = handleInvalidChar(c);
+                                ptr = mOutputPtr;
                                 mOutputBuffer[ptr++] = (byte) c;
                                 continue;
                             }
@@ -266,7 +272,9 @@ public final class AsciiXmlWriter
                     } else if (c != '\n' && c != '\t') {
                         if (mCheckContent) {
                             if (!mXml11 || c == 0) {
+                                mOutputPtr = ptr;
                                 c = handleInvalidChar(c);
+                                ptr = mOutputPtr;
                                 mOutputBuffer[ptr++] = (byte) c;
                                 continue;
                             }
@@ -341,6 +349,7 @@ public final class AsciiXmlWriter
                     } else if (c != '\t') {
                         mOutputPtr = ptr;
                         c = handleInvalidChar(c);
+                        ptr = mOutputPtr;
                     }
                 } else if (c > 0x7E) {
                     mOutputPtr = ptr;
@@ -348,6 +357,7 @@ public final class AsciiXmlWriter
                         handleInvalidAsciiChar(c);
                     } else if (mXml11) {
                         c = handleInvalidChar(c);
+                        ptr = mOutputPtr;
                     }
                 } else if (c == '>') { // embedded "]]>"?
                     if (offset > 2 && data.charAt(offset-2) == ']'
@@ -415,6 +425,7 @@ public final class AsciiXmlWriter
                     } else if (c != '\t') {
                         mOutputPtr = ptr;
                         c = handleInvalidChar(c);
+                        ptr = mOutputPtr;
                     }
                 } else if (c > 0x7E) {
                     mOutputPtr = ptr;
@@ -422,6 +433,7 @@ public final class AsciiXmlWriter
                         handleInvalidAsciiChar(c);
                     } else if (mXml11) {
                         c = handleInvalidChar(c);
+                        ptr = mOutputPtr;
                     }
                 } else if (c == '>') { // embedded "]]>"?
                     if (offset >= (start+3) && cbuf[offset-2] == ']'
@@ -490,6 +502,7 @@ public final class AsciiXmlWriter
                     } else if (c != '\t') {
                         mOutputPtr = ptr;
                         c = handleInvalidChar(c);
+                        ptr = mOutputPtr;
                     }
                 } else if (c > 0x7E) {
                     mOutputPtr = ptr;
@@ -497,6 +510,7 @@ public final class AsciiXmlWriter
                         handleInvalidAsciiChar(c);
                     } else if (mXml11) {
                         c = handleInvalidChar(c);
+                        ptr = mOutputPtr;
                     }
                 } else if (c == '-') { // embedded "--"?
                     if (offset > 1 && data.charAt(offset-2) == '-') {
@@ -570,6 +584,7 @@ public final class AsciiXmlWriter
                     } else if (c != '\t') {
                         mOutputPtr = ptr;
                         c = handleInvalidChar(c);
+                        ptr = mOutputPtr;
                     }
                 } else if (c > 0x7E) {
                     mOutputPtr = ptr;
@@ -577,6 +592,7 @@ public final class AsciiXmlWriter
                         handleInvalidAsciiChar(c);
                     } else if (mXml11) {
                         c = handleInvalidChar(c);
+                        ptr = mOutputPtr;
                     }
                 } else if (c == '>') { // enclosed end marker ("?>")?
                     if (offset > 0 && data.charAt(offset-1) == '?') {

@@ -21,6 +21,10 @@ Project: woodstox
  (contributed by @aizu-m)
 #311: Reject/fix comment ending in '-' in byte-backed XML writers
  (contributed by @aizu-m)
+#316: Reject U+009F in xml 1.1 unescapable content in `ISOLatin1XmlWriter`
+  (also fix `ISOLatin1XmlWriter` and `AsciiXmlWriter` writing already-flushed output
+   a second time, when a replacing `InvalidCharHandler` is configured)
+ (contributed by @aizu-m)
 #318: Encode DOCTYPE root name in `EncodingXmlWriter.writeDTD()`
  (contributed by @aizu-m)
 

@@ -184,6 +184,61 @@ public class TestInvalidChars
         doTestXml11UnescapableInvalidIsReplaced(PROCESSING_INSTRUCTION);
     }
 
+    /**
+     * [woodstox-core#316]: the byte-backed writers scan content keeping the
+     * output position in a local {@code ptr}, but {@code handleInvalidChar()}
+     * flushes the buffer underneath them (resetting {@code mOutputPtr} to 0).
+     * {@code ptr} was not reloaded afterwards, so everything flushed up to that
+     * point got written out a second time. Only visible with a non-throwing
+     * {@link InvalidCharHandler}: the default one throws instead of returning,
+     * so the writer never continued past the flush.
+     */
+    @Test
+    public void testReplacingDoesNotDuplicateOutput() throws Exception
+    {
+        for (String enc : new String[] { "ISO-8859-1", "US-ASCII" }) {
+            for (int evtType : new int[] { ATTRIBUTE, CHARACTERS, CDATA, COMMENT,
+                    PROCESSING_INSTRUCTION }) {
+                XMLOutputFactory2 f = getFactory(REPL_CHAR);
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                XMLStreamWriter2 sw = (XMLStreamWriter2) f.createXMLStreamWriter(bos, enc);
+                sw.writeStartDocument(enc, "1.0");
+                sw.writeStartElement("root");
+                switch (evtType) {
+                case ATTRIBUTE:
+                    sw.writeAttribute("attr", INVALID_TEXT);
+                    break;
+                case CHARACTERS:
+                    sw.writeCharacters(INVALID_TEXT);
+                    break;
+                default:
+                    writeUnescapable(sw, evtType);
+                    break;
+                }
+                sw.writeEndElement();
+                sw.writeEndDocument();
+                sw.closeCompletely();
+
+                String doc = bos.toString(enc);
+                String desc = tokenTypeDesc(evtType) + "/" + enc;
+
+                if (doc.indexOf(REPL_CHAR) < 0) {
+                    fail(desc+": expected replacement '"+REPL_CHAR+"' in output. Got: '"+doc+"'");
+                }
+                // Prefix flushed before the replacement must not be re-emitted
+                assertEquals(desc+": xml declaration written more than once: '"+doc+"'",
+                        doc.indexOf("<?xml"), doc.lastIndexOf("<?xml"));
+                // ... and the result must still be well-formed
+                XMLStreamReader sr = getInputFactory().createXMLStreamReader(
+                        new ByteArrayInputStream(doc.getBytes(enc)));
+                while (sr.hasNext()) {
+                    sr.next();
+                }
+                sr.close();
+            }
+        }
+    }
+
     private void doTestXml11UnescapableInvalidIsCaught(int evtType) throws Exception
     {
         XMLOutputFactory2 f = getFactory(null);

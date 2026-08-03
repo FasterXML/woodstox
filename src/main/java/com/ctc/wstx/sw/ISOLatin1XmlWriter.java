@@ -71,15 +71,17 @@ public final class ISOLatin1XmlWriter
                         } else if (c != '\t') {
                             mOutputPtr = ptr;
                             c = handleInvalidChar(c);
+                            ptr = mOutputPtr;
                         }
                     } else if (c > 0x7E) {
                         if (c > 0xFF) {
                             mOutputPtr = ptr;
                             handleInvalidLatinChar(c);
                         } else if (mXml11) {
-                            if (c < 0x9F && c != 0x85) {
+                            if (c <= 0x9F && c != 0x85) {
                                 mOutputPtr = ptr;
                                 c = handleInvalidChar(c);
+                                ptr = mOutputPtr;
                             }
                         }
                     }
@@ -126,15 +128,17 @@ public final class ISOLatin1XmlWriter
                         } else if (c != '\t') {
                             mOutputPtr = ptr;
                             c = handleInvalidChar(c);
+                            ptr = mOutputPtr;
                         }
                     } else if (c > 0x7E) {
                         if (c > 0xFF) {
                             mOutputPtr = ptr;
                             handleInvalidLatinChar(c);
                         } else if (mXml11) {
-                            if (c < 0x9F && c != 0x85) {
+                            if (c <= 0x9F && c != 0x85) {
                                 mOutputPtr = ptr;
                                 c = handleInvalidChar(c);
+                                ptr = mOutputPtr;
                             }
                         }
                     }
@@ -195,7 +199,9 @@ public final class ISOLatin1XmlWriter
                     } else if (c != '\n' && c != '\t') {
                         if (mCheckContent) {
                             if (!mXml11 || c == 0) {
+                                mOutputPtr = ptr;
                                 c = handleInvalidChar(c);
+                                ptr = mOutputPtr;
                                 mOutputBuffer[ptr++] = (byte) c;
                                 continue;
                             }
@@ -279,7 +285,9 @@ public final class ISOLatin1XmlWriter
                     } else if (c != '\n' && c != '\t') {
                         if (mCheckContent) {
                             if (!mXml11 || c == 0) {
+                                mOutputPtr = ptr;
                                 c = handleInvalidChar(c);
+                                ptr = mOutputPtr;
                                 mOutputBuffer[ptr++] = (byte) c;
                                 continue;
                             }
@@ -357,15 +365,17 @@ public final class ISOLatin1XmlWriter
                     } else if (c != '\t') {
                         mOutputPtr = ptr;
                         c = handleInvalidChar(c);
+                        ptr = mOutputPtr;
                     }
                 } else if (c > 0x7E) {
                     if (c > 0xFF) {
                         mOutputPtr = ptr;
                         handleInvalidLatinChar(c);
                     } else if (mXml11) {
-                        if (c < 0x9F && c != 0x85) {
+                        if (c <= 0x9F && c != 0x85) {
                             mOutputPtr = ptr;
                             c = handleInvalidChar(c);
+                            ptr = mOutputPtr;
                         }
                     }
                 } else if (c == '>') { // embedded "]]>"?
@@ -434,15 +444,17 @@ public final class ISOLatin1XmlWriter
                     } else if (c != '\t') {
                         mOutputPtr = ptr;
                         c = handleInvalidChar(c);
+                        ptr = mOutputPtr;
                     }
                 } else if (c > 0x7E) {
                     if (c > 0xFF) {
                         mOutputPtr = ptr;
                         handleInvalidLatinChar(c);
                     } else if (mXml11) {
-                        if (c < 0x9F && c != 0x85) {
+                        if (c <= 0x9F && c != 0x85) {
                             mOutputPtr = ptr;
                             c = handleInvalidChar(c);
+                            ptr = mOutputPtr;
                         }
                     }
                 } else if (c == '>') { // embedded "]]>"?
@@ -512,15 +524,17 @@ public final class ISOLatin1XmlWriter
                     } else if (c != '\t') {
                         mOutputPtr = ptr;
                         c = handleInvalidChar(c);
+                        ptr = mOutputPtr;
                     }
                 } else if (c > 0x7E) {
                     if (c > 0xFF) {
                         mOutputPtr = ptr;
                         handleInvalidLatinChar(c);
                     } else if (mXml11) {
-                        if (c < 0x9F && c != 0x85) {
+                        if (c <= 0x9F && c != 0x85) {
                             mOutputPtr = ptr;
                             c = handleInvalidChar(c);
+                            ptr = mOutputPtr;
                         }
                     }
                 } else if (c == '-') { // embedded "--"?
@@ -595,15 +609,17 @@ public final class ISOLatin1XmlWriter
                     } else if (c != '\t') {
                         mOutputPtr = ptr;
                         c = handleInvalidChar(c);
+                        ptr = mOutputPtr;
                     }
                 } else if (c > 0x7E) {
                     if (c > 0xFF) {
                         mOutputPtr = ptr;
                         handleInvalidLatinChar(c);
                     } else if (mXml11) {
-                        if (c < 0x9F && c != 0x85) {
+                        if (c <= 0x9F && c != 0x85) {
                             mOutputPtr = ptr;
                             c = handleInvalidChar(c);
+                            ptr = mOutputPtr;
                         }
                     }
                 } else if (c == '>') { // enclosed end marker ("?>")?
