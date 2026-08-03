@@ -328,7 +328,11 @@ public abstract class EncodingXmlWriter
         throws IOException, XMLStreamException
     {
         writeAscii("<!DOCTYPE ");
-        writeAscii(rootName);
+        if (mCheckNames) {
+            // Root name may be prefixed, so colon count is not checked
+            verifyNameValidity(rootName, false);
+        }
+        writeRaw(rootName, 0, rootName.length());
         if (systemId != null) {
             if (publicId != null) {
                 writeAscii(" PUBLIC \"");

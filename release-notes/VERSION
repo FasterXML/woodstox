@@ -25,6 +25,8 @@ Project: woodstox
   (also fix `ISOLatin1XmlWriter` and `AsciiXmlWriter` writing already-flushed output
    a second time, when a replacing `InvalidCharHandler` is configured)
  (contributed by @aizu-m)
+#318: Encode DOCTYPE root name in `EncodingXmlWriter.writeDTD()`
+ (contributed by @aizu-m)
 
 7.2.1 (07-Jun-2026)
 
