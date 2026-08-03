@@ -167,10 +167,8 @@ public abstract class BaseSchemaFactory
      * Does not affect {@code xs:include} / {@code xs:import} or RELAX NG
      * {@code externalRef}: those are resolved by MSV itself, not through
      * entity resolution.
-     *
-     * @since 7.2.2
      */
-    protected static void disableExternalEntities(SAXParserFactory f)
+    static void disableExternalEntities(SAXParserFactory f)
     {
         setFeature(f, XMLConstants.FEATURE_SECURE_PROCESSING, true);
         setFeature(f, "http://xml.org/sax/features/external-general-entities", false);
