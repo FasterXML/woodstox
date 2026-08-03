@@ -197,6 +197,8 @@ Aizal Khan (@aizu-m)
  (7.2.2)
 * Contributed #311: Reject/fix comment ending in '-' in byte-backed XML writers
  (7.2.2)
+* Contributed #316: Reject U+009F in xml 1.1 unescapable content in `ISOLatin1XmlWriter`
+ (7.2.2)
 
 Skrethel (@Skrethel)
 
