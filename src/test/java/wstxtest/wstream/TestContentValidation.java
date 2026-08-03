@@ -23,6 +23,18 @@ public class TestContentValidation
     final String PI_CONTENT_IN = "this should end PI: ?> shouldn't it?";
     final String PI_CONTENT_OUT = "this should end PI: ?> shouldn't it?";
 
+    /**
+     * NEL: the one char in 0x7F-0x9F that XML 1.1 does <b>not</b> restrict.
+     */
+    final static int NEL = 0x85;
+
+    /**
+     * Number of content types that can not use character entities, and thus
+     * have to reject restricted chars outright; see
+     * {@link #writeUnescapable}.
+     */
+    final static int UNESCAPABLE_KINDS = 6;
+
     /*
     ////////////////////////////////////////////////////
     // Main test methods
@@ -350,43 +362,29 @@ public class TestContentValidation
     }
 
     /**
-     * U+009F is a restricted character in XML 1.1 (like the rest of the C1
-     * range 0x7F-0x9F, bar NEL 0x85). In comment/CDATA/PI content it can not
-     * be escaped, so the ISO-8859-1 writer must reject it. The C1 rejection
-     * range in ISOLatin1XmlWriter used '<' where the reader (ISOLatinReader)
-     * and every sibling check use '<=', so 0x9F alone slipped through and was
-     * emitted as a raw byte, which the reader then refuses.
+     * [woodstox-core#316]: U+009F is a restricted character in XML 1.1, as is
+     * the rest of the C1 range 0x7F-0x9F bar NEL (0x85). In comment, CDATA, PI
+     * and raw content it can not be replaced by a character entity, so the
+     * ISO-8859-1 writer has to reject it. The C1 check in
+     * {@code ISOLatin1XmlWriter} used '&lt;' where the matching reader-side
+     * check ({@code ISOLatinReader}) uses '&lt;=', so 0x9F alone slipped
+     * through and was emitted as a raw byte -- output that Woodstox itself
+     * then refuses to read.
      */
     @Test
     public void testXml11RestrictedC1InIsoLatin1()
         throws XMLStreamException
     {
-        // 0x9F must be rejected; 0x9E is the adjacent already-rejected control
-        for (int c1 = 0x9E; c1 <= 0x9F; ++c1) {
+        for (int c1 = 0x7F; c1 <= 0x9F; ++c1) {
+            if (c1 == NEL) { // not restricted; see testXml11NelNotRejectedInIsoLatin1()
+                continue;
+            }
             for (int i = 0; i <= 2; ++i) {
                 XMLOutputFactory2 f = getFactory(i, true, false);
-                for (int kind = 0; kind < 4; ++kind) {
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    XMLStreamWriter2 sw = (XMLStreamWriter2) f.createXMLStreamWriter(bos, "ISO-8859-1");
-                    sw.writeStartDocument("ISO-8859-1", "1.1");
-                    sw.writeStartElement("root");
-                    String content = "x" + ((char) c1) + "y";
+                for (int kind = 0; kind < UNESCAPABLE_KINDS; ++kind) {
+                    XMLStreamWriter2 sw = startXml11Latin1Doc(f, new ByteArrayOutputStream());
                     try {
-                        switch (kind) {
-                        case 0:
-                            sw.writeComment(content);
-                            break;
-                        case 1:
-                            sw.writeCData(content);
-                            break;
-                        case 2:
-                            char[] ch = content.toCharArray();
-                            sw.writeCData(ch, 0, ch.length);
-                            break;
-                        default:
-                            sw.writeProcessingInstruction("target", content);
-                            break;
-                        }
+                        writeUnescapable(sw, kind, "x" + ((char) c1) + "y");
                         fail("Expected an XMLStreamException for restricted XML 1.1 char U+00"
                                 +Integer.toHexString(c1).toUpperCase()
                                 +" in unescapable ISO-8859-1 content (type "+i+", kind "+kind+")");
@@ -399,8 +397,34 @@ public class TestContentValidation
     }
 
     /**
-     * The fix above must not touch valid ISO-8859-1 chars (0xA0-0xFF), which
-     * remain legal literal XML 1.1 content.
+     * NEL (U+0085) is deliberately excluded from the XML 1.1 restricted range,
+     * so it must keep being written literally: the [woodstox-core#316] fix
+     * widened the rejected range by one character and must not widen it by two.
+     */
+    @Test
+    public void testXml11NelNotRejectedInIsoLatin1()
+        throws Exception
+    {
+        for (int i = 0; i <= 2; ++i) {
+            XMLOutputFactory2 f = getFactory(i, true, false);
+            for (int kind = 0; kind < UNESCAPABLE_KINDS; ++kind) {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                XMLStreamWriter2 sw = startXml11Latin1Doc(f, bos);
+                writeUnescapable(sw, kind, "x" + ((char) NEL) + "y");
+                sw.writeEndElement();
+                sw.writeEndDocument();
+                sw.close();
+
+                if (indexOfByte(bos.toByteArray(), NEL) < 0) {
+                    fail("NEL (U+0085) not written literally in XML 1.1 ISO-8859-1 output (type "+i+", kind "+kind+")");
+                }
+            }
+        }
+    }
+
+    /**
+     * The [woodstox-core#316] fix must not touch valid ISO-8859-1 chars
+     * (0xA0-0xFF), which remain legal literal XML 1.1 content.
      */
     @Test
     public void testXml11ValidHighLatin1Unaffected()
@@ -409,16 +433,24 @@ public class TestContentValidation
         for (int i = 0; i <= 2; ++i) {
             XMLOutputFactory2 f = getFactory(i, true, false);
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            XMLStreamWriter2 sw = (XMLStreamWriter2) f.createXMLStreamWriter(bos, "ISO-8859-1");
-            sw.writeStartDocument("ISO-8859-1", "1.1");
-            sw.writeStartElement("root");
-            String content = "x éÿy"; // NBSP, e-acute, y-diaeresis
+            XMLStreamWriter2 sw = startXml11Latin1Doc(f, bos);
+            // NBSP, e-acute, y-diaeresis (escaped to keep this file pure ASCII)
+            final String content = "x\u00A0\u00E9\u00FFy";
             sw.writeCData(content);
             sw.writeEndElement();
             sw.writeEndDocument();
             sw.close();
 
-            XMLStreamReader sr = getReader(new String(bos.toByteArray(), "ISO-8859-1"));
+            // Must be emitted as single literal bytes, not escaped or replaced
+            byte[] doc = bos.toByteArray();
+            for (int ch : new int[] { 0xA0, 0xE9, 0xFF }) {
+                if (indexOfByte(doc, ch) < 0) {
+                    fail("Valid high ISO-8859-1 char 0x"+Integer.toHexString(ch)
+                            +" missing from raw XML 1.1 output (type "+i+")");
+                }
+            }
+
+            XMLStreamReader sr = getReader(new String(doc, "ISO-8859-1"));
             assertTokenType(START_ELEMENT, sr.next());
             assertTokenType(CDATA, sr.next());
             if (!content.equals(getAndVerifyText(sr))) {
@@ -473,6 +505,57 @@ public class TestContentValidation
         XMLInputFactory2 f = getInputFactory();
         setCoalescing(f, false);
         return f.createXMLStreamReader(new StringReader(content));
+    }
+
+    private XMLStreamWriter2 startXml11Latin1Doc(XMLOutputFactory2 f, ByteArrayOutputStream bos)
+        throws XMLStreamException
+    {
+        XMLStreamWriter2 sw = (XMLStreamWriter2) f.createXMLStreamWriter(bos, "ISO-8859-1");
+        sw.writeStartDocument("ISO-8859-1", "1.1");
+        sw.writeStartElement("root");
+        return sw;
+    }
+
+    /**
+     * Writes given content as one of the content types that can not fall back
+     * on character entities; covers both the String and char[] variants, since
+     * writers implement them separately.
+     */
+    private void writeUnescapable(XMLStreamWriter2 sw, int kind, String content)
+        throws XMLStreamException
+    {
+        char[] ch = content.toCharArray();
+
+        switch (kind) {
+        case 0:
+            sw.writeComment(content);
+            break;
+        case 1:
+            sw.writeCData(content);
+            break;
+        case 2:
+            sw.writeCData(ch, 0, ch.length);
+            break;
+        case 3:
+            sw.writeProcessingInstruction("target", content);
+            break;
+        case 4:
+            sw.writeRaw(content);
+            break;
+        default:
+            sw.writeRaw(ch, 0, ch.length);
+            break;
+        }
+    }
+
+    private int indexOfByte(byte[] data, int b)
+    {
+        for (int i = 0; i < data.length; ++i) {
+            if ((data[i] & 0xFF) == b) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
 
