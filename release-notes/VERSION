@@ -27,6 +27,8 @@ Project: woodstox
  (contributed by @aizu-m)
 #318: Encode DOCTYPE root name in `EncodingXmlWriter.writeDTD()`
  (contributed by @aizu-m)
+#321: Honour `external-parameter-entities` feature in SAX layer
+ (contributed by @aizu-m)
 
 7.2.1 (07-Jun-2026)
 
