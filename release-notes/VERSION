@@ -4,7 +4,7 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-7.2.2 (not yet released)
+7.2.2 (03-Aug-2026)
 
 #300: Combine surrogate pairs in `BufferingXmlWriter` entity escaping
  (contributed by @aizu-m)
