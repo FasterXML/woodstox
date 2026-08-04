@@ -30,6 +30,15 @@ import com.ctc.wstx.stax.WstxInputFactory;
  * However, effort is made to recognize all existing standard features
  * and properties, to allow using code to figure out existing
  * capabilities automatically.
+ *<p>
+ * NOTE: Woodstox has a single setting for external entity support
+ * ({@code XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES}), so the SAX
+ * features {@code external-general-entities} and
+ * {@code external-parameter-entities} are <b>not independent</b>: setting
+ * either one also changes the other, and {@link #getFeature} reports the
+ * same value for both. In particular, enabling one will re-enable the other
+ * if it had been disabled, so callers that want external entities disabled
+ * should not set either feature to {@code true} afterwards.
  */
 public class WstxSAXParserFactory
     extends SAXParserFactory

@@ -6,6 +6,7 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.SAXParser;
 
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 import com.ctc.wstx.sax.WstxSAXParserFactory;
@@ -20,11 +21,23 @@ public class TestSaxProperties extends BaseWstxTest
 
     private final static String EXTERNAL_PARAMETER_ENTITIES = "http://xml.org/sax/features/external-parameter-entities";
 
-    // Document that refers to an external parameter entity from the internal
-    // DTD subset; system id points to a file that does not exist, so an attempt
-    // to actually resolve it fails with a distinctive error
-    private final static String DOC_WITH_EXTERNAL_PE =
-        "<!DOCTYPE root [ <!ENTITY % pe SYSTEM \"file:///no-such-file-woodstox-test.dtd\"> %pe; ]><root />";
+    /**
+     * Document that pulls in an external parameter entity from the internal DTD
+     * subset. The referenced file really does exist and declares a defaulted
+     * attribute, so that:
+     *<ul>
+     * <li>a successful parse is observable ({@code MyHandler._attrs} becomes 1
+     *   only if the external subset was actually read), and
+     *  </li>
+     * <li>a failed parse can only be due to the feature being disabled, not due
+     *   to the system id being unresolvable
+     *  </li>
+     *</ul>
+     */
+    private static String docWithExternalPE() {
+        String systemId = TestSaxProperties.class.getResource("external-pe.dtd").toString();
+        return "<!DOCTYPE root [ <!ENTITY % pe SYSTEM \""+systemId+"\"> %pe; ]><root />";
+    }
 
     // [woodstox-core#77]: Don't barf on "secure processing" setting
     @Test
@@ -76,6 +89,27 @@ public class TestSaxProperties extends BaseWstxTest
         assertFalse(r.getFeature(XMLConstants.FEATURE_SECURE_PROCESSING));
     }
 
+    // Positive control for the two tests below: with the feature left at its
+    // default, the external parameter entity really is resolved and the
+    // declarations it contains take effect
+    @Test
+    public void testExternalParameterEntitiesEnabled() throws Exception
+    {
+        WstxSAXParserFactory f = new WstxSAXParserFactory();
+
+        // enabled by default, like external general entities
+        assertTrue(f.getFeature(EXTERNAL_PARAMETER_ENTITIES));
+        assertTrue(f.getFeature(EXTERNAL_GENERAL_ENTITIES));
+
+        MyHandler h = new MyHandler();
+        f.newSAXParser().parse(new InputSource(new StringReader(docWithExternalPE())), h);
+
+        assertEquals("Should have parsed the root element", 1, h._elems);
+        // and the defaulted attribute only exists if the external subset was read
+        assertEquals("Should have defaulted attribute from external parameter entity",
+                1, h._attrs);
+    }
+
     @Test
     public void testExternalParameterEntitiesFactory() throws Exception
     {
@@ -89,10 +123,10 @@ public class TestSaxProperties extends BaseWstxTest
         assertFalse(f.getFeature(EXTERNAL_GENERAL_ENTITIES));
 
         try {
-            f.newSAXParser().parse(new InputSource(new StringReader(DOC_WITH_EXTERNAL_PE)),
+            f.newSAXParser().parse(new InputSource(new StringReader(docWithExternalPE())),
                     new MyHandler());
             fail("Should not resolve external parameter entity");
-        } catch (Exception e) {
+        } catch (SAXException e) {
             verifyException(e, "isSupportingExternalEntities");
         }
     }
@@ -110,9 +144,9 @@ public class TestSaxProperties extends BaseWstxTest
 
         r.setContentHandler(new MyHandler());
         try {
-            r.parse(new InputSource(new StringReader(DOC_WITH_EXTERNAL_PE)));
+            r.parse(new InputSource(new StringReader(docWithExternalPE())));
             fail("Should not resolve external parameter entity");
-        } catch (Exception e) {
+        } catch (SAXException e) {
             verifyException(e, "isSupportingExternalEntities");
         }
     }
