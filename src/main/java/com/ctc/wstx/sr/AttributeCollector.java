@@ -30,6 +30,7 @@ import org.codehaus.stax2.typed.TypedArrayDecoder;
 import org.codehaus.stax2.typed.TypedValueDecoder;
 import org.codehaus.stax2.typed.TypedXMLStreamException;
 import org.codehaus.stax2.validation.XMLValidator;
+import org.codehaus.stax2.XMLStreamLocation2;
 
 import com.ctc.wstx.api.ReaderConfig;
 import com.ctc.wstx.cfg.ErrorConsts;
@@ -521,6 +522,14 @@ public final class AttributeCollector
 
     public final int getXmlIdAttrIndex() {
         return mXmlIdAttrIndex;
+    }
+
+    public final XMLStreamLocation2 getValueLocationStart(int index) {
+        return mNamespaceBuilder.getLocation(index * 2);
+    }
+
+    public final XMLStreamLocation2 getValueLocationEnd(int index) {
+        return mNamespaceBuilder.getLocation(index * 2 + 1);
     }
 
     /*
