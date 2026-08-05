@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:xhtml="http://www.w3.org/1999/xhtml"
+	xmlns:main="http://www.example.org/issue_175_main"
+	xmlns:imprt="http://www.example.org/issue_175_import"		
+	targetNamespace="http://www.example.org/issue_175_main" 
+	xmlns:tns="http://www.example.org/issue_175_main" 
+	elementFormDefault="qualified"
+	attributeFormDefault="unqualified"
+	version="3">
+	
+	<xsd:import namespace="http://www.example.org/issue_175_import" schemaLocation="issue_175_import.xsd"/>
+	
+	<xsd:element name="Issue175" type="main:Issue175Type">
+		<xsd:annotation>
+			<xsd:documentation>
+				<xhtml:h1>Schema definition for Issue #175 (issue_175_main.xsd)</xhtml:h1>
+			</xsd:documentation>
+			<xsd:documentation>
+				<xhtml:p></xhtml:p>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+		
+	<xsd:complexType name="Issue175Type">
+		<xsd:sequence>
+			<xsd:element ref="main:Data" minOccurs="0"/>
+		</xsd:sequence>
+		<xsd:attribute ref="main:XmlVersion" use="required"/>
+		<xsd:attribute ref="imprt:XmlVersion" use="required"/>
+	</xsd:complexType>
+
+	<xsd:attribute name="XmlVersion">
+	  <xsd:simpleType>
+	  	<xsd:restriction base="xsd:string">
+	  		<xsd:pattern value="[0-9]{1}" />
+	  	</xsd:restriction>
+	  </xsd:simpleType>
+	</xsd:attribute>
+
+	<xsd:element name="Data" type="main:DataType">
+		<xsd:annotation>
+			<xsd:documentation>
+				<xhtml:p>Main element in the XML</xhtml:p>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+	<xsd:complexType name="DataType">
+		<xsd:sequence>
+			<xsd:element ref="main:Element1" />
+			<xsd:element ref="main:Element2" />
+			<xsd:element ref="main:Element3" />
+			<xsd:element ref="main:Element4" />
+			<xsd:element ref="main:Element5" />
+		</xsd:sequence>
+		<xsd:attributeGroup ref="imprt:AttribGroup" />		
+	</xsd:complexType>
+	
+	<xsd:element name="Element1" type="xsd:string">
+		<xsd:annotation>
+			<xsd:documentation>
+				<xhtml:p>First data element</xhtml:p>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="Element2" type="xsd:decimal">
+		<xsd:annotation>
+			<xsd:documentation>
+				<xhtml:p>Second data element</xhtml:p>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:element name="Element3" type="main:Element3Type">
+		<xsd:annotation>
+			<xsd:documentation>
+				<xhtml:p>Third data element</xhtml:p>
+			</xsd:documentation>
+		</xsd:annotation>
+		
+	</xsd:element>
+
+	<xsd:complexType name="Element3Type">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute ref="imprt:Attrib3"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	
+	<xsd:element name="Element4" type="main:Element4Type">
+		<xsd:annotation>
+			<xsd:documentation>
+				<xhtml:p>Fourth data element</xhtml:p>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	
+	<xsd:complexType name="Element4Type">
+		<xsd:simpleContent>
+			<xsd:extension base="main:ENUM_VAL">
+				<xsd:attribute ref="imprt:Attrib5"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	
+	<xsd:simpleType name="ENUM_VAL">
+			<xsd:restriction base="xsd:NMTOKEN">
+				<xsd:enumeration value="ENUM1" />
+				<xsd:enumeration value="ENUM2" />
+				<xsd:enumeration value="ENUM3" />
+				<xsd:enumeration value="ENUM4" />
+			</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:element name="Element5" type="xsd:string">
+		<xsd:annotation>
+			<xsd:documentation>
+				<xhtml:p>Fifth data element (v2.0)</xhtml:p>
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>	
+</xsd:schema>
