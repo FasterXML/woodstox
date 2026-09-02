@@ -203,6 +203,8 @@ Aizal Khan (@aizu-m)
  (7.2.2)
 * Contributed #321: Honour `external-parameter-entities` feature in SAX layer
  (7.2.2)
+* Contributed #320: Disable external entity resolution in MSV schema factories
+ (7.3.0)
 
 Skrethel (@Skrethel)
 

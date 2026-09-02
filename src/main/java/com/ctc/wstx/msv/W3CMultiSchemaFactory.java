@@ -70,6 +70,7 @@ public class W3CMultiSchemaFactory
     public W3CMultiSchemaFactory() {
         parserFactory = SAXParserFactory.newInstance();
         parserFactory.setNamespaceAware(true); 
+        BaseSchemaFactory.disableExternalEntities(parserFactory);
     }
 
     static class RecursiveAllowedXMLSchemaReader extends XMLSchemaReader {
