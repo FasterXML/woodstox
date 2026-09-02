@@ -328,7 +328,11 @@ public abstract class EncodingXmlWriter
         throws IOException, XMLStreamException
     {
         writeAscii("<!DOCTYPE ");
-        writeAscii(rootName);
+        if (mCheckNames) {
+            // Root name may be prefixed, so colon count is not checked
+            verifyNameValidity(rootName, false);
+        }
+        writeRaw(rootName, 0, rootName.length());
         if (systemId != null) {
             if (publicId != null) {
                 writeAscii(" PUBLIC \"");
@@ -968,7 +972,7 @@ public abstract class EncodingXmlWriter
     /**
      * Helper method called at the end of {@link #writeCommentContent} to handle
      * the case where the comment content ends with a hyphen: the trailing '-'
-     * would merge with the appended "-->" to form the illegal "--->" end marker.
+     * would merge with the appended {@code -->} to form the illegal {@code --->} end marker.
      * Assumes {@link #mOutputPtr} has already been updated to point past the
      * content written so far.
      *
