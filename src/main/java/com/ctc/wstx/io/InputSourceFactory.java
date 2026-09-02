@@ -6,6 +6,7 @@ import java.net.URL;
 import javax.xml.stream.Location;
 
 import com.ctc.wstx.api.ReaderConfig;
+import com.ctc.wstx.cfg.XmlConsts;
 
 /**
  * Factory class that creates instances of {@link WstxInputSource} to allow
@@ -36,6 +37,7 @@ public final class InputSourceFactory
             rs.setInputOffsets(bs.getInputTotal(), bs.getInputRow(),
                                -bs.getInputColumn());
         }
+        rs.setXmlCompliancy(xmlVersion);
         return rs;
     }
 
@@ -58,6 +60,9 @@ public final class InputSourceFactory
         if (bs != null) {
             rs.setInputOffsets(bs.getInputTotal(), bs.getInputRow(),
                                -bs.getInputColumn());
+            if (bs.declaredXml11()) {
+                rs.setXmlCompliancy(XmlConsts.XML_V_11);
+            }
         }
         return rs;
     }
