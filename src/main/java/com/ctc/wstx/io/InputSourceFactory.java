@@ -24,7 +24,9 @@ public final class InputSourceFactory
      * @param xmlVersion Optional xml version identifier of the main parsed
      *   document. Currently only relevant for checking that XML 1.0 document
      *   does not include XML 1.1 external parsed entities.
-     *   If unknown, no checks will be done.
+     *   If unknown, no checks will be done. Note that if {@code bs} indicates
+     *   the entity (or standalone DTD) itself declares XML 1.1, XML 1.1
+     *   character checks are enabled regardless of this value.
      */
     public static ReaderSource constructEntitySource
         (ReaderConfig cfg, WstxInputSource parent, String entityName, InputBootstrapper bs,
