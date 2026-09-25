@@ -36,6 +36,10 @@ public final class InputSourceFactory
         if (bs != null) {
             rs.setInputOffsets(bs.getInputTotal(), bs.getInputRow(),
                                -bs.getInputColumn());
+            // Entity (or standalone DTD) may itself declare XML 1.1
+            if (bs.declaredXml11()) {
+                xmlVersion = XmlConsts.XML_V_11;
+            }
         }
         rs.setXmlCompliancy(xmlVersion);
         return rs;

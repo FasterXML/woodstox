@@ -1,11 +1,14 @@
 package stax2.stream;
 
 import java.io.ByteArrayInputStream;
+import java.io.StringReader;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.codehaus.stax2.XMLInputFactory2;
+import org.codehaus.stax2.validation.XMLValidationSchema;
+import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 import org.junit.jupiter.api.Test;
 
 import stax2.BaseStax2Test;
@@ -108,6 +111,30 @@ public class TestXml11RestrictedCharsViaReader extends BaseStax2Test
             fail("Expected XML 1.1 restricted char 0x90 to be rejected for InputStream input");
         } catch (XMLStreamException e) {
             // expected
+        }
+    }
+
+    // // // Standalone DTD: Reader and InputStream must behave the same
+
+    @Test
+    public void testRestrictedC1InStandaloneDTDViaReader() throws Exception
+    {
+        // Text declaration of an external subset requires 'encoding'
+        final String dtd = "<?xml version=\"1.1\" encoding=\"UTF-8\"?>"
+                + "<!ENTITY e 'A" + ((char) 0x90) + "B'>";
+        XMLValidationSchemaFactory f = XMLValidationSchemaFactory.newInstance(XMLValidationSchema.SCHEMA_ID_DTD);
+        try {
+            f.createSchema(new StringReader(dtd));
+            fail("Expected XML 1.1 restricted char 0x90 in standalone DTD to be rejected when read via a Reader");
+        } catch (XMLStreamException e) {
+            verifyException(e, "Invalid character 0x90");
+        }
+        // and same for InputStream, for parity
+        try {
+            f.createSchema(new ByteArrayInputStream(dtd.getBytes("UTF-8")));
+            fail("Expected XML 1.1 restricted char 0x90 in standalone DTD to be rejected when read via an InputStream");
+        } catch (XMLStreamException e) {
+            verifyException(e, "Invalid character 0x90");
         }
     }
 
