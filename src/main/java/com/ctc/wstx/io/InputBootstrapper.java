@@ -195,6 +195,17 @@ public abstract class InputBootstrapper
         return (mDeclaredXmlVersion == XmlConsts.XML_V_11);
     }
 
+    /**
+     * @return True, if the input bootstrapped needs to be handled as xml 1.1:
+     *   either because it declared xml 1.1, or because it was included from
+     *   an xml 1.1 context
+     *
+     * @since 7.3
+     */
+    public boolean xml11Handling() {
+        return mXml11Handling;
+    }
+
     public String getStandalone() {
         return mStandalone;
     }

@@ -6,6 +6,8 @@ Project: woodstox
 
 7.3.0 (not yet released)
 
+#305: Fix XML 1.1 Restricted Character Validation for Reader Inputs
+ (contributed by @metsw24-max)
 #320: Disable external entity resolution in MSV schema factories
  (contributed by @aizu-m)
 

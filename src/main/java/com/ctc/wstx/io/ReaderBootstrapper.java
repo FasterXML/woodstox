@@ -27,6 +27,7 @@ import org.codehaus.stax2.validation.XMLValidationProblem;
 import com.ctc.wstx.api.ReaderConfig;
 import com.ctc.wstx.cfg.ErrorConsts;
 import com.ctc.wstx.cfg.ParsingErrorMsgs;
+import com.ctc.wstx.cfg.XmlConsts;
 import com.ctc.wstx.exc.*;
 import com.ctc.wstx.util.StringUtil;
 
@@ -132,6 +133,9 @@ public final class ReaderBootstrapper
         mCharBuffer = (cfg == null) ? new char[128] : cfg.allocSmallCBuffer(128); // 128 chars should be enough
 
         initialLoad(7);
+
+        // Inherit parent context's version; overridden if there is an xml declaration
+        mXml11Handling = (XmlConsts.XML_V_11 == xmlVersion);
 
         /* Only need 6 for signature ("<?xml\s"), but there may be a leading
          * BOM in there... and a valid xml declaration has to be longer
