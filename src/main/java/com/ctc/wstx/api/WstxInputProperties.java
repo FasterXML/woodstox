@@ -307,6 +307,26 @@ public final class WstxInputProperties
      */
     public final static String P_ALLOW_SURROGATE_PAIR_ENTITIES = "com.ctc.wstx.allowSurrogatePairEntities";
 
+    /**
+     * Property of type {@link java.lang.Boolean} that controls whether the
+     * MSV-backed schema factories (W3C Schema, RELAX NG) are allowed to
+     * resolve external entities and fetch the external DTD subset referenced
+     * from a schema document while loading it. Defaults to
+     * {@code Boolean.FALSE}, so that a schema document can not be used to read
+     * arbitrary external resources (an XXE vector, since neither the Stax2
+     * factory API nor MSV exposes the underlying SAX parser for callers to
+     * harden themselves). Can be set to {@code Boolean.TRUE} to restore the
+     * legacy behaviour for schemas that legitimately rely on external
+     * entities.
+     *<p>
+     * Does not affect {@code xs:include} / {@code xs:import} or RELAX NG
+     * {@code externalRef}: those are resolved by MSV itself, not through
+     * entity resolution, and keep working regardless of this setting.
+     *
+     * @since 7.3.0
+     */
+    public final static String P_MSV_SCHEMA_EXTERNAL_ACCESS = "com.ctc.wstx.msvSchemaExternalAccess";
+
     // // // Alternate parsing modes
 
     /**

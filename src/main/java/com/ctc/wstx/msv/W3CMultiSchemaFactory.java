@@ -67,9 +67,23 @@ public class W3CMultiSchemaFactory
 {
     private final SAXParserFactory parserFactory;
 
+    /**
+     * Default constructor: external entities referenced from schema documents
+     * are not resolved (see {@link com.ctc.wstx.api.WstxInputProperties#P_MSV_SCHEMA_EXTERNAL_ACCESS}).
+     */
     public W3CMultiSchemaFactory() {
-        parserFactory = SAXParserFactory.newInstance();
-        parserFactory.setNamespaceAware(true); 
+        this(false);
+    }
+
+    /**
+     * @param allowExternalAccess Whether external entities referenced from
+     *   schema documents may be resolved while loading them; use {@code true}
+     *   only for schemas that legitimately rely on external entities.
+     *
+     * @since 7.3.0
+     */
+    public W3CMultiSchemaFactory(boolean allowExternalAccess) {
+        parserFactory = BaseSchemaFactory.getSaxFactory(allowExternalAccess);
     }
 
     static class RecursiveAllowedXMLSchemaReader extends XMLSchemaReader {
