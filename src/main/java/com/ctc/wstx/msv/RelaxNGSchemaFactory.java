@@ -69,7 +69,7 @@ public class RelaxNGSchemaFactory
         /* Another thing; should we use a controller to get notified about
          * errors in parsing?
          */
-        SAXParserFactory saxFactory = getSaxFactory();
+        SAXParserFactory saxFactory = getSaxFactory(mAllowExternalAccess);
         MyGrammarController ctrl = new MyGrammarController();
         TREXGrammar grammar = RELAXNGReader.parse(src, saxFactory, ctrl);
         if (grammar == null) {

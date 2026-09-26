@@ -15,10 +15,12 @@ import javax.xml.transform.stream.StreamSource;
 import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.validation.XMLValidationException;
 import org.codehaus.stax2.validation.XMLValidationSchema;
+import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import com.ctc.wstx.api.WstxInputProperties;
 import com.ctc.wstx.msv.W3CMultiSchemaFactory;
 
 /**
@@ -57,7 +59,13 @@ public class TestSchemaExternalEntity
     }
 
     /**
-     * Same for the external subset of the schema's own DOCTYPE declaration.
+     * Same for the external subset of the schema's own DOCTYPE declaration:
+     * the external DTD is skipped rather than read, so the declaration it
+     * carries must not be pulled into the grammar. Because an external subset
+     * was declared (but left unread), a parser is free either to reject the
+     * now-undeclared entity or to skip it; either way the injected element name
+     * must not end up validating. (A schema that references an external DTD but
+     * uses no entities keeps loading -- see {@link #testW3CSchemaExternalSubsetNoEntity}.)
      */
     @Test
     public void testW3CSchemaExternalSubset() throws Exception
@@ -69,12 +77,35 @@ public class TestSchemaExternalEntity
             +"<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'>\n"
             +"  <xs:element name='&injected;' type='xs:string'/>\n"
             +"</xs:schema>";
+        XMLValidationSchema sch;
         try {
-            parseW3CSchema(schema);
-            fail("Expected failure for schema using an external DTD subset");
+            sch = parseW3CSchema(schema);
         } catch (XMLStreamException e) {
-            verifyException(e, "accessExternalDTD");
+            // Acceptable: parser rejected the undeclared entity outright
+            return;
         }
+        assertFalse("External subset declaration must not be pulled into the grammar",
+                validates("<viaExternalSubset>x</viaExternalSubset>", sch));
+    }
+
+    /**
+     * A schema whose DOCTYPE references an external DTD but which uses no
+     * entities must still load: the external subset is skipped, not treated
+     * as a fatal error.
+     */
+    @Test
+    public void testW3CSchemaExternalSubsetNoEntity() throws Exception
+    {
+        File dtd = writeFile("ext.dtd", "<!ENTITY injected \"viaExternalSubset\">");
+        String schema =
+            "<?xml version='1.0'?>\n"
+            +"<!DOCTYPE xs:schema SYSTEM '"+dtd.toURI()+"'>\n"
+            +"<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'>\n"
+            +"  <xs:element name='root' type='xs:string'/>\n"
+            +"</xs:schema>";
+        XMLValidationSchema sch = parseW3CSchema(schema);
+        assertTrue("Schema referencing an external DTD but no entities should still load",
+                validates("<root>x</root>", sch));
     }
 
     /**
@@ -114,6 +145,33 @@ public class TestSchemaExternalEntity
             +"</element>";
         XMLValidationSchema sch = parseRngSchema(schema);
         assertFalse("File contents must not be readable through an external entity",
+                validates("<root>"+SECRET+"</root>", sch));
+    }
+
+    /**
+     * ... but a caller can opt back in via
+     * {@link WstxInputProperties#P_MSV_SCHEMA_EXTERNAL_ACCESS}, which restores
+     * the legacy behaviour for schemas that legitimately rely on external
+     * entities.
+     */
+    @Test
+    public void testRelaxNGExternalEntityWhenAccessEnabled() throws Exception
+    {
+        final String SECRET = "contentsOfLocalFile";
+        File secret = writeFile("secret.txt", SECRET);
+        String schema =
+            "<?xml version='1.0'?>\n"
+            +"<!DOCTYPE element [\n"
+            +"  <!ENTITY xxe SYSTEM '"+secret.toURI()+"'>\n"
+            +"]>\n"
+            +"<element name='root' xmlns='http://relaxng.org/ns/structure/1.0'>\n"
+            +"  <value>&xxe;</value>\n"
+            +"</element>";
+        XMLValidationSchemaFactory schF =
+                XMLValidationSchemaFactory.newInstance(XMLValidationSchema.SCHEMA_ID_RELAXNG);
+        schF.setProperty(WstxInputProperties.P_MSV_SCHEMA_EXTERNAL_ACCESS, Boolean.TRUE);
+        XMLValidationSchema sch = schF.createSchema(new StringReader(schema));
+        assertTrue("External entity resolution should be restored when opted in",
                 validates("<root>"+SECRET+"</root>", sch));
     }
 

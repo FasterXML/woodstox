@@ -66,7 +66,7 @@ public class W3CSchemaFactory
          *   If not, should just create new instances for each
          *   parsed schema.
          */
-        SAXParserFactory saxFactory = getSaxFactory();
+        SAXParserFactory saxFactory = getSaxFactory(mAllowExternalAccess);
 
         MyGrammarController ctrl = new MyGrammarController();
         XMLSchemaGrammar grammar = XMLSchemaReader.parse(src, saxFactory, ctrl);
