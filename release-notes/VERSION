@@ -8,6 +8,8 @@ Project: woodstox
 
 #305: Fix XML 1.1 Restricted Character Validation for Reader Inputs
  (contributed by @metsw24-max)
+#327: Fix merging from child table after rehash
+ (contributed by @winfriedgerlach)
 
 7.2.2 (03-Aug-2026)
 
