@@ -49,7 +49,31 @@ public class TestCharacterLimits
         } catch (XMLStreamException ex) {
             _verifyTextLimitException(ex);
         }
-    }    
+    }
+
+    // Skipped text must count all its chars, not just ones needing special handling
+    @Test
+    public void testLongSkippedTextWithoutSpecialChars() throws Exception {
+        StringBuilder sb = new StringBuilder("<root>a&amp;");
+        for (int i = 0; i < 20000; ++i) {
+            sb.append('x');
+        }
+        sb.append("</root>");
+        try {
+            XMLInputFactory factory = getNewInputFactory();
+            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, 10000);
+            XMLStreamReader xmlreader = factory.createXMLStreamReader(new StringReader(sb.toString()));
+            assertEquals(XMLStreamReader.START_ELEMENT, xmlreader.next());
+            // Only reads up to the entity, far below the limit...
+            assertEquals(XMLStreamReader.CHARACTERS, xmlreader.next());
+            // ...so the rest gets skipped here
+            xmlreader.next();
+            fail("Should have failed");
+        } catch (XMLStreamException ex) {
+            _verifyTextLimitException(ex);
+        }
+    }
+
     @Test
     public void testLongWhitespaceNextTag() throws Exception {
         try {
