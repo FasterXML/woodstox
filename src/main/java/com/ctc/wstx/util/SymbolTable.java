@@ -684,6 +684,8 @@ public class SymbolTable {
         Bucket[] oldBuckets = mBuckets;
         mSymbols = new String[newSize];
         mBuckets = new Bucket[newSize >> 1];
+        // must be dirty, or a child's additions never get merged back
+        mDirty = true;
         // Let's update index mask, threshold, now (needed for rehashing)
         mIndexMask = newSize - 1;
         mSizeThreshold += mSizeThreshold;

@@ -143,4 +143,30 @@ public class TestSymbolTable
         }
         assertEquals(n, table.size());
     }
+
+    @Test
+    public void testChildAdditionCausingRehashIsMerged()
+    {
+        // Size 16 with fill factor 0.75: rehash on adding the 13th entry
+        SymbolTable master = new SymbolTable(false, 16, 0.75f);
+        for (int i = 0; i < 12; ++i) {
+            master.findSymbol("name" + i);
+        }
+        SymbolTable child = master.makeChild();
+        char[] buf = "added".toCharArray();
+        child.findSymbol(buf, 0, buf.length,
+                SymbolTable.calcHash(buf, 0, buf.length, child.getHashSeed()));
+
+        // Rehash must not modify the arrays shared with master...
+        assertEquals(12, master.size());
+        assertNull(master.findSymbolIfExists(buf, 0, buf.length,
+                SymbolTable.calcHash(buf, 0, buf.length, master.getHashSeed())));
+        // ...but must mark child as changed, as that is what gets it merged back
+        assertTrue("Child must be dirty after an addition that caused rehash",
+                child.isDirty());
+        master.mergeChild(child);
+        assertEquals(13, master.size());
+        assertEquals("added", master.findSymbolIfExists(buf, 0, buf.length,
+                SymbolTable.calcHash(buf, 0, buf.length, master.getHashSeed())));
+    }
 }
