@@ -9,6 +9,8 @@ import org.codehaus.stax2.io.Stax2ByteArraySource;
 import stax2.BaseStax2Test;
 import org.junit.jupiter.api.Test;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 /**
  * This unit test suite verifies use of {@link StreamSource} as input
  * for {@link XMLInputFactory}.
@@ -31,7 +33,7 @@ public class TestStreamSource
         tmpF.deleteOnExit();
 
         // First, need to write contents to the file
-        Writer w = new OutputStreamWriter(new FileOutputStream(tmpF), "UTF-8");
+        Writer w = new OutputStreamWriter(new FileOutputStream(tmpF), UTF_8);
         w.write("<root />");
         w.close();
 
@@ -44,12 +46,35 @@ public class TestStreamSource
         sr.close();
     }
 
+    /**
+     * System id of a source that also has content need not be a resolvable
+     * URL, unless something is to be resolved relative to it.
+     */
+    @Test
+    public void testNonUrlSystemIdWithContent() throws Exception
+    {
+        final String SYSTEM_ID = "urn:example:doc";
+        XMLInputFactory f = getInputFactory();
+
+        XMLStreamReader sr = f.createXMLStreamReader(new StreamSource(
+                new ByteArrayInputStream("<root />".getBytes(UTF_8)), SYSTEM_ID));
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals(SYSTEM_ID, sr.getLocation().getSystemId());
+        assertTokenType(END_ELEMENT, sr.next());
+        sr.close();
+
+        sr = f.createXMLStreamReader(new StreamSource(new StringReader("<root />"), SYSTEM_ID));
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals(SYSTEM_ID, sr.getLocation().getSystemId());
+        sr.close();
+    }
+
     // For [woodstox-core#123]: edge case where content ends right after XML declaration
     // with unrecognized encoding
     @Test
     public void testInvalidDecl123() throws Exception
     {
-        final byte[] XML = "<?xml version=\"1.1\" encoding=\"U\"?>".getBytes("UTF-8");
+        final byte[] XML = "<?xml version=\"1.1\" encoding=\"U\"?>".getBytes(UTF_8);
         final XMLInputFactory xmlF = getInputFactory();
         try {
             XMLStreamReader sr = xmlF.createXMLStreamReader(new Stax2ByteArraySource(XML, 0, XML.length));

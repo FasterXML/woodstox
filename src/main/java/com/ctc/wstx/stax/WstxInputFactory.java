@@ -818,7 +818,7 @@ public class WstxInputFactory
                 throw new XMLStreamException("Can not create Stax reader for the Source passed -- neither reader, input stream nor system id was accessible; can not use other types of sources (like embedded SAX streams)");
             }
         }
-        return createSR(cfg, sysId, bs, forER, autoCloseInput);
+        return createSR(cfg, SystemId.construct(sysId), bs, forER, autoCloseInput);
     }
 
     protected XMLEventAllocator createEventAllocator() 
