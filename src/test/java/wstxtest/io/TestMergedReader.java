@@ -7,8 +7,7 @@ import com.ctc.wstx.io.MergedReader;
 import org.junit.jupiter.api.Test;
 
 /**
- * Unit tests for {@link MergedReader}, specifically verifying
- * that skip() returns the correct number of characters skipped.
+ * Unit tests for {@link MergedReader}.
  */
 public class TestMergedReader extends wstxtest.BaseJUnit4Test
 {
@@ -21,7 +20,7 @@ public class TestMergedReader extends wstxtest.BaseJUnit4Test
         StringReader underlying = new StringReader("xyz");
         MergedReader reader = new MergedReader(null, underlying, buf, 0, buf.length);
 
-        // Skip 3, buffer has 10 available — should return 3, not 10
+        // Skip 3, buffer has 10 available -- should return 3, not 10
         long skipped = reader.skip(3);
         assertEquals("skip() should return the number actually skipped", 3L, skipped);
 
@@ -62,6 +61,24 @@ public class TestMergedReader extends wstxtest.BaseJUnit4Test
         // Should now read 'z' from underlying
         assertEquals('z', (char) reader.read());
 
+        reader.close();
+    }
+
+    // #336: Single-char read() must return chars from the buffered segment as is,
+    // not just their lower byte
+    @Test
+    public void testReadSingleCharsBeyondLatin1() throws IOException
+    {
+        // 'a', e-acute, CJK U+4E2D, U+FFFF, and U+1F600 (surrogate pair)
+        final String BUFFERED = "a\u00E9\u4E2D\uFFFF\uD83D\uDE00";
+        char[] buf = BUFFERED.toCharArray();
+        MergedReader reader = new MergedReader(null, new StringReader("\u4E2D"), buf, 0, buf.length);
+
+        for (int i = 0; i < BUFFERED.length(); ++i) {
+            assertEquals("Char #"+i, BUFFERED.charAt(i), reader.read());
+        }
+        assertEquals(0x4e2d, reader.read());
+        assertEquals(-1, reader.read());
         reader.close();
     }
 }
