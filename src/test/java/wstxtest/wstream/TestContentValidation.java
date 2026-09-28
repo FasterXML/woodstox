@@ -7,6 +7,9 @@ import javax.xml.stream.*;
 import org.codehaus.stax2.*;
 import org.junit.jupiter.api.Test;
 
+import com.ctc.wstx.api.InvalidCharHandler;
+import com.ctc.wstx.api.WstxOutputProperties;
+
 /**
  * This unit test suite verifies that output-side content validation
  * works as expected, when enabled.
@@ -19,6 +22,8 @@ public class TestContentValidation
 
     final String CDATA_CONTENT_IN = "CData in: <![CDATA[text]]>";
     final String CDATA_CONTENT_OUT = "CData in: <![CDATA[text]]>";
+    // Prepended to CDATA content to test writing a slice not at array start
+    final static String CDATA_PREFIX = "0123456789";
 
     final String PI_CONTENT_IN = "this should end PI: ?> shouldn't it?";
     final String PI_CONTENT_OUT = "this should end PI: ?> shouldn't it?";
@@ -148,7 +153,7 @@ public class TestContentValidation
         throws Exception
     {
         for (int i = 0; i <= 2; ++i) {
-            for (int itype = 0; itype < 2; ++itype) {
+            for (int itype = 0; itype < 3; ++itype) {
                 XMLOutputFactory2 f = getFactory(i, true, false);
                 
                 /* 24-Aug-2006, TSa: Let's also test with output stream-based
@@ -168,15 +173,11 @@ public class TestContentValidation
                     sw.writeStartDocument();
                     sw.writeStartElement("root");
                     try {
-                        if (itype == 0) {
-                            sw.writeCData(CDATA_CONTENT_IN);
-                        } else {
-                            char[] ch = CDATA_CONTENT_IN.toCharArray();
-                            sw.writeCData(ch, 0, ch.length);
-                        }
+                        writeCData(sw, itype);
                         fail("Expected an XMLStreamException for illegal CDATA content (contains ']]>') in checking + non-fixing mode (type "+i+", itype "+itype+")");
                     } catch (XMLStreamException sex) {
-                        // good
+                        // good; index is that within the char array passed
+                        verifyException(sex, "(index "+(CDATA_CONTENT_IN.indexOf("]]>") + ((itype == 2) ? CDATA_PREFIX.length() : 0))+")");
                     } catch (Exception t) {
                         fail("Expected an XMLStreamException for illegal CDATA content (contains ']]>') in checking + non-fixing mode; got: "+t);
                     }
@@ -190,7 +191,7 @@ public class TestContentValidation
         throws Exception
     {
         for (int i = 0; i <= 2; ++i) {
-            for (int itype = 0; itype < 2; ++itype) {
+            for (int itype = 0; itype < 3; ++itype) {
                 XMLOutputFactory2 f = getFactory(i, true, true);
                 
                 /* 24-Aug-2006, TSa: Let's also test with output stream-based
@@ -216,12 +217,7 @@ public class TestContentValidation
                     /* now it should be ok, and result in two separate CDATA
                      * segments...
                      */
-                    if (itype == 0) {
-                        sw.writeCData(CDATA_CONTENT_IN);
-                    } else {
-                        char[] ch = CDATA_CONTENT_IN.toCharArray();
-                        sw.writeCData(ch, 0, ch.length);
-                    }
+                    writeCData(sw, itype);
                     sw.writeEndElement();
                     sw.writeEndDocument();
                     sw.close();
@@ -253,6 +249,34 @@ public class TestContentValidation
                                     CDATA_CONTENT_OUT, act);
                     }
                     assertTokenType(END_ELEMENT, type);
+                }
+            }
+        }
+    }
+
+    // Error index must be relative to caller's array even when invalid
+    // chars were replaced (in a copy) before "]]>" check
+    @Test
+    public void testCDataCheckingIndexWithReplacedChars()
+        throws Exception
+    {
+        final String content = "\u0001" + CDATA_CONTENT_IN;
+        final char[] ch = (CDATA_PREFIX + content + "xy").toCharArray();
+        final int expIndex = CDATA_PREFIX.length() + content.indexOf("]]>");
+
+        for (int i = 0; i <= 2; ++i) {
+            XMLOutputFactory2 f = getFactory(i, true, false);
+            f.setProperty(WstxOutputProperties.P_OUTPUT_INVALID_CHAR_HANDLER,
+                    new InvalidCharHandler.ReplacingHandler('x'));
+            for (int enc = 0; enc < 3; ++enc) {
+                XMLStreamWriter2 sw = createWriter(f, enc, null);
+                sw.writeStartDocument();
+                sw.writeStartElement("root");
+                try {
+                    sw.writeCData(ch, CDATA_PREFIX.length(), content.length());
+                    fail("Expected an XMLStreamException for illegal CDATA content (type "+i+", enc "+enc+")");
+                } catch (XMLStreamException e) {
+                    verifyException(e, "(index "+expIndex+")");
                 }
             }
         }
@@ -497,6 +521,24 @@ public class TestContentValidation
         setValidateAll(f, checkAll);
         setFixContent(f, fixAll);
         return f;
+    }
+
+    /**
+     * @param itype 0 for String, 1 for whole char array, 2 for part of
+     *        a char array (not at its start)
+     */
+    private void writeCData(XMLStreamWriter2 sw, int itype)
+        throws XMLStreamException
+    {
+        if (itype == 0) {
+            sw.writeCData(CDATA_CONTENT_IN);
+        } else if (itype == 1) {
+            char[] ch = CDATA_CONTENT_IN.toCharArray();
+            sw.writeCData(ch, 0, ch.length);
+        } else {
+            char[] ch = (CDATA_PREFIX + CDATA_CONTENT_IN + "xy").toCharArray();
+            sw.writeCData(ch, CDATA_PREFIX.length(), CDATA_CONTENT_IN.length());
+        }
     }
 
     private XMLStreamReader getReader(String content)
