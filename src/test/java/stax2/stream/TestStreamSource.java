@@ -69,6 +69,35 @@ public class TestStreamSource
         sr.close();
     }
 
+    /**
+     * But if something does need to be resolved relative to a non-URL
+     * system id, should get a proper exception (and not NPE or such)
+     */
+    @Test
+    public void testNonUrlSystemIdWithRelativeEntity() throws Exception
+    {
+        final String SYSTEM_ID = "urn:example:doc";
+        final String XML = "<!DOCTYPE root [\n"
+                +"<!ENTITY ext SYSTEM 'ext.xml'>\n"
+                +"]><root>&ext;</root>";
+        XMLInputFactory f = getInputFactory();
+        f.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.TRUE);
+        setReplaceEntities(f, true);
+        setSupportExternalEntities(f, true);
+
+        XMLStreamReader sr = f.createXMLStreamReader(new StreamSource(
+                new ByteArrayInputStream(XML.getBytes(UTF_8)), SYSTEM_ID));
+        assertTokenType(DTD, sr.next());
+        try {
+            sr.next();
+            sr.next();
+            fail("Should not be able to resolve 'ext.xml' relative to '"+SYSTEM_ID+"'");
+        } catch (XMLStreamException e) {
+            verifyException(e, SYSTEM_ID);
+        }
+        sr.close();
+    }
+
     // For [woodstox-core#123]: edge case where content ends right after XML declaration
     // with unrecognized encoding
     @Test
