@@ -71,7 +71,7 @@ public final class MergedReader
     public int read() throws IOException
     {
         if (mData != null) {
-            int c = mData[mPtr++] & 0xFF;
+            int c = mData[mPtr++];
             if (mPtr >= mEnd) {
                 freeMergedBuffer();
             }

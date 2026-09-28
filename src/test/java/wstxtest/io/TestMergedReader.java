@@ -7,8 +7,7 @@ import com.ctc.wstx.io.MergedReader;
 import org.junit.jupiter.api.Test;
 
 /**
- * Unit tests for {@link MergedReader}, specifically verifying
- * that skip() returns the correct number of characters skipped.
+ * Unit tests for {@link MergedReader}.
  */
 public class TestMergedReader extends wstxtest.BaseJUnit4Test
 {
@@ -62,6 +61,23 @@ public class TestMergedReader extends wstxtest.BaseJUnit4Test
         // Should now read 'z' from underlying
         assertEquals('z', (char) reader.read());
 
+        reader.close();
+    }
+
+    // #336: Single-char read() must return chars from the buffered segment as is,
+    // not just their lower byte
+    @Test
+    public void testReadSingleCharsBeyondLatin1() throws IOException
+    {
+        final String BUFFERED = "aé中￿😀";
+        char[] buf = BUFFERED.toCharArray();
+        MergedReader reader = new MergedReader(null, new StringReader("中"), buf, 0, buf.length);
+
+        for (int i = 0; i < BUFFERED.length(); ++i) {
+            assertEquals("Char #"+i, BUFFERED.charAt(i), reader.read());
+        }
+        assertEquals(0x4e2d, reader.read());
+        assertEquals(-1, reader.read());
         reader.close();
     }
 }
