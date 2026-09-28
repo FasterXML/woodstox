@@ -462,7 +462,7 @@ public final class BufferingXmlWriter
                 cbuf = replaced;
                 offset = 0;
             }
-            int ix = verifyCDataContent(cbuf, offset, len);
+            int ix = verifyCDataContent(cbuf, offset, offset + len);
             if (ix >= 0) {
                 if (!mFixContent) { // Can we fix it?
                     return ix;

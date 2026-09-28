@@ -140,6 +140,8 @@ Winfried Gerlach (@winfriedgerlach)
  (7.2.0)
 * Contributed #327: Fix merging from child table after rehash
  (7.3.0)
+* Contributed #334: Fix `BufferingXmlWriter.writeCData(char[], off, len)` passes len instead of end index
+ (7.3.0)
 
 Dennis Sosnoski (@dsosnoski)
 

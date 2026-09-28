@@ -19,6 +19,7 @@ public class TestContentValidation
 
     final String CDATA_CONTENT_IN = "CData in: <![CDATA[text]]>";
     final String CDATA_CONTENT_OUT = "CData in: <![CDATA[text]]>";
+    final static int CDATA_OFFSET = 10;
 
     final String PI_CONTENT_IN = "this should end PI: ?> shouldn't it?";
     final String PI_CONTENT_OUT = "this should end PI: ?> shouldn't it?";
@@ -148,7 +149,7 @@ public class TestContentValidation
         throws Exception
     {
         for (int i = 0; i <= 2; ++i) {
-            for (int itype = 0; itype < 2; ++itype) {
+            for (int itype = 0; itype < 3; ++itype) {
                 XMLOutputFactory2 f = getFactory(i, true, false);
                 
                 /* 24-Aug-2006, TSa: Let's also test with output stream-based
@@ -168,15 +169,11 @@ public class TestContentValidation
                     sw.writeStartDocument();
                     sw.writeStartElement("root");
                     try {
-                        if (itype == 0) {
-                            sw.writeCData(CDATA_CONTENT_IN);
-                        } else {
-                            char[] ch = CDATA_CONTENT_IN.toCharArray();
-                            sw.writeCData(ch, 0, ch.length);
-                        }
+                        writeCData(sw, itype);
                         fail("Expected an XMLStreamException for illegal CDATA content (contains ']]>') in checking + non-fixing mode (type "+i+", itype "+itype+")");
                     } catch (XMLStreamException sex) {
-                        // good
+                        // good; index is that within the char array passed
+                        verifyException(sex, "(index "+(CDATA_CONTENT_IN.indexOf("]]>") + ((itype == 2) ? CDATA_OFFSET : 0))+")");
                     } catch (Exception t) {
                         fail("Expected an XMLStreamException for illegal CDATA content (contains ']]>') in checking + non-fixing mode; got: "+t);
                     }
@@ -190,7 +187,7 @@ public class TestContentValidation
         throws Exception
     {
         for (int i = 0; i <= 2; ++i) {
-            for (int itype = 0; itype < 2; ++itype) {
+            for (int itype = 0; itype < 3; ++itype) {
                 XMLOutputFactory2 f = getFactory(i, true, true);
                 
                 /* 24-Aug-2006, TSa: Let's also test with output stream-based
@@ -216,12 +213,7 @@ public class TestContentValidation
                     /* now it should be ok, and result in two separate CDATA
                      * segments...
                      */
-                    if (itype == 0) {
-                        sw.writeCData(CDATA_CONTENT_IN);
-                    } else {
-                        char[] ch = CDATA_CONTENT_IN.toCharArray();
-                        sw.writeCData(ch, 0, ch.length);
-                    }
+                    writeCData(sw, itype);
                     sw.writeEndElement();
                     sw.writeEndDocument();
                     sw.close();
@@ -497,6 +489,24 @@ public class TestContentValidation
         setValidateAll(f, checkAll);
         setFixContent(f, fixAll);
         return f;
+    }
+
+    /**
+     * @param itype 0 for String, 1 for whole char array, 2 for part of
+     *        a char array (not at its start)
+     */
+    private void writeCData(XMLStreamWriter2 sw, int itype)
+        throws XMLStreamException
+    {
+        if (itype == 0) {
+            sw.writeCData(CDATA_CONTENT_IN);
+        } else if (itype == 1) {
+            char[] ch = CDATA_CONTENT_IN.toCharArray();
+            sw.writeCData(ch, 0, ch.length);
+        } else {
+            char[] ch = ("0123456789" + CDATA_CONTENT_IN + "xy").toCharArray();
+            sw.writeCData(ch, CDATA_OFFSET, CDATA_CONTENT_IN.length());
+        }
     }
 
     private XMLStreamReader getReader(String content)
