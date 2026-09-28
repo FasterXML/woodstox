@@ -15,6 +15,8 @@ Project: woodstox
  (contributed by @winfriedgerlach)
 #334: `BufferingXmlWriter.writeCData(char[], off, len)` misses `]]>` when `off > 0`
  (contributed by @winfriedgerlach)
+#336: Fix truncating upper char bits in `MergedReader.read()`
+ (contributed by @winfriedgerlach)
 
 7.2.2 (03-Aug-2026)
 
