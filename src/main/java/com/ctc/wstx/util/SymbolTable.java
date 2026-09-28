@@ -320,8 +320,8 @@ public class SymbolTable {
         // in case. Shouldn't really matter, for master tables.
         mDirty = false;
 
-        /* However, we have to mark child as dirty, so that it will not
-         * be modifying arrays we "took over" (since child may have
+        /* However, we have to mark child as non-dirty, to force copy-on-write
+         * so that it will not be modifying arrays we "took over" (since child may have
          * returned an updated table before it stopped fully using
          * the SymbolTable: for example, it may still use it for
          * parsing PI targets in epilog)

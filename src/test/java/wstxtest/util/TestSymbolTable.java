@@ -169,4 +169,25 @@ public class TestSymbolTable
         assertEquals("added", master.findSymbolIfExists(buf, 0, buf.length,
                 SymbolTable.calcHash(buf, 0, buf.length, master.getHashSeed())));
     }
+
+    // Same as above, but via findSymbol(String)
+    @Test
+    public void testChildStringAdditionCausingRehashIsMerged()
+    {
+        SymbolTable master = new SymbolTable(false, 16, 0.75f);
+        for (int i = 0; i < 12; ++i) {
+            master.findSymbol("name" + i);
+        }
+        SymbolTable child = master.makeChild();
+        child.findSymbol("added");
+
+        assertEquals(12, master.size());
+        assertTrue("Child must be dirty after an addition that caused rehash",
+                child.isDirty());
+        master.mergeChild(child);
+        assertEquals(13, master.size());
+        char[] buf = "added".toCharArray();
+        assertEquals("added", master.findSymbolIfExists(buf, 0, buf.length,
+                SymbolTable.calcHash(buf, 0, buf.length, master.getHashSeed())));
+    }
 }
