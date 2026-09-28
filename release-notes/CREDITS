@@ -144,7 +144,7 @@ Winfried Gerlach (@winfriedgerlach)
  (7.3.0)
 * Contributed #334: `BufferingXmlWriter.writeCData(char[], off, len)` misses `]]>` when `off > 0`
  (7.3.0)
-* Contributed #336: Fix truncating upper chars bits in `MergedReader.read()`
+* Contributed #336: Fix truncating upper char bits in `MergedReader.read()`
  (7.3.0)
 
 Dennis Sosnoski (@dsosnoski)

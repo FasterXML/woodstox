@@ -10,12 +10,12 @@ Project: woodstox
  (contributed by @metsw24-max)
 #327: Fix merging from child table after rehash
  (contributed by @winfriedgerlach)
-#336: Fix truncating upper chars bits in `MergedReader.read()`
- (contributed by @winfriedgerlach)
 #331: Update to `stax2-api` 4.3.1
 #333: Defer URL construction for system id of `Source` input in `WstxInputFactory`
  (contributed by @winfriedgerlach)
 #334: `BufferingXmlWriter.writeCData(char[], off, len)` misses `]]>` when `off > 0`
+ (contributed by @winfriedgerlach)
+#336: Fix truncating upper char bits in `MergedReader.read()`
  (contributed by @winfriedgerlach)
 
 7.2.2 (03-Aug-2026)
