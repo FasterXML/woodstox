@@ -457,6 +457,7 @@ public final class BufferingXmlWriter
     public int writeCData(char[] cbuf, int offset, int len) throws IOException
     {
         if (mCheckContent) {
+            final int origOffset = offset;
             char[] replaced = replaceInvalidInUnescapable(cbuf, offset, len);
             if (replaced != null) {
                 cbuf = replaced;
@@ -465,7 +466,8 @@ public final class BufferingXmlWriter
             int ix = verifyCDataContent(cbuf, offset, offset + len);
             if (ix >= 0) {
                 if (!mFixContent) { // Can we fix it?
-                    return ix;
+                    // Report index within caller's array, not the replacement copy
+                    return ix - offset + origOffset;
                 }
                 // Yes we can! (...Bob the Builder...)
                 writeSegmentedCData(cbuf, offset, len, ix);
