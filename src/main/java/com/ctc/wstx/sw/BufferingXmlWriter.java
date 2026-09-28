@@ -457,15 +457,17 @@ public final class BufferingXmlWriter
     public int writeCData(char[] cbuf, int offset, int len) throws IOException
     {
         if (mCheckContent) {
+            final int origOffset = offset;
             char[] replaced = replaceInvalidInUnescapable(cbuf, offset, len);
             if (replaced != null) {
                 cbuf = replaced;
                 offset = 0;
             }
-            int ix = verifyCDataContent(cbuf, offset, len);
+            int ix = verifyCDataContent(cbuf, offset, offset + len);
             if (ix >= 0) {
                 if (!mFixContent) { // Can we fix it?
-                    return ix;
+                    // Report index within caller's array, not the replacement copy
+                    return ix - offset + origOffset;
                 }
                 // Yes we can! (...Bob the Builder...)
                 writeSegmentedCData(cbuf, offset, len, ix);
@@ -1635,6 +1637,14 @@ public final class BufferingXmlWriter
         return -1;
     }
 
+    /**
+     * @param start Index of the first character to check
+     * @param end Index after the last character to check (exclusive end
+     *   index, NOT length)
+     *
+     * @return Index within {@code c} at which a problem was found, if any;
+     *   -1 if there's no problem.
+     */
     protected int verifyCDataContent(char[] c, int start, int end)
     {
         if (c != null) {
