@@ -159,6 +159,13 @@ public abstract class BasicStreamReader
 
     private final static int INDENT_CHECK_MAX = 40;
 
+    /**
+     * Bit mask of chars below 64 that need special handling in text content: control chars other than tab (incl.
+     * linefeeds), and '&amp;', '&lt;' and '&gt;'. No char from 64 up does.
+     */
+    private final static long TEXT_SPECIAL_CHARS = 0xFFFFFDFFL
+        | (1L << '&') | (1L << '<') | (1L << '>');
+
     // // // Shared namespace symbols
 
     final protected static String sPrefixXml = DefaultXmlSymbolTable.getXmlSymbol();
@@ -3812,6 +3819,18 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
         }
     }
 
+    /**
+     * Branch-free check for chars in {@link #TEXT_SPECIAL_CHARS}.
+     * (a plain range check would mispredict on every space, digit and punctuation char
+     * in mixed text)
+     *<p>
+     * Note: package-private only so that it can be called by unit tests.
+     */
+    static boolean isSpecialTextChar(char c) {
+        // (c - 64) >> 31 is all ones for c < 64, zero otherwise
+        return ((TEXT_SPECIAL_CHARS >>> c) & ((c - 64) >> 31) & 1L) != 0L;
+    }
+
     private int skipTokenText(int i)
         throws XMLStreamException
     {
@@ -3858,13 +3877,19 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
             verifyLimit("Text size", mConfig.getMaxTextLength(), count);
 
             // Hmmh... let's do quick looping here:
+            final int start = mInputPtr;
             while (mInputPtr < mInputEnd) {
                 char c = mInputBuffer[mInputPtr++];
-                if (c < CHAR_FIRST_PURE_TEXT) { // need to check it
+                if (isSpecialTextChar(c)) { // need to check it
                     i = c;
+                    // (special char itself counted on next round)
+                    count += mInputPtr - start - 1;
+                    verifyLimit("Text size", mConfig.getMaxTextLength(), count);
                     continue main_loop;
                 }
             }
+            count += mInputPtr - start;
+            verifyLimit("Text size", mConfig.getMaxTextLength(), count);
 
             i = getNext();
         }
@@ -4756,7 +4781,7 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
 
         // Let's first see if we can just share input buffer:
         while (true) {
-            if (c < CHAR_FIRST_PURE_TEXT) {
+            if (isSpecialTextChar(c)) {
                 if (c == '<') {
                     mInputPtr = --ptr;
                     mTextBuffer.resetWithShared(inputBuf, start, ptr-start);
@@ -4819,7 +4844,7 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                         }
                     }
                 }
-            } // if (char in lower code range)
+            } // if (special char)
 
             if (ptr >= inputLen) { // end-of-buffer?
                 break;
@@ -4921,7 +4946,7 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
             char c = inputBuffer[inputPtr++];
 
             // Most common case is we don't have special char, thus:
-            if (c < CHAR_FIRST_PURE_TEXT) {
+            if (isSpecialTextChar(c)) {
                 if (c < CHAR_SPACE) {
                     if (c == '\n') {
                         markLF(inputPtr);
@@ -5392,7 +5417,7 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                 c = mInputBuffer[mInputPtr++];
             }
             // Most common case is we don't have a special char, thus:
-            if (c < CHAR_FIRST_PURE_TEXT) {
+            if (isSpecialTextChar(c)) {
                 if (c < CHAR_SPACE) {
                     if (c == '\n') {
                         markLF();

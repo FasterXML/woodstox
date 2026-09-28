@@ -19,6 +19,8 @@ Project: woodstox
  (contributed by @winfriedgerlach)
 #339: add fast path to BasicStreamReader.readEndElem()
  (contributed by @winfriedgerlach)
+#341: Speed up text scanning in BasicStreamReader; P_MAX_TEXT_LENGTH now counts all chars of skipped text
+ (contributed by @winfriedgerlach)
 
 7.2.2 (03-Aug-2026)
 
