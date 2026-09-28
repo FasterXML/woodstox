@@ -3831,10 +3831,12 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
                     i = c;
                     // (special char itself counted on next round)
                     count += mInputPtr - start - 1;
+                    verifyLimit("Text size", mConfig.getMaxTextLength(), count);
                     continue main_loop;
                 }
             }
             count += mInputPtr - start;
+            verifyLimit("Text size", mConfig.getMaxTextLength(), count);
 
             i = getNext();
         }

@@ -1,8 +1,10 @@
 package wstxtest.stream;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -71,6 +73,30 @@ public class TestCharacterLimits
             fail("Should have failed");
         } catch (XMLStreamException ex) {
             _verifyTextLimitException(ex);
+        }
+    }
+
+    // Same, but with all text within one input buffer (so ending at '<', not at buffer end)
+    @Test
+    public void testLongSkippedTextInSingleBuffer() throws Exception {
+        for (char fill : new char[] { ' ', '1', 'x' }) {
+            StringBuilder sb = new StringBuilder("<root>a&amp;");
+            for (int i = 0; i < 200; ++i) {
+                sb.append(fill);
+            }
+            sb.append("</root>");
+            XMLInputFactory factory = getNewInputFactory();
+            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, 100);
+            XMLStreamReader xmlreader = factory.createXMLStreamReader(
+                    new ByteArrayInputStream(sb.toString().getBytes(StandardCharsets.UTF_8)));
+            assertEquals(XMLStreamReader.START_ELEMENT, xmlreader.next());
+            assertEquals(XMLStreamReader.CHARACTERS, xmlreader.next());
+            try {
+                xmlreader.next();
+                fail("Should have failed for text of '"+fill+"'");
+            } catch (XMLStreamException ex) {
+                _verifyTextLimitException(ex);
+            }
         }
     }
 
