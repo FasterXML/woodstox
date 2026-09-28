@@ -173,6 +173,17 @@ public abstract class BaseSchemaFactory
      */
 
     /**
+     * Legacy accessor, retained for backwards compatibility with sub-classes;
+     * returns the secure (no external entity access) factory.
+     *
+     * @deprecated Since 7.3.0 use {@link #getSaxFactory(boolean)}
+     */
+    @Deprecated
+    protected static SAXParserFactory getSaxFactory() {
+        return getSaxFactory(false);
+    }
+
+    /**
      * We will essentially share a singleton sax parser factory (one per
      * external-access setting); the reason being that constructing (or, rather,
      * locating implementation class) is bit expensive.
@@ -212,23 +223,36 @@ public abstract class BaseSchemaFactory
      * Does not affect {@code xs:include} / {@code xs:import} or RELAX NG
      * {@code externalRef}: those are resolved by MSV itself, not through
      * entity resolution.
+     *
+     * @throws IllegalStateException If the SAX implementation does not support
+     *   disabling external general or parameter entities: failing silently
+     *   would leave schema loading open to XXE while claiming otherwise.
      */
     static void disableExternalEntities(SAXParserFactory f)
     {
-        setFeature(f, "http://xml.org/sax/features/external-general-entities", false);
-        setFeature(f, "http://xml.org/sax/features/external-parameter-entities", false);
+        setRequiredFeature(f, "http://xml.org/sax/features/external-general-entities", false);
+        setRequiredFeature(f, "http://xml.org/sax/features/external-parameter-entities", false);
         // Skip (rather than fail on) the external DTD subset: keeps schemas
         // whose DOCTYPE references an external DTD loadable, while still not
-        // reading its contents.
-        setFeature(f, "http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        // reading its contents. Xerces-specific, hence optional (SAX defines
+        // 'external-parameter-entities' as also covering the external DTD subset).
+        try {
+            f.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        } catch (ParserConfigurationException | SAXNotRecognizedException | SAXNotSupportedException e) {
+            // Not every SAX implementation knows this feature; nothing to do
+        }
     }
 
-    private static void setFeature(SAXParserFactory f, String feature, boolean state)
+    private static void setRequiredFeature(SAXParserFactory f, String feature, boolean state)
     {
         try {
             f.setFeature(feature, state);
         } catch (ParserConfigurationException | SAXNotRecognizedException | SAXNotSupportedException e) {
-            // Not every SAX implementation knows every feature; nothing to do
+            throw new IllegalStateException("SAX parser factory ("+f.getClass().getName()
+                    +") does not support feature '"+feature+"', needed to disable external entity"
+                    +" resolution for schema loading; either use a SAX implementation that supports it,"
+                    +" or explicitly allow external access with property '"
+                    +WstxInputProperties.P_MSV_SCHEMA_EXTERNAL_ACCESS+"'", e);
         }
     }
 
