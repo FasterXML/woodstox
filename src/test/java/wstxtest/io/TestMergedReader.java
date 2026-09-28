@@ -20,7 +20,7 @@ public class TestMergedReader extends wstxtest.BaseJUnit4Test
         StringReader underlying = new StringReader("xyz");
         MergedReader reader = new MergedReader(null, underlying, buf, 0, buf.length);
 
-        // Skip 3, buffer has 10 available — should return 3, not 10
+        // Skip 3, buffer has 10 available -- should return 3, not 10
         long skipped = reader.skip(3);
         assertEquals("skip() should return the number actually skipped", 3L, skipped);
 
@@ -69,9 +69,10 @@ public class TestMergedReader extends wstxtest.BaseJUnit4Test
     @Test
     public void testReadSingleCharsBeyondLatin1() throws IOException
     {
-        final String BUFFERED = "aé中￿😀";
+        // 'a', e-acute, CJK U+4E2D, U+FFFF, and U+1F600 (surrogate pair)
+        final String BUFFERED = "a\u00E9\u4E2D\uFFFF\uD83D\uDE00";
         char[] buf = BUFFERED.toCharArray();
-        MergedReader reader = new MergedReader(null, new StringReader("中"), buf, 0, buf.length);
+        MergedReader reader = new MergedReader(null, new StringReader("\u4E2D"), buf, 0, buf.length);
 
         for (int i = 0; i < BUFFERED.length(); ++i) {
             assertEquals("Char #"+i, BUFFERED.charAt(i), reader.read());
