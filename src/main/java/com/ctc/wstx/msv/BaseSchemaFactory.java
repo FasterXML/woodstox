@@ -190,6 +190,10 @@ public abstract class BaseSchemaFactory
      *
      * @param allowExternalAccess Whether the returned factory may resolve
      *   external entities referenced from schema documents
+     *
+     * @throws IllegalStateException If external entity resolution cannot be
+     *   disabled for the SAX implementation in use (only when
+     *   {@code allowExternalAccess} is {@code false})
      */
     protected synchronized static SAXParserFactory getSaxFactory(boolean allowExternalAccess)
     {
@@ -208,6 +212,22 @@ public abstract class BaseSchemaFactory
             sSaxFactory = f;
         }
         return sSaxFactory;
+    }
+
+    /**
+     * Variant of {@link #getSaxFactory(boolean)} for schema loading methods,
+     * which are declared to throw {@link XMLStreamException}: failure to
+     * configure the factory is reported as one rather than as an unchecked
+     * exception.
+     */
+    static SAXParserFactory getSaxFactoryForLoading(boolean allowExternalAccess)
+        throws XMLStreamException
+    {
+        try {
+            return getSaxFactory(allowExternalAccess);
+        } catch (IllegalStateException e) {
+            throw new XMLStreamException(e.getMessage(), e);
+        }
     }
 
     /**
