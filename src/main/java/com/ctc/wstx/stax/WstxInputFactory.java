@@ -609,7 +609,12 @@ public class WstxInputFactory
      *   {@link java.net.URL} and {@link java.io.File} arguments, or when
      *   configuration settings indicate auto-closing is to be enabled
      *   (the default value is false as per Stax 1.0 specs).
+     *
+     * @deprecated Since 7.3 use
+     *   {@link #createSR(ReaderConfig, SystemId, InputBootstrapper, boolean, boolean)}
+     *   instead (which does not eagerly construct {@link URL} from system id)
      */
+    @Deprecated // since 7.3
     public XMLStreamReader2 createSR(ReaderConfig cfg, String systemId, InputBootstrapper bs,
     		boolean forER, boolean autoCloseInput)
         throws XMLStreamException
@@ -818,7 +823,7 @@ public class WstxInputFactory
                 throw new XMLStreamException("Can not create Stax reader for the Source passed -- neither reader, input stream nor system id was accessible; can not use other types of sources (like embedded SAX streams)");
             }
         }
-        return createSR(cfg, sysId, bs, forER, autoCloseInput);
+        return createSR(cfg, SystemId.construct(sysId), bs, forER, autoCloseInput);
     }
 
     protected XMLEventAllocator createEventAllocator() 
