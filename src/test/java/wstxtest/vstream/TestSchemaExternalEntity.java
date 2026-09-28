@@ -110,20 +110,24 @@ public class TestSchemaExternalEntity
 
     /**
      * Same for schemas read through {@link W3CMultiSchemaFactory}, which
-     * uses a SAX parser factory of its own.
+     * uses a SAX parser factory of its own. Its failure message carries no
+     * detail, so the same schema is also loaded with external access enabled,
+     * to verify the failure is specifically due to the entity not being resolved.
      */
     @Test
     public void testW3CMultiSchemaExternalParameterEntity() throws Exception
     {
         File xsd = writeFile("multi.xsd", schemaWithExternalParameterEntity());
-        Map<String,Source> sources = new HashMap<String,Source>();
-        sources.put("", new StreamSource(xsd.toURI().toString()));
         try {
-            new W3CMultiSchemaFactory().createSchema(tempDir.toURI().toString(), sources);
+            new W3CMultiSchemaFactory().createSchema(tempDir.toURI().toString(), multiSources(xsd));
             fail("Expected failure for schema using an external parameter entity");
         } catch (XMLStreamException e) {
             verifyException(e, "Failed to load schemas");
         }
+        XMLValidationSchema sch = new W3CMultiSchemaFactory(true)
+                .createSchema(tempDir.toURI().toString(), multiSources(xsd));
+        assertTrue("External parameter entity should be resolved when opted in",
+                validates("<viaExternalEntity>x</viaExternalEntity>", sch));
     }
 
     /**
@@ -267,6 +271,13 @@ public class TestSchemaExternalEntity
             +"<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'>\n"
             +"  <xs:element name='&injected;' type='xs:string'/>\n"
             +"</xs:schema>";
+    }
+
+    private Map<String,Source> multiSources(File xsd)
+    {
+        Map<String,Source> sources = new HashMap<String,Source>();
+        sources.put("", new StreamSource(xsd.toURI().toString()));
+        return sources;
     }
 
     private boolean validates(String doc, XMLValidationSchema schema) throws XMLStreamException
