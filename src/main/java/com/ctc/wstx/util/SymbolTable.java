@@ -320,11 +320,10 @@ public class SymbolTable {
         // in case. Shouldn't really matter, for master tables.
         mDirty = false;
 
-        /* However, we have to mark child as dirty, so that it will not
-         * be modifying arrays we "took over" (since child may have
-         * returned an updated table before it stopped fully using
-         * the SymbolTable: for example, it may still use it for
-         * parsing PI targets in epilog)
+        /* However, we have to clear child's dirty flag: we "took over" its
+         * arrays, so it must copy-on-write before any further additions
+         * (child may still be in use after returning its table; for example,
+         * for parsing PI targets in epilog)
          */
         child.mDirty = false;
     }
@@ -684,6 +683,8 @@ public class SymbolTable {
         Bucket[] oldBuckets = mBuckets;
         mSymbols = new String[newSize];
         mBuckets = new Bucket[newSize >> 1];
+        // must be dirty, or a child's additions never get merged back
+        mDirty = true;
         // Let's update index mask, threshold, now (needed for rehashing)
         mIndexMask = newSize - 1;
         mSizeThreshold += mSizeThreshold;
