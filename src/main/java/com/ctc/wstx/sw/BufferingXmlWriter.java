@@ -1637,6 +1637,14 @@ public final class BufferingXmlWriter
         return -1;
     }
 
+    /**
+     * @param start Index of the first character to check
+     * @param end Index after the last character to check (exclusive end
+     *   index, NOT length)
+     *
+     * @return Index within {@code c} at which a problem was found, if any;
+     *   -1 if there's no problem.
+     */
     protected int verifyCDataContent(char[] c, int start, int end)
     {
         if (c != null) {
