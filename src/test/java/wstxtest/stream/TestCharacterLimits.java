@@ -1,8 +1,10 @@
 package wstxtest.stream;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -49,7 +51,55 @@ public class TestCharacterLimits
         } catch (XMLStreamException ex) {
             _verifyTextLimitException(ex);
         }
-    }    
+    }
+
+    // Skipped text must count all its chars, not just ones needing special handling
+    @Test
+    public void testLongSkippedTextWithoutSpecialChars() throws Exception {
+        StringBuilder sb = new StringBuilder("<root>a&amp;");
+        for (int i = 0; i < 20000; ++i) {
+            sb.append('x');
+        }
+        sb.append("</root>");
+        try {
+            XMLInputFactory factory = getNewInputFactory();
+            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, 10000);
+            XMLStreamReader xmlreader = factory.createXMLStreamReader(new StringReader(sb.toString()));
+            assertEquals(XMLStreamReader.START_ELEMENT, xmlreader.next());
+            // Only reads up to the entity, far below the limit...
+            assertEquals(XMLStreamReader.CHARACTERS, xmlreader.next());
+            // ...so the rest gets skipped here
+            xmlreader.next();
+            fail("Should have failed");
+        } catch (XMLStreamException ex) {
+            _verifyTextLimitException(ex);
+        }
+    }
+
+    // Same, but with all text within one input buffer (so ending at '<', not at buffer end)
+    @Test
+    public void testLongSkippedTextInSingleBuffer() throws Exception {
+        for (char fill : new char[] { ' ', '1', 'x' }) {
+            StringBuilder sb = new StringBuilder("<root>a&amp;");
+            for (int i = 0; i < 200; ++i) {
+                sb.append(fill);
+            }
+            sb.append("</root>");
+            XMLInputFactory factory = getNewInputFactory();
+            factory.setProperty(WstxInputProperties.P_MAX_TEXT_LENGTH, 100);
+            XMLStreamReader xmlreader = factory.createXMLStreamReader(
+                    new ByteArrayInputStream(sb.toString().getBytes(StandardCharsets.UTF_8)));
+            assertEquals(XMLStreamReader.START_ELEMENT, xmlreader.next());
+            assertEquals(XMLStreamReader.CHARACTERS, xmlreader.next());
+            try {
+                xmlreader.next();
+                fail("Should have failed for text of '"+fill+"'");
+            } catch (XMLStreamException ex) {
+                _verifyTextLimitException(ex);
+            }
+        }
+    }
+
     @Test
     public void testLongWhitespaceNextTag() throws Exception {
         try {
