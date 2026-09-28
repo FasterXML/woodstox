@@ -3338,6 +3338,12 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
             return; // never gets here
         }
 
+        // fast path for common case
+        if (isMatchingEndTagFullyInBuffer()) {
+            endElemMatched();
+            return;
+        }
+
         char c = (mInputPtr < mInputEnd) ? mInputBuffer[mInputPtr++]
             : getNextCharFromCurrent(SUFFIX_IN_CLOSE_ELEMENT);
         // Quick check first; missing name?
@@ -3413,7 +3419,55 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
         if (c != '>') {
             throwUnexpectedChar(c, SUFFIX_IN_CLOSE_ELEMENT+" Expected '>'.");
         }
+        endElemMatched();
+    }
 
+    /**
+     * Checks if rest of the end tag of the current element (<code>prefix:name&gt;</code>) is fully in the input buffer.
+     */
+    private boolean isMatchingEndTagFullyInBuffer()
+    {
+        final String prefix = mElementStack.getPrefix();
+        final String localName = mElementStack.getLocalName();
+        final int plen = (prefix == null) ? 0 : prefix.length();
+        final int llen = localName.length();
+        int ptr = mInputPtr;
+        // name, colon if prefixed, and closing '>'
+        if ((mInputEnd - ptr) <= (plen > 0 ? plen + 1 : 0) + llen) {
+            return false;
+        }
+        final char[] buf = mInputBuffer;
+        // prefix + colon, if any
+        if (plen > 0) {
+            for (int i = 0; i < plen; ++i) {
+                if (buf[ptr++] != prefix.charAt(i)) {
+                    return false;
+                }
+            }
+            if (buf[ptr++] != ':') {
+                return false;
+            }
+        }
+        // local name
+        for (int i = 0; i < llen; ++i) {
+            if (buf[ptr++] != localName.charAt(i)) {
+                return false;
+            }
+        }
+        // closing bracket
+        if (buf[ptr] != '>') {
+            return false;
+        }
+        mInputPtr = ptr+1;
+        return true;
+    }
+
+    /**
+     * Method called after end tag of the current element has been read.
+     */
+    private void endElemMatched()
+        throws XMLStreamException
+    {
         // Finally, let's let validator detect if things are ok
         int vld = mElementStack.validateEndElement();
         mVldContent = vld;
@@ -3466,7 +3520,6 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
     }
 
     /**
-     *<p>
      * Note: According to StAX 1.0, coalesced text events are always to be
      * returned as CHARACTERS, never as CDATA. And since at this point we
      * don't really know if there's anything to coalesce (but there may
