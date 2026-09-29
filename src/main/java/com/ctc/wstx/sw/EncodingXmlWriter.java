@@ -334,15 +334,26 @@ public abstract class EncodingXmlWriter
         }
         writeRaw(rootName, 0, rootName.length());
         if (systemId != null) {
+            // A SystemLiteral has no escaping, so a system id containing the
+            // quote char can not be delimited with it; pick the other quote,
+            // and reject the (unserialisable) case where both are present.
+            byte q = BYTE_QUOT;
+            if (systemId.indexOf('"') >= 0) {
+                if (systemId.indexOf('\'') >= 0) {
+                    throwOutputError("Can not write DOCTYPE with system id containing both single and double quotes: \""+systemId+"\"");
+                }
+                q = BYTE_APOS;
+            }
             if (publicId != null) {
                 writeAscii(" PUBLIC \"");
                 writeRaw(publicId, 0, publicId.length());
-                writeAscii("\" \"");
+                writeAscii(BYTE_QUOT, BYTE_SPACE);
             } else {
-                writeAscii(" SYSTEM \"");
+                writeAscii(" SYSTEM ");
             }
+            writeAscii(q);
             writeRaw(systemId, 0, systemId.length());
-            writeAscii(BYTE_QUOT);
+            writeAscii(q);
         }
 
         // Hmmh. Should we output empty internal subset?
