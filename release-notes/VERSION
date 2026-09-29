@@ -22,6 +22,8 @@ Project: woodstox
  (contributed by @winfriedgerlach)
 #341: Speed up text scanning in BasicStreamReader; P_MAX_TEXT_LENGTH now counts all chars of skipped text
  (contributed by @winfriedgerlach)
+#344: Avoid double copy of attribute values and namespace URIs in `AttributeCollector`
+ (contributed by @winfriedgerlach)
 
 7.2.2 (03-Aug-2026)
 
