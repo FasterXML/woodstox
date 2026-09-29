@@ -4,7 +4,7 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-7.3.0 (not yet released)
+7.3.0 (28-Sep-2026)
 
 #305: Fix XML 1.1 Restricted Character Validation for Reader Inputs
  (contributed by @metsw24-max)
