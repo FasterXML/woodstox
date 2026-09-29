@@ -6,6 +6,8 @@ Project: woodstox
 
 7.4.0 (not yet released)
 
+#347: Deny external DTD access when `FEATURE_SECURE_PROCESSING` is enabled
+ (contributed by @aizu-m)
 - Update to `oss-parent` v80 for latest Maven plug-in versions
 - Update to `stax2-api` 4.3.2 (from 4.3.1)
 
