@@ -39,6 +39,15 @@ public class TestSaxProperties extends BaseWstxTest
         return "<!DOCTYPE root [ <!ENTITY % pe SYSTEM \""+systemId+"\"> %pe; ]><root />";
     }
 
+    /**
+     * Document whose DOCTYPE references the same external file as its
+     * external subset (no entity references involved).
+     */
+    private static String docWithExternalSubset() {
+        String systemId = TestSaxProperties.class.getResource("external-pe.dtd").toString();
+        return "<!DOCTYPE root SYSTEM \""+systemId+"\"><root />";
+    }
+
     // [woodstox-core#77]: Don't barf on "secure processing" setting
     @Test
     public void testSecureProcessingFactory() throws Exception
@@ -128,6 +137,35 @@ public class TestSaxProperties extends BaseWstxTest
             fail("Should not resolve external parameter entity");
         } catch (SAXException e) {
             verifyException(e, "isSupportingExternalEntities");
+        }
+    }
+
+    // Positive control: without secure processing the external subset is
+    // read and its defaulted attribute applied
+    @Test
+    public void testExternalSubsetEnabled() throws Exception
+    {
+        MyHandler h = new MyHandler();
+        new WstxSAXParserFactory().newSAXParser()
+            .parse(new InputSource(new StringReader(docWithExternalSubset())), h);
+        assertEquals("Should have defaulted attribute from external subset", 1, h._attrs);
+    }
+
+    // With secure processing enabled, external DTD access is restricted
+    // (like the JDK parsers), so the external subset is not fetched
+    @Test
+    public void testSecureProcessingDeniesExternalSubset() throws Exception
+    {
+        WstxSAXParserFactory f = new WstxSAXParserFactory();
+        f.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
+        try {
+            f.newSAXParser().parse(new InputSource(new StringReader(docWithExternalSubset())),
+                    new MyHandler());
+            fail("Should not fetch external DTD subset with secure processing enabled");
+        } catch (SAXException e) {
+            verifyException(e, "not allowed");
+            verifyException(e, XMLConstants.ACCESS_EXTERNAL_DTD);
         }
     }
 

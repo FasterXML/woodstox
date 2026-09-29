@@ -309,6 +309,51 @@ public class TestExternalDTD
         assertTokenType(END_ELEMENT, sr.next());
     }
 
+    // Enabling FEATURE_SECURE_PROCESSING restricts external DTD access
+    // (same as the JDK: access list becomes empty), so the external subset
+    // referenced from DOCTYPE must not be fetched.
+    @Test
+    public void testSecureProcessingDeniesExternalDtd()
+        throws IOException, XMLStreamException
+    {
+        XMLInputFactory2 f = getFactory();
+        f.setProperty(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
+        assertEquals("", f.getProperty(XMLConstants.ACCESS_EXTERNAL_DTD));
+
+        String sysId = constructSystemId(resolveFile(EXTERNAL_FILENAME1));
+        XMLStreamReader sr = f.createXMLStreamReader(sysId, utf8StreamFromString(EXTERNAL_XML1));
+        try {
+            while (sr.hasNext()) {
+                sr.next();
+            }
+            fail("Expected external DTD access to be denied with secure processing enabled");
+        } catch (XMLStreamException e) {
+            verifyException(e, DTD1);
+            verifyException(e, "not allowed");
+            verifyException(e, XMLConstants.ACCESS_EXTERNAL_DTD);
+        }
+    }
+
+    // ... but an explicit allow-list set after enabling secure processing
+    // still re-opens access to the listed protocols.
+    @Test
+    public void testSecureProcessingAllowsExplicitExternalDtdAccess()
+        throws IOException, XMLStreamException
+    {
+        XMLInputFactory2 f = getFactory();
+        f.setProperty(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
+        f.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "file");
+        assertEquals("file", f.getProperty(XMLConstants.ACCESS_EXTERNAL_DTD));
+
+        String sysId = constructSystemId(resolveFile(EXTERNAL_FILENAME1));
+        XMLStreamReader sr = f.createXMLStreamReader(sysId, utf8StreamFromString(EXTERNAL_XML1));
+        assertTokenType(DTD, sr.next());
+        assertTokenType(START_ELEMENT, sr.next());
+        assertTokenType(CHARACTERS, sr.next());
+        assertEquals(SIMPLE_EXT_ENTITY_TEXT, getAndVerifyText(sr));
+        assertTokenType(END_ELEMENT, sr.next());
+    }
+
     /*
     ////////////////////////////////////////
     // Private methods
