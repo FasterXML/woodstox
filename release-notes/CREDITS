@@ -215,6 +215,8 @@ Aizal Khan (@aizu-m)
  (7.2.2)
 * Contributed #330: Disable external entity resolution in MSV schema factories
  (7.3.0)
+* Contributed #347: Deny external DTD access when `FEATURE_SECURE_PROCESSING` is enabled
+ (7.3.1)
 
 Skrethel (@Skrethel)
 
