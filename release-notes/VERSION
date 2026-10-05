@@ -4,6 +4,11 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+7.3.1 (not yet released)
+
+#353: Namespace URI not escaped by `StartElement.writeAsEncodedUnicode()`
+ (contributed by @aizu-m)
+
 7.3.0 (28-Sep-2026)
 
 #305: Fix XML 1.1 Restricted Character Validation for Reader Inputs

@@ -1,5 +1,6 @@
 package wstxtest.evt;
 
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.*;
 
@@ -144,6 +145,54 @@ public class TestEventReader
         assertEquals(URI, notDecl.getBaseURI());
     }
 
+    /**
+     * Namespace URI is an attribute value in the document, and may contain
+     * characters that have to be escaped when the start element is written
+     * out with {@link XMLEvent#writeAsEncodedUnicode}: if not, a quote ends
+     * the value early and rest of the URI is taken as markup. See
+     * [woodstox-core#353].
+     */
+    @Test
+    public void testNsDeclEscapingOnWrite()
+        throws Exception
+    {
+        final String XML = "<root xmlns='urn:d&quot;>&lt;injected/>&lt;x y=&quot;'"
+            +" xmlns:p='urn:x&quot; role=&quot;admin'"
+            +" xmlns:q='http://example.com/ns?a=1&amp;b=2' />";
+        final String OUTPUT = writeStartElement(XML);
+
+        assertEquals("<root xmlns=\"urn:d&quot;>&lt;injected/>&lt;x y=&quot;\""
+                +" xmlns:p=\"urn:x&quot; role=&quot;admin\""
+                +" xmlns:q=\"http://example.com/ns?a=1&amp;b=2\">", OUTPUT);
+
+        // and what was written has to read back as the same declarations
+        XMLStreamReader sr = constructNsStreamReader(OUTPUT+"</root>", true);
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals("root", sr.getLocalName());
+        assertEquals(0, sr.getAttributeCount());
+        assertEquals(3, sr.getNamespaceCount());
+        assertEquals("urn:d\"><injected/><x y=\"", sr.getNamespaceURI(0));
+        assertEquals("urn:x\" role=\"admin", sr.getNamespaceURI(1));
+        assertEquals("http://example.com/ns?a=1&b=2", sr.getNamespaceURI(2));
+        assertTokenType(END_ELEMENT, sr.next());
+        sr.close();
+    }
+
+    /**
+     * Default namespace unbound by a DTD attribute default has no URI
+     * (null); it should be written as an empty value.
+     */
+    @Test
+    public void testUnboundNsDeclOnWrite()
+        throws Exception
+    {
+        final String XML = "<!DOCTYPE root [\n"
+            +"<!ATTLIST root xmlns CDATA ''>\n"
+            +"]>"
+            +"<root/>";
+        assertEquals("<root xmlns=\"\">", writeStartElement(XML));
+    }
+
     /*
     //////////////////////////////////////////////////////
     // Internal methods
@@ -160,6 +209,24 @@ public class TestEventReader
         setLazyParsing(f, true); // shouldn't have effect for event readers!
         setMinTextSegment(f, 8); // likewise
         return constructEventReader(f, contents);
+    }
+
+    /**
+     * Helper method that writes the first start element of given document
+     * using {@link XMLEvent#writeAsEncodedUnicode}.
+     */
+    private String writeStartElement(String contents)
+        throws XMLStreamException
+    {
+        XMLEventReader2 er = getReader(contents, null);
+        XMLEvent evt = er.nextEvent();
+        while (!evt.isStartElement()) {
+            evt = er.nextEvent();
+        }
+        StringWriter sw = new StringWriter();
+        evt.writeAsEncodedUnicode(sw);
+        er.close();
+        return sw.toString();
     }
 
     private int numTextEvents(XMLEventReader er) throws XMLStreamException {

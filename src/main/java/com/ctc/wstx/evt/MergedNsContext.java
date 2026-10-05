@@ -10,6 +10,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.Namespace;
 
+import com.ctc.wstx.io.TextEscaper;
 import com.ctc.wstx.util.BaseNsContext;
 import com.ctc.wstx.util.DataUtil;
 
@@ -155,7 +156,12 @@ public class MergedNsContext
                 w.write(ns.getPrefix());
             }
             w.write("=\"");
-            w.write(ns.getNamespaceURI());
+            // 05-Oct-2026, AK: [woodstox-core#353] needs escaping, like
+            //   any other attribute value
+            String uri = ns.getNamespaceURI();
+            if (uri != null && uri.length() > 0) {
+                TextEscaper.writeEscapedAttrValue(w, uri);
+            }
             w.write('"');
         }
     }

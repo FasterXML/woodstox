@@ -215,6 +215,8 @@ Aizal Khan (@aizu-m)
  (7.2.2)
 * Contributed #330: Disable external entity resolution in MSV schema factories
  (7.3.0)
+* Contributed #353: Namespace URI not escaped by `StartElement.writeAsEncodedUnicode()`
+ (7.3.1)
 
 Skrethel (@Skrethel)
 
