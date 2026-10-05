@@ -4663,21 +4663,22 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
      * character data, or {@code end} if the whole range is "pure" text that can be
      * copied verbatim.
      *<p>
-     * The characters that need handling are exactly those the scalar text loop
-     * branches on: control characters ({@code c < 0x20}, which includes
-     * {@code \n}, {@code \r} and {@code \t}), {@code '<'} (segment end),
+     * The characters that need handling are exactly those {@link #isSpecialTextChar}
+     * reports, i.e. the ones the scalar text loop branches on: control characters
+     * other than tab (incl. {@code \n} and {@code \r}), {@code '<'} (segment end),
      * {@code '&'} (entity) and {@code '>'} (possible {@code ]]>}). Everything else
-     * -- including printable characters below {@link #CHAR_FIRST_PURE_TEXT} such as
-     * space, digits or {@code '='} -- is plain text the loop copies unchanged, so
-     * it is safe to skip here. This lets {@link #readTextSecondary} bulk-copy the
-     * plain run with a single {@link System#arraycopy} instead of one char at a
-     * time.
+     * -- including tab, space, digits or {@code '='} -- is plain text the loop
+     * copies unchanged, so it is safe to skip here. This lets
+     * {@link #readTextSecondary} bulk-copy the plain run with a single
+     * {@link System#arraycopy} instead of one char at a time.
+     *<p>
+     * (the branch-free check keeps this at one branch per char; a separate
+     * comparison per special char is slower on long runs, even when well predicted)
      */
     private static int firstSpecialTextChar(char[] buf, int from, int end)
     {
         for (int i = from; i < end; ++i) {
-            char c = buf[i];
-            if (c < CHAR_SPACE || c == '<' || c == '&' || c == '>') {
+            if (isSpecialTextChar(buf[i])) {
                 return i;
             }
         }
