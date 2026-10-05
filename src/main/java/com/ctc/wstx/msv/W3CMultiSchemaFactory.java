@@ -65,11 +65,25 @@ import org.codehaus.stax2.validation.XMLValidationSchema;
  */
 public class W3CMultiSchemaFactory
 {
-    private final SAXParserFactory parserFactory;
+    private final boolean allowExternalAccess;
 
+    /**
+     * Default constructor: external entities referenced from schema documents
+     * are not resolved (see {@link com.ctc.wstx.api.WstxInputProperties#P_MSV_SCHEMA_EXTERNAL_ACCESS}).
+     */
     public W3CMultiSchemaFactory() {
-        parserFactory = SAXParserFactory.newInstance();
-        parserFactory.setNamespaceAware(true); 
+        this(false);
+    }
+
+    /**
+     * @param allowExternalAccess Whether external entities referenced from
+     *   schema documents may be resolved while loading them; use {@code true}
+     *   only for schemas that legitimately rely on external entities.
+     *
+     * @since 7.3.0
+     */
+    public W3CMultiSchemaFactory(boolean allowExternalAccess) {
+        this.allowExternalAccess = allowExternalAccess;
     }
 
     static class RecursiveAllowedXMLSchemaReader extends XMLSchemaReader {
@@ -151,6 +165,9 @@ public class W3CMultiSchemaFactory
         }
         
         WSDLGrammarReaderController ctrl = new WSDLGrammarReaderController(null, baseURI, embeddedSources);
+        // Obtained here, not in constructor, so configuration failure is
+        // reported as XMLStreamException
+        SAXParserFactory parserFactory = BaseSchemaFactory.getSaxFactoryForLoading(allowExternalAccess);
         final RecursiveAllowedXMLSchemaReader xmlSchemaReader = new RecursiveAllowedXMLSchemaReader(ctrl, parserFactory);
         final MultiSchemaReader multiSchemaReader = new MultiSchemaReader(xmlSchemaReader);
         for (Source source : schemaSources.values()) {

@@ -4,12 +4,15 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
-7.3.0 (not yet released)
+7.3.0 (28-Sep-2026)
 
 #305: Fix XML 1.1 Restricted Character Validation for Reader Inputs
  (contributed by @metsw24-max)
 #327: Fix merging from child table after rehash
  (contributed by @winfriedgerlach)
+#330: Disable external entity resolution in MSV schema factories by default
+  (configurable via `WstxInputProperties.P_MSV_SCHEMA_EXTERNAL_ACCESS`)
+ (contributed by @aizu-m)
 #331: Update to `stax2-api` 4.3.1
 #333: Defer URL construction for system id of `Source` input in `WstxInputFactory`
  (contributed by @winfriedgerlach)
