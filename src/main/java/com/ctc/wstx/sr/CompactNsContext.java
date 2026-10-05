@@ -14,6 +14,7 @@ import javax.xml.stream.events.Namespace;
 // This is unfortunate dependency, but...
 import org.codehaus.stax2.ri.evt.NamespaceEventImpl;
 
+import com.ctc.wstx.io.TextEscaper;
 import com.ctc.wstx.util.BaseNsContext;
 import com.ctc.wstx.util.DataUtil;
 
@@ -234,7 +235,14 @@ public final class CompactNsContext
                 w.write(prefix);
             }
             w.write("=\"");
-            w.write(ns[i+1]);
+            /* 05-Oct-2026, AK: [woodstox-core#353] URI is an attribute value
+             *   and needs to be escaped as one; it is also null for a
+             *   namespace unbound via DTD attribute default
+             */
+            String uri = ns[i+1];
+            if (uri != null && uri.length() > 0) {
+                TextEscaper.writeEscapedAttrValue(w, uri);
+            }
             w.write('"');
         }
     }

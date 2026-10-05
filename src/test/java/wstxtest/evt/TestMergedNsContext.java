@@ -210,6 +210,26 @@ public class TestMergedNsContext extends wstxtest.BaseJUnit4Test
                 out.contains(" xmlns:p=\"prefix-uri\""));
     }
 
+    // [woodstox-core#353]: URI is written as an attribute value, so a quote,
+    // '<' or '&' in it must not get out as markup
+    @Test
+    public void testOutputNamespaceDeclarationsToWriterEscaping() throws IOException
+    {
+        List<Namespace> nsList = new ArrayList<>();
+        nsList.add(eventFactory.createNamespace("urn:d\"><injected/><x y=\""));
+        nsList.add(eventFactory.createNamespace("p", "urn:x\" role=\"admin"));
+        nsList.add(eventFactory.createNamespace("q", "http://example.com/ns?a=1&b=2"));
+        BaseNsContext ctxt = MergedNsContext.construct(null, nsList);
+
+        StringWriter sw = new StringWriter();
+        ctxt.outputNamespaceDeclarations(sw);
+
+        assertEquals(" xmlns=\"urn:d&quot;>&lt;injected/>&lt;x y=&quot;\""
+                +" xmlns:p=\"urn:x&quot; role=&quot;admin\""
+                +" xmlns:q=\"http://example.com/ns?a=1&amp;b=2\"",
+                sw.toString());
+    }
+
     // ---------- outputNamespaceDeclarations(XMLStreamWriter) ----------
 
     @Test
