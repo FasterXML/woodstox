@@ -889,7 +889,7 @@ public final class InputElementStack
      * this point we can trust it to only call this method with somewhat
      * valid arguments (no dups etc).
      */
-    public void addNsBinding(String prefix, String uri)
+    public void addNsBinding(String prefix, String uri) throws XMLStreamException
     {
         // Unbind? (xml 1.1...)
         if ((uri == null) || (uri.length() == 0)) {
@@ -899,6 +899,28 @@ public final class InputElementStack
         // Default ns declaration?
         if ((prefix == null) || (prefix.length() == 0)) {
             prefix = null;
+        }
+
+        /* 02-Oct-2026, AK: [woodstox-core#350] The reserved prefix/URI
+         *   constraints that resolveAndValidateElement() applies to explicit
+         *   declarations hold for declarations that come from attribute
+         *   defaults too (Namespaces in XML 1.0/1.1 #3)
+         */
+        if ("xmlns".equals(prefix)) {
+            // xmlns can never be declared, even to its correct URI
+            mReporter.throwParseError(ErrorConsts.ERR_NS_REDECL_XMLNS);
+        } else if ("xml".equals(prefix)) {
+            // whereas xml is ok, as long as it's same URI:
+            if (!XMLConstants.XML_NS_URI.equals(uri)) {
+                mReporter.throwParseError(ErrorConsts.ERR_NS_REDECL_XML, uri, null);
+            }
+        } else if (XMLConstants.XML_NS_URI.equals(uri)) {
+            mReporter.throwParseError(ErrorConsts.ERR_NS_REDECL_XML_URI, prefix, null);
+        } else if (XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(uri)) {
+            mReporter.throwParseError(ErrorConsts.ERR_NS_REDECL_XMLNS_URI);
+        }
+
+        if (prefix == null) {
             mCurrElement.mDefaultNsURI = uri;
         }
         mNamespaces.addStrings(prefix, uri);
