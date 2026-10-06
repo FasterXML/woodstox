@@ -4,6 +4,11 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+Unreleased (in development)
+
+#313: Improve performance of `BasicStreamReader.readTextSecondary()` by using bulk-copy
+ (contributed by @winfriedgerlach)
+
 7.3.0 (28-Sep-2026)
 
 #305: Fix XML 1.1 Restricted Character Validation for Reader Inputs
