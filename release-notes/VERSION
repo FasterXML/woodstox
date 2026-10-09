@@ -4,6 +4,11 @@ Project: woodstox
 === Releases ===
 ------------------------------------------------------------------------
 
+7.4.0 (not yet released)
+
+- Update to `oss-parent` v80 for latest Maven plug-in versions
+- Update to `stax2-api` 4.3.2 (from 4.3.1)
+
 7.3.0 (28-Sep-2026)
 
 #305: Fix XML 1.1 Restricted Character Validation for Reader Inputs
