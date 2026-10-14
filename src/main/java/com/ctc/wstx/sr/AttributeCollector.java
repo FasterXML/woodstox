@@ -347,7 +347,6 @@ public final class AttributeCollector
     }
 
     /**
-     *<p>
      * Note: the main reason this method is defined at this level, and
      * made final, is performance. JIT may be able to fully inline this
      * method, even when reference is via this base class. This is important
@@ -359,15 +358,7 @@ public final class AttributeCollector
         if (index < 0 || index >= mAttrCount) {
             throwIndex(index);
         }
-        String full = mValueBuilder.getAllValues();
-        Attribute attr = mAttributes[index];
-        ++index;
-        if (index < mAttrCount) { // not last
-            int endOffset = mAttributes[index].mValueStartOffset;
-            return attr.getValue(full, endOffset);
-        }
-        // last can be optimized bit more:
-        return attr.getValue(full);
+        return mAttributes[index].getValue(mValueBuilder.getCharBuffer(), getValueStartOffset(index+1));
     }
 
     public String getValue(String nsURI, String localName)
@@ -698,20 +689,9 @@ public final class AttributeCollector
     protected Attribute resolveNamespaceDecl(int index, boolean internURI)
     {
         Attribute ns = mNamespaces[index];
-        String full = mNamespaceBuilder.getAllValues();
-        String uri;
-
-        if (mNsCount == 0) {
-            uri = full;
-        } else {
-            ++index;
-            if (index < mNsCount) { // not last
-                int endOffset = mNamespaces[index].mValueStartOffset;
-                uri = ns.getValue(full, endOffset);
-            } else { // is last
-                uri = ns.getValue(full);
-            }
-        }
+        ++index;
+        int endOffset = (index < mNsCount) ? mNamespaces[index].mValueStartOffset : mNamespaceBuilder.getCharSize();
+        String uri = ns.getValue(mNamespaceBuilder.getCharBuffer(), endOffset);
         if (internURI && uri.length() > 0) {
             uri = sInternCache.intern(uri);
         }

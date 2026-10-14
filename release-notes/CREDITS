@@ -148,6 +148,8 @@ Winfried Gerlach (@winfriedgerlach)
  (7.3.0)
 * Contributed #341: Speed up text scanning in BasicStreamReader; P_MAX_TEXT_LENGTH now counts all chars of skipped text
  (7.3.0)
+* Contributed #344: Avoid double copy of attribute values and namespace URIs in `AttributeCollector`
+ (7.3.0)
 
 Dennis Sosnoski (@dsosnoski)
 
