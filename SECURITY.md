@@ -1,17 +1,12 @@
 # Security Policy
 
-Last Updated: 2020-03-21
+Last Updated: 2026-10-15
 
 ## Reporting a Vulnerability
 
-The recommended mechanism for reporting possible security vulnerabilities follows
-so-called "Coordinated Disclosure Plan" (see [definition of DCP](https://vuls.cert.org/confluence/display/Wiki/Coordinated+Vulnerability+Disclosure+Guidance)
-for general idea). The first step is to file a [Tidelift security contact](https://tidelift.com/security):
-Tidelift will route all reports via their system to maintainers of relevant package(s), and start the
-process that will evaluate concern and issue possible fixes, send update notices and so on.
-Note that you do not need to be a Tidelift subscriber to file a security contact.
+Click ["Report a vulnerability"](../../security/advisories/new) you can see on the upper right corner of this page to report a vulnerability related to Woodstox code.
 
-Alternatively you may also report possible vulnerabilities to `info` at fasterxml dot com
-mailing address. Note that filing an issue to go with report is fine, but if you do that please
-DO NOT include details of security problem in the issue but only in email contact.
+
+Alternatively you may also report possible vulnerabilities to `info` at fasterxml dot com mailing address.
+Note that filing an issue to go with report is fine, but if you do that please DO NOT include details of security problem in the issue but only in email contact.
 This is important to give us time to provide a patch, if necessary, for the problem.
