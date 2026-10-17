@@ -899,6 +899,9 @@ public class FullDTDReader
             try {
                 int count = input.readInto(this);
                 if (count > 0) {
+                    if (input != mRootInput) {
+                        verifyEntityExpansionLength(count);
+                    }
                     if (mFlattenWriter != null) {
                         mFlattenWriter.setFlattenStart(mInputPtr);
                     }
@@ -955,6 +958,9 @@ public class FullDTDReader
         try {
             int count = mInput.readInto(this);
             if (count > 0) {
+                if (mInput != mRootInput) {
+                    verifyEntityExpansionLength(count);
+                }
                 if (mFlattenWriter != null) {
                     mFlattenWriter.setFlattenStart(mInputPtr);
                 }
@@ -979,6 +985,9 @@ public class FullDTDReader
         }
         try {
             if (mInput.readMore(this, minAmount)) {
+                if (mInput != mRootInput) {
+                    verifyEntityExpansionLength((mInputEnd - mInputPtr) - currAmount);
+                }
                 if (mFlattenWriter != null) {
                     //mFlattenWriter.setFlattenStart(mInputPtr);
                     mFlattenWriter.setFlattenStart(currAmount);

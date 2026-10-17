@@ -4,13 +4,15 @@ import java.io.StringReader;
 
 import javax.xml.stream.*;
 
+import com.ctc.wstx.api.ReaderConfig;
 import com.ctc.wstx.api.WstxInputProperties;
 import org.junit.jupiter.api.Test;
 
 /**
  * Tests that verify that it is possible to limit aspects of general parsed
  * entity handling: specifically, total number of expansions per document,
- * and maximum nesting depth of entity expansion.
+ * maximum nesting depth of entity expansion, and total length of
+ * expanded content.
  * 
  * @since 4.3
  */
@@ -109,4 +111,106 @@ public class TestEntityLimits
         sr.close();
     }
 
+    @Test
+    public void testMaxEntityExpansionLengthDefault() throws XMLStreamException
+    {
+        XMLInputFactory f = getNewInputFactory();
+        assertEquals("Default max entity expansion length",
+                Long.valueOf(ReaderConfig.DEFAULT_MAX_ENTITY_EXPANSION_LENGTH),
+                f.getProperty(WstxInputProperties.P_MAX_ENTITY_EXPANSION_LENGTH));
+    }
+
+    @Test
+    public void testMaxEntityExpansionLength() throws XMLStreamException
+    {
+        String XML = "<!DOCTYPE root [\n"
+                +" <!ENTITY top '&middle;&middle;&middle;&middle;'>\n"
+                +" <!ENTITY middle '&bottom;&bottom;&bottom;&bottom;'>\n"
+                +" <!ENTITY bottom '0123456789'>\n"
+                +"]><root>&top;</root>"
+               ;
+        // expands to 160 chars of text (plus entity reference text in between)
+
+        // fine with default settings
+        XMLInputFactory f = getNewInputFactory();
+        setCoalescing(f, true);
+        XMLStreamReader sr = f.createXMLStreamReader(new StringReader(XML));
+        assertTokenType(DTD, sr.next());
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals(160, sr.getElementText().length());
+        sr.close();
+
+        // and with a limit comfortably above the expanded size
+        f.setProperty(WstxInputProperties.P_MAX_ENTITY_EXPANSION_LENGTH, 1000L);
+        sr = f.createXMLStreamReader(new StringReader(XML));
+        assertTokenType(DTD, sr.next());
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals(160, sr.getElementText().length());
+        sr.close();
+
+        // but not with a limit below it
+        f.setProperty(WstxInputProperties.P_MAX_ENTITY_EXPANSION_LENGTH, 100L);
+        sr = f.createXMLStreamReader(new StringReader(XML));
+        assertTokenType(DTD, sr.next());
+        assertTokenType(START_ELEMENT, sr.next());
+        try {
+            sr.getElementText();
+            fail("Should have failed with entity expansion length limit");
+        } catch (XMLStreamException e) {
+            verifyException(e, "Maximum entity expansion length");
+        }
+        sr.close();
+    }
+
+    /**
+     * Parameter entity references within entity values (allowed in the external
+     * DTD subset) are expanded when the DTD is read, so the limit needs to
+     * apply to DTD processing as well.
+     */
+    @Test
+    public void testMaxEntityExpansionLengthInDTD() throws XMLStreamException
+    {
+        final String XML = "<!DOCTYPE root SYSTEM 'ext.dtd'><root>&top;</root>";
+
+        // fine with a limit comfortably above the expanded size
+        XMLStreamReader sr = getExtDtdFactory(1000L).createXMLStreamReader(new StringReader(XML));
+        assertTokenType(DTD, sr.next());
+        assertTokenType(START_ELEMENT, sr.next());
+        assertEquals(160, sr.getElementText().length());
+        sr.close();
+
+        // but not with a limit below what reading of the DTD itself expands
+        // (200 chars), even though expanding "&top;" in content would be fine (160 chars)
+        sr = getExtDtdFactory(180L).createXMLStreamReader(new StringReader(XML));
+        try {
+            while (sr.hasNext()) {
+                sr.next();
+            }
+            fail("Should have failed with entity expansion length limit");
+        } catch (XMLStreamException e) {
+            verifyException(e, "Maximum entity expansion length");
+        }
+        sr.close();
+    }
+
+    // New factory per call, since external DTD subsets are cached per factory
+    private XMLInputFactory getExtDtdFactory(long maxExpansionLength)
+        throws XMLStreamException
+    {
+        final String extDtd = "<!ENTITY % bottom '0123456789'>\n"
+                +"<!ENTITY % middle '%bottom;%bottom;%bottom;%bottom;'>\n"
+                +"<!ENTITY top '%middle;%middle;%middle;%middle;'>\n"
+               ;
+        XMLInputFactory f = getNewInputFactory();
+        setCoalescing(f, true);
+        setSupportDTD(f, true);
+        f.setProperty(WstxInputProperties.P_DTD_RESOLVER, new XMLResolver() {
+            @Override
+            public Object resolveEntity(String publicID, String systemID, String baseURI, String namespace) {
+                return new StringReader(extDtd);
+            }
+        });
+        f.setProperty(WstxInputProperties.P_MAX_ENTITY_EXPANSION_LENGTH, maxExpansionLength);
+        return f;
+    }
 }

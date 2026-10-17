@@ -233,6 +233,16 @@ public abstract class StreamScanner
      * @since 4.3
      */
     protected int mEntityExpansionCount;
+
+    /**
+     * Total number of characters read from expanded (general or parameter)
+     * entities; used for limiting total size of entity expansion.
+     * Note that this is NOT saved/restored along with input context, so that
+     * it accumulates over the whole input.
+     *
+     * @since 7.4
+     */
+    protected long mEntityExpansionLength;
     
     /**
      * Flag that indicates whether linefeeds in the input data are to
@@ -981,6 +991,9 @@ public abstract class StreamScanner
             try {
                 count = input.readInto(this);
                 if (count > 0) {
+                    if (input != mRootInput) {
+                        verifyEntityExpansionLength(count);
+                    }
                     return true;
                 }
                 input.close();
@@ -1037,12 +1050,19 @@ public abstract class StreamScanner
         mCurrInputProcessed += mInputEnd;
         mCurrInputRowStart -= mInputEnd;
         verifyLimit("Maximum document characters", mConfig.getMaxCharacters(), mCurrInputProcessed);
+        int count;
         try {
-            int count = mInput.readInto(this);
-            return (count > 0);
+            count = mInput.readInto(this);
         } catch (IOException ie) {
             throw constructFromIOE(ie);
         }
+        if (count > 0) {
+            if (mInput != mRootInput) {
+                verifyEntityExpansionLength(count);
+            }
+            return true;
+        }
+        return false;
     }
 
     protected final boolean loadMoreFromCurrent(String errorMsg)
@@ -1075,11 +1095,16 @@ public abstract class StreamScanner
         if (currAmount >= minAmount) {
             return true;
         }
+        boolean gotMore;
         try {
-            return mInput.readMore(this, minAmount);
+            gotMore = mInput.readMore(this, minAmount);
         } catch (IOException ie) {
             throw constructFromIOE(ie);
         }
+        if (gotMore && (mInput != mRootInput)) {
+            verifyEntityExpansionLength((mInputEnd - mInputPtr) - currAmount);
+        }
+        return gotMore;
     }
 
     protected void closeAllInput(boolean force)
@@ -2454,6 +2479,22 @@ public abstract class StreamScanner
         if (currentValue > maxValue) {
             throw constructLimitViolation(type, maxValue);
         }
+    }
+
+    /**
+     * Method called when content has been read from an expanded entity, to
+     * update and check the total length of entity expansion.
+     *
+     * @param count Number of characters read from an expanded entity
+     *
+     * @since 7.4
+     */
+    protected void verifyEntityExpansionLength(int count)
+        throws XMLStreamException
+    {
+        mEntityExpansionLength += count;
+        verifyLimit("Maximum entity expansion length", mConfig.getMaxEntityExpansionLength(),
+                mEntityExpansionLength);
     }
 
     protected XMLStreamException constructLimitViolation(String type, long limit)
