@@ -716,15 +716,26 @@ public final class BufferingXmlWriter
         }
         fastWriteRaw(rootName);
         if (systemId != null) {
+            // A SystemLiteral has no escaping, so a system id containing the
+            // quote char can not be delimited with it; pick the other quote,
+            // and reject the (unserialisable) case where both are present.
+            char q = '"';
+            if (systemId.indexOf('"') >= 0) {
+                if (systemId.indexOf('\'') >= 0) {
+                    throwOutputError("Can not write DOCTYPE with system id containing both single and double quotes: \""+systemId+"\"");
+                }
+                q = '\'';
+            }
             if (publicId != null) {
                 fastWriteRaw(" PUBLIC \"");
                 fastWriteRaw(publicId);
-                fastWriteRaw("\" \"");
+                fastWriteRaw("\" ");
             } else {
-                fastWriteRaw(" SYSTEM \"");
+                fastWriteRaw(" SYSTEM ");
             }
+            fastWriteRaw(q);
             fastWriteRaw(systemId);
-            fastWriteRaw('"');
+            fastWriteRaw(q);
         }
         // Hmmh. Should we output empty internal subset?
         if (internalSubset != null && internalSubset.length() > 0) {

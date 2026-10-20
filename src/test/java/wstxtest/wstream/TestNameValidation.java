@@ -474,6 +474,95 @@ public class TestNameValidation
     }
 
     /**
+     * A DOCTYPE system identifier may legally contain a double quote (it is
+     * then written with a single-quote {@code SystemLiteral} in the source,
+     * and the reader keeps the double quote). All writer back-ends used to
+     * wrap the system id in double quotes unconditionally, so such an id broke
+     * out of the literal and corrupted the DOCTYPE. The delimiter now depends
+     * on the content.
+     */
+    @Test
+    public void testDoctypeSystemIdWithQuote()
+        throws Exception
+    {
+        // Holds a double quote, no single quote -> must be single-quoted out
+        final String systemId = "http://host/a\"b.dtd";
+        for (int type = 0; type < 3; ++type) {
+            assertEquals("writer type "+type,
+                         "<!DOCTYPE root SYSTEM 'http://host/a\"b.dtd'><root/>",
+                         writeDoctypeDoc(type, "root", systemId, null));
+            assertEquals("writer type "+type,
+                         "<!DOCTYPE root PUBLIC \"-//me//EN\" 'http://host/a\"b.dtd'><root/>",
+                         writeDoctypeDoc(type, "root", systemId, "-//me//EN"));
+        }
+    }
+
+    /**
+     * Counterpart of {@link #testDoctypeSystemIdWithQuote}: a system id with
+     * no double quote (even one holding a single quote) stays double-quoted,
+     * so existing output is byte-for-byte unchanged.
+     */
+    @Test
+    public void testDoctypeSystemIdStaysDoubleQuoted()
+        throws Exception
+    {
+        for (int type = 0; type < 3; ++type) {
+            assertEquals("writer type "+type,
+                         "<!DOCTYPE root SYSTEM \"http://host/y.dtd\"><root/>",
+                         writeDoctypeDoc(type, "root", "http://host/y.dtd", null));
+            // apostrophe is fine inside a double-quoted literal
+            assertEquals("writer type "+type,
+                         "<!DOCTYPE root SYSTEM \"ab'cd\"><root/>",
+                         writeDoctypeDoc(type, "root", "ab'cd", null));
+        }
+    }
+
+    /**
+     * A system id holding both quote characters can not be represented by any
+     * {@code SystemLiteral}, so it has to be reported rather than written out
+     * malformed.
+     */
+    @Test
+    public void testDoctypeSystemIdWithBothQuotes()
+        throws Exception
+    {
+        for (int type = 0; type < 3; ++type) {
+            try {
+                writeDoctypeDoc(type, "root", "a\"b'c", null);
+                fail("Expected failure for system id with both quote chars (writer type "+type+")");
+            } catch (XMLStreamException sex) {
+                verifyException(sex, "both single and double quotes");
+            }
+        }
+    }
+
+    /**
+     * @param type 0 for char-backed writer, 1 for US-ASCII, 2 for ISO-8859-1
+     *   (the two byte-backed writers)
+     */
+    private String writeDoctypeDoc(int type, String rootName, String systemId,
+                                   String publicId)
+        throws Exception
+    {
+        XMLOutputFactory f = getFactory(false, true);
+        if (type == 0) {
+            StringWriter strw = new StringWriter();
+            XMLStreamWriter2 sw = (XMLStreamWriter2) f.createXMLStreamWriter(strw);
+            sw.writeDTD(rootName, systemId, publicId, null);
+            sw.writeEmptyElement(rootName);
+            sw.close();
+            return strw.toString();
+        }
+        String enc = (type == 1) ? "US-ASCII" : "ISO-8859-1";
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        XMLStreamWriter2 sw = (XMLStreamWriter2) f.createXMLStreamWriter(bos, enc);
+        sw.writeDTD(rootName, systemId, publicId, null);
+        sw.writeEmptyElement(rootName);
+        sw.close();
+        return new String(bos.toByteArray(), enc);
+    }
+
+    /**
      * According to XML Namespaces 1.1 specification, entity names (ids)
      * can not contain colons either...
      *<p>
