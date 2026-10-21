@@ -46,6 +46,11 @@ public final class ReaderConfig
     public final static int DEFAULT_MAX_ENTITY_DEPTH = 500;
     public final static int DEFAULT_MAX_ENTITY_COUNT = 100 * 1000;
 
+    /**
+     * @since 7.4
+     */
+    public final static long DEFAULT_MAX_ENTITY_EXPANSION_LENGTH = 50L * 1000 * 1000;
+
     // @since 5.4/6.4
     public final static int DEFAULT_MAX_DTD_DEPTH = 500;
 
@@ -148,6 +153,11 @@ public final class ReaderConfig
      * @since 6.6
      */
     final static int PROP_ALLOW_SURROGATE_PAIR_ENTITIES = 70;
+
+    /**
+     * @since 7.4
+     */
+    final static int PROP_MAX_ENTITY_EXPANSION_LENGTH = 71;
 
     /*
     ////////////////////////////////////////////////
@@ -358,6 +368,9 @@ public final class ReaderConfig
                  PROP_MAX_ENTITY_DEPTH);
         sProperties.put(WstxInputProperties.P_MAX_ENTITY_COUNT,
                  PROP_MAX_ENTITY_COUNT);
+        // since 7.4
+        sProperties.put(WstxInputProperties.P_MAX_ENTITY_EXPANSION_LENGTH,
+                PROP_MAX_ENTITY_EXPANSION_LENGTH);
         // since 5.4/6.4
         sProperties.put(WstxInputProperties.P_MAX_DTD_DEPTH,
                 PROP_MAX_DTD_DEPTH);
@@ -423,6 +436,9 @@ public final class ReaderConfig
 
     protected int mMaxEntityDepth = DEFAULT_MAX_ENTITY_DEPTH;
     protected long mMaxEntityCount = DEFAULT_MAX_ENTITY_COUNT;
+
+    // since 7.4
+    protected long mMaxEntityExpansionLength = DEFAULT_MAX_ENTITY_EXPANSION_LENGTH;
 
     // since 5.4/6.4
     protected int mMaxDtdDepth = DEFAULT_MAX_DTD_DEPTH;
@@ -569,6 +585,7 @@ public final class ReaderConfig
             mMaxTextLength = base.mMaxTextLength;
             mMaxEntityDepth = base.mMaxEntityDepth;
             mMaxEntityCount = base.mMaxEntityCount;
+            mMaxEntityExpansionLength = base.mMaxEntityExpansionLength;
             mMaxDtdDepth = base.mMaxDtdDepth;
         }
 
@@ -636,6 +653,7 @@ public final class ReaderConfig
         rc.mMaxElementDepth = mMaxElementDepth;
         rc.mMaxEntityDepth = mMaxEntityDepth;
         rc.mMaxEntityCount = mMaxEntityCount;
+        rc.mMaxEntityExpansionLength = mMaxEntityExpansionLength;
         rc.mMaxDtdDepth = mMaxDtdDepth;
         rc.mAllowSurrogatePairEntities = mAllowSurrogatePairEntities;
         if (mSpecialProperties != null) {
@@ -803,6 +821,8 @@ public final class ReaderConfig
 
     public int getMaxEntityDepth() { return mMaxEntityDepth; }
     public long getMaxEntityCount() { return mMaxEntityCount; }
+    // @since 7.4
+    public long getMaxEntityExpansionLength() { return mMaxEntityExpansionLength; }
 
     public int getMaxDtdDepth() { return mMaxDtdDepth; }
 
@@ -1171,6 +1191,10 @@ public final class ReaderConfig
     }
     public void setMaxEntityCount(long value) {
         mMaxEntityCount = value;
+    }
+    // @since 7.4
+    public void setMaxEntityExpansionLength(long value) {
+        mMaxEntityExpansionLength = value;
     }
     // @since 5.4/6.4
     public void setMaxDtdDepth(int value) {
@@ -1680,6 +1704,8 @@ public final class ReaderConfig
             return getMaxEntityDepth();
         case PROP_MAX_ENTITY_COUNT:
             return getMaxEntityCount();
+        case PROP_MAX_ENTITY_EXPANSION_LENGTH:
+            return getMaxEntityExpansionLength();
         case PROP_MAX_DTD_DEPTH:
             return getMaxDtdDepth();
 
@@ -1879,6 +1905,9 @@ public final class ReaderConfig
             break;
         case PROP_MAX_ENTITY_COUNT:
             setMaxEntityCount(ArgUtil.convertToLong(propName, value, 1));
+            break;
+        case PROP_MAX_ENTITY_EXPANSION_LENGTH:
+            setMaxEntityExpansionLength(ArgUtil.convertToLong(propName, value, 1));
             break;
         case PROP_MAX_DTD_DEPTH:
             setMaxDtdDepth(ArgUtil.convertToInt(propName, value, 1));
