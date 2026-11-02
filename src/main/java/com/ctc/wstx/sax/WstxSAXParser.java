@@ -1384,6 +1384,15 @@ public class WstxSAXParser
                         if (r != null) {
                             return r;
                         }
+                        /* No stream: as per SAX, the parser must then open
+                         * the system id of the returned InputSource (the
+                         * resolver redirected the reference), not the
+                         * system id of the original reference.
+                         */
+                        String redirected = isrc.getSystemId();
+                        if (redirected != null && redirected.length() > 0) {
+                            return new URL(url, redirected);
+                        }
                     }
                     // Fall through to factory-configured fallback resolver
                     // (the SAX resolver could not resolve; this matches the

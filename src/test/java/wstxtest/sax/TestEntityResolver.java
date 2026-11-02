@@ -183,6 +183,79 @@ public class TestEntityResolver
                 factoryResolverCalled[0]);
     }
 
+    /**
+     * A SAX {@link EntityResolver} may redirect a reference by returning
+     * an {@link InputSource} that carries only a system id; the parser
+     * must then open that system id instead of the one in the document.
+     */
+    @Test
+    public void testRedirectExtSubsetBySystemId()
+        throws Exception
+    {
+        final String XML =
+            "<!DOCTYPE root SYSTEM 'no-such-thing.dtd'>\n"
+            +"<root>&greeting;</root>"
+            ;
+        String localSysId = createTempResource(".dtd",
+                "<!ENTITY greeting 'hello from local copy'>");
+        assertEquals("hello from local copy", parseWithRedirect(XML, localSysId));
+    }
+
+    @Test
+    public void testRedirectExtGeneralEntityBySystemId()
+        throws Exception
+    {
+        final String XML =
+            "<!DOCTYPE root [<!ENTITY ext SYSTEM 'no-such-thing.txt'>]>\n"
+            +"<root>&ext;</root>"
+            ;
+        String localSysId = createTempResource(".txt", "hello from local copy");
+        assertEquals("hello from local copy", parseWithRedirect(XML, localSysId));
+    }
+
+    private String createTempResource(String suffix, String contents)
+        throws IOException
+    {
+        File f = File.createTempFile("wstxtest", suffix);
+        f.deleteOnExit();
+        Writer w = new OutputStreamWriter(new FileOutputStream(f), "UTF-8");
+        try {
+            w.write(contents);
+        } finally {
+            w.close();
+        }
+        return f.toURI().toString();
+    }
+
+    private String parseWithRedirect(String xml, final String redirectSysId)
+        throws Exception
+    {
+        // Stax factory passed explicitly to keep entity replacement enabled
+        SAXParserFactory spf = new WstxSAXParserFactory(new WstxInputFactory());
+        spf.setNamespaceAware(true);
+        XMLReader xr = spf.newSAXParser().getXMLReader();
+        xr.setEntityResolver(new EntityResolver() {
+            @Override
+            public InputSource resolveEntity(String publicId, String systemId) {
+                // system id only, no stream
+                return new InputSource(redirectSysId);
+            }
+        });
+        final StringBuilder text = new StringBuilder();
+        xr.setContentHandler(new DefaultHandler() {
+            @Override
+            public void characters(char[] ch, int start, int len) {
+                text.append(ch, start, len);
+            }
+        });
+        try {
+            xr.parse(new InputSource(new StringReader(xml)));
+        } catch (SAXException e) {
+            fail("Should have read the redirected resource, got ("+e.getClass()+"): "+e.getMessage());
+        }
+        return text.toString();
+    }
+
     /*
     ///////////////////////////////////////////////////////
     // Helper classes

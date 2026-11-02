@@ -215,6 +215,8 @@ Aizal Khan (@aizu-m)
  (7.2.2)
 * Contributed #330: Disable external entity resolution in MSV schema factories
  (7.3.0)
+* Contributed fix: Honour system id of `InputSource` returned by SAX `EntityResolver`
+ (7.4.0)
 
 Skrethel (@Skrethel)
 
