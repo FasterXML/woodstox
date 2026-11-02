@@ -249,7 +249,7 @@ public class TypedStreamReader
             break;
         }
         if (mTokenState < TOKEN_FULL_SINGLE) {
-            readCoalescedText(mCurrToken, false);
+            readCoalescedTextAndValidate(mCurrToken);
         }
         /* Ok: then a quick check; if it looks like we are directly
          * followed by the end tag, we need not construct String
@@ -283,7 +283,7 @@ public class TypedStreamReader
         while ((type = next()) != END_ELEMENT) {
             if (((1 << type) & MASK_GET_ELEMENT_TEXT) != 0) {
                 if (mTokenState < TOKEN_FULL_SINGLE) {
-                    readCoalescedText(type, false);
+                    readCoalescedTextAndValidate(type);
                 }
                 mTextBuffer.contentsToStringBuilder(sb);
                 continue;
@@ -393,7 +393,7 @@ public class TypedStreamReader
              */
             if (type == CHARACTERS || type == CDATA || type == SPACE) {
                 if (mTokenState < TOKEN_FULL_SINGLE) {
-                    readCoalescedText(type, false);
+                    readCoalescedTextAndValidate(type);
                 }
             } else if (type == COMMENT || type == PROCESSING_INSTRUCTION) {
                 type = next();

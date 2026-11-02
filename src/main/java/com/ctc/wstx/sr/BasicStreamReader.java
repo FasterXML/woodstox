@@ -708,7 +708,7 @@ public abstract class BasicStreamReader
         }
 
         if (mTokenState < TOKEN_FULL_COALESCED) {
-            readCoalescedText(mCurrToken, false);
+            readCoalescedTextAndValidate(mCurrToken);
         }
 
         /* Ok: then a quick check; if it looks like we are directly
@@ -4404,6 +4404,22 @@ currAttrSize, maxAttrSize, outPtr, outBuf.length));
         }
 
         mTokenState = TOKEN_FULL_COALESCED;
+    }
+
+    /**
+     * Variant of {@link #readCoalescedText} used by accessors that coalesce
+     * text after {@link #next} has returned the current textual event:
+     * {@link #next} only passed to the validator the part of the event it
+     * read itself, so the text appended here has to be validated too.
+     */
+    protected final void readCoalescedTextAndValidate(int currType)
+        throws XMLStreamException
+    {
+        final int start = mTextBuffer.size();
+        readCoalescedText(currType, false);
+        if (mValidateText && mTextBuffer.size() > start) {
+            mElementStack.validateText(mTextBuffer.contentsAsString().substring(start), false);
+        }
     }
 
     /**
