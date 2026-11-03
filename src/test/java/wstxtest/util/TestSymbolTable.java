@@ -190,4 +190,48 @@ public class TestSymbolTable
         assertEquals("added", master.findSymbolIfExists(buf, 0, buf.length,
                 SymbolTable.calcHash(buf, 0, buf.length, master.getHashSeed())));
     }
+
+    @Test
+    public void testCollidingNamesDoNotPileUpInOneBucket()
+    {
+        // The seed only goes into the first character, so names that share it
+        // and collide in the multiply-31 accumulation collide for every seed
+        SymbolTable table = new SymbolTable();
+        int seed = table.getHashSeed();
+        String[] names = collidingNames(10);
+        String[] found = new String[names.length];
+        for (int i = 0; i < names.length; ++i) {
+            assertEquals(SymbolTable.calcHash(names[0], seed), SymbolTable.calcHash(names[i], seed));
+            char[] buf = names[i].toCharArray();
+            found[i] = table.findSymbol(buf, 0, buf.length,
+                    SymbolTable.calcHash(buf, 0, buf.length, seed));
+            assertEquals(names[i], found[i]);
+        }
+        assertTrue("Colliding names must not all be chained in one bucket; table size "
+                + table.size(), table.size() < 100);
+
+        // Names kept out of the table must still resolve to the same instance
+        for (int i = 0; i < names.length; ++i) {
+            char[] buf = names[i].toCharArray();
+            assertSame(found[i], table.findSymbol(buf, 0, buf.length,
+                    SymbolTable.calcHash(buf, 0, buf.length, seed)));
+        }
+    }
+
+    /**
+     * Returns 2^blocks names "x" + blocks of "Aa"/"BB"; these share
+     * both the first character and the multiply-31 hash of the rest.
+     */
+    static String[] collidingNames(int blocks)
+    {
+        String[] names = new String[1 << blocks];
+        for (int i = 0; i < names.length; ++i) {
+            StringBuilder sb = new StringBuilder().append('x');
+            for (int b = 0; b < blocks; ++b) {
+                sb.append(((i >> b) & 1) == 0 ? "Aa" : "BB");
+            }
+            names[i] = sb.toString();
+        }
+        return names;
+    }
 }
