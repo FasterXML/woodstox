@@ -828,6 +828,9 @@ public abstract class EncodingXmlWriter
     protected final int writeAsEntity(int c)
         throws IOException
     {
+        if (c == 0xFFFE || c == 0xFFFF) {
+            c = handleInvalidChar(c);
+        }
         byte[] buf = mOutputBuffer;
         int ptr = mOutputPtr;
         if ((ptr + 10) >= buf.length) { // &#x [up to 6 hex digits] ;
