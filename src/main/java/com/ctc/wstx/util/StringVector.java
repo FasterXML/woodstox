@@ -1,5 +1,7 @@
 package com.ctc.wstx.util;
 
+import java.util.HashMap;
+
 /**
  * Data container similar to {@link java.util.List} (from storage perspective),
  * but that can be used in multiple ways. For some uses it acts more like
@@ -11,6 +13,26 @@ public final class StringVector
     private String[] mStrings;
 
     private int mSize;
+
+    /**
+     * Minimum size at which {@link #findLastFromMap} and
+     * {@link #findLastNonInterned} use {@link #mKeyIndex} instead of
+     * scanning all entries.
+     */
+    private final static int MIN_SIZE_FOR_INDEX = 64;
+
+    /**
+     * Lazily built index from key to position of the last key/value pair
+     * with that key, for vectors used as a Map. Dropped (and rebuilt on
+     * demand) if the vector is modified other than one pair at a time.
+     */
+    private HashMap<String,Integer> mKeyIndex;
+
+    /**
+     * For each indexed pair, position of the previous pair with the same
+     * key, or -1; used to restore {@link #mKeyIndex} when pairs are removed.
+     */
+    private int[] mPrevKeyIndex;
 
     /*
     ///////////////////////////////////////////////////////
@@ -83,6 +105,7 @@ public final class StringVector
             mStrings = new String[oldSize + (oldSize << 1)];
             System.arraycopy(old, 0, mStrings, 0, oldSize);
         }
+        mKeyIndex = null;
         mStrings[mSize++] = str;
     }
 
@@ -95,14 +118,19 @@ public final class StringVector
         }
         mStrings[mSize] = str1;
         mStrings[mSize+1] = str2;
+        if (mKeyIndex != null) {
+            indexPair(mSize);
+        }
         mSize += 2;
     }
 
     public void setString(int index, String str) {
+        mKeyIndex = null;
         mStrings[index] = str;
     }
 
     public void clear(boolean removeRefs) {
+        mKeyIndex = null;
         if (removeRefs) {
             for (int i = 0, len = mSize; i < len; ++i) {
                 mStrings[i] = null;
@@ -112,12 +140,22 @@ public final class StringVector
     }
 
     public String removeLast() {
+        mKeyIndex = null;
         String result = mStrings[--mSize];
         mStrings[mSize] = null;
         return result;
     }
 
     public void removeLast(int count) {
+        if (mKeyIndex != null) {
+            if ((count & 1) != 0) {
+                mKeyIndex = null;
+            } else {
+                for (int i = mSize-2, end = mSize-count; i >= end; i -= 2) {
+                    unindexPair(i);
+                }
+            }
+        }
         while (--count >= 0) {
             mStrings[--mSize] = null;
         }
@@ -139,6 +177,16 @@ public final class StringVector
      * matching key, and if so, returns value.
      */
     public String findLastFromMap(String key) {
+        if (mKeyIndex != null || buildKeyIndex()) {
+            Integer ix = mKeyIndex.get(key);
+            if (ix == null) {
+                return null;
+            }
+            if (mStrings[ix] == key) {
+                return mStrings[ix+1];
+            }
+            // equal but not identical key: fall back to scanning
+        }
         int index = mSize;
         while ((index -= 2) >= 0) {
             if (mStrings[index] == key) {
@@ -150,6 +198,10 @@ public final class StringVector
 
     public String findLastNonInterned(String key)
     {
+        if (mKeyIndex != null || buildKeyIndex()) {
+            Integer ix = mKeyIndex.get(key);
+            return (ix == null) ? null : mStrings[ix+1];
+        }
         int index = mSize;
         while ((index -= 2) >= 0) {
             String curr = mStrings[index];
@@ -219,6 +271,45 @@ public final class StringVector
         return DataUtil.emptyIterator();
     }
     */
+
+    /*
+    ///////////////////////////////////////////////////////
+    // Internal methods, key index
+    ///////////////////////////////////////////////////////
+     */
+
+    private boolean buildKeyIndex() {
+        // Only worth it for big vectors; and only valid if used as a Map
+        if (mSize < MIN_SIZE_FOR_INDEX || (mSize & 1) != 0) {
+            return false;
+        }
+        mKeyIndex = new HashMap<String,Integer>();
+        mPrevKeyIndex = new int[mStrings.length >> 1];
+        for (int i = 0; i < mSize; i += 2) {
+            indexPair(i);
+        }
+        return true;
+    }
+
+    private void indexPair(int index) {
+        int pair = index >> 1;
+        if (pair >= mPrevKeyIndex.length) {
+            int[] old = mPrevKeyIndex;
+            mPrevKeyIndex = new int[mStrings.length >> 1];
+            System.arraycopy(old, 0, mPrevKeyIndex, 0, old.length);
+        }
+        Integer prev = mKeyIndex.put(mStrings[index], index);
+        mPrevKeyIndex[pair] = (prev == null) ? -1 : prev.intValue();
+    }
+
+    private void unindexPair(int index) {
+        int prev = mPrevKeyIndex[index >> 1];
+        if (prev < 0) {
+            mKeyIndex.remove(mStrings[index]);
+        } else {
+            mKeyIndex.put(mStrings[index], prev);
+        }
+    }
 
     /*
     ///////////////////////////////////////////////////////
