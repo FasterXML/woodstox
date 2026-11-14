@@ -171,6 +171,13 @@ public class FullDTDReader
      */
     boolean mUsesPredefdEntities = false;
 
+    /**
+     * Total size of DFAs constructed so far for the content models of
+     * this subset; checked against
+     * {@link com.ctc.wstx.api.WstxInputProperties#P_MAX_DTD_DFA_SIZE}.
+     */
+    int mDfaSize = 0;
+
     /*
     ///////////////////////////////////////////////////////////
     // Notation settings
@@ -2312,7 +2319,7 @@ public class FullDTDReader
                 ContentSpec spec = readContentSpec(elemName, mCfgFullyValidating, 0);
                 val = spec.getSimpleValidator();
                 if (val == null) {
-                    val = new DFAValidator(DFAState.constructDFA(spec));
+                    val = constructDFAValidator(spec);
                 }
                 vldContent = XMLValidator.CONTENT_ALLOW_WS; // checked against DTD
             }
@@ -3081,10 +3088,22 @@ public class FullDTDReader
         ContentSpec spec = ChoiceContentSpec.constructMixed(mCfgNsEnabled, m.values());
         StructValidator val = spec.getSimpleValidator();
         if (val == null) {
-            DFAState dfa = DFAState.constructDFA(spec);
-            val = new DFAValidator(dfa);
+            val = constructDFAValidator(spec);
         }
         return val;
+    }
+
+    private StructValidator constructDFAValidator(ContentSpec spec)
+        throws XMLStreamException
+    {
+        final int maxSize = mConfig.getMaxDtdDfaSize();
+        DFAState dfa = DFAState.constructDFA(spec, maxSize - mDfaSize);
+        if (dfa == null) {
+            throw constructLimitViolation("Maximum DTD content model size (WstxInputProperties.P_MAX_DTD_DFA_SIZE)",
+                    maxSize);
+        }
+        mDfaSize += dfa.getSize();
+        return new DFAValidator(dfa);
     }
 
     private ContentSpec readContentSpec(final PrefixedName elemName, final boolean construct,
