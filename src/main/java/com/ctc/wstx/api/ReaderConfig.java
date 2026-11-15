@@ -49,6 +49,9 @@ public final class ReaderConfig
     // @since 5.4/6.4
     public final static int DEFAULT_MAX_DTD_DEPTH = 500;
 
+    // @since 7.4
+    public final static int DEFAULT_MAX_DTD_DFA_SIZE = 200000;
+
     /*
     ///////////////////////////////////////////////////////////////////////
     // Constants for reader properties:
@@ -148,6 +151,11 @@ public final class ReaderConfig
      * @since 6.6
      */
     final static int PROP_ALLOW_SURROGATE_PAIR_ENTITIES = 70;
+
+    /**
+     * @since 7.4
+     */
+    final static int PROP_MAX_DTD_DFA_SIZE = 71;
 
     /*
     ////////////////////////////////////////////////
@@ -361,6 +369,9 @@ public final class ReaderConfig
         // since 5.4/6.4
         sProperties.put(WstxInputProperties.P_MAX_DTD_DEPTH,
                 PROP_MAX_DTD_DEPTH);
+        // since 7.4
+        sProperties.put(WstxInputProperties.P_MAX_DTD_DFA_SIZE,
+                PROP_MAX_DTD_DFA_SIZE);
 
         sProperties.put(WstxInputProperties.P_MAX_CHARACTERS, PROP_MAX_CHARACTERS);
         sProperties.put(WstxInputProperties.P_CUSTOM_INTERNAL_ENTITIES,
@@ -426,6 +437,9 @@ public final class ReaderConfig
 
     // since 5.4/6.4
     protected int mMaxDtdDepth = DEFAULT_MAX_DTD_DEPTH;
+
+    // since 7.4
+    protected int mMaxDtdDfaSize = DEFAULT_MAX_DTD_DFA_SIZE;
 
     /**
      * Base URL to use as the resolution context for relative entity
@@ -570,6 +584,7 @@ public final class ReaderConfig
             mMaxEntityDepth = base.mMaxEntityDepth;
             mMaxEntityCount = base.mMaxEntityCount;
             mMaxDtdDepth = base.mMaxDtdDepth;
+            mMaxDtdDfaSize = base.mMaxDtdDfaSize;
         }
 
         /* Ok, let's then see if we can find a buffer recycler. Since they
@@ -637,6 +652,7 @@ public final class ReaderConfig
         rc.mMaxEntityDepth = mMaxEntityDepth;
         rc.mMaxEntityCount = mMaxEntityCount;
         rc.mMaxDtdDepth = mMaxDtdDepth;
+        rc.mMaxDtdDfaSize = mMaxDtdDfaSize;
         rc.mAllowSurrogatePairEntities = mAllowSurrogatePairEntities;
         if (mSpecialProperties != null) {
             int len = mSpecialProperties.length;
@@ -805,6 +821,11 @@ public final class ReaderConfig
     public long getMaxEntityCount() { return mMaxEntityCount; }
 
     public int getMaxDtdDepth() { return mMaxDtdDepth; }
+
+    /**
+     * @since 7.4
+     */
+    public int getMaxDtdDfaSize() { return mMaxDtdDfaSize; }
 
     public long getMaxCharacters() { return mMaxCharacters; }
     public long getMaxTextLength() { return mMaxTextLength; }
@@ -1175,6 +1196,10 @@ public final class ReaderConfig
     // @since 5.4/6.4
     public void setMaxDtdDepth(int value) {
         mMaxDtdDepth = value;
+    }
+    // @since 7.4
+    public void setMaxDtdDfaSize(int value) {
+        mMaxDtdDfaSize = value;
     }
 
     public void setCustomInternalEntities(Map<String,?> m)
@@ -1682,6 +1707,8 @@ public final class ReaderConfig
             return getMaxEntityCount();
         case PROP_MAX_DTD_DEPTH:
             return getMaxDtdDepth();
+        case PROP_MAX_DTD_DFA_SIZE:
+            return getMaxDtdDfaSize();
 
         case PROP_MIN_TEXT_SEGMENT:
             return getShortestReportedTextSegment();
@@ -1882,6 +1909,9 @@ public final class ReaderConfig
             break;
         case PROP_MAX_DTD_DEPTH:
             setMaxDtdDepth(ArgUtil.convertToInt(propName, value, 1));
+            break;
+        case PROP_MAX_DTD_DFA_SIZE:
+            setMaxDtdDfaSize(ArgUtil.convertToInt(propName, value, 1));
             break;
             
         case PROP_MIN_TEXT_SEGMENT:

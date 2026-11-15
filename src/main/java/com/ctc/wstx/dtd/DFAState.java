@@ -32,6 +32,12 @@ public final class DFAState
 
     private final HashMap<PrefixedName,DFAState> mNext = new HashMap<>();
 
+    /**
+     * Size of the DFA (number of states plus number of transitions);
+     * only set for the initial state.
+     */
+    private int mSize;
+
     /*
     ///////////////////////////////////////////////////////////
     // Life-cycle:
@@ -47,6 +53,20 @@ public final class DFAState
     }
 
     public static DFAState constructDFA(ContentSpec rootSpec)
+    {
+        return constructDFA(rootSpec, Integer.MAX_VALUE);
+    }
+
+    /**
+     * @param maxSize Maximum size of the DFA, as the number of states
+     *   plus the number of transitions
+     *
+     * @return Initial state of the DFA; or {@code null} if the DFA would
+     *   be bigger than {@code maxSize}
+     *
+     * @since 7.4
+     */
+    public static DFAState constructDFA(ContentSpec rootSpec, int maxSize)
     {
         // Let's first create the real model tree:
         ModelNode modelRoot = rootSpec.rewrite();
@@ -89,10 +109,17 @@ public final class DFAState
         stateMap.put(initial, firstState);
 
         int i = 0;
+        long transitions = 0L;
         while (i < stateList.size()) {
             DFAState curr = stateList.get(i++);
             curr.calcNext(tokenNames, followPos, stateList, stateMap);
+            // Subset construction is exponential in the worst case
+            transitions += curr.mNext.size();
+            if (stateList.size() + transitions > maxSize) {
+                return null;
+            }
         }
+        firstState.mSize = (int) (stateList.size() + transitions);
 
         // DEBUG:
         /*
@@ -119,6 +146,17 @@ public final class DFAState
         return mIndex;
     }
 
+    /**
+     * @return Size of the DFA (number of states plus number of transitions),
+     *   if this is its initial state (as returned by {@link #constructDFA});
+     *   0 otherwise
+     *
+     * @since 7.4
+     */
+    public int getSize() {
+        return mSize;
+    }
+
     public DFAState findNext(PrefixedName elemName) {
         return mNext.get(elemName);
     }
@@ -136,34 +174,35 @@ public final class DFAState
                          List<DFAState> stateList, Map<BitSet,DFAState> stateMap)
     {
         // Need to loop over all included tokens, and find groups of said tokens
-        int first = -1;
-
-        // Need to clone; can not modify in place, since the BitSet
-        // is also used as the key...
-        BitSet tokenSet = (BitSet) mTokenSet.clone();
+        // (all tokens with the same name). Single pass, grouped by name in
+        // order of first occurrence, so cost is linear in the size of the set
+        LinkedHashMap<PrefixedName,BitSet> groups = new LinkedHashMap<>();
+        BitSet tokenSet = mTokenSet;
         // No need to keep the reference to it, though:
         mTokenSet = null;
 
-        while ((first = tokenSet.nextSetBit(first+1)) >= 0) {
-            PrefixedName tokenName = tokenNames[first];
+        for (int ix = tokenSet.nextSetBit(0); ix >= 0; ix = tokenSet.nextSetBit(ix+1)) {
+            PrefixedName tokenName = tokenNames[ix];
 
             // Special case; the dummy end token has null as name;
             // we can skip that one:
             if (tokenName == null) {
                 continue;
             }
-
-            BitSet nextGroup = (BitSet) tokenFPs[first].clone();
-            int second = first;
-
-            while ((second = tokenSet.nextSetBit(second+1)) >= 0) {
-                if (tokenNames[second] == tokenName) {
-                    // Let's clear it, too, so we won't match it again:
-                    tokenSet.clear(second);
-                    nextGroup.or(tokenFPs[second]);
-                }
+            // Follow sets are shared and never modified, so copy only when
+            // merging tokens that have the same name
+            BitSet nextGroup = groups.get(tokenName);
+            if (nextGroup == null) {
+                nextGroup = tokenFPs[ix];
+            } else {
+                nextGroup = (BitSet) nextGroup.clone();
+                nextGroup.or(tokenFPs[ix]);
             }
+            groups.put(tokenName, nextGroup);
+        }
 
+        for (Map.Entry<PrefixedName,BitSet> en : groups.entrySet()) {
+            BitSet nextGroup = en.getValue();
             // Ok; is it a new group?
             DFAState next = stateMap.get(nextGroup);
             if (next == null) { // yup!
@@ -171,7 +210,7 @@ public final class DFAState
                 stateList.add(next);
                 stateMap.put(nextGroup, next);
             }
-            mNext.put(tokenName, next);
+            mNext.put(en.getKey(), next);
         }
     }
 
