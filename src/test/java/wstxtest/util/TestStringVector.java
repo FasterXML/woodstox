@@ -1,6 +1,10 @@
 package wstxtest.util;
 
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 import com.ctc.wstx.util.StringVector;
 import org.junit.jupiter.api.Test;
 
@@ -133,5 +137,69 @@ public class TestStringVector
         sv.addString("qux");
         assertEquals(6, sv.getInternalArray().length);
         assertEquals("qux", sv.getString(3));
+    }
+
+    // Map accessors switch to an index for big vectors: verify they still
+    // match a plain scan as pairs are pushed and popped, as namespace
+    // bindings are by the input element stack
+    @Test
+    public void testMapAccessWithManyPairs()
+    {
+        Random rnd = new Random(123);
+        String[] keys = new String[50];
+        for (int i = 0; i < keys.length; ++i) {
+            keys[i] = ("k"+i).intern();
+        }
+        StringVector sv = new StringVector(4);
+        List<String> ref = new ArrayList<String>();
+
+        for (int round = 0; round < 20000; ++round) {
+            if (ref.size() < 2 || rnd.nextInt(4) != 0) {
+                String key = keys[rnd.nextInt(keys.length)];
+                String value = (rnd.nextInt(10) == 0) ? null : ("v"+round);
+                sv.addStrings(key, value);
+                ref.add(key);
+                ref.add(value);
+            } else {
+                int count = 2 * (1 + rnd.nextInt(Math.min(ref.size() / 2, 4)));
+                sv.removeLast(count);
+                ref.subList(ref.size() - count, ref.size()).clear();
+            }
+            assertEquals(ref.size(), sv.size());
+            String key = keys[rnd.nextInt(keys.length)];
+            String exp = findLast(ref, key);
+            assertEquals(exp, sv.findLastFromMap(key));
+            assertEquals(exp, sv.findLastNonInterned(new String(key)));
+        }
+    }
+
+    @Test
+    public void testMapAccessIdentityWithManyPairs()
+    {
+        StringVector sv = new StringVector(4);
+        String key = "foo".intern();
+        sv.addStrings(key, "a");
+        for (int i = 0; i < 100; ++i) {
+            sv.addStrings(("x"+i).intern(), "x");
+        }
+        sv.addStrings(new String("foo"), "b");
+        // identity match skips the later, non-canonical key
+        assertEquals("a", sv.findLastFromMap(key));
+        // equality match does not
+        assertEquals("b", sv.findLastNonInterned(key));
+        // nor after the vector is used as a plain list
+        sv.addString("y");
+        sv.removeLast();
+        assertEquals("a", sv.findLastFromMap(key));
+        assertEquals("b", sv.findLastNonInterned(key));
+    }
+
+    private static String findLast(List<String> ref, String key) {
+        for (int i = ref.size() - 2; i >= 0; i -= 2) {
+            if (key.equals(ref.get(i))) {
+                return ref.get(i+1);
+            }
+        }
+        return null;
     }
 }
