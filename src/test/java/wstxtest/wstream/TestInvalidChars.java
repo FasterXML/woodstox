@@ -1,6 +1,9 @@
 package wstxtest.wstream;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
 import javax.xml.stream.*;
 
@@ -9,6 +12,11 @@ import org.codehaus.stax2.*;
 import com.ctc.wstx.api.InvalidCharHandler;
 import com.ctc.wstx.api.WstxOutputProperties;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * This unit test suite verifies handling of invalid/illegal xml
@@ -22,6 +30,78 @@ public class TestInvalidChars
     final static String INVALID_TEXT = "\u0003";
 
     final static Character REPL_CHAR = '*';
+
+    @ParameterizedTest
+    @MethodSource("noncharacterCases")
+    public void testNoncharacterReferencesAreRejected(String encoding, String version,
+            int codePoint, int mode) throws Exception
+    {
+        OutputDest dest = noncharacterDestination(getFactory(null), encoding);
+        dest.sw.writeStartDocument(encoding == null ? "UTF-8" : encoding, version);
+        dest.sw.writeStartElement("root");
+        assertThrows(XMLStreamException.class,
+                () -> writeNoncharacterValue(dest.sw, "x" + (char) codePoint + "y", mode));
+        dest.sw.closeCompletely();
+    }
+
+    @ParameterizedTest
+    @MethodSource("noncharacterCases")
+    public void testNoncharacterReferencesUseReplacementHandler(String encoding, String version,
+            int codePoint, int mode) throws Exception
+    {
+        OutputDest dest = noncharacterDestination(getFactory(REPL_CHAR), encoding);
+        dest.sw.writeStartDocument(encoding == null ? "UTF-8" : encoding, version);
+        dest.sw.writeStartElement("root");
+        // U+FFFD and supplementary U+1FFFE are legal XML characters.
+        String suffix = "y\uFFFD" + new String(Character.toChars(0x1FFFE));
+        writeNoncharacterValue(dest.sw, "x" + (char) codePoint + suffix, mode);
+        dest.sw.writeEndElement();
+        dest.sw.closeCompletely();
+
+        XMLStreamReader reader = constructNsStreamReader(dest.text(), true);
+        assertTokenType(START_ELEMENT, reader.nextTag());
+        String value = mode == 2 ? reader.getAttributeValue(null, "attr") : reader.getElementText();
+        assertEquals("x" + REPL_CHAR + suffix, value);
+        reader.close();
+    }
+
+    private static Stream<Arguments> noncharacterCases() {
+        List<Arguments> cases = new ArrayList<>();
+        for (String encoding : new String[] { null, "UTF-8", "US-ASCII", "ISO-8859-1" }) {
+            for (String version : new String[] { "1.0", "1.1" }) {
+                for (int codePoint : new int[] { 0xFFFE, 0xFFFF }) {
+                    for (int mode = 0; mode < 3; ++mode) {
+                        cases.add(Arguments.of(encoding, version, codePoint, mode));
+                    }
+                }
+            }
+        }
+        return cases.stream();
+    }
+
+    private OutputDest noncharacterDestination(XMLOutputFactory2 factory, String encoding)
+            throws XMLStreamException
+    {
+        if (encoding == null) {
+            StringWriter out = new StringWriter();
+            return new OutputDest("StringWriter", factory.createXMLStreamWriter(out), out, null, null);
+        }
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        return new OutputDest(encoding, factory.createXMLStreamWriter(out, encoding), null, out, encoding);
+    }
+
+    private void writeNoncharacterValue(XMLStreamWriter2 writer, String value, int mode)
+            throws XMLStreamException
+    {
+        if (mode == 0) {
+            writer.writeCharacters(value);
+        } else if (mode == 1) {
+            char[] buffer = ("padding" + value + "padding").toCharArray();
+            writer.writeCharacters(buffer, 7, value.length());
+        } else {
+            writer.writeAttribute("attr", value);
+        }
+    }
 
     // // First let's verify that we do catch problematic chars
 
