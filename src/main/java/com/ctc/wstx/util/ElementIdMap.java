@@ -15,6 +15,7 @@
 
 package com.ctc.wstx.util;
 
+import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.xml.stream.Location;
@@ -82,6 +83,14 @@ public final class ElementIdMap
      * a power of two.
      */
     protected int mIndexMask;
+
+    /**
+     * Ids whose collision chain in {@link #mTable} already holds
+     * {@link SymbolTable#MAX_COLL_CHAIN_LENGTH} entries (same seed-independent
+     * collisions as with symbol table); {@link HashMap} copes with colliding
+     * String keys. Created lazily, so normally null.
+     */
+    protected HashMap<String,ElementId> mOverflow;
 
     /*
     ////////////////////////////////////////
@@ -160,12 +169,18 @@ public final class ElementIdMap
     {
         int index = (hash & mIndexMask);
         ElementId id = mTable[index];
+        int chainLen = 0;
 
         while (id != null) {
             if (id.idMatches(buffer, start, len)) { // found existing one
                 return id;
             }
             id = id.nextColliding();
+            ++chainLen;
+        }
+        // Full chain (or ids spilled already): String variant deals with mOverflow
+        if (mOverflow != null || chainLen >= SymbolTable.MAX_COLL_CHAIN_LENGTH) {
+            return addReferenced(new String(buffer, start, len), loc, elemName, attrName);
         }
 
         // Not found, need to create a placeholder...
@@ -202,30 +217,38 @@ public final class ElementIdMap
         int hash = calcHash(idStr, mHashSeed);
         int index = (hash & mIndexMask);
         ElementId id = mTable[index];
+        int chainLen = 0;
 
         while (id != null) {
             if (id.idMatches(idStr)) { // found existing one
                 return id;
             }
             id = id.nextColliding();
+            ++chainLen;
+        }
+        if (mOverflow != null && (id = mOverflow.get(idStr)) != null) {
+            return id;
         }
 
         // Not found, need to create a placeholder...
+        if (chainLen >= SymbolTable.MAX_COLL_CHAIN_LENGTH) {
+            id = addOverflow(new ElementId(idStr, loc, false, elemName, attrName));
+        } else {
+            // But first, do we need more room?
+            if (mSize >= mSizeThreshold) {
+                rehash();
+                // Index changes, for the new entr:
+                index = (hash & mIndexMask);
+            }
+            ++mSize;
 
-        // But first, do we need more room?
-        if (mSize >= mSizeThreshold) {
-            rehash();
-            // Index changes, for the new entr:
-            index = (hash & mIndexMask);
+            // Ok, then, let's create the entry
+            id = new ElementId(idStr, loc, false, elemName, attrName);
+
+            // First, let's link it to Map; all ids have to be connected
+            id.setNextColliding(mTable[index]);
+            mTable[index] = id;
         }
-        ++mSize;
-
-        // Ok, then, let's create the entry
-        id = new ElementId(idStr, loc, false, elemName, attrName);
-
-        // First, let's link it to Map; all ids have to be connected
-        id.setNextColliding(mTable[index]);
-        mTable[index] = id;
 
         // And then add the undefined entry at the end of list
         if (mHead == null) {
@@ -250,12 +273,19 @@ public final class ElementIdMap
     {
         int index = (hash & mIndexMask);
         ElementId id = mTable[index];
+        int chainLen = 0;
 
         while (id != null) {
             if (id.idMatches(buffer, start, len)) {
                 break;
             }
             id = id.nextColliding();
+            ++chainLen;
+        }
+        // Full chain (or ids spilled already): String variant deals with mOverflow
+        if (id == null
+                && (mOverflow != null || chainLen >= SymbolTable.MAX_COLL_CHAIN_LENGTH)) {
+            return addDefined(new String(buffer, start, len), loc, elemName, attrName);
         }
 
         /* Not found, can just add it to the Map; no need to add to the
@@ -310,18 +340,25 @@ public final class ElementIdMap
         int hash = calcHash(idStr, mHashSeed);
         int index = (hash & mIndexMask);
         ElementId id = mTable[index];
+        int chainLen = 0;
 
         while (id != null) {
             if (id.idMatches(idStr)) {
                 break;
             }
             id = id.nextColliding();
+            ++chainLen;
+        }
+        if (id == null && mOverflow != null) {
+            id = mOverflow.get(idStr);
         }
 
         /* Not found, can just add it to the Map; no need to add to the
          * linked list as it's not undefined
          */
-        if (id == null) {
+        if (id == null && chainLen >= SymbolTable.MAX_COLL_CHAIN_LENGTH) {
+            id = addOverflow(new ElementId(idStr, loc, true, elemName, attrName));
+        } else if (id == null) {
             if (mSize >= mSizeThreshold) { // need more room
                 rehash();
                 index = (hash & mIndexMask);
@@ -366,9 +403,9 @@ public final class ElementIdMap
      * is done by caller during parsing, not here; however, sometimes
      * it needs to be done for parsed "String" too.
      *<p>
-     * Seed and finalizer match {@link SymbolTable#calcHash}, so attacker-
-     * chosen names cannot land in the same bucket without knowing the
-     * table's per-instance seed.
+     * Seed and finalizer match {@link SymbolTable#calcHash}; as there, ids
+     * that collide after the first character still collide for every seed,
+     * see {@link #mOverflow}.
      *
      * @param len Length of String; has to be at least 1 (caller guarantees
      *   this pre-condition)
@@ -429,6 +466,15 @@ public final class ElementIdMap
     // Internal methods
     //////////////////////////////////////////////////////////
      */
+
+    private ElementId addOverflow(ElementId id)
+    {
+        if (mOverflow == null) {
+            mOverflow = new HashMap<String,ElementId>();
+        }
+        mOverflow.put(id.getId(), id);
+        return id;
+    }
 
     /**
      * Method called when size (number of entries) of symbol table grows

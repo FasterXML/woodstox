@@ -125,6 +125,50 @@ public class TestElementIdMap
     }
 
     @Test
+    public void testCollidingIdsDoNotPileUpInOneChain()
+    {
+        // Same seed-independent collisions as in TestSymbolTable; mixes the
+        // char[] (DTD) and String (MSV) entry points over the same ids
+        ElementIdMap map = new ElementIdMap(16);
+        int seed = map.getHashSeed();
+        String[] ids = TestSymbolTable.collidingNames(10);
+        ElementId[] refs = new ElementId[ids.length];
+        for (int i = 0; i < ids.length; i += 2) {
+            char[] buf = ids[i].toCharArray();
+            refs[i] = map.addReferenced(buf, 0, buf.length,
+                    ElementIdMap.calcHash(buf, 0, buf.length, seed), loc(), ELEM, ATTR);
+        }
+        assertSame(refs[0], map.getFirstUndefined());
+
+        ElementId[] defined = new ElementId[ids.length];
+        int longestChain = 0;
+        for (int i = 0; i < ids.length; ++i) {
+            char[] buf = ids[i].toCharArray();
+            defined[i] = map.addDefined(buf, 0, buf.length,
+                    ElementIdMap.calcHash(buf, 0, buf.length, seed), loc(), ELEM, ATTR);
+            assertEquals(ids[i], defined[i].getId());
+            assertTrue(defined[i].isDefined());
+            if (refs[i] != null) { // reference must have been upgraded, not duplicated
+                assertSame(refs[i], defined[i]);
+            }
+            int chain = 0;
+            for (ElementId id = defined[i]; id != null; id = id.nextColliding()) {
+                ++chain;
+            }
+            longestChain = Math.max(longestChain, chain);
+        }
+        assertNull(map.getFirstUndefined());
+        assertTrue("Colliding ids must not all be chained together; longest chain "
+                + longestChain, longestChain < 100);
+
+        // Redefinition must find the first entry (that is how duplicates are reported)
+        for (int i = 0; i < ids.length; ++i) {
+            assertSame(defined[i], map.addDefined(ids[i], loc(), ELEM, ATTR));
+            assertSame(defined[i], map.addReferenced(ids[i], loc(), ELEM, ATTR));
+        }
+    }
+
+    @Test
     public void testRehashPreservesLookups()
     {
         // MIN_SIZE is 16, so an initial size of 16 with 500 entries forces
