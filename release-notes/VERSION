@@ -6,6 +6,8 @@ Project: woodstox
 
 7.4.0 (not yet released)
 
+#358: `URLUtil` replaces any '|' in system ids with ':', not just in `file:///C|` drive form
+ (contributed by @winfriedgerlach)
 - Update to `oss-parent` v80 for latest Maven plug-in versions
 - Update to `stax2-api` 4.3.2 (from 4.3.1)
 

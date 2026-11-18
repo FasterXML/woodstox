@@ -10,7 +10,7 @@ public final class URLUtil
      * While URIs that contain pipe are wrong, we'll work around that
      * for [WSTX-275].
      */
-    private final static Pattern URI_WINDOWS_FILE_PATTERN = Pattern.compile("^file:///\\p{Alpha}|.*$");
+    private static final Pattern URI_WINDOWS_FILE_PATTERN = Pattern.compile("^file:///\\p{Alpha}\\|.*$");
 
     private URLUtil() { }
 
