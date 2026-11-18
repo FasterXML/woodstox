@@ -135,22 +135,14 @@ final class Attribute
     }
 
     /**
-     * Method called if this attribute is the last one with value
-     * in the buffer. If so, end value is implied
+     * @param valueBuffer Buffer that contains values of all attributes (or namespace declarations) of the element
+     * @param endOffset Offset right after the last character of the value of this attribute (or namespace declaration)
+     *   in the buffer
      */
-    public String getValue(String allValues)
+    public String getValue(char[] valueBuffer, int endOffset)
     {
         if (mReusableValue == null) {
-            mReusableValue = (mValueStartOffset == 0) ?
-                allValues : allValues.substring(mValueStartOffset);
-        }
-        return mReusableValue;
-    }
-
-    public String getValue(String allValues, int endOffset)
-    {
-        if (mReusableValue == null) {
-            mReusableValue = allValues.substring(mValueStartOffset, endOffset);
+            mReusableValue = new String(valueBuffer, mValueStartOffset, endOffset - mValueStartOffset);
         }
         return mReusableValue;
     }
