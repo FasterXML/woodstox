@@ -6,6 +6,9 @@ Project: woodstox
 
 7.4.0 (not yet released)
 
+- Report malformed input in encodings decoded by the JDK (UTF-16 etc.)
+  instead of replacing it with U+FFFD
+ (contributed by @aizu-m)
 - Update to `oss-parent` v80 for latest Maven plug-in versions
 - Update to `stax2-api` 4.3.2 (from 4.3.1)
 
