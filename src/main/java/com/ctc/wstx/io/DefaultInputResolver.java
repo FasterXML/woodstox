@@ -2,6 +2,9 @@ package com.ctc.wstx.io;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
 
 import javax.xml.stream.XMLResolver;
 import javax.xml.stream.XMLStreamException;
@@ -187,7 +190,7 @@ public final class DefaultInputResolver
             r = new UTF32Reader(cfg, in, cfg.allocFullBBuffer(inputBufLen), 0, 0, recycleBuffer, isBE);
         } else {
             try {
-                return new InputStreamReader(in, encoding);
+                return constructJdkReader(in, encoding);
             } catch (UnsupportedEncodingException ex) {
                 throw new XMLStreamException("[unsupported encoding]: "+ex);
             }
@@ -198,6 +201,28 @@ public final class DefaultInputResolver
         }
 
         return r;
+    }
+
+    /**
+     * Method for constructing a JDK {@link InputStreamReader} for an encoding
+     * that Woodstox has no decoder of its own for (UTF-16, for example).
+     * Malformed input is reported as an error, as per XML 1.0 #4.3.3, instead
+     * of being replaced with U+FFFD as {@link InputStreamReader} does by
+     * default: the replacement can also swallow the input that follows the
+     * malformed sequence (for UTF-16, the code unit following an unpaired
+     * high surrogate), which may be markup.
+     */
+    static Reader constructJdkReader(InputStream in, String encoding)
+        throws UnsupportedEncodingException
+    {
+        CharsetDecoder dec;
+        try {
+            dec = Charset.forName(encoding).newDecoder();
+        } catch (IllegalArgumentException e) { // illegal or unsupported charset name
+            throw new UnsupportedEncodingException(encoding);
+        }
+        return new InputStreamReader(in, dec.onMalformedInput(CodingErrorAction.REPORT)
+                .onUnmappableCharacter(CodingErrorAction.REPLACE));
     }
 
     /*

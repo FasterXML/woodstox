@@ -254,7 +254,7 @@ public final class StreamBootstrapper
                 mInputEncoding = normEnc = mBigEndian ? CharsetNames.CS_UTF16BE : CharsetNames.CS_UTF16LE;
             }
             try {
-                return new InputStreamReader(in, normEnc);
+                return DefaultInputResolver.constructJdkReader(in, normEnc);
             } catch (UnsupportedEncodingException usex) {
                 throw new WstxIOException("Unsupported encoding: "+usex.getMessage());
             }
