@@ -246,6 +246,21 @@ public final class WstxInputProperties
      */
     public final static String P_MAX_ENTITY_DEPTH = "com.ctc.wstx.maxEntityDepth";
 
+    /**
+     * Property of type {@link java.lang.Long}:
+     * defines maximum total number of characters that may be read from
+     * expanded entities (both general and parameter entities) within a
+     * single document or DTD subset. Unlike {@link #P_MAX_CHARACTERS}, which
+     * limits the size of the input itself, this limit applies to the content
+     * produced by entity expansion, cumulatively.
+     *<p>
+     * Default value is 50,000,000 characters (same as the JDK
+     * {@code jdk.xml.totalEntitySizeLimit} default).
+     *
+     * @since 7.4
+     */
+    public final static String P_MAX_ENTITY_EXPANSION_LENGTH = "com.ctc.wstx.maxEntityExpansionLength";
+
     // and yet more size constraints (4.3+)
 
     /**

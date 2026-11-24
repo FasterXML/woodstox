@@ -6,6 +6,9 @@ Project: woodstox
 
 7.4.0 (not yet released)
 
+#361: Add `WstxInputProperties.P_MAX_ENTITY_EXPANSION_LENGTH` to limit total length
+  of entity expansion (default: 50,000,000 characters)
+ (contributed by @yawkat)
 - Update to `oss-parent` v80 for latest Maven plug-in versions
 - Update to `stax2-api` 4.3.2 (from 4.3.1)
 
