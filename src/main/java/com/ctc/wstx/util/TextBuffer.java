@@ -1075,6 +1075,9 @@ public final class TextBuffer
          * buffers, we should NOT have anything in shared buffer... ie. may
          * need to unshare contents.
          */
+        // ... and any cached String/array would no longer match contents
+        mResultString = null;
+        mResultArray = null;
         if (mInputStart >= 0) {
             unshare(1);
         } else {
