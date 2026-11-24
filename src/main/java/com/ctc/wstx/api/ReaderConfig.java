@@ -964,6 +964,11 @@ public final class ReaderConfig
      *<ul>
      * <li>{@code doSupportExternalEntities(false)}
      *  </li>
+     * <li>{@code setAccessExternalDTD("")}: no external DTD subset (or external
+     *   entity) may be fetched, matching JAXP semantics of the feature; an
+     *   explicit {@link XMLConstants#ACCESS_EXTERNAL_DTD} setting made after
+     *   this call re-opens access to the listed protocols
+     *  </li>
      *</ul>
      *
      * @since 5.3
@@ -973,6 +978,7 @@ public final class ReaderConfig
         setConfigFlag(CFG_JAXP_FEATURE_SECURE_PROCESSING, value);
         if (value) {
             doSupportExternalEntities(false);
+            setAccessExternalDTD("");
         }
     }
 
