@@ -256,6 +256,16 @@ public final class WstxInputProperties
      * @since 5.4 / 6.4
      */
     public final static String P_MAX_DTD_DEPTH = "com.ctc.wstx.maxDtdDepth";
+
+    /**
+     * Property of type {@link java.lang.Integer}:
+     * defines maximum length (in characters) of the value of an entity
+     * declared in a DTD, after expansion of parameter entities referenced
+     * from that value.
+     *
+     * @since 7.4
+     */
+    public final static String P_MAX_ENTITY_VALUE_SIZE = "com.ctc.wstx.maxEntityValueSize";
     
     // // // Entity handling
 

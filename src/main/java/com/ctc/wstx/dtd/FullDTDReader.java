@@ -1534,6 +1534,8 @@ public class FullDTDReader
                 }
                 // Either '&' itself, or expanded char entity
             } else if (c == '%') { // param entity?
+                // Expansion copies the PE value in, so check size before each one
+                verifyEntityValueSize(tb.size() + outPtr);
                 expandPE();
                 // Need to loop over, no char available yet
                 continue;
@@ -1570,6 +1572,7 @@ public class FullDTDReader
             outBuf[outPtr++] = c;
         }
         tb.setCurrentLength(outPtr);
+        verifyEntityValueSize(tb.size());
         
         // Ok, now need the closing '>':
         char c = skipDtdWs(true);
@@ -1580,6 +1583,12 @@ public class FullDTDReader
         mValueBuffer = tb; // recycle, if needed later on
 
         return result;
+    }
+
+    private void verifyEntityValueSize(int size) throws XMLStreamException
+    {
+        verifyLimit("Maximum entity value size (WstxInputProperties.P_MAX_ENTITY_VALUE_SIZE)",
+                mConfig.getMaxEntityValueSize(), size);
     }
 
     /**
@@ -1695,6 +1704,9 @@ public class FullDTDReader
                     if (d == 0) {
                         c = getNextChar(SUFFIX_IN_ENTITY_REF);
                         String id = parseEntityName(c);
+                        // Expansion copies the entity value in, so check size before each one
+                        verifyLimit("Maximum attribute size", mConfig.getMaxAttributeSize(),
+                                tb.size() + outPtr);
                         try {
                             mCurrAttrDefault = defVal;
                             mExpandingPE = false;
@@ -1732,6 +1744,7 @@ public class FullDTDReader
         }
 
         tb.setCurrentLength(outPtr);
+        verifyLimit("Maximum attribute size", mConfig.getMaxAttributeSize(), tb.size());
         defVal.setValue(tb.contentsAsString());
         mValueBuffer = tb;
     }
