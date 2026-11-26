@@ -8,6 +8,8 @@ Project: woodstox
 
 - Update to `oss-parent` v80 for latest Maven plug-in versions
 - Update to `stax2-api` 4.3.2 (from 4.3.1)
+- Honour system id of `InputSource` returned by SAX `EntityResolver`
+ (contributed by @aizu-m)
 
 7.3.0 (28-Sep-2026)
 
