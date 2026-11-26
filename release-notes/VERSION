@@ -6,6 +6,9 @@ Project: woodstox
 
 7.4.0 (not yet released)
 
+- Limit size of DFAs built for DTD content models when validating
+  (`WstxInputProperties.P_MAX_DTD_DFA_SIZE`)
+ (contributed by @aizu-m)
 - Update to `oss-parent` v80 for latest Maven plug-in versions
 - Update to `stax2-api` 4.3.2 (from 4.3.1)
 

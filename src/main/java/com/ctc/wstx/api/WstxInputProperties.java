@@ -256,6 +256,18 @@ public final class WstxInputProperties
      * @since 5.4 / 6.4
      */
     public final static String P_MAX_DTD_DEPTH = "com.ctc.wstx.maxDtdDepth";
+
+    /**
+     * Property of type {@link java.lang.Integer}:
+     * defines maximum total size (number of states plus number of
+     * transitions) of the DFAs constructed for the content models of
+     * element declarations in a DTD subset, when validating against the DTD.
+     * Content models that are not deterministic may need a DFA exponential
+     * in their length.
+     *
+     * @since 7.4
+     */
+    public final static String P_MAX_DTD_DFA_SIZE = "com.ctc.wstx.maxDtdDfaSize";
     
     // // // Entity handling
 
