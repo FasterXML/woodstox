@@ -68,6 +68,16 @@ public class SymbolTable {
 
     protected static final float DEFAULT_FILL_FACTOR = 0.75f;
 
+    /**
+     * Maximum number of symbols chained in a single collision bucket.
+     * The per-table hash seed only goes into the first character,
+     * so names that share it and collide in the multiply-31 accumulation
+     * (like "xAa" and "xBB") collide for every seed; without a bound, a
+     * document full of such names turns every lookup into a scan of one
+     * long chain. Names with random hashes never get close to this.
+     */
+    protected static final int MAX_COLL_CHAIN_LENGTH = 32;
+
     protected static final String EMPTY_STRING = "";
 
     /*
@@ -426,6 +436,11 @@ public class SymbolTable {
                 if (sym != null) {
                     return sym;
                 }
+                // Full chain: don't grow it any further. intern() still
+                // makes the returned name comparable with '=='
+                if (mInternStrings && b.length >= MAX_COLL_CHAIN_LENGTH) {
+                    return new String(buffer, start, len).intern();
+                }
             }
         }
 
@@ -573,8 +588,9 @@ public class SymbolTable {
      * it needs to be done for parsed "String" too.
      *<p>
      * The seed is mixed into the initial state and a MurmurHash3 finalizer
-     * is applied to scramble the output, so attacker-chosen names cannot
-     * land in the same bucket without knowing the table's seed.
+     * is applied to scramble the output. This only randomizes where names
+     * land: names that collide after the first character still collide
+     * for every seed, see {@link #MAX_COLL_CHAIN_LENGTH}.
      *
      * @param len Length of String; has to be at least 1 (caller guarantees
      *   this pre-condition)
@@ -771,10 +787,12 @@ public class SymbolTable {
     private static final class Bucket {
         public final String symbol;
         public final Bucket next;
+        public final int length;
 
         public Bucket(String symbol, Bucket next) {
             this.symbol = symbol;
             this.next = next;
+            length = (next == null) ? 1 : next.length + 1;
         }
 
         public String find(char[] buf, int start, int len) {
